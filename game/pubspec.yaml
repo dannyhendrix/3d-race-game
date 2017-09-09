@@ -1,0 +1,19 @@
+name: micromachines
+version: 1.0.0
+author: Danny Hendrix
+description: MicroMachines
+homepage: http://www.dannyhendrix.com
+dependencies:
+  browser: any
+  logging: ">=0.11.3"
+  gameutils:
+    path: ../subpackages/gameutils
+  preloader:
+    path: ../subpackages/preloader
+  renderlayer:
+    path: ../subpackages/renderlayer
+  object2map:
+    path: ../subpackages/object2map
+
+  gamelevelcontrol:
+    path: ../subpackages/gamelevelcontrol

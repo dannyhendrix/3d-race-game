@@ -1,0 +1,11 @@
+name: preloader
+version: 0.0.1
+author: Danny Hendrix <DWM.Hendrix@gmail.com>
+description: Loader for leading images and JSON files.
+dependencies:
+  browser: any
+  logging: ">=0.11.3"
+
+#dependencies:
+#  js: any
+#  unittest: any

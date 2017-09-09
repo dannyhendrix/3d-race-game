@@ -1,0 +1,12 @@
+name: gameutils
+version: 0.0.1
+author: Danny Hendrix <DWM.Hendrix@gmail.com>
+description: A set of basic game utility classes.
+dependencies:
+  browser: any
+  renderlayer:
+    path: ../renderlayer
+  test: any
+#dependencies:
+#  js: any
+#  unittest: any

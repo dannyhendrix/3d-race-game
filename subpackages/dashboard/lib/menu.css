@@ -1,0 +1,142 @@
+#menu_bg {
+    background: rgba(0, 0, 0, 0.42);
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+     font-family:Arial; font-size:12px;
+}
+#menu_wrapper {
+    background: #ccc;
+    color: #000;
+    padding-bottom: 15px;
+    text-align:center;
+    width: 400px;
+    /*margin: 0px auto;*/
+    position:absolute;
+    left:50%;
+    margin-left:-200px;
+    top:50%;
+    margin-top:-200px;
+    height: 400px;
+}
+
+.menu
+{
+
+}
+
+.menu_button
+{
+  display: block;
+  width: 90%;
+  margin: 4px auto;
+  /*
+  background: #eee;
+  border: 1px solid #777;
+  */
+  border: 1px solid rgb(177, 177, 177);
+border-radius: 5px;
+background-color: rgb(245, 245, 245);
+
+  color: #000;
+  padding: 5px;
+}
+
+.menu_button_disabled
+{
+  display: block;
+  width: 90%;
+  margin: 4px auto;
+  background: #666;
+  border: 1px solid #777;
+  color: #000;
+  padding: 5px;
+  background-position:right;
+  background:#aaa url("../../res/images/locked.png") 320px no-repeat;
+}
+
+.menu_button:hover
+{
+  background: #fff;
+  text-decoration:underline;
+}
+
+.menu_button:active
+{
+  background: #ddd;
+}
+
+#menu_title
+{
+  margin: 0px;
+  text-align: center;
+  background: rgb(46, 46, 46);
+  color: #fff;
+  font-size: 1.1em;
+  padding: 8px;
+  border-bottom: 2px solid yellow;
+  margin-bottom: 15px;
+}
+
+#menu_close {
+    position: absolute;
+    right: 4px;
+    top: 3px;
+    width: 30px;
+    height: 24px;
+    border: 0px solid rgb(111, 111, 111);
+    border-radius: 8px;
+    background: black;
+    outline: 0px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 0px;
+}
+
+#menu_close:before
+{
+    content: "×";
+}
+
+
+#menu_back {
+    position: absolute;
+    left: 4px;
+    top: 3px;
+    width: 30px;
+    height: 24px;
+    border: 0px solid rgb(111, 111, 111);
+    border-radius: 8px;
+    background: black;
+    outline: 0px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 0px;
+}
+#menu_back:before
+{
+    content: "<";
+}
+
+.menu_title
+{
+  text-align:center;
+  clear:both;
+  font-size:1.2em;
+}
+
+.menu_subtitle
+{
+  text-align:center;
+  clear:both;
+  font-size:1.1em;
+}
+
+.menu_spacer
+{
+  height:20px;
+}

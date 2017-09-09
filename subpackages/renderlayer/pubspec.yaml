@@ -1,0 +1,10 @@
+name: renderlayer
+version: 0.0.1
+author: Danny Hendrix
+description: Makes it easier to work with the canvasElement/ctx (2d).
+dependencies:
+  browser: any
+
+#dependencies:
+#  js: any
+#  unittest: any

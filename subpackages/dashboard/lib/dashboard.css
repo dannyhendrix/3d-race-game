@@ -1,0 +1,46 @@
+body,html
+{
+  height:100%;
+  width:100%;
+  overflow:hidden;
+  margin: 0px;
+  background: rgb(56, 56, 56);
+  font-family:Arial; font-size:12px;
+}
+
+#dashboard_wrapper
+{
+  /*
+  width: 800px;
+  height: 300px;
+  position: relative;
+  margin: 0px auto;
+  */
+}
+
+#dashboard_header,#dashboard_footer {
+    background: rgb(223, 223, 223);
+}
+#dashboard_left,#dashboard_right {
+  background: rgb(68, 68, 68);
+}
+
+#dashboard_game {
+  background: black;
+}
+
+.dashboard_panel
+{
+  position:absolute;
+}
+
+.dashboard_btn {
+    background: rgb(196, 196, 196);
+    border: 1px solid rgb(153, 153, 153);
+    border-radius: 5px;
+    margin: 5px;
+    outline-width: 0px;
+}
+.dashboard_btn:hover {
+    background: rgb(255, 245, 0);
+}
