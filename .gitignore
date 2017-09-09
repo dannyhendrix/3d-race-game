@@ -1,0 +1,13 @@
+.buildlog
+.DS_Store
+.idea
+.project
+.packages
+.pub/
+.settings/
+build/
+packages
+pubspec.lock
+
+pspbrwse.jbf
+*.apk
