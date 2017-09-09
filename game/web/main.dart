@@ -3,6 +3,7 @@ import "package:logging/logging.dart";
 import "package:micromachines/game.dart";
 import "package:renderlayer/renderlayer.dart";
 import "package:gameutils/gameloop.dart";
+import "package:gameutils/math.dart";
 import "dart:html";
 import "dart:math" as Math;
 
@@ -23,53 +24,25 @@ void main()
 
   RenderLayer layer = new RenderLayer.withSize(1500,800);
   document.body.append(layer.canvas);
-/*
-  drawPolygon(new Polygon([
-    new Point(0,0),
-    new Point(0,50),
-    new Point(10,50),
-    new Point(10,0),
-  ]),layer);
-*/
-  /*
-  drawPolygon(new Polygon([
-    new Point(0,0),
-    new Point(50,0),
-    new Point(50,10),
-    new Point(0,10),
-  ]).translate(new Point(100,120), new Point(25,5)),layer);
-  drawPolygon(new Polygon([
-    new Point(0,0),
-    new Point(50,0),
-    new Point(50,10),
-    new Point(0,10),
-  ]).translate(new Point(100,120), new Point(25,5)).rotate(0.7, new Point(100,120)),layer);
-*/
+
   GameLoop gameloop = new GameLoop((int now){
     game.update();
     layer.clear();
     for(GameObject o in game.gameobjects){
-      /*
-      double midX = o.w~/2;
-      double midY = o.h~/2;
-      layer.ctx.save();
-      layer.ctx.fillStyle = 'blue';
-      layer.ctx.translate(o.x,o.y);
-      layer.ctx.rotate(o.r);
-      layer.ctx.fillRect(-midX,-midY,o.w,o.h);
-      layer.ctx.restore();
-*/
-      drawPolygon(o.createPolygonOnActualLocation(), layer, "blue");
-
-      layer.ctx.font = "10px Arial";
-      layer.ctx.fillText("Vehicle: ${game.player.vehicle.info}",10,10);
-      layer.ctx.fillText("Game: ${game.info}",10,50);
+      if(o is Vehicle){
+        Vehicle v = o;
+        drawPolygon(o.createPolygonOnActualLocation(), layer, v.isCollided ? "red" : "purple");
+      }else drawPolygon(o.createPolygonOnActualLocation(), layer, "blue");
 
       layer.ctx.beginPath();
-      layer.ctx.arc(o.x, o.y, 2, 0, 2 * Math.PI, false);
+      layer.ctx.arc(o.position.x, o.position.y, 2, 0, 2 * Math.PI, false);
       layer.ctx.fillStyle = 'green';
       layer.ctx.fill();
     }
+
+    layer.ctx.font = "10px Arial";
+    layer.ctx.fillText("Vehicle: ${game.player.vehicle.info}",10,10);
+    layer.ctx.fillText("Game: ${game.info}",10,50);
   });
 
   gameloop.play();
@@ -97,8 +70,7 @@ void main()
   document.onKeyDown.listen(handleKey);
   document.onKeyUp.listen(handleKey);
   document.body.append(createButton("reset",(MouseEvent e){
-    game.player.vehicle.x = 150;
-    game.player.vehicle.y = 50;
+    game.player.vehicle.position = new Point(150.0, 50.0);
   }));
 }
 
@@ -109,7 +81,7 @@ ButtonElement createButton(String text, Function onClick){
   return button;
 }
 
-void drawPolygon(Polygon polygon, Renderlayer layer, String color){
+void drawPolygon(Polygon polygon, RenderLayer layer, String color){
   layer.ctx.beginPath();
   layer.ctx.fillStyle = color;
   layer.ctx.moveTo(polygon.points.first.x,polygon.points.first.y);

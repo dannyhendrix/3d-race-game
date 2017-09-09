@@ -1,7 +1,8 @@
 part of micromachines;
 class GameObject{
-  double x,y,r;
-  int w,h;
+  Point position;
+  double r;
+  double w,h;
   Polygon collisionField = new Polygon([]);
 
   bool collides(GameObject other){
@@ -9,6 +10,6 @@ class GameObject{
   }
 
   Polygon createPolygonOnActualLocation(){
-    return collisionField.translate(new Point(x,y), new Point(w/2,h/2)).rotate(r,new Point(x,y));
+    return collisionField.translate(position, new Point(w/2,h/2)).rotate(r,position);
   }
 }

@@ -1,129 +1,183 @@
 part of micromachines;
 
+enum VehicleSettingKeys {
+  acceleration,
+  acceleration_max,
+  reverse_acceleration,
+  reverse_acceleration_max,
+  friction,
+  brake_speed,
+  steering_speed,
+  standstill_delay,
+  collision_force,
+  collision_force_after_collision,
+}
+
+class VehicleSettings{
+  Map data = {
+    VehicleSettingKeys.acceleration.toString() :0.4,
+    VehicleSettingKeys.acceleration_max.toString() : 6.0,
+    VehicleSettingKeys.reverse_acceleration.toString() : 0.2,
+    VehicleSettingKeys.reverse_acceleration_max.toString() : 2.0,
+    VehicleSettingKeys.friction.toString() : 0.05,
+    VehicleSettingKeys.brake_speed.toString() : 0.2,
+    VehicleSettingKeys.steering_speed.toString() : 0.05,
+    VehicleSettingKeys.standstill_delay.toString() : 6,
+    VehicleSettingKeys.collision_force.toString() : 4.0,
+    VehicleSettingKeys.collision_force_after_collision.toString() : 0.35,
+  };
+  dynamic getValue(VehicleSettingKeys key){
+    return data[key.toString()];
+  }
+}
+
 class Vehicle extends MoveableGameObject{
+  Game game;
   bool _isBraking = false;
   bool _isAccelerating = false;
-  bool _isReverse = false;
   Steer _isSteering = Steer.None;
   double _speed = 0.0;
-  double _acceleration = 0.0;
-  double _braking = 0.0;
-  double _reversing = 0.0;
-  double _steering = 0.0;
   String info = "";
+  int _currentStandStillDelay = 0;
+  bool _isCollided = false;
+  VehicleSettings vehicleSettings = new VehicleSettings();
+  int theme = 0;
 
-  Vehicle(){
-    x = 150.0;
-    y = 50.0;
+  Vehicle(this.game){
+    position = new Point(150.0, 50.0);
     r = 1.7;
-    w = 40;
-    h = 80;
+    w = 40.0;
+    h = 80.0;
     collisionField = new Polygon([
-      new Point(0,0),
-      new Point(w,0),
+      new Point(0.0,0.0),
+      new Point(w,0.0),
       new Point(w,h),
-      new Point(0,h),
+      new Point(0.0,h),
     ]);
   }
   void setAccelarate(bool a){
     _isAccelerating = a;
-    _acceleration = 0;
   }
   void setBrake(bool a){
     _isBraking = a;
-    _braking = 0;
   }
   void setSteer(Steer a){
     _isSteering = a;
   }
 
+  bool get isCollided => _isCollided;
+
   void update(){
-    double maxAcc = 6.0;
-    double stepAcc = 0.05;
-    double stepAccRelease = 0.005;
 
-    double maxRev = 0.01;
-    double stepRev = 0.001;
-    double stepRevRelease = -0.1;
+    //Steering
+    r = _applySteering(r,vehicleSettings.getValue(VehicleSettingKeys.steering_speed), _isSteering);
 
-    double maxBrake = 1.0;
-    double stepBrake = 0.02;
-    double stepBrakeRelease = -0.2;
-
-    double maxSpeed = 8.0;
-
-    if(_isAccelerating){
-      _acceleration += stepAcc;
-      if(_acceleration<-maxAcc) _acceleration = -maxAcc;
-      if(_acceleration>maxAcc) _acceleration = maxAcc;
-    }else{
-      _acceleration -= stepAccRelease;
-      if(_acceleration<-maxAcc) _acceleration = -maxAcc;
-      if(_acceleration>maxAcc) _acceleration = maxAcc;
-    }
-    if(_isBraking){
-      _braking += stepBrake;
-      if(_braking<0) _braking = 0;
-      if(_braking>maxBrake) _braking = maxBrake;
-    }else{
-      _braking = 0.0;
-      /*
-      _braking += stepBrakeRelease;
-      if(_braking<0) _braking = 0;
-      if(_braking>maxBrake) _braking = maxBrake;
-      */
-    }
-    if(_acceleration > 0 || _speed > 0)    {
-      _speed += _acceleration;
-      if(_speed < 0) _speed = 0;
-    }
-    _speed -= _braking;
-    //TODO: reverse
-    //if(_speed < 0) _speed = 0.0;
-    //if(_speed < 0) _speed = 0;
-    if(_speed < -maxSpeed) _speed = -maxSpeed;
-    if(_speed > maxSpeed) _speed = maxSpeed;
-
-
-
-
-    double maxSteer = 0.06;
-    double stepSteer = 0.006;
-    double stepSteerRelease = 0.01;
-
-    switch(_isSteering){
-      case Steer.Left:
-        _steering -= stepSteer;
-        if(_steering < -maxSteer) _steering = -maxSteer;
-        break;
-      case Steer.Right:
-        _steering += stepSteer;
-        if(_steering > maxSteer) _steering = maxSteer;
-        break;
-      case Steer.None:
-        if(_steering < 0){
-          _steering += stepSteerRelease;
-          if(_steering > 0) _steering = 0;
-        }else{
-          _steering -= stepSteerRelease;
-          if(_steering < 0) _steering = 0;
-        }
-        break;
-    }
-    r += _steering;
-
-
+    //Apply Forces
+    bool wasStandingStill = _speed == 0;
+    _speed = _applyAccelerationAndBrake(_speed,
+        vehicleSettings.getValue(VehicleSettingKeys.acceleration),
+        vehicleSettings.getValue(VehicleSettingKeys.reverse_acceleration),
+        vehicleSettings.getValue(VehicleSettingKeys.brake_speed),
+        vehicleSettings.getValue(VehicleSettingKeys.acceleration_max),
+        vehicleSettings.getValue(VehicleSettingKeys.reverse_acceleration_max),
+        _currentStandStillDelay==0, _isAccelerating, _isBraking);
+    _speed = _applyFriction(_speed,vehicleSettings.getValue(VehicleSettingKeys.friction));
+    _currentStandStillDelay = _updateStandStillDelay(_currentStandStillDelay,vehicleSettings.getValue(VehicleSettingKeys.standstill_delay), wasStandingStill, _speed==0);
 
     vector = new Vector.fromAngleRadians(r,_speed);
-    //x += vector.x;
-    //y += vector.y;
-    info = "$_braking\n $_acceleration\n $_speed\n $_isSteering\n $_steering";
+    //position += vector;
+    var collisionCorrection = vector;
+    bool collide = false;
+    //check collisions
+    for(GameObject g in game.gameobjects){
+      if(g == this) continue;
+
+      CollisionResult r = createPolygonOnActualLocation().collision(g.createPolygonOnActualLocation(), vector);
+
+      if (r.willIntersect) {
+        collisionCorrection += r.minimumTranslationVector;
+        collide = true;
+        //g.onCollision(this,polygonATranslation);
+      }
+    }
+    if(collide) {
+      if(_isCollided){
+        double friction = vehicleSettings.getValue(VehicleSettingKeys.collision_force_after_collision);
+        if(friction < _speed){
+          _speed = _applyFriction(_speed, friction);
+          vector = new Vector.fromAngleRadians(r,_speed);
+        }
+      }
+      else{
+        _speed = _applyFriction(_speed, vehicleSettings.getValue(VehicleSettingKeys.collision_force));
+        vector = new Vector.fromAngleRadians(r,_speed);
+      }
+    }
+    _isCollided = collide;
+    position += vector + collisionCorrection;
   }
 
-  void onCollision(GameObject o){
+  void onCollision(GameObject o, Vector polygonATranslation){
+    if(_speed != 0) _speed = -(_speed/2);
+    /*
     _speed = -_speed/2;
+
     _acceleration = 0.0;
     _braking = 0.0;
     _steering = 0.0;
+    */
+  }
+
+  double _applyFriction(double V, double F){
+    if(V > 0) V -= Math.min(V,F);
+    else if(V < 0) V += Math.min(-V,F);
+    return V;
+  }
+  double _applyAccelerationAndBrake(double V, double A, double R, double B, double MaxA, double MaxR, bool canStartFromZero, bool acc, bool brake){
+    if(acc && brake){
+      if(V>0) V -= B;
+      else if(V<0) V += B;
+    }else{
+      if(V==0){
+        if(canStartFromZero)
+        {
+          if (acc) V += A;
+          if (brake) V -= R;
+        }
+      }
+      else if(V>0){
+        if(acc) V += A;
+        if(brake) V -= Math.min(V,B);
+      }
+      else if(V<0){
+        if(acc) V +=  Math.min(-V,B);
+        if(brake) V -= R;
+      }
+    }
+    if(V > MaxA) V = MaxA;
+    if(V < -MaxR) V = -MaxR;
+    return V;
+  }
+  int _updateStandStillDelay(int currentStandStillDelay, int standStillDelay, bool wasStandingStill, bool standingStill){
+    if(!standingStill || !wasStandingStill) return standStillDelay;
+
+    currentStandStillDelay -= 1;
+    if(currentStandStillDelay < 0)
+      currentStandStillDelay = 0;
+
+    return currentStandStillDelay;
+  }
+  double _applySteering(double r, double S, Steer steering){
+    switch(steering){
+      case Steer.Left:
+        r -= S;
+        break;
+      case Steer.Right:
+        r += S;
+        break;
+      default:
+        break;
+    }
+    return r;
   }
 }

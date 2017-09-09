@@ -22,30 +22,19 @@ class Player{
         vehicle.setBrake(active);
         break;
       case Control.SteerLeft:
-        if(active){
-          controlList.remove(Control.SteerLeft);
-          controlList.add(Control.SteerLeft);
-        }else{
-          controlList.remove(Control.SteerLeft);
-        }
+        _isSteeringLeft = active;
         break;
       case Control.SteerRight:
-        if(active){
-          controlList.remove(Control.SteerRight);
-          controlList.add(Control.SteerRight);
-        }else{
-          controlList.remove(Control.SteerRight);
-        }
+        _isSteeringRight = active;
+        break;
+      default:
         break;
     }
-    if(controlList.length == 0){
+    if(_isSteeringRight && !_isSteeringLeft)
+      vehicle.setSteer(Steer.Right);
+    else if(!_isSteeringRight && _isSteeringLeft)
+      vehicle.setSteer(Steer.Left);
+    else
       vehicle.setSteer(Steer.None);
-    }else{
-      var last = controlList.last;
-      if(last == Control.SteerLeft)
-        vehicle.setSteer(Steer.Left);
-      else
-        vehicle.setSteer(Steer.Right);
-    }
   }
 }

@@ -6,6 +6,7 @@ import "package:gameutils/gameloop.dart";
 import "package:gameutils/math.dart";
 import "dart:html";
 import "dart:math" as Math;
+import "dart:convert";
 
 void main()
 {
@@ -14,22 +15,21 @@ void main()
 
   print("Hi");
 
+  VehicleSettings vehicleSettings = new VehicleSettings();
+
+  var txtArea = new TextAreaElement();
+  txtArea.value = JSON.encode(vehicleSettings.data);
+  document.body.append(txtArea);
+  txtArea.onChange.listen((Event e){
+    vehicleSettings.data = JSON.decode(txtArea.value);
+  });
+
+
   var currentValueXInput = new InputWithDoubleValue(0.0, "X");
   var currentValueYInput = new InputWithDoubleValue(0.0, "Y");
   var currentRotationInput = new InputWithDoubleValue(0.0, "Rotation");
   var currentSpeedInput = new InputWithDoubleValue(0.0, "Current speed");
   var currentStandStillInput = new InputWithDoubleValue(0.0, "Stand still delay");
-
-  var maxSpeedInput = new InputWithDoubleValue(6.0, "Max speed forward");
-  var accelerationSpeedInput = new InputWithDoubleValue(0.4, "Max acceleration forward");
-  var maxSpeedReverseInput = new InputWithDoubleValue(2.0, "Max speed backward");
-  var accelerationSpeedReverseInput = new InputWithDoubleValue(0.2, "Max acceleration reverse backward");
-  var brakeForceInput = new InputWithDoubleValue(0.2, "Braking force");
-  var standStillDelayInput = new InputWithDoubleValue(6.0, "Stand still delay");
-  var frictionInput = new InputWithDoubleValue(0.05, "Vehicle friction");
-
-
-  var steerAccInput = new InputWithDoubleValue(0.05, "Steer acc");
 
   var isAcceleratingInput = new InputWithBoolValue(false, "Accelerate");
   var isBrakeInput = new InputWithBoolValue(false, "Brake/Reverse");
@@ -38,10 +38,7 @@ void main()
 
   document.body.append(new HRElement());
   for(var input in [currentValueXInput,currentValueYInput,currentSpeedInput,currentRotationInput,currentStandStillInput]) document.body.append(input.element);
-  document.body.append(new HRElement());
-  for(var input in [maxSpeedInput,accelerationSpeedInput,maxSpeedReverseInput,accelerationSpeedReverseInput,brakeForceInput,standStillDelayInput,frictionInput]) document.body.append(input.element);
-  document.body.append(new HRElement());
-  for(var input in [steerAccInput]) document.body.append(input.element);
+
   document.body.append(new HRElement());
   for(var input in [isAcceleratingInput,isBrakeInput,isSteerLeftInput,isSteerRightInput]) document.body.append(input.element);
 
@@ -50,48 +47,49 @@ void main()
   visualObject.setAttribute("style","position:absolute; left:0px; top:0px; height:30px; width:20px; background:blue; border-top:2px solid red;");
   document.body.append(visualObject);
 
-  currentStandStillInput.setValue(standStillDelayInput.getValue());
+  currentStandStillInput.setValue(vehicleSettings.getValue(VehicleSettingKeys.standstill_delay));
 
   Point p = new Point(300.0,300.0);
 
   GameLoop loop = new GameLoop((int frame){
     //Read values from html dom
+    //controls
     bool acc = isAcceleratingInput.getValue();
     bool brake = isBrakeInput.getValue();
     bool left = isSteerLeftInput.getValue();
     bool right = isSteerRightInput.getValue();
 
-    double V = currentSpeedInput.getValue();
-    double A = accelerationSpeedInput.getValue();
-    double MA = maxSpeedInput.getValue();
-    double B = brakeForceInput.getValue();
-    double R = accelerationSpeedReverseInput.getValue();
-    double MR = maxSpeedReverseInput.getValue();
-    double F = frictionInput.getValue();
+    //state
+    double _speed = currentSpeedInput.getValue();
     double r = currentRotationInput.getValue();
-    double S = steerAccInput.getValue();
-
-    int standStillDelay = currentStandStillInput.getValue().toInt();
+    int currentStandStillDelay = currentStandStillInput.getValue().toInt();
 
     //Steering
-    r = applySteering(r,S, left, right);
+    r = _applySteering(r,vehicleSettings.getValue(VehicleSettingKeys.steering_speed), left, right);
 
     //Apply Forces
-    bool wasStandingStill = V == 0;
-    V = applyAccelerationAndBrake( V, A, R, B, MA, MR, standStillDelay==0, acc, brake);
-    V = applyFriction(V,F);
-    standStillDelay = updateStandStillDelay(standStillDelay,standStillDelayInput.getValue().toInt(), wasStandingStill, V==0);
+    bool wasStandingStill = _speed == 0;
+    _speed = _applyAccelerationAndBrake(_speed,
+        vehicleSettings.getValue(VehicleSettingKeys.acceleration),
+        vehicleSettings.getValue(VehicleSettingKeys.reverse_acceleration),
+        vehicleSettings.getValue(VehicleSettingKeys.brake_speed),
+        vehicleSettings.getValue(VehicleSettingKeys.acceleration_max),
+        vehicleSettings.getValue(VehicleSettingKeys.reverse_acceleration_max),
+        currentStandStillDelay==0, acc, brake);
+    _speed = _applyFriction(_speed,vehicleSettings.getValue(VehicleSettingKeys.friction));
+    currentStandStillDelay = _updateStandStillDelay(currentStandStillDelay,vehicleSettings.getValue(VehicleSettingKeys.standstill_delay), wasStandingStill, _speed==0);
 
-    Vector v = new Vector.fromAngleRadians(r,V);
-    p += v;
+    Vector vector = new Vector.fromAngleRadians(r,_speed);
+    p += vector;
 
     //Write values back to htmlDom
-    currentValueXInput.setValue(v.x);
-    currentValueYInput.setValue(v.y);
+    currentValueXInput.setValue(p.x);
+    currentValueYInput.setValue(p.y);
     currentRotationInput.setValue(r);
-    currentSpeedInput.setValue(V);
-    currentStandStillInput.setValue(standStillDelay.toDouble());
+    currentSpeedInput.setValue(_speed);
+    currentStandStillInput.setValue(currentStandStillDelay.toDouble());
 
+    //visual update
     visualObject.style.top = "${p.y}px";
     visualObject.style.left = "${p.x}px";
     visualObject.style.transform = "rotate(${r}rad)";
@@ -126,12 +124,12 @@ void main()
 
 /*Forces
  */
-double applyFriction(double V, double F){
+double _applyFriction(double V, double F){
   if(V > 0) V -= Math.min(V,F);
   else if(V < 0) V += Math.min(-V,F);
   return V;
 }
-double applyAccelerationAndBrake(double V, double A, double R, double B, double MaxA, double MaxR, bool canStartFromZero, bool acc, bool brake){
+double _applyAccelerationAndBrake(double V, double A, double R, double B, double MaxA, double MaxR, bool canStartFromZero, bool acc, bool brake){
   if(acc && brake){
     if(V>0) V -= B;
     else if(V<0) V += B;
@@ -156,7 +154,7 @@ double applyAccelerationAndBrake(double V, double A, double R, double B, double 
   if(V < -MaxR) V = -MaxR;
   return V;
 }
-int updateStandStillDelay(int currentStandStillDelay, int standStillDelay, bool wasStandingStill, bool standingStill){
+int _updateStandStillDelay(int currentStandStillDelay, int standStillDelay, bool wasStandingStill, bool standingStill){
   if(!standingStill || !wasStandingStill) return standStillDelay;
 
   currentStandStillDelay -= 1;
@@ -165,7 +163,7 @@ int updateStandStillDelay(int currentStandStillDelay, int standStillDelay, bool 
 
   return currentStandStillDelay;
 }
-double applySteering(double r, double S, bool left, bool right){
+double _applySteering(double r, double S, bool left, bool right){
   if(left && !right)
     r -= S;
   else if(!left && right)
