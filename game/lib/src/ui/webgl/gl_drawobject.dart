@@ -118,14 +118,19 @@ class GlCube extends GlDrawObject{
   void draw(int vertexIndex, RenderingContext ctx){
     ctx.bindBuffer(ARRAY_BUFFER, buffer);
     ctx.vertexAttribPointer(vertexIndex, 3, FLOAT, false, 0, 0);
-    ctx.bindBuffer(ARRAY_BUFFER, indexBuffer);
+    ctx.bindBuffer(ELEMENT_ARRAY_BUFFER, indexBuffer);
     ctx.drawElements(TRIANGLES, 36, UNSIGNED_SHORT, 0);
   }
 }
 
 class GlDrawObject{
   Buffer buffer;
-  double x,y;
+  double x = 0.0;
+  double y = 0.0;
+  double z = 0.0;
+  double rx = 0.0;
+  double ry = 0.0;
+  double rz = 0.0;
 
   //4 points (x,y,z)
   GlDrawObject(this.x,this.y,RenderingContext ctx){

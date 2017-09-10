@@ -46,6 +46,7 @@ class GlProgram {
 
     for (String attrib in attributeNames) {
       int attributeLocation = ctx.getAttribLocation(program, attrib);
+      print(attributeLocation);
       ctx.enableVertexAttribArray(attributeLocation);
       attributes[attrib] = attributeLocation;
     }

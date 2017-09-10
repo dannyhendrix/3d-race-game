@@ -42,8 +42,8 @@ tick(time) {
   window.animationFrame.then(tick);
   frameCount(time);
   render.x += 0.01;
-  render.y += 0.01;
-  render.z += 0.01;
+  //render.y += 0.01;
+  //render.z += 0.01;
   render.drawScene(layer);
   //lesson.animate(time);
   //lesson.drawScene(canvas.width, canvas.height, canvas.width / canvas.height);
