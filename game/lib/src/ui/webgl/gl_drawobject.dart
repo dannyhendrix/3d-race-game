@@ -9,7 +9,8 @@ class GlSquare extends GlDrawObject{
       x+w, y+h, z
     ], ctx);
   }
-  void draw(int vertexIndex, RenderingContext ctx){
+  void draw(int vertexIndex, RenderLayer3d layer){
+    RenderingContext ctx = layer.ctx;
     ctx.bindBuffer(ARRAY_BUFFER, buffer);
     ctx.vertexAttribPointer(vertexIndex, 3, FLOAT, false, 0, 0);
     ctx.drawArrays(TRIANGLE_STRIP, 0, 4);
@@ -17,48 +18,9 @@ class GlSquare extends GlDrawObject{
   }
 }
 
-/*
-[
-    // Front face
-    -1.0, -1.0, 1.0,
-    1.0, -1.0, 1.0,
-    1.0, 1.0, 1.0,
-    -1.0, 1.0, 1.0,
-
-    // Back face
-    -1.0, -1.0, -1.0,
-    -1.0, 1.0, -1.0,
-    1.0, 1.0, -1.0,
-    1.0, -1.0, -1.0,
-
-    // Top face
-    -1.0, 1.0, -1.0,
-    -1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0,
-    1.0, 1.0, -1.0,
-
-    // Bottom face
-    -1.0, -1.0, -1.0,
-    1.0, -1.0, -1.0,
-    1.0, -1.0, 1.0,
-    -1.0, -1.0, 1.0,
-
-    // Right face
-    1.0, -1.0, -1.0,
-    1.0, 1.0, -1.0,
-    1.0, 1.0, 1.0,
-    1.0, -1.0, 1.0,
-
-    // Left face
-    -1.0, -1.0, -1.0,
-    -1.0, -1.0, 1.0,
-    -1.0, 1.0, 1.0,
-    -1.0, 1.0, -1.0
-  ]
- */
-
 class GlCube extends GlDrawObject{
   Buffer indexBuffer;
+  Buffer normalBuffer;
   GlCube(double x, double y, double z, double w, double h, double d, RenderingContext ctx):super(x,y, ctx){
     double hw = w/2;
     double hh = h/2;
@@ -113,13 +75,79 @@ class GlCube extends GlDrawObject{
           20, 21, 22,   20, 22, 23 // Left face
         ]),
         STATIC_DRAW);
+
+
+
+
+    List<double> vertexNormals = [
+      // Front
+      0.0,  0.0,  1.0,
+      0.0,  0.0,  1.0,
+      0.0,  0.0,  1.0,
+      0.0,  0.0,  1.0,
+
+      // Back
+      0.0,  0.0, -1.0,
+      0.0,  0.0, -1.0,
+      0.0,  0.0, -1.0,
+      0.0,  0.0, -1.0,
+
+      // Top
+      0.0,  1.0,  0.0,
+      0.0,  1.0,  0.0,
+      0.0,  1.0,  0.0,
+      0.0,  1.0,  0.0,
+
+      // Bottom
+      0.0, -1.0,  0.0,
+      0.0, -1.0,  0.0,
+      0.0, -1.0,  0.0,
+      0.0, -1.0,  0.0,
+
+      // Right
+      1.0,  0.0,  0.0,
+      1.0,  0.0,  0.0,
+      1.0,  0.0,  0.0,
+      1.0,  0.0,  0.0,
+
+      // Left
+      -1.0,  0.0,  0.0,
+      -1.0,  0.0,  0.0,
+      -1.0,  0.0,  0.0,
+      -1.0,  0.0,  0.0
+    ];
+
+    normalBuffer = ctx.createBuffer();
+    ctx.bindBuffer(ARRAY_BUFFER, normalBuffer);
+    ctx.bufferData(ARRAY_BUFFER, new Float32List.fromList(vertexNormals), STATIC_DRAW);
   }
 
-  void draw(int vertexIndex, RenderingContext ctx){
+  void draw(int vertexIndex, RenderLayer3d layer){
+    RenderingContext ctx = layer.ctx;
+
+    layer.mvPushMatrix();
+    layer.mvMatrix.translate([x,y,z]);
+    layer.mvMatrix.rotateX(rx);
+    layer.mvMatrix.rotateY(ry);
+    layer.mvMatrix.rotateZ(rz);
+    layer.setMatrixUniforms();
+
+    Matrix4 normalMatrix = layer.mvMatrix.inverse();
+    normalMatrix = normalMatrix.transpose();
+    layer.ctx.uniformMatrix4fv(layer.program.uniforms['uNormalMatrix'], false, normalMatrix.buf);
+
+    // set vertex buffer
     ctx.bindBuffer(ARRAY_BUFFER, buffer);
     ctx.vertexAttribPointer(vertexIndex, 3, FLOAT, false, 0, 0);
+    // set normal vertex buffer
+    ctx.bindBuffer(ARRAY_BUFFER, normalBuffer);
+    ctx.vertexAttribPointer(layer.program.attributes['aVertexNormal'],3,FLOAT,false,0,0);
+    ctx.enableVertexAttribArray(layer.program.attributes['aVertexNormal']);
+    // draw cube
     ctx.bindBuffer(ELEMENT_ARRAY_BUFFER, indexBuffer);
     ctx.drawElements(TRIANGLES, 36, UNSIGNED_SHORT, 0);
+
+    layer.mvPopMatrix();
   }
 }
 
@@ -144,6 +172,6 @@ class GlDrawObject{
     return buffer;
   }
 
-  void draw(int vertexIndex, RenderingContext ctx){
+  void draw(int vertexIndex, RenderLayer3d layer){
   }
 }
