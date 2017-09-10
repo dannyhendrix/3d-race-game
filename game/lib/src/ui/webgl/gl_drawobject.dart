@@ -1,7 +1,7 @@
 part of webgl;
 
 class GlSquare extends GlDrawObject{
-  GlSquare(double x, double y, double z, double w, double h, RenderingContext ctx):super(x,y, ctx){
+  GlSquare(double x, double y, double z, double w, double h, RenderingContext ctx):super(x,y,z, ctx){
     buffer = _createBuffer([
       x, y, z,
       x+w, y, z,
@@ -18,10 +18,21 @@ class GlSquare extends GlDrawObject{
   }
 }
 
+class GlCubeGameObject extends GlCube{
+  GameObject gameObject;
+  double get x => gameObject.position.x;
+  double get z => gameObject.position.y;
+  double get ry => -gameObject.r;
+  //GlCube(double x, double y, double z, double w, double h, double d, RenderingContext ctx):super(x,y,z, ctx)
+  GlCubeGameObject(this.gameObject, RenderingContext ctx):super(0.0,0.0,0.0,gameObject.w,10.0,gameObject.h, ctx){
+
+  }
+}
+
 class GlCube extends GlDrawObject{
   Buffer indexBuffer;
   Buffer normalBuffer;
-  GlCube(double x, double y, double z, double w, double h, double d, RenderingContext ctx):super(x,y, ctx){
+  GlCube(double x, double y, double z, double w, double h, double d, RenderingContext ctx):super(x,y,z, ctx){
     double hw = w/2;
     double hh = h/2;
     double hd = d/2;
@@ -161,7 +172,7 @@ class GlDrawObject{
   double rz = 0.0;
 
   //4 points (x,y,z)
-  GlDrawObject(this.x,this.y,RenderingContext ctx){
+  GlDrawObject(this.x,this.y, this.z,RenderingContext ctx){
 
   }
 

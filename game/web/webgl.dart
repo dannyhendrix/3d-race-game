@@ -12,6 +12,7 @@ import "dart:web_gl";
 Element el_Fps;
 RenderLayer3d layer;
 Render render;
+Game game;
 
 void main()
 {
@@ -29,8 +30,40 @@ void main()
 
   el_Fps = new DivElement();
 
+  game = new Game();
+  game.init();
+  game.start();
+
+
+  for(GameObject o in game.gameobjects){
+    render.drawobjects.add(new GlCubeGameObject(o, layer.ctx));
+  }
+
   // Start off the infinite animation loop
   tick(0);
+
+  var handleKey = (KeyboardEvent e)
+  {
+    //if(!gameloop.playing || gameloop.stopping)
+      //return;
+    e.preventDefault();
+    int key = e.keyCode;
+    bool down = e.type == "keydown";//event.KEYDOWN
+    Control control;
+    if(key == 38)//up
+      control = Control.Accelerate;
+    else if(key == 40)//down
+      control = Control.Brake;
+    else if(key == 37)//left
+      control = Control.SteerLeft;
+    else if(key == 39)//right
+      control = Control.SteerRight;
+    else return;
+    game.player.onControl(control, down);
+  };
+
+  document.onKeyDown.listen(handleKey);
+  document.onKeyUp.listen(handleKey);
 }
 
 /**
@@ -41,12 +74,15 @@ void main()
 tick(time) {
   window.animationFrame.then(tick);
   frameCount(time);
-  render.x += 0.01;
+  //render.cube2.z += 0.01;
   //render.y += 0.01;
   //render.z += 0.01;
+
+  game.update();
+  render.x = -game.player.vehicle.position.x;
+  //render.y = game.player.vehicle.position.y;
+
   render.drawScene(layer);
-  //lesson.animate(time);
-  //lesson.drawScene(canvas.width, canvas.height, canvas.width / canvas.height);
 }
 
 /// FPS meter - activated when the url parameter "fps" is included.
