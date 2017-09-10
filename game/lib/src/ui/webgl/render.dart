@@ -14,7 +14,8 @@ class Render{
     RenderingContext ctx = layer.ctx;
 
     x = 50.0;
-    z = -800.0;
+    z = -1100.0;
+    y = 420.0;
     rx = 1.0;
 /*
     square0 = new GlSquare(0.0,0.0,0.0,1.0,1.0, ctx);
@@ -40,7 +41,7 @@ class Render{
     // Setup the perspective - you might be wondering why we do this every
     // time, and that will become clear in much later lessons. Just know, you
     // are not crazy for thinking of caching this.
-    layer.pMatrix = Matrix4.perspective(45.0, aspect, 0.1, 1000.0);
+    layer.pMatrix = Matrix4.perspective(45.0, aspect, 0.1, 1200.0);
 
     layer.mvPushMatrix();
     layer.mvMatrix.translate([x,y,z]);

@@ -14,6 +14,13 @@ RenderLayer3d layer;
 Render render;
 Game game;
 
+InputWithValue currentValueXInput;
+InputWithValue currentValueYInput;
+InputWithValue currentValueZInput;
+InputWithValue currentValueRXInput;
+InputWithValue currentValueRYInput;
+InputWithValue currentValueRZInput;
+
 void main()
 {
   //logger
@@ -36,8 +43,21 @@ void main()
 
 
   for(GameObject o in game.gameobjects){
-    render.drawobjects.add(new GlCubeGameObject(o, layer.ctx));
+    double h = o is Wall ? 50.0 : 30.0;
+    render.drawobjects.add(new GlCubeGameObject(o, h, layer.ctx));
   }
+
+
+
+  currentValueXInput = new InputWithDoubleValue(0.0, "X", (Event e){ render.x = currentValueXInput.getValue(); });
+  currentValueYInput = new InputWithDoubleValue(0.0, "Y", (Event e){ render.y = currentValueYInput.getValue(); });
+  currentValueZInput = new InputWithDoubleValue(0.0, "Z", (Event e){ render.z = currentValueZInput.getValue(); });
+  currentValueRXInput = new InputWithDoubleValue(0.0, "RX", (Event e){ render.rx = currentValueRXInput.getValue(); });
+  currentValueRYInput = new InputWithDoubleValue(0.0, "RY", (Event e){ render.ry = currentValueRYInput.getValue(); });
+  currentValueRZInput = new InputWithDoubleValue(0.0, "RZ", (Event e){ render.rz = currentValueRZInput.getValue(); });
+
+
+
 
   // Start off the infinite animation loop
   tick(0);
@@ -46,7 +66,6 @@ void main()
   {
     //if(!gameloop.playing || gameloop.stopping)
       //return;
-    e.preventDefault();
     int key = e.keyCode;
     bool down = e.type == "keydown";//event.KEYDOWN
     Control control;
@@ -59,11 +78,20 @@ void main()
     else if(key == 39)//right
       control = Control.SteerRight;
     else return;
+
+    e.preventDefault();
     game.player.onControl(control, down);
   };
 
   document.onKeyDown.listen(handleKey);
   document.onKeyUp.listen(handleKey);
+
+  document.body.append(currentValueXInput.element);
+  document.body.append(currentValueYInput.element);
+  document.body.append(currentValueZInput.element);
+  document.body.append(currentValueRXInput.element);
+  document.body.append(currentValueRYInput.element);
+  document.body.append(currentValueRZInput.element);
 }
 
 /**
@@ -80,7 +108,15 @@ tick(time) {
 
   game.update();
   render.x = -game.player.vehicle.position.x;
-  //render.y = game.player.vehicle.position.y;
+  //render.z = -game.player.vehicle.position.y+50.0;
+  //render.ry = -game.player.vehicle.r;
+
+  currentValueXInput.setValue(render.x);
+  currentValueYInput.setValue(render.y);
+  currentValueZInput.setValue(render.z);
+  currentValueRXInput.setValue(render.rx);
+  currentValueRYInput.setValue(render.ry);
+  currentValueRZInput.setValue(render.rz);
 
   render.drawScene(layer);
 }
@@ -101,4 +137,49 @@ void frameCount(num now) {
   el_Fps.text = averageFps.toStringAsFixed(2);
   frames = 0;
   lastSample = now;
+}
+
+
+
+
+
+
+abstract class InputWithValue<T>{
+  Element element;
+  T getValue();
+  void setValue(T v);
+}
+
+Element createButton(String labelText, Function onClick){
+  var btn = new ButtonElement();
+  btn.text = labelText;
+  btn.onClick.listen(onClick);
+  return btn;
+}
+
+class InputWithDoubleValue extends InputWithValue<double>{
+  InputElement _inputElement;
+  SpanElement _readValue;
+
+  void setValue(double v){
+    _readValue.text = v.toString();
+  }
+  double getValue(){
+    return double.parse(_inputElement.value);
+  }
+
+  InputWithDoubleValue(double value, String labelText, Function onChange){
+    element = new DivElement();
+    _readValue = new SpanElement();
+    _inputElement = new InputElement();
+    _inputElement.onChange.listen(onChange);
+    _inputElement.value = value.toString();
+    var label = new SpanElement();
+    label.text = labelText;
+    label.style.width = "300px";
+    label.style.display = "inline-block";
+    element.append(label);
+    element.append(_readValue);
+    element.append(_inputElement);
+  }
 }

@@ -24,8 +24,7 @@ class GlCubeGameObject extends GlCube{
   double get z => gameObject.position.y;
   double get ry => -gameObject.r;
   //GlCube(double x, double y, double z, double w, double h, double d, RenderingContext ctx):super(x,y,z, ctx)
-  GlCubeGameObject(this.gameObject, RenderingContext ctx):super(0.0,0.0,0.0,gameObject.w,10.0,gameObject.h, ctx){
-
+  GlCubeGameObject(this.gameObject, double height, RenderingContext ctx):super(0.0,0.0,0.0,gameObject.w,height,gameObject.h, ctx){
   }
 }
 

@@ -21,6 +21,7 @@ class Game{
     gameobjects.add(new Wall.zeroOnLeftTop(0.0,0.0,5.0,800.0));
     gameobjects.add(new Wall.zeroOnLeftTop(1500.0-5,0.0,5.0,800.0));
     gameobjects.add(new Wall(500.0, 200.0, 100.0, 20.0, 1.0));
+    gameobjects.add(new Wall(700.0, 600.0, 60.0, 20.0, 0.3));
     _movableGameObjects.add(vehicle);
   }
 
