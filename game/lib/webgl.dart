@@ -17,3 +17,4 @@ part "src/ui/webgl/gltriangle.dart";
 part "src/ui/webgl/glrenderlayer.dart";
 part "src/ui/webgl/glprogram.dart";
 part "src/ui/webgl/glmatrix.dart";
+part "src/ui/webgl/glcamera.dart";

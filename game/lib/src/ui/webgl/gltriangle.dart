@@ -21,6 +21,14 @@ class GlTriangle extends GlModelPart{
     return result;
   }
   int getNumberOfTriangles() => 1;
+  List<double> toLightVertex(){
+    //TODO
+    bool clockwise = true;
+    double valX = 0.0;
+    double valY = 0.0;
+    double valZ = 0.0;
+    if(clockwise) return [-valX,-valY,-valZ];
+  }
 }
 
 class GlArea extends GlModelPart{
@@ -69,7 +77,18 @@ class GlModel{
 }
 
 class GlCube extends GlModel{
-  GlCube(double x, double y, double z, double w, double h, double d){
+  GlCube.fromTopCenter(double x, double y, double z, double w, double h, double d){
+    double hw = w/2;
+    double hh = h/2;
+    double hd = d/2;
+    addArea(new GlRectangle.withWH(x-hw,  y-hh,  z+hd,  w,h, true));
+    addArea(new GlRectangle.withWH(x-hw,  y-hh,  z+hd-d,w,h, false));
+    addArea(new GlRectangle.withHD(x-hw,  y-hh,  z+hd-d,h,d, false));
+    addArea(new GlRectangle.withHD(x-hw+w,y-hh,  z+hd-d,h,d, true));
+    addArea(new GlRectangle.withWD(x-hw,  y-hh+h,z+hd-d,w,d, false));
+    addArea(new GlRectangle.withWD(x-hw,  y-hh,  z+hd-d,w,d, true));
+  }
+  GlCube.fromTopLeft(double x, double y, double z, double w, double h, double d){
     addArea(new GlRectangle.withWH(x,y,z,w,h, true));
     addArea(new GlRectangle.withWH(x,y,z-d,w,h, false));
     addArea(new GlRectangle.withHD(x,y,z-d,h,d, false));

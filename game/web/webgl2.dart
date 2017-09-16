@@ -4,19 +4,8 @@ import "package:micromachines/webgl.dart";
 import "dart:web_gl";
 
 GlRenderLayer layer;
-List<GlModelBuffer> models = [];
-GlMatrix perspective;
-GlMatrix cameraMatrix;
-GlMatrix viewMatrix;
-
-double tx=0.0, ty=0.0, tz=360.0;
-double rx=0.0, ry=0.0, rz=0.0;
-double fieldOfViewRadians=2.0;
-double cameraAngleRadians=1.0;
-double cameraRadiusRadians=100.0;
-double zNear = 1.0;
-double zFar = 2000.0;
-double aspect = 1.0;
+List<GlModelInstance> modelInstances = [];
+GlCamera camera;
 
 void main(){
   layer = new GlRenderLayer.withSize(400,500);
@@ -26,22 +15,25 @@ void main(){
   layer.ctx.viewport(0, 0, layer.canvas.width, layer.canvas.height);
 
   //create all buffer
-  models.add(new GlCube(20.0,0.0,0.0,150.0,200.0,150.0).createBuffers(layer));
-  models.add(new GlCube(-320.0,-100.0,-100.0,150.0,200.0,150.0).createBuffers(layer));
+  GlModelBuffer cube = new GlCube.fromTopCenter(0.0,0.0,0.0,150.0,200.0,150.0).createBuffers(layer);
+  modelInstances.add(new GlModelInstance(cube));
+  var m2 = new GlModelInstance(cube,-320.0,-100.0,-100.0);
+  m2.ry = 1.0;
+  modelInstances.add(m2);
 
   //3 set view perspective
-  aspect = 400.0 / 500.0;
+  camera = new GlCamera(400.0 / 500.0);
 
-  document.body.append(createSlider("tx",0.0,500.0,1.0,tx,(String val){ tx = double.parse(val); draw(); }));
-  document.body.append(createSlider("ty",0.0,500.0,1.0,ty,(String val){ ty = double.parse(val); draw(); }));
-  document.body.append(createSlider("tz",0.0,500.0,1.0,tz,(String val){ tz = double.parse(val); draw(); }));
-  document.body.append(createSlider("rx",0.0,2*Math.PI,0.1,rx,(String val){ rx = double.parse(val); draw(); }));
-  document.body.append(createSlider("ry",0.0,2*Math.PI,0.1,ry,(String val){ ry = double.parse(val); draw(); }));
-  document.body.append(createSlider("rz",0.0,2*Math.PI,0.1,rz,(String val){ rz = double.parse(val); draw(); }));
-  document.body.append(createSlider("fieldOfViewRadians",0.0,Math.PI,0.1,fieldOfViewRadians,(String val){ fieldOfViewRadians = double.parse(val); draw(); }));
+  document.body.append(createSlider("tx",0.0,500.0,1.0,camera.x,(String val){ camera.x = double.parse(val); draw(); }));
+  document.body.append(createSlider("ty",0.0,500.0,1.0,camera.y,(String val){ camera.y = double.parse(val); draw(); }));
+  document.body.append(createSlider("tz",0.0,500.0,1.0,camera.z,(String val){ camera.z = double.parse(val); draw(); }));
+  document.body.append(createSlider("rx",0.0,2*Math.PI,0.1,camera.rx,(String val){ camera.rx = double.parse(val); draw(); }));
+  document.body.append(createSlider("ry",0.0,2*Math.PI,0.1,camera.ry,(String val){ camera.ry = double.parse(val); draw(); }));
+  document.body.append(createSlider("rz",0.0,2*Math.PI,0.1,camera.rz,(String val){ camera.rz = double.parse(val); draw(); }));
+  document.body.append(createSlider("fieldOfViewRadians",0.0,Math.PI,0.1,camera.fieldOfViewRadians,(String val){ camera.fieldOfViewRadians = double.parse(val); draw(); }));
   document.body.append(new HRElement());
-  document.body.append(createSlider("cameraAngleRadians",0.0,2*Math.PI,0.1,cameraAngleRadians,(String val){ cameraAngleRadians = double.parse(val); draw(); }));
-  document.body.append(createSlider("cameraRadiusRadians",0.0,500.0,0.1,cameraRadiusRadians,(String val){ cameraRadiusRadians = double.parse(val); draw(); }));
+  document.body.append(createSlider("cameraAngleRadians",0.0,2*Math.PI,0.1,camera.cameraAngleRadians,(String val){ camera.cameraAngleRadians = double.parse(val); draw(); }));
+  document.body.append(createSlider("cameraRadiusRadians",0.0,500.0,0.1,camera.cameraRadiusRadians,(String val){ camera.cameraRadiusRadians = double.parse(val); draw(); }));
 
   draw();
 }
@@ -49,28 +41,18 @@ void main(){
 void draw(){
   layer.clearForNextFrame();
 
-  //1 set perspective
-  perspective = GlMatrix.perspectiveMatrix(fieldOfViewRadians, aspect, zNear, zFar);
-  perspective = perspective.translate(tx, ty, -tz);
-  perspective = perspective.rotateX(rx);
-  perspective = perspective.rotateY(ry);
-  perspective = perspective.rotateZ(rz);
+  var viewProjectionMatrix = camera.createMatrix();//perspective*viewMatrix;
 
-  //4 create camera
-  cameraMatrix = GlMatrix.rotationYMatrix(cameraAngleRadians);
-  cameraMatrix = cameraMatrix.translate(0.0, 0.0, cameraRadiusRadians * 1.5);
-
-  var targetPosition = new GlVector(0.0,0.0,0.0);
-  var cameraPosition = new GlVector(cameraMatrix.val(3,0),cameraMatrix.val(3,1), cameraMatrix.val(3,2));
-  var up = new GlVector(0.0, 1.0, 0.0);
-  cameraMatrix = GlMatrix.lookAtMatrix(cameraPosition, targetPosition, up);
-
-  viewMatrix = cameraMatrix.inverse();
-  var viewProjectionMatrix = perspective*viewMatrix;
-  layer.setPerspective(viewProjectionMatrix);
 
   //2 call draw method with buffer
-  for(GlModelBuffer m in models) layer.drawModel(m);
+  for(GlModelInstance m in modelInstances){
+    GlMatrix objPerspective = viewProjectionMatrix.translate(m.x,m.y,m.z);
+    objPerspective = objPerspective.rotateX(m.rx);
+    objPerspective = objPerspective.rotateY(m.ry);
+    objPerspective = objPerspective.rotateZ(m.rz);
+    layer.setPerspective(objPerspective);
+    layer.drawModel(m);
+  }
 }
 
 Element createSlider(String label, double min, double max, double step, double val, Function onChange){

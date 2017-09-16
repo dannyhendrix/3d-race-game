@@ -28,10 +28,10 @@ class GlRenderLayer{
     ctx.enable(DEPTH_TEST);
   }
 
-  void drawModel(GlModelBuffer model){
-    _assignBufferToColor(model.colorBuffer);
-    _assignBufferToVertex(model.vertexBuffer);
-    ctx.drawArrays(TRIANGLES, 0, model.numberOfTriangles*3);
+  void drawModel(GlModelInstance model){
+    _assignBufferToColor(model.modelBuffer.colorBuffer);
+    _assignBufferToVertex(model.modelBuffer.vertexBuffer);
+    ctx.drawArrays(TRIANGLES, 0, model.modelBuffer.numberOfTriangles*3);
   }
 
   void _assignBufferToVertex(Buffer buffer){

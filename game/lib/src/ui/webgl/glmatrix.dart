@@ -48,7 +48,7 @@ class GlMatrix{
       0.0, 0.0, 0.0, 1.0,
     ]);
   }
-  static GlMatrix translationMatrix(tx, ty, tz) {
+  static GlMatrix translationMatrix(double tx, double ty, double tz) {
     return new GlMatrix.fromList([
       1.0,  0.0,  0.0,  0.0,
       0.0,  1.0,  0.0,  0.0,
@@ -56,7 +56,7 @@ class GlMatrix{
       tx,   ty,   tz,   1.0,
     ]);
   }
-  static GlMatrix rotationXMatrix(angleInRadians) {
+  static GlMatrix rotationXMatrix(double angleInRadians) {
     double c = Math.cos(angleInRadians);
     double s = Math.sin(angleInRadians);
 
@@ -67,7 +67,7 @@ class GlMatrix{
       0.0, 0.0, 0.0, 1.0,
     ]);
   }
-  static GlMatrix rotationYMatrix(angleInRadians) {
+  static GlMatrix rotationYMatrix(double angleInRadians) {
     double c = Math.cos(angleInRadians);
     double s = Math.sin(angleInRadians);
 
@@ -78,7 +78,7 @@ class GlMatrix{
       0.0, 0.0, 0.0, 1.0,
     ]);
   }
-  static GlMatrix rotationZMatrix(angleInRadians) {
+  static GlMatrix rotationZMatrix(double angleInRadians) {
     double c = Math.cos(angleInRadians);
     double s = Math.sin(angleInRadians);
 
@@ -89,7 +89,7 @@ class GlMatrix{
       0.0, 0.0, 0.0, 1.0,
     ]);
   }
-  static GlMatrix scalingMatrix(sx, sy, sz) {
+  static GlMatrix scalingMatrix(double sx, double sy, double sz) {
     return new GlMatrix.fromList([
       sx, 0.0,  0.0,  0.0,
       0.0, sy,  0.0,  0.0,
@@ -97,7 +97,7 @@ class GlMatrix{
       0.0,  0.0,  0.0,  1.0,
     ]);
   }
-  static GlMatrix perspectiveMatrix(fieldOfViewInRadians, aspect, near, far) {
+  static GlMatrix perspectiveMatrix(double fieldOfViewInRadians,double aspect,double near,double far) {
     double f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
     double rangeInv = 1.0 / (near - far);
 
@@ -113,10 +113,6 @@ class GlMatrix{
     GlVector xAxis = up.cross(zAxis);
     GlVector yAxis = zAxis.cross(xAxis);
 
-    print("${zAxis.x} ${zAxis.y} ${zAxis.z}");
-    print("${xAxis.x} ${xAxis.y} ${xAxis.z}");
-    print("${yAxis.x} ${yAxis.y} ${yAxis.z}");
-
     return new GlMatrix.fromList([
       xAxis.x, xAxis.y, xAxis.z, 0.0,
       yAxis.x, yAxis.y, yAxis.z, 0.0,
@@ -124,7 +120,7 @@ class GlMatrix{
       cameraPosition.x, cameraPosition.y, cameraPosition.z, 1.0,
     ]);
   }
-  static GlMatrix projectionMatrix(width, height, depth) {
+  static GlMatrix projectionMatrix(double width,double height,double depth) {
     // Note: This matrix flips the Y axis so 0 is at the top.
     return new GlMatrix.fromList([
       2.0 / width, 0.0, 0.0, 0.0,
@@ -273,23 +269,23 @@ class GlMatrix{
     ]);
   }
 
-  GlMatrix translate(tx, ty, tz) {
+  GlMatrix translate(double tx, double ty, double tz) {
     return this * translationMatrix(tx, ty, tz);
   }
 
-  GlMatrix rotateX(angleInRadians) {
+  GlMatrix rotateX(double angleInRadians) {
     return this * rotationXMatrix(angleInRadians);
   }
 
-  GlMatrix rotateY(angleInRadians) {
+  GlMatrix rotateY(double angleInRadians) {
     return this * rotationYMatrix(angleInRadians);
   }
 
-  GlMatrix rotateZ(angleInRadians) {
+  GlMatrix rotateZ(double angleInRadians) {
     return this * rotationZMatrix(angleInRadians);
   }
 
-  GlMatrix scale(sx, sy, sz) {
+  GlMatrix scale(double sx, double sy, double sz) {
     return this * scalingMatrix(sx, sy, sz);
   }
 }
