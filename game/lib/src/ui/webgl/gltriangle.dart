@@ -69,13 +69,13 @@ class GlModel{
 }
 
 class GlCube extends GlModel{
-  GlCube(double w, double h, double d){
-    addArea(new GlRectangle.withWH(0.0,0.0,0.0,w,h, true));
-    addArea(new GlRectangle.withWH(0.0,0.0,-d,w,h, false));
-    addArea(new GlRectangle.withHD(0.0,0.0,-d,h,d, false));
-    addArea(new GlRectangle.withHD(w,0.0,-d,h,d, true));
-    addArea(new GlRectangle.withWD(0.0,h,-d,w,d, false));
-    addArea(new GlRectangle.withWD(0.0,0.0,-d,w,d, true));
+  GlCube(double x, double y, double z, double w, double h, double d){
+    addArea(new GlRectangle.withWH(x,y,z,w,h, true));
+    addArea(new GlRectangle.withWH(x,y,z-d,w,h, false));
+    addArea(new GlRectangle.withHD(x,y,z-d,h,d, false));
+    addArea(new GlRectangle.withHD(x+w,y,z-d,h,d, true));
+    addArea(new GlRectangle.withWD(x,y+h,z-d,w,d, false));
+    addArea(new GlRectangle.withWD(x,y,z-d,w,d, true));
   }
 }
 
@@ -119,7 +119,6 @@ class GlRectangle extends GlArea{
       ]));
     }
   }
-//TODO: test
   GlRectangle.withWD(double x, double y, double z, double w, double d, [bool facingFront=true]){
     if(facingFront)
     {
@@ -146,7 +145,6 @@ class GlRectangle extends GlArea{
       ]));
     }
   }
-//TODO: test
   GlRectangle.withHD(double x, double y, double z, double h, double d, [bool facingFront=true]){
     if(facingFront)
     {

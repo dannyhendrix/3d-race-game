@@ -11,7 +11,6 @@ part "src/ui/webgl/renderlayer3d.dart";
 part "src/ui/webgl/matrix4.dart";
 part "src/ui/webgl/gl_program.dart";
 part "src/ui/webgl/gl_drawobject.dart";
-part "src/ui/webgl/gl_cube_gameobject.dart";
 
 //v2
 part "src/ui/webgl/gltriangle.dart";

@@ -22,24 +22,8 @@ void main(){
   layer.ctx.viewport(0, 0, layer.canvas.width, layer.canvas.height);
 
   //create all buffer
-  //1 create model
-  double w = 100.0;
-  double h = 200.0;
-  double d = 150.0;
-  /*
-  GlRectangle rect = new GlRectangle.withWH(0.0,0.0,0.0,w,h, true);
-  GlRectangle rect1 = new GlRectangle.withWH(0.0,0.0,-d,w,h, false);
-  //GlRectangle rect2 = new GlRectangle.withHD(0.0,0.0,-d,h,d, false);
-  //GlRectangle rect3 = new GlRectangle.withHD(w,0.0,-d,h,d, true);
-  GlRectangle rect2 = new GlRectangle.withWD(0.0,h,-d,w,d, false);
-  GlRectangle rect3 = new GlRectangle.withWD(0.0,0.0,-d,w,d, true);
-  */
-
-  GlModel model = new GlCube(w,h,d);
-  //GlModel model = new GlModel([rect, rect1, rect2, rect3]);
-  //2 load buffer in Program
-  GlModelBuffer modelBuffer = model.createBuffers(layer);
-  models.add(modelBuffer);
+  models.add(new GlCube(20.0,0.0,0.0,150.0,200.0,150.0).createBuffers(layer));
+  models.add(new GlCube(-320.0,-100.0,-100.0,150.0,200.0,150.0).createBuffers(layer));
 
   //3 set view perspective
   aspect = 400.0 / 500.0;
