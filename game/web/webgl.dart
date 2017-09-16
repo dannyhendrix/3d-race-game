@@ -70,17 +70,25 @@ void main()
     bool down = e.type == "keydown";//event.KEYDOWN
     Control control;
     if(key == 38)//up
-      control = Control.Accelerate;
+      game.players[0].onControl(Control.Accelerate,down);
     else if(key == 40)//down
-      control = Control.Brake;
+      game.players[0].onControl(Control.Brake,down);
     else if(key == 37)//left
-      control = Control.SteerLeft;
+      game.players[0].onControl(Control.SteerLeft,down);
     else if(key == 39)//right
-      control = Control.SteerRight;
+      game.players[0].onControl(Control.SteerRight,down);
+
+    else if(key == 87)//w
+      game.players[1].onControl(Control.Accelerate,down);
+    else if(key == 83)//s
+      game.players[1].onControl(Control.Brake,down);
+    else if(key == 65)//a
+      game.players[1].onControl(Control.SteerLeft,down);
+    else if(key == 68)//d
+      game.players[1].onControl(Control.SteerRight,down);
     else return;
 
     e.preventDefault();
-    game.player.onControl(control, down);
   };
 
   document.onKeyDown.listen(handleKey);
@@ -107,7 +115,7 @@ tick(time) {
   //render.z += 0.01;
 
   game.update();
-  render.x = -game.player.vehicle.position.x;
+  render.x = -game.players[0].vehicle.position.x;
   //render.z = -game.player.vehicle.position.y+50.0;
   //render.ry = -game.player.vehicle.r;
 

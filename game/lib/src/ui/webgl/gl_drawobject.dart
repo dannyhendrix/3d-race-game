@@ -18,7 +18,7 @@ class GlSquare extends GlDrawObject{
   }
 }
 
-class GlCubeGameObject extends GlCube{
+class GlCubeGameObject extends GlCube2{
   GameObject gameObject;
   double get x => gameObject.position.x;
   double get z => gameObject.position.y;
@@ -28,10 +28,10 @@ class GlCubeGameObject extends GlCube{
   }
 }
 
-class GlCube extends GlDrawObject{
+class GlCube2 extends GlDrawObject{
   Buffer indexBuffer;
   Buffer normalBuffer;
-  GlCube(double x, double y, double z, double w, double h, double d, RenderingContext ctx):super(x,y,z, ctx){
+  GlCube2(double x, double y, double z, double w, double h, double d, RenderingContext ctx):super(x,y,z, ctx){
     double hw = w/2;
     double hh = h/2;
     double hd = d/2;

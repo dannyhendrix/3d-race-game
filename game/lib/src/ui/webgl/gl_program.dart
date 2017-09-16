@@ -18,14 +18,14 @@ part of webgl;
  * Create a WebGL [Program], compiling [Shader]s from passed in sources and
  * cache [UniformLocation]s and AttribLocations.
  */
-class GlProgram {
+class GlProgramOld {
   Map<String, int> attributes = new Map<String, int>();
   Map<String, UniformLocation> uniforms = new Map<String, UniformLocation>();
   Program program;
 
   Shader fragShader, vertShader;
 
-  GlProgram(String fragSrc, String vertSrc, List<String> attributeNames, List<String> uniformNames, RenderLayer3d layer) {
+  GlProgramOld(String fragSrc, String vertSrc, List<String> attributeNames, List<String> uniformNames, RenderLayer3d layer) {
     RenderingContext ctx = layer.ctx;
     fragShader = ctx.createShader(FRAGMENT_SHADER);
     ctx.shaderSource(fragShader, fragSrc);

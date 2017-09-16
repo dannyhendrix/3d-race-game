@@ -41,7 +41,7 @@ void main()
     }
 
     layer.ctx.font = "10px Arial";
-    layer.ctx.fillText("Vehicle: ${game.player.vehicle.info}",10,10);
+    layer.ctx.fillText("Vehicle: ${game.players[0].vehicle.info}",10,10);
     layer.ctx.fillText("Game: ${game.info}",10,50);
   });
 
@@ -56,21 +56,30 @@ void main()
     bool down = e.type == "keydown";//event.KEYDOWN
     Control control;
     if(key == 38)//up
-      control = Control.Accelerate;
+      game.players[0].onControl(Control.Accelerate,down);
     else if(key == 40)//down
-      control = Control.Brake;
+      game.players[0].onControl(Control.Brake,down);
     else if(key == 37)//left
-      control = Control.SteerLeft;
+      game.players[0].onControl(Control.SteerLeft,down);
     else if(key == 39)//right
-      control = Control.SteerRight;
+      game.players[0].onControl(Control.SteerRight,down);
+
+    else if(key == 87)//w
+      game.players[1].onControl(Control.Accelerate,down);
+    else if(key == 83)//s
+      game.players[1].onControl(Control.Brake,down);
+    else if(key == 65)//a
+      game.players[1].onControl(Control.SteerLeft,down);
+    else if(key == 68)//d
+      game.players[1].onControl(Control.SteerRight,down);
     else return;
-    game.player.onControl(control, down);
   };
 
   document.onKeyDown.listen(handleKey);
   document.onKeyUp.listen(handleKey);
   document.body.append(createButton("reset",(MouseEvent e){
-    game.player.vehicle.position = new Point(150.0, 50.0);
+    game.players[0].vehicle.position = new Point(10.0, 10.0);
+    game.players[1].vehicle.position = new Point(200.0, 200.0);
   }));
 }
 

@@ -1,0 +1,91 @@
+import "dart:html";
+import "dart:math" as Math;
+import "package:micromachines/webgl.dart";
+import "dart:web_gl";
+
+GlRenderLayer layer;
+List<GlModelBuffer> models = [];
+GlMatrix perspective;
+
+double tx=0.0, ty=0.0, tz=360.0;
+double rx=0.0, ry=0.0, rz=0.0;
+double fieldOfViewRadians=2.0;
+double zNear = 1.0;
+double zFar = 2000.0;
+double aspect = 1.0;
+
+void main(){
+  layer = new GlRenderLayer.withSize(400,500);
+  document.body.append(layer.canvas);
+
+  // Tell WebGL how to convert from clip space to pixels
+  layer.ctx.viewport(0, 0, layer.canvas.width, layer.canvas.height);
+
+  //create all buffer
+  //1 create model
+  double w = 100.0;
+  double h = 200.0;
+  double d = 150.0;
+  /*
+  GlRectangle rect = new GlRectangle.withWH(0.0,0.0,0.0,w,h, true);
+  GlRectangle rect1 = new GlRectangle.withWH(0.0,0.0,-d,w,h, false);
+  //GlRectangle rect2 = new GlRectangle.withHD(0.0,0.0,-d,h,d, false);
+  //GlRectangle rect3 = new GlRectangle.withHD(w,0.0,-d,h,d, true);
+  GlRectangle rect2 = new GlRectangle.withWD(0.0,h,-d,w,d, false);
+  GlRectangle rect3 = new GlRectangle.withWD(0.0,0.0,-d,w,d, true);
+  */
+
+  GlModel model = new GlCube(w,h,d);
+  //GlModel model = new GlModel([rect, rect1, rect2, rect3]);
+  //2 load buffer in Program
+  GlModelBuffer modelBuffer = model.createBuffers(layer);
+  models.add(modelBuffer);
+
+  //3 set view perspective
+  aspect = 400.0 / 500.0;
+
+  document.body.append(createSlider("tx",0.0,500.0,1.0,tx,(String val){ tx = double.parse(val); draw(); }));
+  document.body.append(createSlider("ty",0.0,500.0,1.0,ty,(String val){ ty = double.parse(val); draw(); }));
+  document.body.append(createSlider("tz",0.0,500.0,1.0,tz,(String val){ tz = double.parse(val); draw(); }));
+  document.body.append(createSlider("rx",0.0,2*Math.PI,0.1,rx,(String val){ rx = double.parse(val); draw(); }));
+  document.body.append(createSlider("ry",0.0,2*Math.PI,0.1,ry,(String val){ ry = double.parse(val); draw(); }));
+  document.body.append(createSlider("rz",0.0,2*Math.PI,0.1,rz,(String val){ rz = double.parse(val); draw(); }));
+  document.body.append(createSlider("fieldOfViewRadians",0.0,Math.PI,0.1,fieldOfViewRadians,(String val){ fieldOfViewRadians = double.parse(val); draw(); }));
+
+  draw();
+}
+
+void draw(){
+  layer.clearForNextFrame();
+
+  //1 set perspective
+  perspective = GlMatrix.perspectiveMatrix(fieldOfViewRadians, aspect, zNear, zFar);
+  perspective = perspective.translate(tx, ty, -tz);
+  perspective = perspective.rotateX(rx);
+  perspective = perspective.rotateY(ry);
+  perspective = perspective.rotateZ(rz);
+  //perspective = perspective.scale(sx,sy,sz);
+  layer.setPerspective(perspective);
+
+  //2 call draw method with buffer
+  for(GlModelBuffer m in models) layer.drawModel(m);
+}
+
+Element createSlider(String label, double min, double max, double step, double val, Function onChange){
+  DivElement el = new DivElement();
+  el.appendText(label);
+  SpanElement el_val = new SpanElement();
+  el_val.text = val.toString();
+  InputElement el_in = new InputElement(type:"range");
+  el_in.min = min.toString();
+  el_in.max = max.toString();
+  el_in.value = val.toString();
+  el_in.step = step.toString();
+  el_in.onMouseMove.listen((Event e){
+    onChange(el_in.value);
+    el_val.text = el_in.value;
+  });
+  el.append(el_in);
+  el.append(el_val);
+  return el;
+}

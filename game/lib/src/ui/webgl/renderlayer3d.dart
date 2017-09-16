@@ -1,7 +1,7 @@
 part of webgl;
 
 class RenderLayer3d{
-  GlProgram program;
+  GlProgramOld program;
   CanvasElement canvas;
   RenderingContext ctx;
   int w,h;
@@ -23,7 +23,7 @@ class RenderLayer3d{
 
     mvMatrix = new Matrix4()..identity();
 
-    program = new GlProgram(
+    program = new GlProgramOld(
         '''
           varying highp vec3 vLighting;
 
