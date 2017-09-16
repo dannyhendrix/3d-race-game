@@ -6,10 +6,14 @@ import "dart:web_gl";
 GlRenderLayer layer;
 List<GlModelBuffer> models = [];
 GlMatrix perspective;
+GlMatrix cameraMatrix;
+GlMatrix viewMatrix;
 
 double tx=0.0, ty=0.0, tz=360.0;
 double rx=0.0, ry=0.0, rz=0.0;
 double fieldOfViewRadians=2.0;
+double cameraAngleRadians=1.0;
+double cameraRadiusRadians=100.0;
 double zNear = 1.0;
 double zFar = 2000.0;
 double aspect = 1.0;
@@ -35,6 +39,9 @@ void main(){
   document.body.append(createSlider("ry",0.0,2*Math.PI,0.1,ry,(String val){ ry = double.parse(val); draw(); }));
   document.body.append(createSlider("rz",0.0,2*Math.PI,0.1,rz,(String val){ rz = double.parse(val); draw(); }));
   document.body.append(createSlider("fieldOfViewRadians",0.0,Math.PI,0.1,fieldOfViewRadians,(String val){ fieldOfViewRadians = double.parse(val); draw(); }));
+  document.body.append(new HRElement());
+  document.body.append(createSlider("cameraAngleRadians",0.0,2*Math.PI,0.1,cameraAngleRadians,(String val){ cameraAngleRadians = double.parse(val); draw(); }));
+  document.body.append(createSlider("cameraRadiusRadians",0.0,500.0,0.1,cameraRadiusRadians,(String val){ cameraRadiusRadians = double.parse(val); draw(); }));
 
   draw();
 }
@@ -48,8 +55,19 @@ void draw(){
   perspective = perspective.rotateX(rx);
   perspective = perspective.rotateY(ry);
   perspective = perspective.rotateZ(rz);
-  //perspective = perspective.scale(sx,sy,sz);
-  layer.setPerspective(perspective);
+
+  //4 create camera
+  cameraMatrix = GlMatrix.rotationYMatrix(cameraAngleRadians);
+  cameraMatrix = cameraMatrix.translate(0.0, 0.0, cameraRadiusRadians * 1.5);
+
+  var targetPosition = new GlVector(0.0,0.0,0.0);
+  var cameraPosition = new GlVector(cameraMatrix.val(3,0),cameraMatrix.val(3,1), cameraMatrix.val(3,2));
+  var up = new GlVector(0.0, 1.0, 0.0);
+  cameraMatrix = GlMatrix.lookAtMatrix(cameraPosition, targetPosition, up);
+
+  viewMatrix = cameraMatrix.inverse();
+  var viewProjectionMatrix = perspective*viewMatrix;
+  layer.setPerspective(viewProjectionMatrix);
 
   //2 call draw method with buffer
   for(GlModelBuffer m in models) layer.drawModel(m);

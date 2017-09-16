@@ -179,3 +179,10 @@ class GlModelBuffer{
   int numberOfTriangles;
   GlModelBuffer(this.vertexBuffer, this.colorBuffer, this.numberOfTriangles);
 }
+class GlModelInstance{
+  GlModelBuffer modelBuffer;
+  double x,y,z;
+  double rx=0.0,ry=0.0,rz=0.0;
+  double r=1.0,g=1.0,b=1.0,a=1.0;
+  GlModelInstance(this.modelBuffer, [this.x=0.0,this.y=0.0,this.z=0.0]);
+}
