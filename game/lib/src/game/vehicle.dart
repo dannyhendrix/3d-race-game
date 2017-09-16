@@ -21,7 +21,7 @@ class VehicleSettings{
     VehicleSettingKeys.reverse_acceleration_max.toString() : 2.0,
     VehicleSettingKeys.friction.toString() : 0.05,
     VehicleSettingKeys.brake_speed.toString() : 0.2,
-    VehicleSettingKeys.steering_speed.toString() : 0.05,
+    VehicleSettingKeys.steering_speed.toString() : 0.07,
     VehicleSettingKeys.standstill_delay.toString() : 6,
     VehicleSettingKeys.collision_force.toString() : 4.0,
     VehicleSettingKeys.collision_force_after_collision.toString() : 0.35,
@@ -33,6 +33,7 @@ class VehicleSettings{
 
 class Vehicle extends MoveableGameObject{
   Game game;
+  Player player;
   bool _isBraking = false;
   bool _isAccelerating = false;
   Steer _isSteering = Steer.None;
@@ -43,7 +44,7 @@ class Vehicle extends MoveableGameObject{
   VehicleSettings vehicleSettings = new VehicleSettings();
   int theme = 0;
 
-  Vehicle(this.game){
+  Vehicle(this.game, this.player){
     position = new Point(150.0, 50.0);
     r = 1.7;
     w = 40.0;
@@ -95,8 +96,10 @@ class Vehicle extends MoveableGameObject{
       CollisionResult r = createPolygonOnActualLocation().collision(g.createPolygonOnActualLocation(), vector);
 
       if (r.willIntersect) {
-        collisionCorrection += r.minimumTranslationVector;
-        collide = true;
+        if(!g.onCollision(this)){
+          collide = true;
+          collisionCorrection += r.minimumTranslationVector;
+        }
         //g.onCollision(this,polygonATranslation);
       }
     }
@@ -117,7 +120,7 @@ class Vehicle extends MoveableGameObject{
     position += vector + collisionCorrection;
   }
 
-  void onCollision(GameObject o, Vector polygonATranslation){
+  bool onCollision(GameObject o){
     if(_speed != 0) _speed = -(_speed/2);
     /*
     _speed = -_speed/2;
@@ -126,6 +129,7 @@ class Vehicle extends MoveableGameObject{
     _braking = 0.0;
     _steering = 0.0;
     */
+    return false;
   }
 
   double _applyFriction(double V, double F){
