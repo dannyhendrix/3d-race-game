@@ -100,16 +100,6 @@ void main()
     e.preventDefault();
   };
 
-  InputWithDoubleValue currentValueXInput;
-  currentValueXInput = new InputWithDoubleValue(camera.x, "X", (Event e){ camera.x = currentValueXInput.getValue(); });
-  document.body.append(currentValueXInput.element);
-  InputWithDoubleValue currentValueYInput;
-  currentValueYInput = new InputWithDoubleValue(camera.y, "Y", (Event e){ camera.y = currentValueYInput.getValue(); });
-  document.body.append(currentValueYInput.element);
-  InputWithDoubleValue currentValueZInput;
-  currentValueZInput = new InputWithDoubleValue(camera.z, "Z", (Event e){ camera.z = currentValueZInput.getValue(); });
-  document.body.append(currentValueZInput.element);
-
   document.onKeyDown.listen(handleKey);
   document.onKeyUp.listen(handleKey);
 }

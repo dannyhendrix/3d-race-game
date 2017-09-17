@@ -31,7 +31,7 @@ void main()
     for(GameObject o in game.gameobjects){
       if(o is Vehicle){
         Vehicle v = o;
-        drawPolygon(o.createPolygonOnActualLocation(), layer, v.isCollided ? "red" : "purple");
+        drawPolygon(o.createPolygonOnActualLocation(), layer, v.isCollided ? "red" : "green");
       }else drawPolygon(o.createPolygonOnActualLocation(), layer, "blue");
 
       layer.ctx.beginPath();

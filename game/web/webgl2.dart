@@ -19,10 +19,37 @@ void main(){
 
   //create all buffer
   GlModelBuffer cube = new GlCube.fromTopCenter(0.0,0.0,0.0,150.0,200.0,150.0).createBuffers(layer);
-  modelInstances.add(new GlModelInstance(cube, new GlColor()));
+  //modelInstances.add(new GlModelInstance(cube, new GlColor()));
   var m2 = new GlModelInstance(cube,new GlColor(),-320.0,-100.0,-100.0);
   m2.ry = 1.0;
   modelInstances.add(m2);
+
+  GlModelBuffer model = new GlModel([
+    new GlTriangle([
+      new GlPoint(0.0,0.0,0.0),
+      new GlPoint(2.0,0.0,0.0),
+      new GlPoint(0.0,1.0,0.0),
+    ]),
+    new GlTriangle([
+      new GlPoint(0.0,0.0,0.0),
+      new GlPoint(0.0,1.0,0.0),
+      new GlPoint(2.0,0.0,0.0),
+    ])
+  ]).createBuffers(layer);
+  modelInstances.add(new GlModelInstance(model, new GlColor(1.0,0.0,0.0)));
+  GlModelBuffer model2 = new GlModel([
+    new GlTriangle([
+      new GlPoint(0.0,0.0,0.0),
+      new GlPoint(0.0,2.0,0.0),
+      new GlPoint(1.0,0.0,0.0),
+    ]),
+    new GlTriangle([
+      new GlPoint(0.0,0.0,0.0),
+      new GlPoint(0.0,1.0,0.0),
+      new GlPoint(2.0,0.0,0.0),
+    ])
+  ]).createBuffers(layer);
+  modelInstances.add(new GlModelInstance(model2, new GlColor(0.0,1.0,0.0)));
 
   //3 set view perspective
   camera = new GlCamera(400.0 / 500.0);
@@ -31,9 +58,9 @@ void main(){
   document.body.append(createSlider("lx",0.0,2.0,0.1,lx,(String val){ lx = double.parse(val)-1.0; draw(); }));
   document.body.append(createSlider("ly",0.0,2.0,0.1,ly,(String val){ ly = double.parse(val)-1.0; draw(); }));
   document.body.append(createSlider("lz",0.0,2.0,0.1,lz,(String val){ lz = double.parse(val)-1.0; draw(); }));
-  document.body.append(createSlider("tx",0.0,500.0,1.0,camera.x,(String val){ camera.x = double.parse(val); draw(); }));
-  document.body.append(createSlider("ty",0.0,500.0,1.0,camera.y,(String val){ camera.y = double.parse(val); draw(); }));
-  document.body.append(createSlider("tz",0.0,500.0,1.0,camera.z,(String val){ camera.z = double.parse(val); draw(); }));
+  document.body.append(createSlider("cx",0.0,500.0,1.0,camera.x,(String val){ camera.x = double.parse(val); draw(); }));
+  document.body.append(createSlider("cy",0.0,500.0,1.0,camera.y,(String val){ camera.y = double.parse(val); draw(); }));
+  document.body.append(createSlider("cz",0.0,500.0,1.0,camera.z,(String val){ camera.z = double.parse(val); draw(); }));
   document.body.append(createSlider("fieldOfViewRadians",0.0,Math.PI,0.1,camera.fieldOfViewRadians,(String val){ camera.fieldOfViewRadians = double.parse(val); draw(); }));
 
   draw();
