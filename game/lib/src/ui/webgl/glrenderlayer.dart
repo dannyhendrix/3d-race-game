@@ -31,6 +31,7 @@ class GlRenderLayer{
   void drawModel(GlModelInstance model){
     _assignBufferToColor(model.modelBuffer.colorBuffer);
     _assignBufferToVertex(model.modelBuffer.vertexBuffer);
+    _assignBufferToNormals(model.modelBuffer.normalsBuffer);
     ctx.drawArrays(TRIANGLES, 0, model.modelBuffer.numberOfTriangles*3);
   }
 
@@ -39,22 +40,20 @@ class GlRenderLayer{
     ctx.bindBuffer(ARRAY_BUFFER, buffer);
     ctx.vertexAttribPointer(program.attr_Position, 3, FLOAT, false, 0, 0);
   }
+  void _assignBufferToNormals(Buffer buffer){
+    ctx.enableVertexAttribArray(program.attr_Normal);
+    ctx.bindBuffer(ARRAY_BUFFER, buffer);
+    ctx.vertexAttribPointer(program.attr_Normal, 3, FLOAT, false, 0, 0);
+  }
   void _assignBufferToColor(Buffer buffer){
-    //ctx.enableVertexAttribArray(program.attr_ColorR);
-    //ctx.bindBuffer(ARRAY_BUFFER, buffer);
-    //ctx.vertexAttribPointer(program.attr_ColorR, 1, FLOAT, false, 0, 0);
-    //ctx.enableVertexAttribArray(program.attr_ColorR);
-    ctx.vertexAttrib1f(program.attr_ColorR, 1.0);
-    //ctx.enableVertexAttribArray(program.attr_ColorG);
-    ctx.vertexAttrib1f(program.attr_ColorG, 0.0);
-    //ctx.enableVertexAttribArray(program.attr_ColorB);
-    ctx.vertexAttrib1f(program.attr_ColorB, 0.0);
-    //ctx.enableVertexAttribArray(program.attr_ColorA);
-    ctx.vertexAttrib1f(program.attr_ColorA, 1.0);
+    ctx.uniform4fv(program.uni_Color, new Float32List.fromList([1.0,0.0,0.0,1.0]));
   }
 
-  void setPerspective(GlMatrix m){
-    ctx.uniformMatrix4fv(program.uni_Matrix, false, m.buffer);
+  void setWorld(GlMatrix world, GlMatrix worldViewProjection, GlVector lightSource){
+    lightSource = lightSource.normalize();
+    ctx.uniform3fv(program.uni_reverseLightDirection, new Float32List.fromList([lightSource.x,lightSource.y,lightSource.z]));
+    ctx.uniformMatrix4fv(program.uni_world, false, world.buffer);
+    ctx.uniformMatrix4fv(program.uni_worldViewProjection, false, worldViewProjection.buffer);
   }
   void clearForNextFrame(){
     ctx.useProgram(program.program);

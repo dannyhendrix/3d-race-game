@@ -4,30 +4,36 @@ part of webgl;
 abstract class GlModelPart{
   List<double> toDoubleVertex();
   int getNumberOfTriangles() => 0;
+  List<double> toNormalsVertex();
 }
 
 class GlPoint extends GlModelPart{
   double x,y,z;
   GlPoint([this.x = 0.0, this.y = 0.0, this.z=0.0]);
   List<double> toDoubleVertex() => [x,y,z];
+  List<double> toNormalsVertex() => [0.0,0.0,0.0];
 }
 
 class GlTriangle extends GlModelPart{
   List<GlPoint> points;
   GlTriangle([List<GlPoint> points]): points = points ?? [];
+  double normalX = 0.0;
+  double normalY = 0.0;
+  double normalZ = 0.0;
   List<double> toDoubleVertex(){
     List<double> result = [];
     for(GlPoint o in points)result.addAll(o.toDoubleVertex());
     return result;
   }
   int getNumberOfTriangles() => 1;
-  List<double> toLightVertex(){
+  List<double> toNormalsVertex(){
     //TODO
     bool clockwise = true;
-    double valX = 0.0;
-    double valY = 0.0;
-    double valZ = 0.0;
-    if(clockwise) return [-valX,-valY,-valZ];
+    return [
+      normalX,normalY,normalZ,
+      normalX,normalY,normalZ,
+      normalX,normalY,normalZ
+    ];
   }
 }
 
@@ -40,6 +46,11 @@ class GlArea extends GlModelPart{
     for(GlTriangle o in triangles)result.addAll(o.toDoubleVertex());
     return result;
   }
+  List<double> toNormalsVertex(){
+    List<double> result = [];
+    for(GlTriangle o in triangles)result.addAll(o.toNormalsVertex());
+    return result;
+  }
   int getNumberOfTriangles() => triangles.length;
 }
 
@@ -49,7 +60,8 @@ class GlModel{
   GlModelBuffer createBuffers(GlRenderLayer layer){
     Buffer vertexBuffer = _loadVertexInBuffer(layer);
     Buffer colorBuffer = _loadColorInBuffer(layer);
-    return new GlModelBuffer(vertexBuffer, colorBuffer, _getNumberOfTriangles());
+    Buffer normalsBuffer = _loadNormalsInBuffer(layer);
+    return new GlModelBuffer(vertexBuffer, normalsBuffer, colorBuffer, _getNumberOfTriangles());
   }
   void addArea(GlArea area) => areas.add(area);
   Buffer _loadVertexInBuffer(GlRenderLayer layer){
@@ -64,6 +76,12 @@ class GlModel{
     layer.ctx.bufferData(ARRAY_BUFFER, new Float32List.fromList([1.0,1.0,1.0,1.0]), STATIC_DRAW);
     return buffer;
   }
+  Buffer _loadNormalsInBuffer(GlRenderLayer layer){
+    Buffer buffer = layer.ctx.createBuffer();
+    layer.ctx.bindBuffer(ARRAY_BUFFER, buffer);
+    layer.ctx.bufferData(ARRAY_BUFFER, new Float32List.fromList(_toNormalsVertex()), STATIC_DRAW);
+    return buffer;
+  }
   int _getNumberOfTriangles(){
     int total = 0;
     for(GlArea area in areas) total += area.getNumberOfTriangles();
@@ -72,6 +90,11 @@ class GlModel{
   List<double> _toDoubleVertex(){
     List<double> result = [];
     for(GlArea area in areas) result.addAll(area.toDoubleVertex());
+    return result;
+  }
+  List<double> _toNormalsVertex(){
+    List<double> result = [];
+    for(GlArea area in areas) result.addAll(area.toNormalsVertex());
     return result;
   }
 }
@@ -115,88 +138,95 @@ class GlRectangle extends GlArea{
 
     if(facingFront)
     {
-      addTriangle(new GlTriangle([
+      _addTriangleWithNormals(new GlTriangle([
         new GlPoint(x, y, z),
         new GlPoint(x + w, y, z),
         new GlPoint(x, y + h, z)
-      ]));
-      addTriangle(new GlTriangle([
+      ]), facingFront, 0.0, 0.0, 1.0);
+      _addTriangleWithNormals(new GlTriangle([
         new GlPoint(x + w, y, z),
         new GlPoint(x + w, y + h, z),
         new GlPoint(x, y + h, z)
-      ]));
+      ]), facingFront, 0.0, 0.0, 1.0);
     }else{
-      addTriangle(new GlTriangle([
+      _addTriangleWithNormals(new GlTriangle([
         new GlPoint(x, y, z),
         new GlPoint(x, y + h, z),
         new GlPoint(x + w, y, z),
-      ]));
-      addTriangle(new GlTriangle([
+      ]), facingFront, 0.0, 0.0, 1.0);
+      _addTriangleWithNormals(new GlTriangle([
         new GlPoint(x + w, y, z),
         new GlPoint(x, y + h, z),
         new GlPoint(x + w, y + h, z),
-      ]));
+      ]), facingFront, 0.0, 0.0, 1.0);
     }
   }
   GlRectangle.withWD(double x, double y, double z, double w, double d, [bool facingFront=true]){
     if(facingFront)
     {
-      addTriangle(new GlTriangle([
+      _addTriangleWithNormals(new GlTriangle([
         new GlPoint(x, y, z),
         new GlPoint(x + w, y, z),
         new GlPoint(x, y, z+d)
-      ]));
-      addTriangle(new GlTriangle([
+      ]), facingFront, 0.0, 1.0, 0.0);
+      _addTriangleWithNormals(new GlTriangle([
         new GlPoint(x + w, y, z),
         new GlPoint(x + w, y, z+d),
         new GlPoint(x, y, z+d)
-      ]));
+      ]), facingFront, 0.0, 1.0, 0.0);
     }else{
-      addTriangle(new GlTriangle([
+      _addTriangleWithNormals(new GlTriangle([
         new GlPoint(x, y, z),
         new GlPoint(x, y, z+d),
         new GlPoint(x + w, y, z),
-      ]));
-      addTriangle(new GlTriangle([
+      ]), facingFront, 0.0, 1.0, 0.0);
+      _addTriangleWithNormals(new GlTriangle([
         new GlPoint(x + w, y, z),
         new GlPoint(x, y, z+d),
         new GlPoint(x + w, y, z+d),
-      ]));
+      ]), facingFront, 0.0, 1.0, 0.0);
     }
   }
   GlRectangle.withHD(double x, double y, double z, double h, double d, [bool facingFront=true]){
     if(facingFront)
     {
-      addTriangle(new GlTriangle([
+      _addTriangleWithNormals(new GlTriangle([
         new GlPoint(x, y, z),
         new GlPoint(x, y+h, z),
         new GlPoint(x, y, z+d)
-      ]));
-      addTriangle(new GlTriangle([
+      ]), facingFront, 1.0, 0.0, 0.0);
+      _addTriangleWithNormals(new GlTriangle([
         new GlPoint(x, y+h, z),
         new GlPoint(x, y+h, z+d),
         new GlPoint(x, y, z+d)
-      ]));
+      ]), facingFront, 1.0, 0.0, 0.0);
     }else{
-      addTriangle(new GlTriangle([
+      _addTriangleWithNormals(new GlTriangle([
         new GlPoint(x, y, z),
         new GlPoint(x, y, z+d),
         new GlPoint(x, y+h, z),
-      ]));
-      addTriangle(new GlTriangle([
+      ]), facingFront, 1.0, 0.0, 0.0);
+      _addTriangleWithNormals(new GlTriangle([
         new GlPoint(x, y+h, z),
         new GlPoint(x, y, z+d),
         new GlPoint(x, y+h, z+d),
-      ]));
+      ]), facingFront, 1.0, 0.0, 0.0);
     }
+  }
+  void _addTriangleWithNormals(GlTriangle triangle, bool facingFront, double nx, double ny, double nz){
+    addTriangle(triangle);
+    triangle.normalX = !facingFront ? nx : -nx;
+    triangle.normalY = !facingFront ? ny : -ny;
+    triangle.normalZ = !facingFront ? nz : -nz;
   }
 }
 
 class GlModelBuffer{
   Buffer vertexBuffer;
+  Buffer normalsBuffer;
   Buffer colorBuffer;
   int numberOfTriangles;
-  GlModelBuffer(this.vertexBuffer, this.colorBuffer, this.numberOfTriangles);
+  GlModelBuffer(this.vertexBuffer, this.normalsBuffer, this.colorBuffer, this.numberOfTriangles);
 }
 class GlModelInstance{
   GlModelBuffer modelBuffer;

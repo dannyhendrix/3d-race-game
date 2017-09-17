@@ -50,7 +50,7 @@ void main()
 
   //create all buffer
   for(GameObject o in game.gameobjects){
-    double h = o is Wall ? 50.0 : 30.0;
+    double h = o is Wall ? 150.0 : 80.0;
     GlModelBuffer cube = new GlCube.fromTopCenter(0.0,0.0,0.0,o.w,h,o.h).createBuffers(layer);
     modelInstances.add(new GlModelInstanceFromGameObject(o, cube));
   }
@@ -121,13 +121,20 @@ tick(time) {
   var viewProjectionMatrix = camera.createMatrix();//perspective*viewMatrix;
 
 
+  // Draw a F at the origin
+  var worldMatrix = GlMatrix.rotationYMatrix(0.0);
+
+  // Multiply the matrices.
+  var worldViewProjectionMatrix = viewProjectionMatrix * worldMatrix;
+
+
   //2 call draw method with buffer
   for(GlModelInstance m in modelInstances){
-    GlMatrix objPerspective = viewProjectionMatrix.translate(m.x,m.y,m.z);
+    GlMatrix objPerspective = worldMatrix.translate(m.x,m.y,m.z);
     objPerspective = objPerspective.rotateX(m.rx);
     objPerspective = objPerspective.rotateY(m.ry);
     objPerspective = objPerspective.rotateZ(m.rz);
-    layer.setPerspective(objPerspective);
+    layer.setWorld(objPerspective,viewProjectionMatrix*objPerspective, new GlVector(-1.0,0.8,0.6));
     layer.drawModel(m);
   }
 }
