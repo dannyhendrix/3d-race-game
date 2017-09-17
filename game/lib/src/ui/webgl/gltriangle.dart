@@ -59,21 +59,14 @@ class GlModel{
   GlModel([List<GlArea> areas]): areas = areas ?? [];
   GlModelBuffer createBuffers(GlRenderLayer layer){
     Buffer vertexBuffer = _loadVertexInBuffer(layer);
-    Buffer colorBuffer = _loadColorInBuffer(layer);
     Buffer normalsBuffer = _loadNormalsInBuffer(layer);
-    return new GlModelBuffer(vertexBuffer, normalsBuffer, colorBuffer, _getNumberOfTriangles());
+    return new GlModelBuffer(vertexBuffer, normalsBuffer, _getNumberOfTriangles());
   }
   void addArea(GlArea area) => areas.add(area);
   Buffer _loadVertexInBuffer(GlRenderLayer layer){
     Buffer buffer = layer.ctx.createBuffer();
     layer.ctx.bindBuffer(ARRAY_BUFFER, buffer);
     layer.ctx.bufferData(ARRAY_BUFFER, new Float32List.fromList(_toDoubleVertex()), STATIC_DRAW);
-    return buffer;
-  }
-  Buffer _loadColorInBuffer(GlRenderLayer layer){
-    Buffer buffer = layer.ctx.createBuffer();
-    layer.ctx.bindBuffer(ARRAY_BUFFER, buffer);
-    layer.ctx.bufferData(ARRAY_BUFFER, new Float32List.fromList([1.0,1.0,1.0,1.0]), STATIC_DRAW);
     return buffer;
   }
   Buffer _loadNormalsInBuffer(GlRenderLayer layer){
@@ -224,14 +217,18 @@ class GlRectangle extends GlArea{
 class GlModelBuffer{
   Buffer vertexBuffer;
   Buffer normalsBuffer;
-  Buffer colorBuffer;
   int numberOfTriangles;
-  GlModelBuffer(this.vertexBuffer, this.normalsBuffer, this.colorBuffer, this.numberOfTriangles);
+  GlModelBuffer(this.vertexBuffer, this.normalsBuffer, this.numberOfTriangles);
 }
 class GlModelInstance{
   GlModelBuffer modelBuffer;
+  GlColor color;
   double x,y,z;
   double rx=0.0,ry=0.0,rz=0.0;
   double r=1.0,g=1.0,b=1.0,a=1.0;
-  GlModelInstance(this.modelBuffer, [this.x=0.0,this.y=0.0,this.z=0.0]);
+  GlModelInstance(this.modelBuffer, this.color, [this.x=0.0,this.y=0.0,this.z=0.0]);
+}
+class GlColor{
+  double r,g,b,a;
+  GlColor([this.r=1.0,this.g=1.0,this.b=1.0,this.a=1.0]);
 }

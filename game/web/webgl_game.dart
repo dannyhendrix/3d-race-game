@@ -21,7 +21,16 @@ class GlModelInstanceFromGameObject extends GlModelInstance{
   double get x => gameObject.position.x;
   double get z => gameObject.position.y;
   double get ry => -gameObject.r;
-  GlModelInstanceFromGameObject(this.gameObject, GlModelBuffer modelBuffer):super(modelBuffer);
+  GlColor white = new GlColor(1.0,1.0,1.0);
+  GlColor red = new GlColor(1.0,0.0,0.0);
+  GlColor blue = new GlColor(0.0,0.0,1.0);
+  GlColor get color{
+    if(!(gameObject is Vehicle)) return white;
+    Vehicle v = gameObject;
+    if(v.isCollided) return red;
+    return blue;
+  }
+  GlModelInstanceFromGameObject(this.gameObject, GlModelBuffer modelBuffer):super(modelBuffer, new GlColor());
 }
 
 void main()
@@ -54,6 +63,10 @@ void main()
     GlModelBuffer cube = new GlCube.fromTopCenter(0.0,0.0,0.0,o.w,h,o.h).createBuffers(layer);
     modelInstances.add(new GlModelInstanceFromGameObject(o, cube));
   }
+
+  GlModel worldModel = new GlModel([new GlRectangle.withWD(0.0,0.0,0.0,1500.0,800.0,false)]);
+  GlModelBuffer world = worldModel.createBuffers(layer);
+  modelInstances.add(new GlModelInstance(world, new GlColor(0.3,0.3,0.3)));
 
   // Start off the infinite animation loop
   tick(0);

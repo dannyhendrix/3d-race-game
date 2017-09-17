@@ -28,8 +28,12 @@ class GlRenderLayer{
     ctx.enable(DEPTH_TEST);
   }
 
+  void setClearColor(GlColor color){
+    ctx.clearColor(color.r,color.g,color.b, color.a);
+  }
+
   void drawModel(GlModelInstance model){
-    _assignBufferToColor(model.modelBuffer.colorBuffer);
+    _assignBufferToColor(model.color);
     _assignBufferToVertex(model.modelBuffer.vertexBuffer);
     _assignBufferToNormals(model.modelBuffer.normalsBuffer);
     ctx.drawArrays(TRIANGLES, 0, model.modelBuffer.numberOfTriangles*3);
@@ -45,8 +49,8 @@ class GlRenderLayer{
     ctx.bindBuffer(ARRAY_BUFFER, buffer);
     ctx.vertexAttribPointer(program.attr_Normal, 3, FLOAT, false, 0, 0);
   }
-  void _assignBufferToColor(Buffer buffer){
-    ctx.uniform4fv(program.uni_Color, new Float32List.fromList([1.0,0.0,0.0,1.0]));
+  void _assignBufferToColor(GlColor color){
+    ctx.uniform4fv(program.uni_Color, new Float32List.fromList([color.r,color.g,color.b,color.a]));
   }
 
   void setWorld(GlMatrix world, GlMatrix worldViewProjection, GlVector lightSource){
