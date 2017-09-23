@@ -102,15 +102,19 @@ class GlMatrix{
     double rangeInv = 1.0 / (near - far);
 
     return new GlMatrix.fromList([
-      f / aspect, 0.0, 0.0, 0.0,
-      0.0, f, 0.0, 0.0,
-      0.0, 0.0, (near + far) * rangeInv, -1.0,
-      0.0, 0.0, near * far * rangeInv * 2.0, 0.0
+      f / aspect, 0.0,  0.0,                          0.0,
+      0.0,        f,    0.0,                          0.0,
+      0.0,        0.0,  (near + far) * rangeInv,      -1.0,
+      0.0,        0.0,  near * far * rangeInv * 2.0,  0.0
     ]);
   }
   static GlMatrix lookAtMatrix(GlVector cameraPosition, GlVector target, GlVector up) {
+    // camera is in -Z therefor subtract taget from camera
+    // zAxis is the angle between the two points. Normalized because we only care about the angle.
     GlVector zAxis = (cameraPosition-target).normalize();
+    // xAxis is the perpendicular vector between the angle and a vector pointing upwards
     GlVector xAxis = up.cross(zAxis);
+    // yAxis is the perpendicular vector between the angle and the xAngle
     GlVector yAxis = zAxis.cross(xAxis);
 
     return new GlMatrix.fromList([

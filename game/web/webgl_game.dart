@@ -14,7 +14,9 @@ Game game;
 
 GlRenderLayer layer;
 List<GlModelInstance> modelInstances = [];
-GlCamera camera;
+GlCameraDistanseToTarget camera;
+double cameraZOffset = 1800.0;
+double cameraZRotation = -1.0;
 
 class GlModelInstanceFromGameObject extends GlModelInstance{
   GameObject gameObject;
@@ -48,10 +50,13 @@ void main()
   layer.ctx.viewport(0, 0, layer.canvas.width, layer.canvas.height);
 
   //3 set view perspective
-  camera = new GlCamera(400.0 / 500.0);
+  camera = new GlCameraDistanseToTarget();
+  camera.setPerspective(aspect:400.0 / 500.0, fieldOfViewRadians: 0.5, zFar: 4000.0);
+  /*
   camera.y = 800.0;
   camera.x = 100.0;
   camera.z = -100.0;
+  */
 
   game = new Game();
   game.init();
@@ -117,11 +122,14 @@ tick(time) {
 
   layer.clearForNextFrame();
 
+  camera.setCameraAngleAndOffset(new GlVector(game.players[0].vehicle.position.x,0.0,game.players[0].vehicle.position.y),rx:cameraZRotation,offsetZ:cameraZOffset);
+  /*
   camera.tx = game.players[0].vehicle.position.x;
   camera.x = game.players[0].vehicle.position.x;
   camera.tz = game.players[0].vehicle.position.y;
   camera.z = game.players[0].vehicle.position.y-300.0;
-  var viewProjectionMatrix = camera.createMatrix();//perspective*viewMatrix;
+*/
+  var viewProjectionMatrix = camera.cameraMatrix;//perspective*viewMatrix;
 
 
   // Draw a F at the origin
@@ -137,7 +145,7 @@ tick(time) {
     objPerspective = objPerspective.rotateX(m.rx);
     objPerspective = objPerspective.rotateY(m.ry);
     objPerspective = objPerspective.rotateZ(m.rz);
-    layer.setWorld(objPerspective,viewProjectionMatrix*objPerspective, new GlVector(-1.0,0.8,0.6));
+    layer.setWorld(objPerspective,viewProjectionMatrix*objPerspective, new GlVector(-1.0,0.8,0.6), 0.3);
     layer.drawModel(m);
   }
 }

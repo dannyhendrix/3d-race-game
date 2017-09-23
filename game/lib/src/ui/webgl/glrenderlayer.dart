@@ -53,11 +53,12 @@ class GlRenderLayer{
     ctx.uniform4fv(program.uni_Color, new Float32List.fromList([color.r,color.g,color.b,color.a]));
   }
 
-  void setWorld(GlMatrix world, GlMatrix worldViewProjection, GlVector lightSource){
+  void setWorld(GlMatrix world, GlMatrix worldViewProjection, GlVector lightSource, double lightImpact){
     lightSource = lightSource.normalize();
     ctx.uniform3fv(program.uni_reverseLightDirection, new Float32List.fromList([lightSource.x,lightSource.y,lightSource.z]));
     ctx.uniformMatrix4fv(program.uni_world, false, world.buffer);
     ctx.uniformMatrix4fv(program.uni_worldViewProjection, false, worldViewProjection.buffer);
+    ctx.uniform1f(program.uni_lightImpact, lightImpact);
   }
   void clearForNextFrame(){
     ctx.useProgram(program.program);

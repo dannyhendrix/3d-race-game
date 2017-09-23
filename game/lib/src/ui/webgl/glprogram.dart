@@ -7,6 +7,7 @@ class GlProgram{
         // Passed in from the vertex shader.
         varying vec3 v_normal;
 
+        uniform float f_lightImpact;
         uniform vec4 u_color;
         uniform vec3 u_reverseLightDirection;
 
@@ -17,15 +18,14 @@ class GlProgram{
            vec3 normal = normalize(v_normal);
 
            float light = dot(normal, u_reverseLightDirection);
+           float lightFactor = (1.0-f_lightImpact)+(light*f_lightImpact);
 
            gl_FragColor = u_color;
 
            // Lets multiply just the color portion (not the alpha)
            // by the light
-           gl_FragColor.rgb *= light;
 
-
-           //gl_FragColor = vec4(v_color_r,v_color_g,v_color_b,v_color_a);
+           gl_FragColor.rgb *= lightFactor;
 
         }
         ''';
@@ -50,6 +50,7 @@ class GlProgram{
   UniformLocation uni_world;
   UniformLocation uni_worldViewProjection;
   UniformLocation uni_Color;
+  UniformLocation uni_lightImpact;
   UniformLocation uni_reverseLightDirection;
   Program program;
 
@@ -75,6 +76,7 @@ class GlProgram{
     uni_worldViewProjection = ctx.getUniformLocation(program, "u_worldViewProjection");
     uni_Color = ctx.getUniformLocation(program, "u_color");
     uni_reverseLightDirection = ctx.getUniformLocation(program, "u_reverseLightDirection");
+    uni_lightImpact = ctx.getUniformLocation(program, "f_lightImpact");
   }
 
 }

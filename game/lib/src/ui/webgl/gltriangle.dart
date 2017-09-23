@@ -16,7 +16,7 @@ class GlPoint extends GlModelPart{
 
 class GlTriangle extends GlModelPart{
   List<GlPoint> points;
-  GlTriangle([List<GlPoint> points]): points = points ?? [];
+  GlTriangle([List<GlPoint> points, this.normalX = 0.0, this.normalY = 0.0, this.normalZ = 0.0]): points = points ?? [];
   double normalX = 0.0;
   double normalY = 0.0;
   double normalZ = 0.0;
