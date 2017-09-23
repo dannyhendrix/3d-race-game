@@ -6,7 +6,7 @@ abstract class GLCamera{
 class GlCameraWithPerspective{
   GlMatrix perspective;
   GlMatrix get cameraMatrix => perspective;
-  void setPerspective({double fieldOfViewRadians=2.0, double aspect=1.0, double zNear=1.0, double zFar=2000.0}){
+  void setPerspective({double fieldOfViewRadians=0.5, double aspect=1.0, double zNear=1.0, double zFar=2000.0}){
     perspective = GlMatrix.perspectiveMatrix(fieldOfViewRadians, aspect, zNear, zFar);
   }
 }

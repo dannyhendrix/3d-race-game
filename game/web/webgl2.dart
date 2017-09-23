@@ -9,8 +9,7 @@ GlCameraDistanseToTarget camera;
 
 double rx = 0.0, ry = 0.0, rz=0.0;
 double ox = 0.0, oy = 0.0, oz=10.0;
-double lx = 0.5,ly = 0.5,lz = 0.5;
-//double aspect = 1.0;
+double lx = 0.5, ly = 0.5, lz = 0.5;
 double lightImpact = 0.5;
 
 void main(){
@@ -21,58 +20,13 @@ void main(){
   layer.ctx.viewport(0, 0, layer.canvas.width, layer.canvas.height);
   layer.setClearColor(new GlColor(0.4,0.4,0.4));
 
-  //create all buffer
-  GlModelBuffer cube = new GlCube.fromTopCenter(0.0,0.0,0.0,150.0,200.0,10.0).createBuffers(layer);
-  //modelInstances.add(new GlModelInstance(cube, new GlColor()));
-  var m2 = new GlModelInstance(cube,new GlColor(),-320.0,-100.0,-100.0);
-  m2.ry = 1.0;
-  //modelInstances.add(m2);
-
-  GlModelBuffer xaxis = new GlModel([
-    new GlTriangle([
-      new GlPoint(0.0,0.0,0.0),
-      new GlPoint(2.0,0.0,0.0),
-      new GlPoint(0.0,1.0,0.0),
-    ],1.0,0.0,0.0),
-    new GlTriangle([
-      new GlPoint(0.0,0.0,0.0),
-      new GlPoint(0.0,1.0,0.0),
-      new GlPoint(2.0,0.0,0.0),
-    ],-1.0,0.0,0.0),
-  ]).createBuffers(layer);
-
-  GlModelBuffer yaxis = new GlModel([
-    new GlTriangle([
-      new GlPoint(0.0,0.0,0.0),
-      new GlPoint(0.0,0.0,-2.0),
-      new GlPoint(1.0,0.0,0.0),
-    ],0.0,0.0,1.0),
-    new GlTriangle([
-      new GlPoint(0.0,0.0,0.0),
-      new GlPoint(1.0,0.0,0.0),
-      new GlPoint(0.0,0.0,-2.0),
-    ],0.0,0.0,-1.0),
-  ]).createBuffers(layer);
-
-  GlModelBuffer zaxis = new GlModel([
-    new GlTriangle([
-      new GlPoint(0.0,0.0,0.0),
-      new GlPoint(0.0,2.0,0.0),
-      new GlPoint(0.0,0.0,-1.0),
-    ],0.0,1.0,0.0),
-    new GlTriangle([
-      new GlPoint(0.0,0.0,0.0),
-      new GlPoint(0.0,0.0,-1.0),
-      new GlPoint(0.0,2.0,0.0),
-    ],0.0,-1.0,0.0),
-  ]).createBuffers(layer);
-  modelInstances.add(new GlModelInstance(xaxis, new GlColor(1.0,0.0,0.0)));
-  modelInstances.add(new GlModelInstance(yaxis, new GlColor(0.0,0.0,1.0)));
-  modelInstances.add(new GlModelInstance(zaxis, new GlColor(0.0,1.0,0.0)));
-
   //3 set view perspective
   camera = new GlCameraDistanseToTarget();
   camera.setPerspective(aspect : 400.0 / 500.0);
+
+  //4 create models
+  createXYZMark().modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
+  createVehicleModel().modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
 
   document.body.append(createTitle("Light"));
   document.body.append(createSlider("Light % impact",0.0,1.0,0.1,lightImpact,(String val){ lightImpact = double.parse(val); draw(); }));
@@ -86,9 +40,155 @@ void main(){
   document.body.append(createSlider("rotatex",0.0,2*Math.PI,0.1,rx,(String val){ rx = double.parse(val); draw(); }));
   document.body.append(createSlider("rotatey",0.0,2*Math.PI,0.1,ry,(String val){ ry = double.parse(val); draw(); }));
   document.body.append(createSlider("rotatez",0.0,2*Math.PI,0.1,rz,(String val){ rz = double.parse(val); draw(); }));
-  //document.body.append(createSlider("fieldOfViewRadians",0.0,Math.PI,0.1,camera.fieldOfViewRadians,(String val){ camera.fieldOfViewRadians = double.parse(val); draw(); }));
 
   draw();
+}
+
+class DoubleHelper{
+  double v;
+  double h;
+  DoubleHelper(this.v) : h = v/2;
+}
+
+GlModelInstanceCollection createVehicleModel(){
+  DoubleHelper h = new DoubleHelper(4.0);
+  DoubleHelper hCarBottom = new DoubleHelper(2.0);
+  DoubleHelper hWindow = new DoubleHelper(2.0);
+
+  DoubleHelper w = new DoubleHelper(4.0);
+
+  DoubleHelper d = new DoubleHelper(8.0);
+  DoubleHelper dHood = new DoubleHelper(2.0);
+  DoubleHelper dRoof = new DoubleHelper(3.0);
+  DoubleHelper dRear = new DoubleHelper(1.0);
+  DoubleHelper dWindowFront = new DoubleHelper(1.0);
+  DoubleHelper dWindowRear = new DoubleHelper(1.0);
+
+  GlModelBuffer model = new GlModel([
+    //floor
+    new GlRectangle.withWD(-w.h,0.0, -d.h, w.v, d.v, true),
+    //hood
+    new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h, w.v, dHood.v, false),
+    //rear top
+    new GlRectangle.withWD(-w.h,hCarBottom.v, d.h-dRear.v, w.v, dRear.v, false),
+    //roof
+    new GlRectangle.withWD(-w.h,h.v, -d.h+dHood.v+dWindowFront.v, w.v, dRoof.v, false),
+    //front
+    new GlRectangle.withWH(-w.h,0.0, -d.h, w.v, hCarBottom.v, false),
+    //rear
+    new GlRectangle.withWH(-w.h,0.0, d.h, w.v, hCarBottom.v, true),
+    //right side
+    //bottom
+    new GlRectangle.withHD(w.h,0.0, -d.h, hCarBottom.v, d.v, true),
+    //top
+    new GlRectangle.withHD(w.h,hCarBottom.v, -d.h+dHood.v+dWindowFront.v, hWindow.v, dRoof.v, true),
+    //windowFront
+    new GlTriangle([
+      new GlPoint(w.h,hCarBottom.v,-d.h+dHood.v),
+      new GlPoint(w.h,h.v,-d.h+dHood.v+dWindowFront.v),
+      new GlPoint(w.h,hCarBottom.v,-d.h+dHood.v+dWindowFront.v),
+    ]),
+    //windowRear
+    new GlTriangle([
+      new GlPoint(w.h,hCarBottom.v,d.h-dRear.v),
+      new GlPoint(w.h,hCarBottom.v,d.h-dRear.v-dWindowRear.v),
+      new GlPoint(w.h,h.v,d.h-dRear.v-dWindowRear.v),
+    ]),
+    //left side
+
+    //bottom
+    new GlRectangle.withHD(-w.h,0.0, -d.h, hCarBottom.v, d.v, false),
+    //top
+    new GlRectangle.withHD(-w.h,hCarBottom.v, -d.h+dHood.v+dWindowFront.v, hWindow.v, dRoof.v, false),
+    //windowFront
+    new GlTriangle([
+      new GlPoint(-w.h,hCarBottom.v,-d.h+dHood.v),
+      new GlPoint(-w.h,hCarBottom.v,-d.h+dHood.v+dWindowFront.v),
+      new GlPoint(-w.h,h.v,-d.h+dHood.v+dWindowFront.v),
+    ]),
+    //windowRear
+    new GlTriangle([
+      new GlPoint(-w.h,hCarBottom.v,d.h-dRear.v),
+      new GlPoint(-w.h,h.v,d.h-dRear.v-dWindowRear.v),
+      new GlPoint(-w.h,hCarBottom.v,d.h-dRear.v-dWindowRear.v),
+    ]),
+  ]).createBuffers(layer);
+  GlModelBuffer modelWindows = new GlModel([
+    //WindowFront
+    new GlTriangle([
+      new GlPoint(-w.h,hCarBottom.v,-d.h+dHood.v),
+      new GlPoint(-w.h,h.v,-d.h+dHood.v+dWindowFront.v),
+      new GlPoint(w.h,h.v,-d.h+dHood.v+dWindowFront.v),
+    ]),
+    new GlTriangle([
+      new GlPoint(-w.h,hCarBottom.v,-d.h+dHood.v),
+      new GlPoint(w.h,h.v,-d.h+dHood.v+dWindowFront.v),
+      new GlPoint(w.h,hCarBottom.v,-d.h+dHood.v),
+    ]),
+    //WindowRear
+    new GlTriangle([
+      new GlPoint(-w.h,hCarBottom.v,d.h-dRear.v),
+      new GlPoint(w.h,h.v,d.h-dRear.v-dWindowRear.v),
+      new GlPoint(-w.h,h.v,d.h-dRear.v-dWindowRear.v),
+    ]),
+    new GlTriangle([
+      new GlPoint(-w.h,hCarBottom.v,d.h-dRear.v),
+      new GlPoint(w.h,hCarBottom.v,d.h-dRear.v),
+      new GlPoint(w.h,h.v,d.h-dRear.v-dWindowRear.v),
+    ]),
+
+  ]).createBuffers(layer);
+
+
+  var color = new GlColor(1.0,1.0,1.0);
+  var colorWindows = new GlColor(0.0,0.0,1.0);
+  return new GlModelInstanceCollection([new GlModelInstance(model, color),new GlModelInstance(modelWindows, colorWindows)]);
+}
+
+GlModelInstanceCollection createXYZMark(){
+  GlModelBuffer xaxis = new GlModel([
+    new GlTriangle([
+      new GlPoint(0.0,0.0,0.0),
+      new GlPoint(2.0,0.0,0.0),
+      new GlPoint(0.0,1.0,0.0),
+    ]),
+    new GlTriangle([
+      new GlPoint(0.0,0.0,0.0),
+      new GlPoint(0.0,1.0,0.0),
+      new GlPoint(2.0,0.0,0.0),
+    ]),
+  ]).createBuffers(layer);
+
+  GlModelBuffer yaxis = new GlModel([
+    new GlTriangle([
+      new GlPoint(0.0,0.0,0.0),
+      new GlPoint(0.0,0.0,-2.0),
+      new GlPoint(1.0,0.0,0.0),
+    ]),
+    new GlTriangle([
+      new GlPoint(0.0,0.0,0.0),
+      new GlPoint(1.0,0.0,0.0),
+      new GlPoint(0.0,0.0,-2.0),
+    ]),
+  ]).createBuffers(layer);
+
+  GlModelBuffer zaxis = new GlModel([
+    new GlTriangle([
+      new GlPoint(0.0,0.0,0.0),
+      new GlPoint(0.0,2.0,0.0),
+      new GlPoint(0.0,0.0,-1.0),
+    ]),
+    new GlTriangle([
+      new GlPoint(0.0,0.0,0.0),
+      new GlPoint(0.0,0.0,-1.0),
+      new GlPoint(0.0,2.0,0.0),
+    ]),
+  ]).createBuffers(layer);
+  return new GlModelInstanceCollection([
+    new GlModelInstance(xaxis, new GlColor(1.0,0.0,0.0)),
+    new GlModelInstance(yaxis, new GlColor(0.0,0.0,1.0)),
+    new GlModelInstance(zaxis, new GlColor(0.0,1.0,0.0))
+  ]);
 }
 
 void draw(){
@@ -109,11 +209,13 @@ void draw(){
     layer.drawModel(m);
   }
 }
+
 Element createTitle(String label){
   Element el = new HeadingElement.h2();
   el.text = label;
   return el;
 }
+
 Element createSlider(String label, double min, double max, double step, double val, Function onChange){
   DivElement el = new DivElement();
   el.appendText(label);

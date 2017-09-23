@@ -24,7 +24,7 @@ class GlRenderLayer{
     program = new GlProgram(ctx);
     ctx.clearColor(0.0, 0.0, 0.0, 1.0);
     // by default backfacing triangles will be culled
-    ctx.enable(CULL_FACE);
+    //ctx.enable(CULL_FACE);
     ctx.enable(DEPTH_TEST);
   }
 
