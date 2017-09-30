@@ -20,7 +20,7 @@ class Game{
       new Point(600.0,600.0),
       new Point(300.0,450.0),
       new Point(200.0,600.0)
-    ],true);
+    ],true,10);
 
     players.forEach((player) => player.init(this));
   }

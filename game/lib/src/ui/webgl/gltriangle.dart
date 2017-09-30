@@ -251,15 +251,16 @@ class GlModelBuffer{
 class GlModelInstance{
   GlModelBuffer modelBuffer;
   GlColor color;
-  double x,y,z;
-  double rx=0.0,ry=0.0,rz=0.0;
-  double r=1.0,g=1.0,b=1.0,a=1.0;
-  GlModelInstance(this.modelBuffer, this.color, [this.x=0.0,this.y=0.0,this.z=0.0]);
+  GlModelInstance(this.modelBuffer, this.color);
 }
+
 class GlModelInstanceCollection{
   List<GlModelInstance> modelInstances;
-  GlModelInstanceCollection([List<GlModelInstance> modelInstances]): modelInstances = modelInstances ?? [];
+  double x,y,z;
+  double rx=0.0,ry=0.0,rz=0.0;
+  GlModelInstanceCollection([List<GlModelInstance> modelInstances, this.x=0.0,this.y=0.0,this.z=0.0]): modelInstances = modelInstances ?? [];
 }
+
 class GlColor{
   double r,g,b,a;
   GlColor([this.r=1.0,this.g=1.0,this.b=1.0,this.a=1.0]);

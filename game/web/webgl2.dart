@@ -4,7 +4,7 @@ import "package:micromachines/webgl.dart";
 import "dart:web_gl";
 
 GlRenderLayer layer;
-List<GlModelInstance> modelInstances = [];
+List<GlModelInstanceCollection> modelInstances = [];
 GlCameraDistanseToTarget camera;
 
 double rx = 0.0, ry = 0.0, rz=0.0;
@@ -25,8 +25,8 @@ void main(){
   camera.setPerspective(aspect : 400.0 / 500.0);
 
   //4 create models
-  createXYZMark().modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
-  createVehicleModel(5.0,5.0,15.0).modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
+  modelInstances.add(createXYZMark());
+  modelInstances.add(createVehicleModel(5.0,5.0,15.0));
 
   document.body.append(createTitle("Light"));
   document.body.append(createSlider("Light % impact",0.0,1.0,0.1,lightImpact,(String val){ lightImpact = double.parse(val); draw(); }));
@@ -59,6 +59,14 @@ GlModelInstanceCollection createVehicleModel(double sx, double sy, double sz){
   DoubleHelper dRoof = new DoubleHelper(0.8,sx);
   DoubleHelper dWindow = new DoubleHelper(0.1,sx);
 
+  DoubleHelper dStripeLeft = new DoubleHelper(0.3,sx);
+  DoubleHelper dStripeMid = new DoubleHelper(0.4,sx);
+  DoubleHelper dStripeRight = new DoubleHelper(0.3,sx);
+
+  DoubleHelper dStripeRoofLeft = new DoubleHelper(0.2,sx);
+  DoubleHelper dStripeRoofMid = new DoubleHelper(0.4,sx);
+  DoubleHelper dStripeRoofRight = new DoubleHelper(0.2,sx);
+
   DoubleHelper w = new DoubleHelper(1.0,sz);
   DoubleHelper wHood = new DoubleHelper(0.3,sz);
   DoubleHelper wRoof = new DoubleHelper(0.3,sz);
@@ -70,11 +78,14 @@ GlModelInstanceCollection createVehicleModel(double sx, double sy, double sz){
     //floor
     new GlRectangle.withWD(-w.h,0.0, -d.h, w.v, d.v, true),
     //hood
-    new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h, wHood.v, d.v, false),
+    new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, d.h-dStripeRight.v, wHood.v, dStripeRight.v, false),
+    new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h, wHood.v, dStripeLeft.v, false),
     //rear top
-    new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h, wRear.v, d.v, false),
+    new GlRectangle.withWD(-w.h,hCarBottom.v, d.h-dStripeRight.v, wRear.v, dStripeRight.v, false),
+    new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h, wRear.v, dStripeLeft.v, false),
     //roof
-    new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, -d.h+dWindow.v, wRoof.v, dRoof.v, false),
+    new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, d.h-dWindow.v-dStripeRoofRight.v, wRoof.v, dStripeRoofRight.v, false),
+    new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, -d.h+dWindow.v, wRoof.v, dStripeRoofLeft.v, false),
     //front
     new GlRectangle.withHD(w.h,0.0, -d.h, hCarBottom.v, d.v, true),
     //rear
@@ -87,6 +98,17 @@ GlModelInstanceCollection createVehicleModel(double sx, double sy, double sz){
     new GlRectangle.withWH(-w.h,0.0, -d.h, w.v, hCarBottom.v, false),
 
   ]).createBuffers(layer);
+
+  GlModelBuffer modelStripe = new GlModel([
+    //hood
+    new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h+dStripeLeft.v, wHood.v, dStripeMid.v, false),
+    //rear top
+    new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h+dStripeLeft.v, wRear.v, dStripeMid.v, false),
+    //roof
+    new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, -d.h+dWindow.v+dStripeRoofLeft.v, wRoof.v, dStripeRoofMid.v, false),
+
+  ]).createBuffers(layer);
+
   GlModelBuffer modelWindows = new GlModel([
     //WindowFront
     new GlTriangle([
@@ -135,9 +157,10 @@ GlModelInstanceCollection createVehicleModel(double sx, double sy, double sz){
   ]).createBuffers(layer);
 
 
-  var color = new GlColor(1.0,1.0,1.0);
-  var colorWindows = new GlColor(0.0,0.0,1.0);
-  return new GlModelInstanceCollection([new GlModelInstance(model, color),new GlModelInstance(modelWindows, colorWindows)]);
+  var color = new GlColor(1.0,1.0,0.0);
+  var color2 = new GlColor(0.0,0.0,1.0);
+  var colorWindows = new GlColor(0.0,0.0,0.2);
+  return new GlModelInstanceCollection([new GlModelInstance(model, color),new GlModelInstance(modelStripe, color2),new GlModelInstance(modelWindows, colorWindows)]);
 }
 
 GlModelInstanceCollection createXYZMark(){
@@ -193,7 +216,7 @@ void draw(){
   var worldMatrix = GlMatrix.rotationYMatrix(0.0);
 
   //2 call draw method with buffer
-  for(GlModelInstance m in modelInstances){
+  for(GlModelInstanceCollection m in modelInstances){
 
     GlMatrix objPerspective = worldMatrix.translate(m.x,m.y,m.z);
     objPerspective = objPerspective.rotateX(m.rx);
@@ -201,7 +224,7 @@ void draw(){
     objPerspective = objPerspective.rotateZ(m.rz);
 
     layer.setWorld(worldMatrix,viewProjectionMatrix*objPerspective, new GlVector(lx,ly,lz),lightImpact);
-    layer.drawModel(m);
+    for(GlModelInstance mi in m.modelInstances)layer.drawModel(mi);
   }
 }
 

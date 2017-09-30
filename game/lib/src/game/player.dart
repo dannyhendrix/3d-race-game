@@ -41,6 +41,11 @@ class HumanPlayer extends Player{
 }
 class AiPlayer extends Player{
   void update(){
+    if(pathProgress.finished){
+      vehicle.setSteer(Steer.Left);
+      vehicle.setAccelarate(false);
+      return;
+    }
     Point p =  pathProgress.current;
     Point v =  vehicle.position;
     Vector V =  new Vector(p.x-v.x,p.y-v.y);

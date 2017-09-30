@@ -13,26 +13,30 @@ Element el_Fps;
 Game game;
 
 GlRenderLayer layer;
-List<GlModelInstance> modelInstances = [];
+List<GlModelInstanceCollection> modelInstances = [];
 GlCameraDistanseToTarget camera;
 double cameraZOffset = 1800.0;
 double cameraZRotation = -1.0;
 
-class GlModelInstanceFromGameObject extends GlModelInstance{
+class GlModelInstanceFromVehicle extends GlModelInstanceCollection{
   GameObject gameObject;
   double get x => gameObject.position.x;
   double get z => gameObject.position.y;
   double get ry => -gameObject.r;
-  GlColor white = new GlColor(1.0,1.0,1.0);
-  GlColor red = new GlColor(1.0,0.0,0.0);
-  GlColor blue = new GlColor(1.0,1.0,0.0);
-  GlColor get color{
-    if(!(gameObject is Vehicle)) return white;
-    Vehicle v = gameObject;
-    if(v.isCollided) return red;
-    return blue;
+  GlModelInstanceFromVehicle(this.gameObject, GlModelInstanceCollection model, GlColor color1, GlColor color2):super([]){
+    this.modelInstances = [
+      new GlModelInstance(model.modelInstances[0].modelBuffer, color1),
+      new GlModelInstance(model.modelInstances[1].modelBuffer, color2),
+      new GlModelInstance(model.modelInstances[2].modelBuffer, model.modelInstances[2].color),
+    ];
   }
-  GlModelInstanceFromGameObject(this.gameObject, GlModelBuffer modelBuffer):super(modelBuffer, new GlColor());
+}
+class GlModelInstanceFromGameObject extends GlModelInstanceCollection{
+  GameObject gameObject;
+  double get x => gameObject.position.x;
+  double get z => gameObject.position.y;
+  double get ry => -gameObject.r;
+  GlModelInstanceFromGameObject(this.gameObject, GlModelInstanceCollection model):super(model.modelInstances);
 }
 
 void main()
@@ -63,23 +67,28 @@ void main()
   game.start();
 //units/actual
   //4 4 8
-  GlModelBuffer vehicleModel = createVehicleModel(game.players[0].vehicle.w/1.0, 50.0/1.0, game.players[0].vehicle.h/1.0);
+  GlModelInstanceCollection vehicleModel = createVehicleModel(game.players[0].vehicle.w/1.0, 50.0/1.0, game.players[0].vehicle.h/1.0);
   //createVehicleModel().modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
 
+  var colors1 = [new GlColor(1.0,1.0,0.0),new GlColor(1.0,0.0,0.0),new GlColor(0.0,1.0,0.0),new GlColor(1.0,0.0,1.0),new GlColor(1.0,1.0,1.0),new GlColor(1.0,1.0,1.0)];
+  var colors2 = [new GlColor(0.0,0.0,1.0),new GlColor(1.0,1.0,1.0),new GlColor(0.2,0.2,0.2),new GlColor(1.0,1.0,1.0),new GlColor(1.0,0.0,0.0),new GlColor(0.0,0.0,1.0)];
+  int c = 0;
   //create all buffer
   for(GameObject o in game.gameobjects){
     if(o is Vehicle){
-      modelInstances.add(new GlModelInstanceFromGameObject(o, vehicleModel));
+      modelInstances.add(new GlModelInstanceFromVehicle(o, vehicleModel, colors1[c], colors2[c]));
+      c++;
+      if(c >= colors1.length) c = 0;
     }else{
       double h = o is Wall ? 150.0 : 80.0;
       GlModelBuffer cube = new GlCube.fromTopCenter(0.0,0.0,0.0,o.w,h,o.h).createBuffers(layer);
-      modelInstances.add(new GlModelInstanceFromGameObject(o, cube));
+      modelInstances.add(new GlModelInstanceFromGameObject(o, new GlModelInstanceCollection([new GlModelInstance(cube, new GlColor(1.0,1.0,1.0))])));
     }
   }
 
   GlModel worldModel = new GlModel([new GlRectangle.withWD(0.0,0.0,0.0,1500.0,800.0,false)]);
   GlModelBuffer world = worldModel.createBuffers(layer);
-  modelInstances.add(new GlModelInstance(world, new GlColor(0.3,0.3,0.3)));
+  modelInstances.add(new GlModelInstanceCollection([new GlModelInstance(world, new GlColor(0.6,0.6,0.6))]));
 
   // Start off the infinite animation loop
   tick(0);
@@ -148,13 +157,13 @@ tick(time) {
 
 
   //2 call draw method with buffer
-  for(GlModelInstance m in modelInstances){
+  for(GlModelInstanceCollection m in modelInstances){
     GlMatrix objPerspective = worldMatrix.translate(m.x,m.y,m.z);
     objPerspective = objPerspective.rotateX(m.rx);
     objPerspective = objPerspective.rotateY(m.ry);
     objPerspective = objPerspective.rotateZ(m.rz);
     layer.setWorld(objPerspective,viewProjectionMatrix*objPerspective, new GlVector(-1.0,0.8,0.6), 0.4);
-    layer.drawModel(m);
+    for(GlModelInstance mi in m.modelInstances) layer.drawModel(mi);
   }
 }
 
@@ -230,7 +239,11 @@ class DoubleHelper{
 }
 
 //Car model
-GlModelBuffer createVehicleModel(double sx, double sy, double sz){
+GlModelInstanceCollection createVehicleModel(double sx, double sy, double sz){
+  GlColor colorWindows = new GlColor(0.2,0.2,0.2);
+  GlColor color1 = new GlColor(1.0,1.0,1.0);
+  GlColor color2 = new GlColor(0.5,0.5,0.5);
+
   DoubleHelper h = new DoubleHelper(1.0,sy);
   DoubleHelper hCarBottom = new DoubleHelper(0.5,sy);
   DoubleHelper hWindow = new DoubleHelper(0.5,sy);
@@ -239,6 +252,14 @@ GlModelBuffer createVehicleModel(double sx, double sy, double sz){
   DoubleHelper dRoof = new DoubleHelper(0.8,sz);
   DoubleHelper dWindow = new DoubleHelper(0.1,sz);
 
+  DoubleHelper dStripeLeft = new DoubleHelper(0.3,sz);
+  DoubleHelper dStripeMid = new DoubleHelper(0.4,sz);
+  DoubleHelper dStripeRight = new DoubleHelper(0.3,sz);
+
+  DoubleHelper dStripeRoofLeft = new DoubleHelper(0.2,sz);
+  DoubleHelper dStripeRoofMid = new DoubleHelper(0.4,sz);
+  DoubleHelper dStripeRoofRight = new DoubleHelper(0.2,sz);
+
   DoubleHelper w = new DoubleHelper(1.0,sx);
   DoubleHelper wHood = new DoubleHelper(0.3,sx);
   DoubleHelper wRoof = new DoubleHelper(0.3,sx);
@@ -246,15 +267,19 @@ GlModelBuffer createVehicleModel(double sx, double sy, double sz){
   DoubleHelper wWindowFront = new DoubleHelper(0.1,sx);
   DoubleHelper wWindowRear = new DoubleHelper(0.1,sx);
 
+
   GlModelBuffer model = new GlModel([
     //floor
     new GlRectangle.withWD(-w.h,0.0, -d.h, w.v, d.v, true),
     //hood
-    new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h, wHood.v, d.v, false),
+    new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, d.h-dStripeRight.v, wHood.v, dStripeRight.v, false),
+    new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h, wHood.v, dStripeLeft.v, false),
     //rear top
-    new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h, wRear.v, d.v, false),
+    new GlRectangle.withWD(-w.h,hCarBottom.v, d.h-dStripeRight.v, wRear.v, dStripeRight.v, false),
+    new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h, wRear.v, dStripeLeft.v, false),
     //roof
-    new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, -d.h+dWindow.v, wRoof.v, dRoof.v, false),
+    new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, d.h-dWindow.v-dStripeRoofRight.v, wRoof.v, dStripeRoofRight.v, false),
+    new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, -d.h+dWindow.v, wRoof.v, dStripeRoofLeft.v, false),
     //front
     new GlRectangle.withHD(w.h,0.0, -d.h, hCarBottom.v, d.v, true),
     //rear
@@ -266,6 +291,19 @@ GlModelBuffer createVehicleModel(double sx, double sy, double sz){
     //bottom
     new GlRectangle.withWH(-w.h,0.0, -d.h, w.v, hCarBottom.v, false),
 
+  ]).createBuffers(layer);
+
+  GlModelBuffer modelStripe = new GlModel([
+    //hood
+    new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h+dStripeLeft.v, wHood.v, dStripeMid.v, false),
+    //rear top
+    new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h+dStripeLeft.v, wRear.v, dStripeMid.v, false),
+    //roof
+    new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, -d.h+dWindow.v+dStripeRoofLeft.v, wRoof.v, dStripeRoofMid.v, false),
+
+  ]).createBuffers(layer);
+
+  GlModelBuffer modelWindows = new GlModel([
     //WindowFront
     new GlTriangle([
       new GlPoint(w.h-wHood.v, hCarBottom.v, d.h),
@@ -311,5 +349,6 @@ GlModelBuffer createVehicleModel(double sx, double sy, double sz){
       new GlPoint(w.h-wHood.v,hCarBottom.v,-d.h),
     ]),
   ]).createBuffers(layer);
-  return model;
+
+  return new GlModelInstanceCollection([new GlModelInstance(model, color1), new GlModelInstance(modelStripe, color2),new GlModelInstance(modelWindows, colorWindows)]);
 }
