@@ -15,13 +15,13 @@ enum VehicleSettingKeys {
 
 class VehicleSettings{
   Map data = {
-    VehicleSettingKeys.acceleration.toString() :0.4,
-    VehicleSettingKeys.acceleration_max.toString() : 6.0,
-    VehicleSettingKeys.reverse_acceleration.toString() : 0.2,
+    VehicleSettingKeys.acceleration.toString() :0.3,
+    VehicleSettingKeys.acceleration_max.toString() : 4.0,
+    VehicleSettingKeys.reverse_acceleration.toString() : 0.1,
     VehicleSettingKeys.reverse_acceleration_max.toString() : 2.0,
     VehicleSettingKeys.friction.toString() : 0.05,
     VehicleSettingKeys.brake_speed.toString() : 0.2,
-    VehicleSettingKeys.steering_speed.toString() : 0.07,
+    VehicleSettingKeys.steering_speed.toString() : 0.1,
     VehicleSettingKeys.standstill_delay.toString() : 6,
     VehicleSettingKeys.collision_force.toString() : 4.0,
     VehicleSettingKeys.collision_force_after_collision.toString() : 0.35,
@@ -47,8 +47,8 @@ class Vehicle extends MoveableGameObject{
   Vehicle(this.game, this.player){
     position = new Point(150.0, 50.0);
     r = 1.7;
-    w = 40.0;
-    h = 80.0;
+    w = 50.0;
+    h = 30.0;
     collisionField = new Polygon([
       new Point(0.0,0.0),
       new Point(w,0.0),
@@ -92,11 +92,22 @@ class Vehicle extends MoveableGameObject{
     //check collisions
     for(GameObject g in game.gameobjects){
       if(g == this) continue;
+      /*if(g is Ball){
+        Ball b = g;
+        b.vector += new Vector.fromAngleRadians(this.r,10.0);
+        print("hit");
+        continue;
+      }*/
 
       CollisionResult r = createPolygonOnActualLocation().collision(g.createPolygonOnActualLocation(), vector);
 
       if (r.willIntersect) {
-        if(!g.onCollision(this)){
+        if(g is Ball){
+          Ball b = g;
+          b.onHit(this.r);
+          continue;
+        }
+        else if(!g.onCollision(this)){
           collide = true;
           collisionCorrection += r.minimumTranslationVector;
         }

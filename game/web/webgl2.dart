@@ -13,7 +13,7 @@ double lx = 0.5, ly = 0.5, lz = 0.5;
 double lightImpact = 0.5;
 
 void main(){
-  layer = new GlRenderLayer.withSize(400,500);
+  layer = new GlRenderLayer.withSize(400,500, true);
   document.body.append(layer.canvas);
 
   // Tell WebGL how to convert from clip space to pixels
@@ -26,7 +26,7 @@ void main(){
 
   //4 create models
   createXYZMark().modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
-  createVehicleModel().modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
+  createVehicleModel(5.0,5.0,15.0).modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
 
   document.body.append(createTitle("Light"));
   document.body.append(createSlider("Light % impact",0.0,1.0,0.1,lightImpact,(String val){ lightImpact = double.parse(val); draw(); }));
@@ -47,96 +47,91 @@ void main(){
 class DoubleHelper{
   double v;
   double h;
-  DoubleHelper(this.v) : h = v/2;
+  DoubleHelper(double v, double s) : v = v*s, h = v*s/2;
 }
 
-GlModelInstanceCollection createVehicleModel(){
-  DoubleHelper h = new DoubleHelper(4.0);
-  DoubleHelper hCarBottom = new DoubleHelper(2.0);
-  DoubleHelper hWindow = new DoubleHelper(2.0);
+GlModelInstanceCollection createVehicleModel(double sx, double sy, double sz){
+  DoubleHelper h = new DoubleHelper(1.0,sy);
+  DoubleHelper hCarBottom = new DoubleHelper(0.5,sy);
+  DoubleHelper hWindow = new DoubleHelper(0.5,sy);
 
-  DoubleHelper w = new DoubleHelper(4.0);
+  DoubleHelper d = new DoubleHelper(1.0,sx);
+  DoubleHelper dRoof = new DoubleHelper(0.8,sx);
+  DoubleHelper dWindow = new DoubleHelper(0.1,sx);
 
-  DoubleHelper d = new DoubleHelper(8.0);
-  DoubleHelper dHood = new DoubleHelper(2.0);
-  DoubleHelper dRoof = new DoubleHelper(3.0);
-  DoubleHelper dRear = new DoubleHelper(1.0);
-  DoubleHelper dWindowFront = new DoubleHelper(1.0);
-  DoubleHelper dWindowRear = new DoubleHelper(1.0);
+  DoubleHelper w = new DoubleHelper(1.0,sz);
+  DoubleHelper wHood = new DoubleHelper(0.3,sz);
+  DoubleHelper wRoof = new DoubleHelper(0.3,sz);
+  DoubleHelper wRear = new DoubleHelper(0.2,sz);
+  DoubleHelper wWindowFront = new DoubleHelper(0.1,sz);
+  DoubleHelper wWindowRear = new DoubleHelper(0.1,sz);
 
   GlModelBuffer model = new GlModel([
     //floor
     new GlRectangle.withWD(-w.h,0.0, -d.h, w.v, d.v, true),
     //hood
-    new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h, w.v, dHood.v, false),
+    new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h, wHood.v, d.v, false),
     //rear top
-    new GlRectangle.withWD(-w.h,hCarBottom.v, d.h-dRear.v, w.v, dRear.v, false),
+    new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h, wRear.v, d.v, false),
     //roof
-    new GlRectangle.withWD(-w.h,h.v, -d.h+dHood.v+dWindowFront.v, w.v, dRoof.v, false),
+    new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, -d.h+dWindow.v, wRoof.v, dRoof.v, false),
     //front
-    new GlRectangle.withWH(-w.h,0.0, -d.h, w.v, hCarBottom.v, false),
+    new GlRectangle.withHD(w.h,0.0, -d.h, hCarBottom.v, d.v, true),
     //rear
-    new GlRectangle.withWH(-w.h,0.0, d.h, w.v, hCarBottom.v, true),
+    new GlRectangle.withHD(-w.h,0.0, -d.h, hCarBottom.v, d.v, false),
     //right side
     //bottom
-    new GlRectangle.withHD(w.h,0.0, -d.h, hCarBottom.v, d.v, true),
-    //top
-    new GlRectangle.withHD(w.h,hCarBottom.v, -d.h+dHood.v+dWindowFront.v, hWindow.v, dRoof.v, true),
-    //windowFront
-    new GlTriangle([
-      new GlPoint(w.h,hCarBottom.v,-d.h+dHood.v),
-      new GlPoint(w.h,h.v,-d.h+dHood.v+dWindowFront.v),
-      new GlPoint(w.h,hCarBottom.v,-d.h+dHood.v+dWindowFront.v),
-    ]),
-    //windowRear
-    new GlTriangle([
-      new GlPoint(w.h,hCarBottom.v,d.h-dRear.v),
-      new GlPoint(w.h,hCarBottom.v,d.h-dRear.v-dWindowRear.v),
-      new GlPoint(w.h,h.v,d.h-dRear.v-dWindowRear.v),
-    ]),
+    new GlRectangle.withWH(-w.h,0.0, d.h, w.v, hCarBottom.v, true),
     //left side
-
     //bottom
-    new GlRectangle.withHD(-w.h,0.0, -d.h, hCarBottom.v, d.v, false),
-    //top
-    new GlRectangle.withHD(-w.h,hCarBottom.v, -d.h+dHood.v+dWindowFront.v, hWindow.v, dRoof.v, false),
-    //windowFront
-    new GlTriangle([
-      new GlPoint(-w.h,hCarBottom.v,-d.h+dHood.v),
-      new GlPoint(-w.h,hCarBottom.v,-d.h+dHood.v+dWindowFront.v),
-      new GlPoint(-w.h,h.v,-d.h+dHood.v+dWindowFront.v),
-    ]),
-    //windowRear
-    new GlTriangle([
-      new GlPoint(-w.h,hCarBottom.v,d.h-dRear.v),
-      new GlPoint(-w.h,h.v,d.h-dRear.v-dWindowRear.v),
-      new GlPoint(-w.h,hCarBottom.v,d.h-dRear.v-dWindowRear.v),
-    ]),
+    new GlRectangle.withWH(-w.h,0.0, -d.h, w.v, hCarBottom.v, false),
+
   ]).createBuffers(layer);
   GlModelBuffer modelWindows = new GlModel([
     //WindowFront
     new GlTriangle([
-      new GlPoint(-w.h,hCarBottom.v,-d.h+dHood.v),
-      new GlPoint(-w.h,h.v,-d.h+dHood.v+dWindowFront.v),
-      new GlPoint(w.h,h.v,-d.h+dHood.v+dWindowFront.v),
+      new GlPoint(w.h-wHood.v, hCarBottom.v, d.h),
+      new GlPoint(w.h-wHood.v-wWindowFront.v, h.v, -d.h+dWindow.v),
+      new GlPoint(w.h-wHood.v-wWindowFront.v, h.v, d.h-dWindow.v),
     ]),
     new GlTriangle([
-      new GlPoint(-w.h,hCarBottom.v,-d.h+dHood.v),
-      new GlPoint(w.h,h.v,-d.h+dHood.v+dWindowFront.v),
-      new GlPoint(w.h,hCarBottom.v,-d.h+dHood.v),
+      new GlPoint(w.h-wHood.v,hCarBottom.v,d.h),
+      new GlPoint(w.h-wHood.v,hCarBottom.v,-d.h),
+      new GlPoint(w.h-wHood.v-wWindowFront.v, h.v, -d.h+dWindow.v),
     ]),
     //WindowRear
     new GlTriangle([
-      new GlPoint(-w.h,hCarBottom.v,d.h-dRear.v),
-      new GlPoint(w.h,h.v,d.h-dRear.v-dWindowRear.v),
-      new GlPoint(-w.h,h.v,d.h-dRear.v-dWindowRear.v),
+      new GlPoint(-w.h+wRear.v, hCarBottom.v, d.h),
+      new GlPoint(-w.h+wRear.v+wWindowRear.v, h.v, d.h-dWindow.v),
+      new GlPoint(-w.h+wRear.v+wWindowRear.v, h.v, -d.h+dWindow.v),
     ]),
     new GlTriangle([
-      new GlPoint(-w.h,hCarBottom.v,d.h-dRear.v),
-      new GlPoint(w.h,hCarBottom.v,d.h-dRear.v),
-      new GlPoint(w.h,h.v,d.h-dRear.v-dWindowRear.v),
+      new GlPoint(-w.h+wRear.v,hCarBottom.v,d.h),
+      new GlPoint(-w.h+wRear.v+wWindowRear.v, h.v, -d.h+dWindow.v),
+      new GlPoint(-w.h+wRear.v,hCarBottom.v,-d.h),
     ]),
-
+    //windowLeft
+    new GlTriangle([
+      new GlPoint(-w.h+wRear.v,hCarBottom.v,d.h),
+      new GlPoint(w.h-wHood.v-wWindowFront.v,h.v,d.h-dWindow.v),
+      new GlPoint(-w.h+wRear.v+wWindowRear.v,h.v,d.h-dWindow.v),
+    ]),
+    new GlTriangle([
+      new GlPoint(-w.h+wRear.v,hCarBottom.v,d.h),
+      new GlPoint(w.h-wHood.v,hCarBottom.v,d.h),
+      new GlPoint(w.h-wHood.v-wWindowFront.v,h.v,d.h-dWindow.v),
+    ]),
+    //windowRight
+    new GlTriangle([
+      new GlPoint(-w.h+wRear.v,hCarBottom.v,-d.h),
+      new GlPoint(-w.h+wRear.v+wWindowRear.v,h.v,-d.h+dWindow.v),
+      new GlPoint(w.h-wHood.v-wWindowFront.v,h.v,-d.h+dWindow.v),
+    ]),
+    new GlTriangle([
+      new GlPoint(-w.h+wRear.v,hCarBottom.v,-d.h),
+      new GlPoint(w.h-wHood.v-wWindowFront.v,h.v,-d.h+dWindow.v),
+      new GlPoint(w.h-wHood.v,hCarBottom.v,-d.h),
+    ]),
   ]).createBuffers(layer);
 
 

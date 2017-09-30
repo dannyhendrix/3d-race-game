@@ -29,6 +29,28 @@ void main()
     game.update();
     layer.clear();
     for(GameObject o in game.gameobjects){
+      //draw path
+      var startPoint = game.path.point(0);
+      layer.ctx.beginPath();
+      layer.ctx.moveTo(startPoint.x, startPoint.y);
+      for(int i = 1; i < game.path.length; i++){
+        var p =game.path.point(i);
+        layer.ctx.lineTo(p.x, p.y);
+      }
+      if(game.path.circular){
+        layer.ctx.lineTo(startPoint.x,startPoint.y);
+      }
+      layer.ctx.strokeStyle = '#555';
+      layer.ctx.stroke();
+
+      for(int i = 0; i < game.path.length; i++){
+        var p =game.path.point(i);
+        layer.ctx.beginPath();
+        layer.ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI, false);
+        layer.ctx.stroke();
+      }
+
+      //draw gameObjects
       if(o is Vehicle){
         Vehicle v = o;
         drawPolygon(o.createPolygonOnActualLocation(), layer, v.isCollided ? "red" : "green");
@@ -38,6 +60,16 @@ void main()
       layer.ctx.arc(o.position.x, o.position.y, 2, 0, 2 * Math.PI, false);
       layer.ctx.fillStyle = 'green';
       layer.ctx.fill();
+    }
+
+    //draw line from each player to his next target
+    layer.ctx.fillStyle = '#777';
+    for(int i = 0; i < game.players.length; i++){
+      var p =game.players[i];
+      layer.ctx.beginPath();
+      layer.ctx.moveTo(p.vehicle.position.x, p.vehicle.position.y);
+      layer.ctx.lineTo(p.pathProgress.current.x, p.pathProgress.current.y);
+      layer.ctx.stroke();
     }
 
     layer.ctx.font = "10px Arial";
@@ -56,14 +88,14 @@ void main()
     bool down = e.type == "keydown";//event.KEYDOWN
     Control control;
     if(key == 38)//up
-      game.players[0].onControl(Control.Accelerate,down);
+      game.humanPlayer.onControl(Control.Accelerate,down);
     else if(key == 40)//down
-      game.players[0].onControl(Control.Brake,down);
+      game.humanPlayer.onControl(Control.Brake,down);
     else if(key == 37)//left
-      game.players[0].onControl(Control.SteerLeft,down);
+      game.humanPlayer.onControl(Control.SteerLeft,down);
     else if(key == 39)//right
-      game.players[0].onControl(Control.SteerRight,down);
-
+      game.humanPlayer.onControl(Control.SteerRight,down);
+/*
     else if(key == 87)//w
       game.players[1].onControl(Control.Accelerate,down);
     else if(key == 83)//s
@@ -72,6 +104,7 @@ void main()
       game.players[1].onControl(Control.SteerLeft,down);
     else if(key == 68)//d
       game.players[1].onControl(Control.SteerRight,down);
+      */
     else return;
   };
 

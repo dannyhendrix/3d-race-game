@@ -3,14 +3,15 @@ part of webgl;
 class GlRenderLayer{
   CanvasElement canvas;
   RenderingContext ctx;
+  bool _enableCullFace = false;
   GlProgram program;
   double x = 0.0, y =0.0, z =0.0;
   double rx = 0.0, ry =0.0, rz =0.0;
 
-  GlRenderLayer.fromCanvas(this.canvas){
+  GlRenderLayer.fromCanvas(this.canvas, [this._enableCullFace = false]){
     _init();
   }
-  GlRenderLayer.withSize(int w, int h){
+  GlRenderLayer.withSize(int w, int h, [this._enableCullFace = false]){
     canvas = new CanvasElement();
     canvas.height = w;
     canvas.width = h;
@@ -24,7 +25,7 @@ class GlRenderLayer{
     program = new GlProgram(ctx);
     ctx.clearColor(0.0, 0.0, 0.0, 1.0);
     // by default backfacing triangles will be culled
-    //ctx.enable(CULL_FACE);
+    if(!_enableCullFace) ctx.enable(CULL_FACE);
     ctx.enable(DEPTH_TEST);
   }
 

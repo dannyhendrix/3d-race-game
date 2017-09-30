@@ -25,7 +25,7 @@ class GlModelInstanceFromGameObject extends GlModelInstance{
   double get ry => -gameObject.r;
   GlColor white = new GlColor(1.0,1.0,1.0);
   GlColor red = new GlColor(1.0,0.0,0.0);
-  GlColor blue = new GlColor(0.0,0.0,1.0);
+  GlColor blue = new GlColor(1.0,1.0,0.0);
   GlColor get color{
     if(!(gameObject is Vehicle)) return white;
     Vehicle v = gameObject;
@@ -63,7 +63,7 @@ void main()
   game.start();
 //units/actual
   //4 4 8
-  GlModelBuffer vehicleModel = createVehicleModel(game.players[0].vehicle.w/4.0, 50.0/4.0, game.players[0].vehicle.h/8.0);
+  GlModelBuffer vehicleModel = createVehicleModel(game.players[0].vehicle.w/1.0, 50.0/1.0, game.players[0].vehicle.h/1.0);
   //createVehicleModel().modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
 
   //create all buffer
@@ -92,14 +92,14 @@ void main()
     bool down = e.type == "keydown";//event.KEYDOWN
     Control control;
     if(key == 38)//up
-      game.players[0].onControl(Control.Accelerate,down);
+      game.humanPlayer.onControl(Control.Accelerate,down);
     else if(key == 40)//down
-      game.players[0].onControl(Control.Brake,down);
+      game.humanPlayer.onControl(Control.Brake,down);
     else if(key == 37)//left
-      game.players[0].onControl(Control.SteerLeft,down);
+      game.humanPlayer.onControl(Control.SteerLeft,down);
     else if(key == 39)//right
-      game.players[0].onControl(Control.SteerRight,down);
-
+      game.humanPlayer.onControl(Control.SteerRight,down);
+/*
     else if(key == 87)//w
       game.players[1].onControl(Control.Accelerate,down);
     else if(key == 83)//s
@@ -107,7 +107,7 @@ void main()
     else if(key == 65)//a
       game.players[1].onControl(Control.SteerLeft,down);
     else if(key == 68)//d
-      game.players[1].onControl(Control.SteerRight,down);
+      game.players[1].onControl(Control.SteerRight,down);*/
     else return;
 
     e.preventDefault();
@@ -153,7 +153,7 @@ tick(time) {
     objPerspective = objPerspective.rotateX(m.rx);
     objPerspective = objPerspective.rotateY(m.ry);
     objPerspective = objPerspective.rotateZ(m.rz);
-    layer.setWorld(objPerspective,viewProjectionMatrix*objPerspective, new GlVector(-1.0,0.8,0.6), 0.3);
+    layer.setWorld(objPerspective,viewProjectionMatrix*objPerspective, new GlVector(-1.0,0.8,0.6), 0.4);
     layer.drawModel(m);
   }
 }
@@ -231,90 +231,85 @@ class DoubleHelper{
 
 //Car model
 GlModelBuffer createVehicleModel(double sx, double sy, double sz){
-  DoubleHelper h = new DoubleHelper(4.0,sy);
-  DoubleHelper hCarBottom = new DoubleHelper(2.0,sy);
-  DoubleHelper hWindow = new DoubleHelper(2.0,sy);
+  DoubleHelper h = new DoubleHelper(1.0,sy);
+  DoubleHelper hCarBottom = new DoubleHelper(0.5,sy);
+  DoubleHelper hWindow = new DoubleHelper(0.5,sy);
 
-  DoubleHelper w = new DoubleHelper(4.0,sx);
+  DoubleHelper d = new DoubleHelper(1.0,sz);
+  DoubleHelper dRoof = new DoubleHelper(0.8,sz);
+  DoubleHelper dWindow = new DoubleHelper(0.1,sz);
 
-  DoubleHelper d = new DoubleHelper(8.0,sz);
-  DoubleHelper dHood = new DoubleHelper(2.0,sz);
-  DoubleHelper dRoof = new DoubleHelper(3.0,sz);
-  DoubleHelper dRear = new DoubleHelper(1.0,sz);
-  DoubleHelper dWindowFront = new DoubleHelper(1.0,sz);
-  DoubleHelper dWindowRear = new DoubleHelper(1.0,sz);
+  DoubleHelper w = new DoubleHelper(1.0,sx);
+  DoubleHelper wHood = new DoubleHelper(0.3,sx);
+  DoubleHelper wRoof = new DoubleHelper(0.3,sx);
+  DoubleHelper wRear = new DoubleHelper(0.2,sx);
+  DoubleHelper wWindowFront = new DoubleHelper(0.1,sx);
+  DoubleHelper wWindowRear = new DoubleHelper(0.1,sx);
 
   GlModelBuffer model = new GlModel([
     //floor
     new GlRectangle.withWD(-w.h,0.0, -d.h, w.v, d.v, true),
     //hood
-    new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h, w.v, dHood.v, false),
+    new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h, wHood.v, d.v, false),
     //rear top
-    new GlRectangle.withWD(-w.h,hCarBottom.v, d.h-dRear.v, w.v, dRear.v, false),
+    new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h, wRear.v, d.v, false),
     //roof
-    new GlRectangle.withWD(-w.h,h.v, -d.h+dHood.v+dWindowFront.v, w.v, dRoof.v, false),
+    new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, -d.h+dWindow.v, wRoof.v, dRoof.v, false),
     //front
-    new GlRectangle.withWH(-w.h,0.0, -d.h, w.v, hCarBottom.v, false),
+    new GlRectangle.withHD(w.h,0.0, -d.h, hCarBottom.v, d.v, true),
     //rear
-    new GlRectangle.withWH(-w.h,0.0, d.h, w.v, hCarBottom.v, true),
+    new GlRectangle.withHD(-w.h,0.0, -d.h, hCarBottom.v, d.v, false),
     //right side
     //bottom
-    new GlRectangle.withHD(w.h,0.0, -d.h, hCarBottom.v, d.v, true),
-    //top
-    new GlRectangle.withHD(w.h,hCarBottom.v, -d.h+dHood.v+dWindowFront.v, hWindow.v, dRoof.v, true),
-    //windowFront
-    new GlTriangle([
-      new GlPoint(w.h,hCarBottom.v,-d.h+dHood.v),
-      new GlPoint(w.h,h.v,-d.h+dHood.v+dWindowFront.v),
-      new GlPoint(w.h,hCarBottom.v,-d.h+dHood.v+dWindowFront.v),
-    ]),
-    //windowRear
-    new GlTriangle([
-      new GlPoint(w.h,hCarBottom.v,d.h-dRear.v),
-      new GlPoint(w.h,hCarBottom.v,d.h-dRear.v-dWindowRear.v),
-      new GlPoint(w.h,h.v,d.h-dRear.v-dWindowRear.v),
-    ]),
+    new GlRectangle.withWH(-w.h,0.0, d.h, w.v, hCarBottom.v, true),
     //left side
-
     //bottom
-    new GlRectangle.withHD(-w.h,0.0, -d.h, hCarBottom.v, d.v, false),
-    //top
-    new GlRectangle.withHD(-w.h,hCarBottom.v, -d.h+dHood.v+dWindowFront.v, hWindow.v, dRoof.v, false),
-    //windowFront
-    new GlTriangle([
-      new GlPoint(-w.h,hCarBottom.v,-d.h+dHood.v),
-      new GlPoint(-w.h,hCarBottom.v,-d.h+dHood.v+dWindowFront.v),
-      new GlPoint(-w.h,h.v,-d.h+dHood.v+dWindowFront.v),
-    ]),
-    //windowRear
-    new GlTriangle([
-      new GlPoint(-w.h,hCarBottom.v,d.h-dRear.v),
-      new GlPoint(-w.h,h.v,d.h-dRear.v-dWindowRear.v),
-      new GlPoint(-w.h,hCarBottom.v,d.h-dRear.v-dWindowRear.v),
-    ]),
+    new GlRectangle.withWH(-w.h,0.0, -d.h, w.v, hCarBottom.v, false),
+
     //WindowFront
     new GlTriangle([
-      new GlPoint(-w.h,hCarBottom.v,-d.h+dHood.v),
-      new GlPoint(-w.h,h.v,-d.h+dHood.v+dWindowFront.v),
-      new GlPoint(w.h,h.v,-d.h+dHood.v+dWindowFront.v),
+      new GlPoint(w.h-wHood.v, hCarBottom.v, d.h),
+      new GlPoint(w.h-wHood.v-wWindowFront.v, h.v, -d.h+dWindow.v),
+      new GlPoint(w.h-wHood.v-wWindowFront.v, h.v, d.h-dWindow.v),
     ]),
     new GlTriangle([
-      new GlPoint(-w.h,hCarBottom.v,-d.h+dHood.v),
-      new GlPoint(w.h,h.v,-d.h+dHood.v+dWindowFront.v),
-      new GlPoint(w.h,hCarBottom.v,-d.h+dHood.v),
+      new GlPoint(w.h-wHood.v,hCarBottom.v,d.h),
+      new GlPoint(w.h-wHood.v,hCarBottom.v,-d.h),
+      new GlPoint(w.h-wHood.v-wWindowFront.v, h.v, -d.h+dWindow.v),
     ]),
     //WindowRear
     new GlTriangle([
-      new GlPoint(-w.h,hCarBottom.v,d.h-dRear.v),
-      new GlPoint(w.h,h.v,d.h-dRear.v-dWindowRear.v),
-      new GlPoint(-w.h,h.v,d.h-dRear.v-dWindowRear.v),
+      new GlPoint(-w.h+wRear.v, hCarBottom.v, d.h),
+      new GlPoint(-w.h+wRear.v+wWindowRear.v, h.v, d.h-dWindow.v),
+      new GlPoint(-w.h+wRear.v+wWindowRear.v, h.v, -d.h+dWindow.v),
     ]),
     new GlTriangle([
-      new GlPoint(-w.h,hCarBottom.v,d.h-dRear.v),
-      new GlPoint(w.h,hCarBottom.v,d.h-dRear.v),
-      new GlPoint(w.h,h.v,d.h-dRear.v-dWindowRear.v),
+      new GlPoint(-w.h+wRear.v,hCarBottom.v,d.h),
+      new GlPoint(-w.h+wRear.v+wWindowRear.v, h.v, -d.h+dWindow.v),
+      new GlPoint(-w.h+wRear.v,hCarBottom.v,-d.h),
     ]),
-
+    //windowLeft
+    new GlTriangle([
+      new GlPoint(-w.h+wRear.v,hCarBottom.v,d.h),
+      new GlPoint(w.h-wHood.v-wWindowFront.v,h.v,d.h-dWindow.v),
+      new GlPoint(-w.h+wRear.v+wWindowRear.v,h.v,d.h-dWindow.v),
+    ]),
+    new GlTriangle([
+      new GlPoint(-w.h+wRear.v,hCarBottom.v,d.h),
+      new GlPoint(w.h-wHood.v,hCarBottom.v,d.h),
+      new GlPoint(w.h-wHood.v-wWindowFront.v,h.v,d.h-dWindow.v),
+    ]),
+    //windowRight
+    new GlTriangle([
+      new GlPoint(-w.h+wRear.v,hCarBottom.v,-d.h),
+      new GlPoint(-w.h+wRear.v+wWindowRear.v,h.v,-d.h+dWindow.v),
+      new GlPoint(w.h-wHood.v-wWindowFront.v,h.v,-d.h+dWindow.v),
+    ]),
+    new GlTriangle([
+      new GlPoint(-w.h+wRear.v,hCarBottom.v,-d.h),
+      new GlPoint(w.h-wHood.v-wWindowFront.v,h.v,-d.h+dWindow.v),
+      new GlPoint(w.h-wHood.v,hCarBottom.v,-d.h),
+    ]),
   ]).createBuffers(layer);
   return model;
 }
