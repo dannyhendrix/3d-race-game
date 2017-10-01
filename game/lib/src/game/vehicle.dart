@@ -46,7 +46,7 @@ class Vehicle extends MoveableGameObject{
 
   Vehicle(this.game, this.player){
     position = new Point(150.0, 50.0);
-    r = 1.7;
+    r = 0.0;
     w = 50.0;
     h = 30.0;
     collisionField = new Polygon([

@@ -46,7 +46,7 @@ void main()
     for(int i = 0; i < game.path.length; i++){
       var p =game.path.point(i);
       layer.ctx.beginPath();
-      layer.ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI, false);
+      layer.ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI, false);
       layer.ctx.stroke();
     }
 

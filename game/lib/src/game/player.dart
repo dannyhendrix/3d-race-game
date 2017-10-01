@@ -34,7 +34,7 @@ class HumanPlayer extends Player{
     Point v =  vehicle.position;
     Vector V =  new Vector(p.x-v.x,p.y-v.y);
     vehicle.info = "${pathProgress.finished}";
-    if(V.magnitude < pathProgress.path.pointRadius){
+    if(V.magnitude < pathProgress.current.radius){
       pathProgress.next();
     }
   }
@@ -49,8 +49,7 @@ class AiPlayer extends Player{
     Point p =  pathProgress.current;
     Point v =  vehicle.position;
     Vector V =  new Vector(p.x-v.x,p.y-v.y);
-    vehicle.info = "${pathProgress.finished}";
-    if(V.magnitude < pathProgress.path.pointRadius){
+    if(V.magnitude < pathProgress.current.radius){
       pathProgress.next();
     }
     Steer steer = determineSteerAngle(v,vehicle.r,p);

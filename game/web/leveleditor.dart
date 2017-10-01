@@ -53,14 +53,16 @@ class Wall extends LevelElement with LevelElementXZ{
 }
 class CheckPoint extends LevelElement with LevelElementXZ{
   double x = 0.0,z = 0.0;
-  CheckPoint([this.x=0.0,this.z=0.0]);
+  double radius = 50.0;
+  CheckPoint([this.x=0.0,this.z=0.0, this.radius = 50.0]);
   Map toJson(){
-    return {"x":x,"z":z};
+    return {"x":x,"z":z, "radius":radius};
   }
   Element createElement(){
     Element el = new SpanElement();
     el.append(createInputElementDouble("x",x,(double v)=>x=v));
     el.append(createInputElementDouble("z",z,(double v)=>z=v));
+    el.append(createInputElementDouble("radius",radius,(double v)=>radius=v));
     return el;
   }
 }
@@ -91,41 +93,45 @@ class LevelLoader{
     level.d = json["d"];
     level.path.circular = json["path"]["circular"];
     level.path.laps = json["path"]["laps"];
-    level.path.checkpoints = json["path"]["checkpoints"].map((Map m)=>new CheckPoint(double.parse(m["x"]),double.parse(m["z"]))).toList();
-    level.walls = json["walls"].map((Map m)=>new Wall(double.parse(m["x"]),double.parse(m["z"]),double.parse(m["r"]),double.parse(m["w"]),double.parse(m["d"]),double.parse(m["h"]))).toList();
+    level.path.checkpoints = (json["path"]["checkpoints"]).map((Map m)=>new CheckPoint(m["x"],m["z"],m["radius"])).toList();
+    level.walls = json["walls"].map((Map m)=>new Wall(m["x"],m["z"],m["r"],m["w"],m["d"],m["h"])).toList();
     return level;
   }
 }
 
-
-Level level = new Level();
-Preview preview = new Preview();
-LevelElementXZ currentXY;
+class Container
+{
+  Level level = new Level();
+  Preview preview = new Preview();
+  LevelElementXZ currentXY;
+  Container();
+}
+Container container = new Container();
 
 void main(){
-  document.body.append(preview.createElement());
+  document.body.append(container.preview.createElement());
   Element el_level = new DivElement();
-  Element el = new ObjInput<Level>().createInputElementObj("level",level);
+  Element el = new ObjInput<Level>().createInputElementObj("level",container.level);
   el_level.append(el);
   document.body.append(el_level);
-  Element el_txt = new TextAreaElement();
+  TextAreaElement el_txt = new TextAreaElement();
   document.body.append(createButton("CreateJson",(Event e){
-    Map json = level.toJson();
-    el_txt.text = JSON.encode(json);
+    Map json = container.level.toJson();
+    el_txt.value = JSON.encode(json);
   }));
   document.body.append(createButton("ReadJson",(Event e){
     LevelLoader levelLoader = new LevelLoader();
-    Map json = JSON.decode(el_txt.text);
-    level = levelLoader.loadLevel(json);
+    Map json = JSON.decode(el_txt.value);
+    container.level = levelLoader.loadLevel(json);
     el.remove();
-    el = new ObjInput<Level>().createInputElementObj("level",level);
+    el = new ObjInput<Level>().createInputElementObj("level",container.level);
     el_level.append(el);
   }));
   document.body.append(el_txt);
 }
 
 void onInputValueChange(){
-  preview.paintLevel(level);
+  container.preview.paintLevel(container.level);
 }
 
 /**
@@ -154,8 +160,8 @@ class Preview{
       el_y.text = e.offset.y.toString();
     });
     el.onMouseDown.listen((MouseEvent e){
-      currentXY.x = 1.0*e.offset.x;
-      currentXY.z= 1.0*e.offset.y;
+      container.currentXY.x = 1.0*e.offset.x;
+      container.currentXY.z= 1.0*e.offset.y;
     });
     return el;
   }
@@ -185,7 +191,7 @@ class Preview{
       {
         var p = level.path.checkpoints[i];
         ctx.beginPath();
-        ctx.arc(p.x, p.z, 5, 0, 2 * Math.PI, false);
+        ctx.arc(p.x, p.z, p.radius, 0, 2 * Math.PI, false);
         ctx.stroke();
       }
     }
@@ -254,7 +260,7 @@ Element createInputElementBool(String label, bool value, OnBoolValueChange onCha
 }
 class ListInput<T extends LevelElement>
 {
-  Element createInputElementList(String label, List value, OnAddObject<T> onAdd, OnRemoveObject<T> onRemove)
+  Element createInputElementList(String label, List<T> value, OnAddObject<T> onAdd, OnRemoveObject<T> onRemove)
   {
     Element el_wrap = new FieldSetElement();
     Element el_legend = new LegendElement();
@@ -262,23 +268,32 @@ class ListInput<T extends LevelElement>
     el_wrap.append(el_legend);
     Element el_content = new DivElement();
     el_wrap.append(el_content);
+
+    for(T v in value){
+      addNew(v, el_content, onRemove);
+    }
+
     el_wrap.append(createButton("add", (Event e)
     {
-      Element el_item = new DivElement();
       T obj = onAdd();
-      el_item.append(obj.createElement());
-
-      el_item.append(createButton("remove", (Event e)
-      {
-        el_item.remove();
-        onRemove(obj);
-        onInputValueChange();
-      }));
-      el_content.append(el_item);
-      onInputValueChange();
+      addNew(obj, el_content, onRemove);
     }));
     el_wrap.className = "in listIn";
     return el_wrap;
+  }
+
+  void addNew(T obj, Element el_content, OnRemoveObject<T> onRemove){
+    Element el_item = new DivElement();
+    el_item.append(obj.createElement());
+
+    el_item.append(createButton("remove", (Event e)
+    {
+      el_item.remove();
+      onRemove(obj);
+      onInputValueChange();
+    }));
+    el_content.append(el_item);
+    onInputValueChange();
   }
 }
 class ObjInput<T extends LevelElement>
@@ -303,7 +318,7 @@ Element createButtonSetCurrent(String labelText, LevelElementXZ obj){
   var btn = new ButtonElement();
   btn.text = labelText;
   btn.onClick.listen((Event e){
-    currentXY = obj;
+    container.currentXY = obj;
   });
   return btn;
 }

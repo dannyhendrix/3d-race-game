@@ -6,7 +6,7 @@ class PathProgress{
   bool finished = false;
   int _index = 0;
 
-  Point get current => path.point(_index);
+  PathCheckPoint get current => path.point(_index);
   double get completedFactor => _index.toDouble()/path.length.toDouble();
 
   PathProgress(this.path);
@@ -26,13 +26,16 @@ class PathProgress{
     }
   }
 }
+class PathCheckPoint extends Point{
+  double radius;
+  PathCheckPoint([double x=0.0, double y=0.0, this.radius=0.0]) : super(x, y);
 
+}
 class Path{
-  List<Point> _path;
+  List<PathCheckPoint> _path;
   bool circular;
   int roundsToFinish;
-  double pointRadius;
   int get length => _path.length;
-  Point point(int index) => _path[index];
-  Path(this._path, [this.circular = false, this.roundsToFinish = -1, this.pointRadius = 50.0]);//-1 inf
+  PathCheckPoint point(int index) => _path[index];
+  Path(this._path, [this.circular = false, this.roundsToFinish = -1]);//-1 inf
 }

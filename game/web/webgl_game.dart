@@ -38,6 +38,13 @@ class GlModelInstanceFromGameObject extends GlModelInstanceCollection{
   double get ry => -gameObject.r;
   GlModelInstanceFromGameObject(this.gameObject, GlModelInstanceCollection model):super(model.modelInstances);
 }
+class GlModelInstanceCheckpoint extends GlModelInstanceCollection{
+  Game game;
+  double get x => game.humanPlayer.pathProgress.current.x;
+  double get z => game.humanPlayer.pathProgress.current.y;
+  double get ry => 0.0;
+  GlModelInstanceCheckpoint(this.game, GlModelInstanceCollection model):super(model.modelInstances);
+}
 
 void main()
 {
@@ -89,6 +96,9 @@ void main()
   GlModel worldModel = new GlModel([new GlRectangle.withWD(0.0,0.0,0.0,1500.0,800.0,false)]);
   GlModelBuffer world = worldModel.createBuffers(layer);
   modelInstances.add(new GlModelInstanceCollection([new GlModelInstance(world, new GlColor(0.6,0.6,0.6))]));
+
+  GlModelBuffer cube = new GlCube.fromTopCenter(0.0,0.0,0.0,30.0,30.0,30.0).createBuffers(layer);
+  modelInstances.add(new GlModelInstanceCheckpoint(game, new GlModelInstanceCollection([new GlModelInstance(cube, new GlColor(1.0,1.0,0.0))])));
 
   // Start off the infinite animation loop
   tick(0);
