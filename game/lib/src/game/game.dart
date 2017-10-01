@@ -29,7 +29,7 @@ class Game{
     LevelLoader levelLoader = new LevelLoader();
     levelLoader.loadLevelJson(this, leveljson);
 
-    List<Point> startLocation = [new Point(80.0,110.0),new Point(80.0,150.0),new Point(120.0,110.0),new Point(120.0,150.0)];
+    List<Point> startLocation = [new Point(80.0,100.0),new Point(80.0,160.0),new Point(120.0,100.0),new Point(120.0,160.0)];
     int i = 0;
     for(Player player in players){
       Vehicle v = new Vehicle(this,player);

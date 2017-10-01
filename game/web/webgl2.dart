@@ -7,8 +7,8 @@ GlRenderLayer layer;
 List<GlModelInstanceCollection> modelInstances = [];
 GlCameraDistanseToTarget camera;
 
-double rx = 0.0, ry = 0.0, rz=0.0;
-double ox = 0.0, oy = 0.0, oz=10.0;
+double rx = 0.5, ry = 2.6, rz=0.0;
+double ox = 0.0, oy = 0.0, oz=40.0;
 double lx = 0.5, ly = 0.5, lz = 0.5;
 double lightImpact = 0.5;
 
@@ -30,7 +30,7 @@ void main(){
 
   //4 create models
   modelInstances.add(createXYZMark());
-   var car = createVehicleModel(5.0,5.0,15.0);
+   var car = createVehicleModel(5.0,4.0,3.0);
   modelInstances.add(car);
 
   document.body.append(createTitle("Light"));
@@ -74,24 +74,24 @@ GlModelInstanceCollection createVehicleModel(double sx, double sy, double sz){
   DoubleHelper hCarBottom = new DoubleHelper(0.5,sy);
   DoubleHelper hWindow = new DoubleHelper(0.5,sy);
 
-  DoubleHelper d = new DoubleHelper(1.0,sx);
-  DoubleHelper dRoof = new DoubleHelper(0.8,sx);
-  DoubleHelper dWindow = new DoubleHelper(0.1,sx);
+  DoubleHelper d = new DoubleHelper(1.0,sz);
+  DoubleHelper dRoof = new DoubleHelper(0.8,sz);
+  DoubleHelper dWindow = new DoubleHelper(0.1,sz);
 
-  DoubleHelper dStripeLeft = new DoubleHelper(0.3,sx);
-  DoubleHelper dStripeMid = new DoubleHelper(0.4,sx);
-  DoubleHelper dStripeRight = new DoubleHelper(0.3,sx);
+  DoubleHelper dStripeLeft = new DoubleHelper(0.3,sz);
+  DoubleHelper dStripeMid = new DoubleHelper(0.4,sz);
+  DoubleHelper dStripeRight = new DoubleHelper(0.3,sz);
 
-  DoubleHelper dStripeRoofLeft = new DoubleHelper(0.2,sx);
-  DoubleHelper dStripeRoofMid = new DoubleHelper(0.4,sx);
-  DoubleHelper dStripeRoofRight = new DoubleHelper(0.2,sx);
+  DoubleHelper dStripeRoofLeft = new DoubleHelper(0.2,sz);
+  DoubleHelper dStripeRoofMid = new DoubleHelper(0.4,sz);
+  DoubleHelper dStripeRoofRight = new DoubleHelper(0.2,sz);
 
-  DoubleHelper w = new DoubleHelper(1.0,sz);
-  DoubleHelper wHood = new DoubleHelper(0.3,sz);
-  DoubleHelper wRoof = new DoubleHelper(0.3,sz);
-  DoubleHelper wRear = new DoubleHelper(0.2,sz);
-  DoubleHelper wWindowFront = new DoubleHelper(0.1,sz);
-  DoubleHelper wWindowRear = new DoubleHelper(0.1,sz);
+  DoubleHelper w = new DoubleHelper(1.0,sx);
+  DoubleHelper wHood = new DoubleHelper(0.3,sx);
+  DoubleHelper wRoof = new DoubleHelper(0.3,sx);
+  DoubleHelper wRear = new DoubleHelper(0.2,sx);
+  DoubleHelper wWindowFront = new DoubleHelper(0.1,sx);
+  DoubleHelper wWindowRear = new DoubleHelper(0.1,sx);
 
   GlModelBuffer model = new GlModel([
     //floor

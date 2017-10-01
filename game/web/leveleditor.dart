@@ -1,6 +1,11 @@
 import "dart:html";
 import "dart:math" as Math;
 import "dart:convert";
+
+
+Map leveljson = {"w":1500,"d":800,"walls":[{"x":750.0,"z":5.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":750.0,"z":795.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":5.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":1495.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":740.0,"z":190.0,"r":0.0,"w":800.0,"d":10.0,"h":10.0},{"x":1180.0,"z":350.0,"r":1.4,"w":300.0,"d":10.0,"h":10.0},{"x":320.0,"z":350.0,"r":1.7,"w":300.0,"d":10.0,"h":10.0},{"x":730.0,"z":610.0,"r":1.6,"w":300.0,"d":10.0,"h":10.0}],"path":{"circular":true,"laps":-1,"checkpoints":[{"x":190.0,"z":110.0,"radius":100.0},{"x":1300.0,"z":100.0,"radius":100.0},{"x":1300.0,"z":640.0,"radius":100.0},{"x":950.0,"z":630.0,"radius":100.0},{"x":750.0,"z":310.0,"radius":100.0},{"x":470.0,"z":600.0,"radius":100.0},{"x":180.0,"z":650.0,"radius":100.0}]}};
+
+
 abstract class LevelElement{
   Map toJson();
   Element createElement();
@@ -111,23 +116,35 @@ Container container = new Container();
 void main(){
   document.body.append(container.preview.createElement());
   Element el_level = new DivElement();
-  Element el = new ObjInput<Level>().createInputElementObj("level",container.level);
-  el_level.append(el);
+  Element el_form = new ObjInput<Level>().createInputElementObj("level",container.level);
+  el_level.append(el_form);
   document.body.append(el_level);
+  document.body.append(createLoadSaveLevelElement(el_form,el_level));
+}
+
+Element createLoadSaveLevelElement(Element el_form, Element el_level){
+  Element el_wrap = new FieldSetElement();
+  Element el_legend = new LegendElement();
+  el_legend.text = "load/save";
+  el_wrap.append(el_legend);
+
   TextAreaElement el_txt = new TextAreaElement();
-  document.body.append(createButton("CreateJson",(Event e){
+  el_wrap.append(el_txt);
+  el_txt.className = "json";
+  el_wrap.append(createButton("CreateJson",(Event e){
     Map json = container.level.toJson();
     el_txt.value = JSON.encode(json);
   }));
-  document.body.append(createButton("ReadJson",(Event e){
+  el_wrap.append(createButton("ReadJson",(Event e){
     LevelLoader levelLoader = new LevelLoader();
     Map json = JSON.decode(el_txt.value);
     container.level = levelLoader.loadLevel(json);
-    el.remove();
-    el = new ObjInput<Level>().createInputElementObj("level",container.level);
-    el_level.append(el);
+    el_form.remove();
+    el_form = new ObjInput<Level>().createInputElementObj("level",container.level);
+    el_level.append(el_form);
   }));
-  document.body.append(el_txt);
+  el_txt.value = JSON.encode(leveljson);
+  return el_wrap;
 }
 
 void onInputValueChange(){

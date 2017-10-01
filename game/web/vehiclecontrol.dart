@@ -44,7 +44,7 @@ void main()
 
 
   var visualObject = new DivElement();
-  visualObject.setAttribute("style","position:absolute; left:0px; top:0px; height:30px; width:20px; background:blue; border-top:2px solid red;");
+  visualObject.setAttribute("style","position:absolute; left:0px; top:0px; height:20px; width:30px; background:blue; border-right:2px solid red;");
   document.body.append(visualObject);
 
   currentStandStillInput.setValue(vehicleSettings.getValue(VehicleSettingKeys.standstill_delay));
