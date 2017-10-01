@@ -12,6 +12,10 @@ double ox = 0.0, oy = 0.0, oz=10.0;
 double lx = 0.5, ly = 0.5, lz = 0.5;
 double lightImpact = 0.5;
 
+double wr = 0.5, wg = 0.5, wb = 0.5;
+double c1r = 0.5, c1g = 0.5, c1b = 0.5;
+double c2r = 0.5, c2g = 0.5, c2b = 0.5;
+
 void main(){
   layer = new GlRenderLayer.withSize(400,500, true);
   document.body.append(layer.canvas);
@@ -26,7 +30,8 @@ void main(){
 
   //4 create models
   modelInstances.add(createXYZMark());
-  modelInstances.add(createVehicleModel(5.0,5.0,15.0));
+   var car = createVehicleModel(5.0,5.0,15.0);
+  modelInstances.add(car);
 
   document.body.append(createTitle("Light"));
   document.body.append(createSlider("Light % impact",0.0,1.0,0.1,lightImpact,(String val){ lightImpact = double.parse(val); draw(); }));
@@ -40,6 +45,20 @@ void main(){
   document.body.append(createSlider("rotatex",0.0,2*Math.PI,0.1,rx,(String val){ rx = double.parse(val); draw(); }));
   document.body.append(createSlider("rotatey",0.0,2*Math.PI,0.1,ry,(String val){ ry = double.parse(val); draw(); }));
   document.body.append(createSlider("rotatez",0.0,2*Math.PI,0.1,rz,(String val){ rz = double.parse(val); draw(); }));
+
+  document.body.append(createTitle("Color window"));
+  document.body.append(createSlider("r",0.0,1.0,0.1,wr,(String val){ wr = double.parse(val); car.modelInstances[2].color = new GlColor(wr,wg,wb); draw(); }));
+  document.body.append(createSlider("g",0.0,1.0,0.1,wg,(String val){ wg = double.parse(val); car.modelInstances[2].color = new GlColor(wr,wg,wb); draw(); }));
+  document.body.append(createSlider("b",0.0,1.0,0.1,wb,(String val){ wb = double.parse(val); car.modelInstances[2].color = new GlColor(wr,wg,wb); draw(); }));
+
+  document.body.append(createTitle("Color1"));
+  document.body.append(createSlider("r",0.0,1.0,0.1,c1r,(String val){ c1r = double.parse(val); car.modelInstances[0].color = new GlColor(c1r,c1g,c1b); draw(); }));
+  document.body.append(createSlider("g",0.0,1.0,0.1,c1g,(String val){ c1g = double.parse(val); car.modelInstances[0].color = new GlColor(c1r,c1g,c1b); draw(); }));
+  document.body.append(createSlider("b",0.0,1.0,0.1,c1b,(String val){ c1b = double.parse(val); car.modelInstances[0].color = new GlColor(c1r,c1g,c1b); draw(); }));
+  document.body.append(createTitle("Color2"));
+  document.body.append(createSlider("r",0.0,1.0,0.1,c2r,(String val){ c2r = double.parse(val); car.modelInstances[1].color = new GlColor(c2r,c2g,c2b); draw(); }));
+  document.body.append(createSlider("g",0.0,1.0,0.1,c2g,(String val){ c2g = double.parse(val); car.modelInstances[1].color = new GlColor(c2r,c2g,c2b); draw(); }));
+  document.body.append(createSlider("b",0.0,1.0,0.1,c2b,(String val){ c2b = double.parse(val); car.modelInstances[1].color = new GlColor(c2r,c2g,c2b); draw(); }));
 
   draw();
 }

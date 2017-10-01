@@ -28,27 +28,30 @@ void main()
   GameLoop gameloop = new GameLoop((int now){
     game.update();
     layer.clear();
-    for(GameObject o in game.gameobjects){
-      //draw path
-      var startPoint = game.path.point(0);
-      layer.ctx.beginPath();
-      layer.ctx.moveTo(startPoint.x, startPoint.y);
-      for(int i = 1; i < game.path.length; i++){
-        var p =game.path.point(i);
-        layer.ctx.lineTo(p.x, p.y);
-      }
-      if(game.path.circular){
-        layer.ctx.lineTo(startPoint.x,startPoint.y);
-      }
-      layer.ctx.strokeStyle = '#555';
-      layer.ctx.stroke();
 
-      for(int i = 0; i < game.path.length; i++){
-        var p =game.path.point(i);
-        layer.ctx.beginPath();
-        layer.ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI, false);
-        layer.ctx.stroke();
-      }
+    //draw path
+    var startPoint = game.path.point(0);
+    layer.ctx.beginPath();
+    layer.ctx.moveTo(startPoint.x, startPoint.y);
+    for(int i = 1; i < game.path.length; i++){
+      var p =game.path.point(i);
+      layer.ctx.lineTo(p.x, p.y);
+    }
+    if(game.path.circular){
+      layer.ctx.lineTo(startPoint.x,startPoint.y);
+    }
+    layer.ctx.strokeStyle = '#555';
+    layer.ctx.stroke();
+
+    for(int i = 0; i < game.path.length; i++){
+      var p =game.path.point(i);
+      layer.ctx.beginPath();
+      layer.ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI, false);
+      layer.ctx.stroke();
+    }
+
+    //draw gameObjects
+    for(GameObject o in game.gameobjects){
 
       //draw gameObjects
       if(o is Vehicle){
