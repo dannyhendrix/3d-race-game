@@ -13,6 +13,7 @@ class Matrix2d{
       0.0, 0.0, 1.0,
     ];
   }
+  Matrix2d.translationPoint(Point p) : this.translation(p.x,p.y);
   Matrix2d.translation(double tx, double ty) {
     data = [
       1.0,  0.0,  0.0,
@@ -77,6 +78,9 @@ class Matrix2d{
     );
   }
 
+  Matrix2d translatePoint(Point p) {
+    return this * new Matrix2d.translation(p.x, p.y);
+  }
   Matrix2d translate(double tx, double ty) {
     return this * new Matrix2d.translation(tx, ty);
   }

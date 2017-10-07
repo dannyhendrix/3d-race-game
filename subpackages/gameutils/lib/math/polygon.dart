@@ -48,6 +48,10 @@ class Polygon{
     return new Point(totalX/totalP, totalY/totalP);
   }
 
+  Polygon applyMatrix(Matrix2d M){
+    return new Polygon(points.map((Point p) => M.apply(p)).toList());
+  }
+
   //TODO: use matrices here (rather than rotate and translate seperatly)
   Polygon rotate(double r, Point origin){
     List<Point> newPoints = [];

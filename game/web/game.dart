@@ -52,17 +52,17 @@ void main()
 
     //draw gameObjects
     for(GameObject o in game.gameobjects){
-
+      Matrix2d M = o.getTransformation();
       //draw gameObjects
       if(o is Vehicle){
         Vehicle v = o;
-        drawPolygon(o.createPolygonOnActualLocation(o.collisionField), layer, v.isCollided ? "red" : "green");
+        drawPolygon(o.collisionField.applyMatrix(M), layer, v.isCollided ? "red" : "green");
         for(var s in v.sensors){
           //print(s.collides);
-          drawPolygon(v.createPolygonOnActualLocation(s.polygon), layer, s.collides ? "red" : "#ffffff", true);
+          drawPolygon(s.polygon.applyMatrix(M), layer, s.collides ? "red" : "#ffffff", true);
         }
 
-      }else drawPolygon(o.createPolygonOnActualLocation(o.collisionField), layer, "blue");
+      }else drawPolygon(o.collisionField.applyMatrix(M), layer, "blue");
 
       layer.ctx.beginPath();
       layer.ctx.arc(o.position.x, o.position.y, 2, 0, 2 * Math.PI, false);

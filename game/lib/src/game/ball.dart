@@ -37,7 +37,13 @@ class Ball extends MoveableGameObject{
      if(g == this) continue;
      if(g is Vehicle) continue;
 
-     CollisionResult r = createPolygonOnActualLocation(collisionField).collisionWithVector(g.createPolygonOnActualLocation(g.collisionField), vector);
+
+     Matrix2d M = getTransformation();
+     Polygon A = collisionField.applyMatrix(M);
+     Matrix2d oM = g.getTransformation();
+     Polygon B = g.collisionField.applyMatrix(oM);
+
+     CollisionResult r = A.collisionWithVector(B, vector);
 
      if (r.willIntersect) {
        if(!g.onCollision(this)){

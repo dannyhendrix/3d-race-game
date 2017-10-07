@@ -157,15 +157,19 @@ class Vehicle extends MoveableGameObject{
         print("hit");
         continue;
       }*/
-      var otherCollisionField = g.createPolygonOnActualLocation(g.collisionField);
+      Matrix2d M = getTransformation();
+      Polygon A = collisionField.applyMatrix(M);
+      Matrix2d oM = g.getTransformation();
+      Polygon B = g.collisionField.applyMatrix(oM);
+
       //sensors
       for(VehicleSensor s in sensors){
         if(s.collides) continue;
-        s.collides = createPolygonOnActualLocation(s.polygon).collision(otherCollisionField);
+        s.collides = s.polygon.applyMatrix(M).collision(B);
         if(s.collides) sensorCollision = true;
       }
 
-      CollisionResult r = createPolygonOnActualLocation(collisionField).collisionWithVector(otherCollisionField, vector);
+      CollisionResult r = A.collisionWithVector(B, vector);
 
       if (r.willIntersect) {
         if(g is Ball){
