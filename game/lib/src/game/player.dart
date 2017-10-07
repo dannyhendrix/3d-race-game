@@ -52,12 +52,48 @@ class AiPlayer extends Player{
     if(V.magnitude < pathProgress.current.radius){
       pathProgress.next();
     }
-    Steer steer = determineSteerAngle(v,vehicle.r,p);
-    vehicle.setSteer(steer);
-    vehicle.setAccelarate(true);
+    if(vehicle.sensorCollision){
+      controlAvoidance();
+    }else{
+      controlToTarget();
+    }
   }
 
-  Steer determineSteerAngle(Point A, double RA, Point B){
+  void controlToTarget(){
+    Point p =  pathProgress.current;
+    Point v =  vehicle.position;
+    vehicle.setSteer(steerToPoint(v,vehicle.r,p));
+    vehicle.setAccelarate(true);
+  }
+  void controlAvoidance(){
+    Steer steer = Steer.None;
+    bool accelerate = true;
+    double correction = 0.0;
+    if(vehicle.sensorLeft.collides) correction -= 0.2;
+    if(vehicle.sensorLeftFront.collides) correction -= 0.5;
+    if(vehicle.sensorLeftFrontAngle.collides) correction -= 0.5;
+    if(vehicle.sensorRight.collides) correction += 0.2;
+    if(vehicle.sensorRightFront.collides) correction += 0.5;
+    if(vehicle.sensorRightFrontAngle.collides) correction += 0.5;
+
+    if(vehicle.sensorFront.collides) accelerate = false;
+
+    if(correction > 0.0) steer = Steer.Left;
+    else if(correction < 0.0) steer = Steer.Right;
+    else if(vehicle.sensorFront.collides) steer = Steer.Right;
+
+    vehicle.setSteer(steer);
+    vehicle.setAccelarate(accelerate);
+    /*
+    bool leftCollision = vehicle.sensorLeft.collides || vehicle.sensorLeftFront.collides || vehicle.sensorLeftFrontAngle.collides;
+    bool rightCollision = vehicle.sensorRight.collides || vehicle.sensorRightFront.collides || vehicle.sensorRightFrontAngle.collides;
+    if(leftCollision && rightCollision) return Steer.None;
+    if(leftCollision) return Steer.Right;
+    if(rightCollision) return Steer.Left;
+    return Steer.None;*/
+  }
+
+  Steer steerToPoint(Point A, double RA, Point B){
     var dist = B-A;
     var normT = new Vector(dist.x,dist.y).normalized;
     var normA = new Vector.fromAngleRadians(RA,1.0);

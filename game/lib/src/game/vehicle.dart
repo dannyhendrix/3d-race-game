@@ -16,7 +16,7 @@ enum VehicleSettingKeys {
 class VehicleSettings{
   Map data = {
     VehicleSettingKeys.acceleration.toString() :0.3,
-    VehicleSettingKeys.acceleration_max.toString() : 7.0,
+    VehicleSettingKeys.acceleration_max.toString() : 5.0,
     VehicleSettingKeys.reverse_acceleration.toString() : 0.1,
     VehicleSettingKeys.reverse_acceleration_max.toString() : 2.0,
     VehicleSettingKeys.friction.toString() : 0.05,
@@ -28,6 +28,14 @@ class VehicleSettings{
   };
   dynamic getValue(VehicleSettingKeys key){
     return data[key.toString()];
+  }
+}
+// TODO: maybe make the whole car body a sensor?
+class VehicleSensor{
+  Polygon polygon;
+  bool collides = false;
+  VehicleSensor.fromVector(Point origin, Vector v){
+    polygon = new Polygon([origin, origin + v],false);
   }
 }
 
@@ -44,17 +52,65 @@ class Vehicle extends MoveableGameObject{
   VehicleSettings vehicleSettings = new VehicleSettings();
   int theme = 0;
 
+
+  /**
+   * There are 7 sensor on the car body: (facing upwards)
+   *     1 2  3  4 5
+   *     \|  |  |/
+   *       _____
+   *      |  ^  |
+   *   6 -|     |- 7
+   *      |_____|
+   *
+   *  Naming:
+   *  1 LeftFrontAngle
+   *  2 LeftFront
+   *  3 Front
+   *  4 RightFront
+   *  5 RightFrontAngle
+   *  6 Left
+   *  7 Right
+   *
+   *  Sensor behaviour:
+   *  if 1,2 Steer right 0.5
+   *  if 4,5 Steer left 0.5
+   *  if 3 brake
+   *  if 6 Steer right 0.2
+   *  if 7 Steer left 0.2
+   */
+  double sensorLength = 20.0;
+  double sensorFrontAngle = 1.0;
+  VehicleSensor sensorLeftFrontAngle;
+  VehicleSensor sensorLeftFront;
+  VehicleSensor sensorFront;
+  VehicleSensor sensorRightFront;
+  VehicleSensor sensorRightFrontAngle;
+  VehicleSensor sensorLeft;
+  VehicleSensor sensorRight;
+  List<VehicleSensor> sensors = [];
+  bool sensorCollision = false;
+
   Vehicle(this.game, this.player){
     position = new Point(150.0, 50.0);
     r = 0.0;
     w = 50.0;
     h = 30.0;
+    double hw = w/2;
+    double hh= h/2;
     collisionField = new Polygon([
-      new Point(0.0,0.0),
-      new Point(w,0.0),
-      new Point(w,h),
-      new Point(0.0,h),
+      new Point(-hw,-hh),
+      new Point(hw,-hh),
+      new Point(hw,hh),
+      new Point(-hw,hh),
     ]);
+    sensorLeftFrontAngle = new VehicleSensor.fromVector(new Point(hw,-hh), new Vector.fromAngleRadians(-sensorFrontAngle, sensorLength));
+    sensorLeftFront = new VehicleSensor.fromVector(new Point(hw,-hh), new Vector(sensorLength, 0.0));
+    sensorFront = new VehicleSensor.fromVector(new Point(hw,0.0), new Vector(sensorLength, 0.0));
+    sensorRightFront = new VehicleSensor.fromVector(new Point(hw,hh), new Vector(sensorLength, 0.0));
+    sensorRightFrontAngle = new VehicleSensor.fromVector(new Point(hw,hh), new Vector.fromAngleRadians(sensorFrontAngle, sensorLength));
+    sensorLeft = new VehicleSensor.fromVector(new Point(0.0,-hh), new Vector(0.0, -sensorLength));
+    sensorRight = new VehicleSensor.fromVector(new Point(0.0,hh), new Vector(0.0, sensorLength));
+    sensors = [sensorLeftFrontAngle, sensorLeftFront, sensorFront, sensorRightFront, sensorRightFrontAngle, sensorLeft, sensorRight];
   }
   void setAccelarate(bool a){
     _isAccelerating = a;
@@ -89,6 +145,9 @@ class Vehicle extends MoveableGameObject{
     //position += vector;
     var collisionCorrection = vector;
     bool collide = false;
+
+    sensorCollision = false;
+    for(VehicleSensor s in sensors) s.collides = false;
     //check collisions
     for(GameObject g in game.gameobjects){
       if(g == this) continue;
@@ -98,8 +157,15 @@ class Vehicle extends MoveableGameObject{
         print("hit");
         continue;
       }*/
+      var otherCollisionField = g.createPolygonOnActualLocation(g.collisionField);
+      //sensors
+      for(VehicleSensor s in sensors){
+        if(s.collides) continue;
+        s.collides = createPolygonOnActualLocation(s.polygon).collision(otherCollisionField);
+        if(s.collides) sensorCollision = true;
+      }
 
-      CollisionResult r = createPolygonOnActualLocation().collision(g.createPolygonOnActualLocation(), vector);
+      CollisionResult r = createPolygonOnActualLocation(collisionField).collisionWithVector(otherCollisionField, vector);
 
       if (r.willIntersect) {
         if(g is Ball){
@@ -132,7 +198,7 @@ class Vehicle extends MoveableGameObject{
   }
 
   bool onCollision(GameObject o){
-    if(_speed != 0) _speed = -(_speed/2);
+    //if(_speed != 0) _speed = -(_speed/2);
     /*
     _speed = -_speed/2;
 

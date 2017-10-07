@@ -8,11 +8,13 @@ class Wall extends GameObject{
     h = nh;
     r = nr;
 
+    double hw = w/2;
+    double hh= h/2;
     collisionField = new Polygon([
-      new Point(0.0,0.0),
-      new Point(w,0.0),
-      new Point(w,h),
-      new Point(0.0,h),
+      new Point(-hw,-hh),
+      new Point(hw,-hh),
+      new Point(hw,hh),
+      new Point(-hw,hh),
     ]);
   }
 }

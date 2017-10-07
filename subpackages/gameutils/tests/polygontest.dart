@@ -5,6 +5,46 @@ import "dart:math" as Math;
 
 void main()
 {
+  test("Edges", (){
+    Polygon polygon = new Polygon([
+      new Point(0.0,0.0),
+      new Point(4.0,0.0),
+      new Point(4.0,8.0),
+      new Point(0.0,8.0)
+    ], false);
+    var center = polygon.center;
+    expect(center.x, equals(2.0));
+    expect(center.y, equals(4.0));
+    var edges = polygon.edges;
+    expect(edges.length, equals(3));
+    expect(edges[0].x, equals(4.0));
+    expect(edges[0].y, equals(0.0));
+    expect(edges[1].x, equals(0.0));
+    expect(edges[1].y, equals(8.0));
+    expect(edges[2].x, equals(-4.0));
+    expect(edges[2].y, equals(0.0));
+  });
+  test("EdgesClosed", (){
+    Polygon polygon = new Polygon([
+      new Point(0.0,0.0),
+      new Point(4.0,0.0),
+      new Point(4.0,8.0),
+      new Point(0.0,8.0)
+    ], true);
+    var center = polygon.center;
+    expect(center.x, equals(2.0));
+    expect(center.y, equals(4.0));
+    var edges = polygon.edges;
+    expect(edges.length, equals(4));
+    expect(edges[0].x, equals(4.0));
+    expect(edges[0].y, equals(0.0));
+    expect(edges[1].x, equals(0.0));
+    expect(edges[1].y, equals(8.0));
+    expect(edges[2].x, equals(-4.0));
+    expect(edges[2].y, equals(0.0));
+    expect(edges[3].x, equals(0.0));
+    expect(edges[3].y, equals(-8.0));
+  });
   test("Translate", (){
     Point center = new Point(2.0,4.0);
     Point targetPosition = new Point(12.0,14.0);
@@ -59,5 +99,25 @@ void main()
     ]);
     CollisionResult res = polygonA.collision(polygonB, new Vector.empty());
 
+  });
+  test("CollisionLine", (){
+    Polygon polygonA = new Polygon([
+      new Point(0.0,2.0),
+      new Point(4.0,2.0)
+    ]);
+    Polygon polygonB = new Polygon([
+      new Point(2.0,0.0),
+      new Point(2.0,4.0)
+    ]);
+    Polygon polygonC = new Polygon([
+      new Point(-1.0,0.0),
+      new Point(-1.0,4.0)
+    ]);
+    CollisionResult res = polygonA.collision(polygonB, new Vector.empty());
+    expect(res.intersect, equals(true));
+    expect(res.willIntersect, equals(true));
+    res = polygonA.collision(polygonC, new Vector(2.0,0.0));
+    expect(res.intersect, equals(false));
+    //expect(res.willIntersect, equals(true));
   });
 }

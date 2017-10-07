@@ -14,18 +14,24 @@ class Polygon{
   List<Point> points;
   List<Vector> edges;
   Point center;
-  Polygon(this.points){
-    edges = _createEdges();
+  // Note that closed can only be set to false for lines. Otherwise the polygon is not convex anymore (one of the assumptions for collision detection).
+  Polygon(this.points, [bool closed = true]){
+    edges = _createEdges(closed);
     center = _createCenter();
   }
 
-  List<Vector> _createEdges(){
+  List<Vector> _createEdges(bool closed){
     if(points.length <= 1) return [];
     Point p1,p2;
     List<Vector> edges = [];
-    for (int i = 0; i < points.length; i++) {
-      p1 = points[i];
-      p2 = (i + 1 >= points.length) ? points[0] : points[i + 1];
+    p1 = points[0];
+    for(int i = 1; i < points.length; i++){
+      p2 = points[i];
+      edges.add(new Vector(p2.x - p1.x, p2.y-p1.y));
+      p1 = p2;
+    }
+    if(closed){
+      p2 = points[0];
       edges.add(new Vector(p2.x - p1.x, p2.y-p1.y));
     }
     return edges;
@@ -42,6 +48,7 @@ class Polygon{
     return new Point(totalX/totalP, totalY/totalP);
   }
 
+  //TODO: use matrices here (rather than rotate and translate seperatly)
   Polygon rotate(double r, Point origin){
     List<Point> newPoints = [];
     for(Point p in points){
@@ -77,7 +84,33 @@ class Polygon{
   /**Collisions**/
   //https://www.codeproject.com/Articles/15573/2D-Polygon-Collision-Detection
   // Check if polygon A is going to collide with polygon B for the given velocity
-  CollisionResult collision(Polygon polygonB, Vector velocity) {
+  bool collision(Polygon polygonB){
+    Polygon polygonA = this;
+
+    int edgeCountA = polygonA.edges.length;
+    int edgeCountB = polygonB.edges.length;
+    Vector edge;
+
+    // Loop through all the edges of both polygons
+    for (int edgeIndex = 0; edgeIndex < edgeCountA + edgeCountB; edgeIndex++)
+    {
+      edge = (edgeIndex < edgeCountA) ? polygonA.edges[edgeIndex] : polygonB.edges[edgeIndex - edgeCountA];
+
+      // ===== 1. Find if the polygons are currently intersecting =====
+
+      // Find the axis perpendicular to the current edge
+      Vector axis = new Vector(-edge.y, edge.x).normalized;
+
+      // Find the projection of the polygon on the current axis
+      MinMax minMaxA = _projectPolygon(axis, polygonA);
+      MinMax minMaxB = _projectPolygon(axis, polygonB);
+
+      // Check if the polygon projections are currentlty intersecting
+      if (_intervalDistance(minMaxA, minMaxB) > 0) return false;
+    }
+    return true;
+  }
+  CollisionResult collisionWithVector(Polygon polygonB, Vector velocity) {
     Polygon polygonA = this;
     CollisionResult result = new CollisionResult();
     result.intersect = true;
@@ -103,7 +136,7 @@ class Polygon{
       MinMax minMaxB = _projectPolygon(axis, polygonB);
 
       // Check if the polygon projections are currentlty intersecting
-      if (_intervalDistance(minMaxA.min, minMaxA.max, minMaxB.min, minMaxB.max) > 0) result.intersect = false;
+      if (_intervalDistance(minMaxA, minMaxB) > 0) result.intersect = false;
 
       // ===== 2. Now find if the polygons *will* intersect =====
 
@@ -115,7 +148,7 @@ class Polygon{
       else minMaxA.max += velocityProjection;
 
       // Do the same test as above for the new projection
-      double intervalDistance = _intervalDistance(minMaxA.min, minMaxA.max, minMaxB.min, minMaxB.max);
+      double intervalDistance = _intervalDistance(minMaxA, minMaxB);
       if (intervalDistance > 0) result.willIntersect = false;
 
       // If the polygons are not intersecting and won't intersect, exit the loop
@@ -144,7 +177,8 @@ class Polygon{
 
   // Calculate the distance between [minA, maxA] and [minB, maxB]
   // The distance will be negative if the intervals overlap
-  double _intervalDistance(double minA, double maxA, double minB, double maxB) => (minA < minB) ? minB - maxA : minA - maxB;
+  //double _intervalDistance(double minA, double maxA, double minB, double maxB) => (minA < minB) ? minB - maxA : minA - maxB;
+  double _intervalDistance(MinMax A, MinMax B) => (A.min < B.min) ? B.min - A.max : A.min - B.max;
 
   // Calculate the projection of a polygon on an axis and returns it as a [min, max] interval
   MinMax _projectPolygon(Vector axis, Polygon polygon) {

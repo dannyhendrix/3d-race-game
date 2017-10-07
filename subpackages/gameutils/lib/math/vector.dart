@@ -12,8 +12,8 @@ class Vector extends Point{
   Vector.empty():this(0.0,0.0);
   Vector.fromAngleDegrees(double angle, double power):this.fromAngleRadians(_toRadians(angle),power);
   Vector.fromAngleRadians(double angle, double power):this(Math.cos(angle) * power, Math.sin(angle) * power);
-  
-  double _toRadians(num degree) =>  Math.PI / 180 * degree;
+
+  static double _toRadians(num degree) =>  Math.PI / 180 * degree;
   double get magnitude => Math.sqrt(x*x+y*y);
   Vector get normalized {
     double m = magnitude;

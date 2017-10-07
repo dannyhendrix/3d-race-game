@@ -9,11 +9,13 @@ class Ball extends MoveableGameObject{
    r = 1.7;
    w = 20.0;
    h = 20.0;
+   double hw = w/2;
+   double hh= h/2;
    collisionField = new Polygon([
-     new Point(0.0,0.0),
-     new Point(w,0.0),
-     new Point(w,h),
-     new Point(0.0,h),
+     new Point(-hw,-hh),
+     new Point(hw,-hh),
+     new Point(hw,hh),
+     new Point(-hw,hh),
    ]);
  }
 
@@ -35,7 +37,7 @@ class Ball extends MoveableGameObject{
      if(g == this) continue;
      if(g is Vehicle) continue;
 
-     CollisionResult r = createPolygonOnActualLocation().collision(g.createPolygonOnActualLocation(), vector);
+     CollisionResult r = createPolygonOnActualLocation(collisionField).collisionWithVector(g.createPolygonOnActualLocation(g.collisionField), vector);
 
      if (r.willIntersect) {
        if(!g.onCollision(this)){

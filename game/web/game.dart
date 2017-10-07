@@ -56,8 +56,13 @@ void main()
       //draw gameObjects
       if(o is Vehicle){
         Vehicle v = o;
-        drawPolygon(o.createPolygonOnActualLocation(), layer, v.isCollided ? "red" : "green");
-      }else drawPolygon(o.createPolygonOnActualLocation(), layer, "blue");
+        drawPolygon(o.createPolygonOnActualLocation(o.collisionField), layer, v.isCollided ? "red" : "green");
+        for(var s in v.sensors){
+          //print(s.collides);
+          drawPolygon(v.createPolygonOnActualLocation(s.polygon), layer, s.collides ? "red" : "#ffffff", true);
+        }
+
+      }else drawPolygon(o.createPolygonOnActualLocation(o.collisionField), layer, "blue");
 
       layer.ctx.beginPath();
       layer.ctx.arc(o.position.x, o.position.y, 2, 0, 2 * Math.PI, false);
@@ -66,7 +71,7 @@ void main()
     }
 
     //draw line from each player to his next target
-    layer.ctx.fillStyle = '#777';
+    layer.ctx.strokeStyle = '#777';
     for(int i = 0; i < game.players.length; i++){
       var p =game.players[i];
       layer.ctx.beginPath();
@@ -126,12 +131,17 @@ ButtonElement createButton(String text, Function onClick){
   return button;
 }
 
-void drawPolygon(Polygon polygon, RenderLayer layer, String color){
+void drawPolygon(Polygon polygon, RenderLayer layer, String color, [bool stroke = false]){
   layer.ctx.beginPath();
-  layer.ctx.fillStyle = color;
   layer.ctx.moveTo(polygon.points.first.x,polygon.points.first.y);
   for(Point p in polygon.points){
     layer.ctx.lineTo(p.x,p.y);
   }
-  layer.ctx.fill();
+  if(stroke)  {
+    layer.ctx.strokeStyle = color;
+    layer.ctx.stroke();
+  }else{
+    layer.ctx.fillStyle = color;
+    layer.ctx.fill();
+  }
 }
