@@ -16,7 +16,7 @@ enum VehicleSettingKeys {
 class VehicleSettings{
   Map data = {
     VehicleSettingKeys.acceleration.toString() :0.3,
-    VehicleSettingKeys.acceleration_max.toString() : 4.0,
+    VehicleSettingKeys.acceleration_max.toString() : 7.0,
     VehicleSettingKeys.reverse_acceleration.toString() : 0.1,
     VehicleSettingKeys.reverse_acceleration_max.toString() : 2.0,
     VehicleSettingKeys.friction.toString() : 0.05,

@@ -1,12 +1,5 @@
 part of webgl;
 
-//json -> GlModel -> Float32List
-abstract class GlModelPart{
-  List<double> toDoubleVertex();
-  int getNumberOfTriangles() => 0;
-  List<double> toNormalsVertex();
-}
-
 class GlPoint extends GlModelPart{
   double x,y,z;
   GlPoint([this.x = 0.0, this.y = 0.0, this.z=0.0]);
@@ -86,66 +79,6 @@ class GlArea extends GlModelPart{
     return result;
   }
   int getNumberOfTriangles() => triangles.length;
-}
-
-class GlModel{
-  List<GlArea> areas;
-  GlModel([List<GlArea> areas]): areas = areas ?? [];
-  GlModelBuffer createBuffers(GlRenderLayer layer){
-    Buffer vertexBuffer = _loadVertexInBuffer(layer);
-    Buffer normalsBuffer = _loadNormalsInBuffer(layer);
-    return new GlModelBuffer(vertexBuffer, normalsBuffer, _getNumberOfTriangles());
-  }
-  void addArea(GlArea area) => areas.add(area);
-  Buffer _loadVertexInBuffer(GlRenderLayer layer){
-    Buffer buffer = layer.ctx.createBuffer();
-    layer.ctx.bindBuffer(ARRAY_BUFFER, buffer);
-    layer.ctx.bufferData(ARRAY_BUFFER, new Float32List.fromList(_toDoubleVertex()), STATIC_DRAW);
-    return buffer;
-  }
-  Buffer _loadNormalsInBuffer(GlRenderLayer layer){
-    Buffer buffer = layer.ctx.createBuffer();
-    layer.ctx.bindBuffer(ARRAY_BUFFER, buffer);
-    layer.ctx.bufferData(ARRAY_BUFFER, new Float32List.fromList(_toNormalsVertex()), STATIC_DRAW);
-    return buffer;
-  }
-  int _getNumberOfTriangles(){
-    int total = 0;
-    for(GlArea area in areas) total += area.getNumberOfTriangles();
-    return total;
-  }
-  List<double> _toDoubleVertex(){
-    List<double> result = [];
-    for(GlArea area in areas) result.addAll(area.toDoubleVertex());
-    return result;
-  }
-  List<double> _toNormalsVertex(){
-    List<double> result = [];
-    for(GlArea area in areas) result.addAll(area.toNormalsVertex());
-    return result;
-  }
-}
-
-class GlCube extends GlModel{
-  GlCube.fromTopCenter(double x, double y, double z, double w, double h, double d){
-    double hw = w/2;
-    double hh = h/2;
-    double hd = d/2;
-    addArea(new GlRectangle.withWH(x-hw,  y-hh,  z+hd,  w,h, true));
-    addArea(new GlRectangle.withWH(x-hw,  y-hh,  z+hd-d,w,h, false));
-    addArea(new GlRectangle.withHD(x-hw,  y-hh,  z+hd-d,h,d, false));
-    addArea(new GlRectangle.withHD(x-hw+w,y-hh,  z+hd-d,h,d, true));
-    addArea(new GlRectangle.withWD(x-hw,  y-hh+h,z+hd-d,w,d, false));
-    addArea(new GlRectangle.withWD(x-hw,  y-hh,  z+hd-d,w,d, true));
-  }
-  GlCube.fromTopLeft(double x, double y, double z, double w, double h, double d){
-    addArea(new GlRectangle.withWH(x,y,z,w,h, true));
-    addArea(new GlRectangle.withWH(x,y,z-d,w,h, false));
-    addArea(new GlRectangle.withHD(x,y,z-d,h,d, false));
-    addArea(new GlRectangle.withHD(x+w,y,z-d,h,d, true));
-    addArea(new GlRectangle.withWD(x,y+h,z-d,w,d, false));
-    addArea(new GlRectangle.withWD(x,y,z-d,w,d, true));
-  }
 }
 
 class GlRectangle extends GlArea{
@@ -240,28 +173,4 @@ class GlRectangle extends GlArea{
       ]));
     }
   }
-}
-
-class GlModelBuffer{
-  Buffer vertexBuffer;
-  Buffer normalsBuffer;
-  int numberOfTriangles;
-  GlModelBuffer(this.vertexBuffer, this.normalsBuffer, this.numberOfTriangles);
-}
-class GlModelInstance{
-  GlModelBuffer modelBuffer;
-  GlColor color;
-  GlModelInstance(this.modelBuffer, this.color);
-}
-
-class GlModelInstanceCollection{
-  List<GlModelInstance> modelInstances;
-  double x,y,z;
-  double rx=0.0,ry=0.0,rz=0.0;
-  GlModelInstanceCollection([List<GlModelInstance> modelInstances, this.x=0.0,this.y=0.0,this.z=0.0]): modelInstances = modelInstances ?? [];
-}
-
-class GlColor{
-  double r,g,b,a;
-  GlColor([this.r=1.0,this.g=1.0,this.b=1.0,this.a=1.0]);
 }

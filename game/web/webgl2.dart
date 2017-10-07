@@ -17,7 +17,9 @@ double c1r = 0.5, c1g = 0.5, c1b = 0.5;
 double c2r = 0.5, c2g = 0.5, c2b = 0.5;
 
 void main(){
-  layer = new GlRenderLayer.withSize(400,500, true);
+  double windowW = 500.0;
+  double windowH = 400.0;
+  layer = new GlRenderLayer.withSize(windowW.toInt(),windowH.toInt(), true);
   document.body.append(layer.canvas);
 
   // Tell WebGL how to convert from clip space to pixels
@@ -26,7 +28,7 @@ void main(){
 
   //3 set view perspective
   camera = new GlCameraDistanseToTarget();
-  camera.setPerspective(aspect : 400.0 / 500.0);
+  camera.setPerspective(aspect : windowW / windowH);
 
   //4 create models
   modelInstances.add(createXYZMark());
@@ -93,7 +95,7 @@ GlModelInstanceCollection createVehicleModel(double sx, double sy, double sz){
   DoubleHelper wWindowFront = new DoubleHelper(0.1,sx);
   DoubleHelper wWindowRear = new DoubleHelper(0.1,sx);
 
-  GlModelBuffer model = new GlModel([
+  GlModelBuffer model = new GlAreaModel([
     //floor
     new GlRectangle.withWD(-w.h,0.0, -d.h, w.v, d.v, true),
     //hood
@@ -118,7 +120,7 @@ GlModelInstanceCollection createVehicleModel(double sx, double sy, double sz){
 
   ]).createBuffers(layer);
 
-  GlModelBuffer modelStripe = new GlModel([
+  GlModelBuffer modelStripe = new GlAreaModel([
     //hood
     new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h+dStripeLeft.v, wHood.v, dStripeMid.v, false),
     //rear top
@@ -128,7 +130,7 @@ GlModelInstanceCollection createVehicleModel(double sx, double sy, double sz){
 
   ]).createBuffers(layer);
 
-  GlModelBuffer modelWindows = new GlModel([
+  GlModelBuffer modelWindows = new GlAreaModel([
     //WindowFront
     new GlTriangle([
       new GlPoint(w.h-wHood.v, hCarBottom.v, d.h),
@@ -183,7 +185,7 @@ GlModelInstanceCollection createVehicleModel(double sx, double sy, double sz){
 }
 
 GlModelInstanceCollection createXYZMark(){
-  GlModelBuffer xaxis = new GlModel([
+  GlModelBuffer xaxis = new GlAreaModel([
     new GlTriangle([
       new GlPoint(0.0,0.0,0.0),
       new GlPoint(2.0,0.0,0.0),
@@ -196,7 +198,7 @@ GlModelInstanceCollection createXYZMark(){
     ]),
   ]).createBuffers(layer);
 
-  GlModelBuffer yaxis = new GlModel([
+  GlModelBuffer yaxis = new GlAreaModel([
     new GlTriangle([
       new GlPoint(0.0,0.0,0.0),
       new GlPoint(0.0,0.0,-2.0),
@@ -209,7 +211,7 @@ GlModelInstanceCollection createXYZMark(){
     ]),
   ]).createBuffers(layer);
 
-  GlModelBuffer zaxis = new GlModel([
+  GlModelBuffer zaxis = new GlAreaModel([
     new GlTriangle([
       new GlPoint(0.0,0.0,0.0),
       new GlPoint(0.0,2.0,0.0),

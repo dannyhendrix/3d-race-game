@@ -13,8 +13,8 @@ class GlRenderLayer{
   }
   GlRenderLayer.withSize(int w, int h, [this._enableCullFace = false]){
     canvas = new CanvasElement();
-    canvas.height = w;
-    canvas.width = h;
+    canvas.width = w;
+    canvas.height = h;
     _init();
   }
 

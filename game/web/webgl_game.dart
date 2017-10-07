@@ -2,6 +2,7 @@ import "package:preloader/preloader.dart";
 import "package:logging/logging.dart";
 import "package:micromachines/game.dart";
 import "package:micromachines/webgl.dart";
+import "package:micromachines/webgl_game.dart";
 import "package:renderlayer/renderlayer.dart";
 import "package:gameutils/gameloop.dart";
 import "package:gameutils/math.dart";
@@ -23,12 +24,8 @@ class GlModelInstanceFromVehicle extends GlModelInstanceCollection{
   double get x => gameObject.position.x;
   double get z => gameObject.position.y;
   double get ry => -gameObject.r;
-  GlModelInstanceFromVehicle(this.gameObject, GlModelInstanceCollection model, GlColor color1, GlColor color2):super([]){
-    this.modelInstances = [
-      new GlModelInstance(model.modelInstances[0].modelBuffer, color1),
-      new GlModelInstance(model.modelInstances[1].modelBuffer, color2),
-      new GlModelInstance(model.modelInstances[2].modelBuffer, model.modelInstances[2].color),
-    ];
+  GlModelInstanceFromVehicle(this.gameObject, GlModelInstanceCollection model):super([]){
+    this.modelInstances = model.modelInstances;
   }
 }
 class GlModelInstanceFromGameObject extends GlModelInstanceCollection{
@@ -51,7 +48,9 @@ void main()
   //logger
   Logger.root.level = Level.OFF;
 
-  layer = new GlRenderLayer.withSize(400,500);
+  double windowW = 800.0;
+  double windowH = 500.0;
+  layer = new GlRenderLayer.withSize(windowW.toInt(),windowH.toInt());
   el_Fps = new DivElement();
   document.body.append(layer.canvas);
   document.body.append(el_Fps);
@@ -62,7 +61,7 @@ void main()
 
   //3 set view perspective
   camera = new GlCameraDistanseToTarget();
-  camera.setPerspective(aspect:400.0 / 500.0, fieldOfViewRadians: 0.5, zFar: 4000.0);
+  camera.setPerspective(aspect:windowW / windowH, fieldOfViewRadians: 0.5, zFar: 4000.0);
   /*
   camera.y = 800.0;
   camera.x = 100.0;
@@ -74,16 +73,19 @@ void main()
   game.start();
 //units/actual
   //4 4 8
-  GlModelInstanceCollection vehicleModel = createVehicleModel(game.players[0].vehicle.w/1.0, 50.0/1.0, game.players[0].vehicle.h/1.0);
+  GlModelCollection modelCollection = new GlModelCollection(layer);
+  GlModel_Vehicle vehicleModel2 = new GlModel_Vehicle();
+  vehicleModel2.loadModel(modelCollection,game.players[0].vehicle.w/1.0, 50.0/1.0, game.players[0].vehicle.h/1.0);
   //createVehicleModel().modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
-
+  GlColor colorWindows = new GlColor(0.2,0.2,0.2);
   var colors1 = [new GlColor(1.0,1.0,0.0),new GlColor(1.0,0.0,0.0),new GlColor(0.0,1.0,0.0),new GlColor(1.0,0.0,1.0),new GlColor(1.0,1.0,1.0),new GlColor(1.0,1.0,1.0)];
   var colors2 = [new GlColor(0.0,0.0,1.0),new GlColor(1.0,1.0,1.0),new GlColor(0.2,0.2,0.2),new GlColor(1.0,1.0,1.0),new GlColor(1.0,0.0,0.0),new GlColor(0.0,0.0,1.0)];
   int c = 0;
   //create all buffer
   for(GameObject o in game.gameobjects){
     if(o is Vehicle){
-      modelInstances.add(new GlModelInstanceFromVehicle(o, vehicleModel, colors1[c], colors2[c]));
+      modelInstances.add(new GlModelInstanceFromVehicle(o, vehicleModel2.getModelInstance(modelCollection, colors1[c], colors2[c], colorWindows)));
+
       c++;
       if(c >= colors1.length) c = 0;
     }else{
@@ -93,7 +95,7 @@ void main()
     }
   }
 
-  GlModel worldModel = new GlModel([new GlRectangle.withWD(0.0,0.0,0.0,1500.0,800.0,false)]);
+  GlModel worldModel = new GlAreaModel([new GlRectangle.withWD(0.0,0.0,0.0,1500.0,800.0,false)]);
   GlModelBuffer world = worldModel.createBuffers(layer);
   modelInstances.add(new GlModelInstanceCollection([new GlModelInstance(world, new GlColor(0.6,0.6,0.6))]));
 
@@ -238,127 +240,4 @@ class InputWithDoubleValue extends InputWithValue<double>{
     element.append(_readValue);
     element.append(_inputElement);
   }
-}
-
-
-
-class DoubleHelper{
-  double v;
-  double h;
-  DoubleHelper(double v, double s) : v = v*s, h = v*s/2;
-}
-
-//Car model
-GlModelInstanceCollection createVehicleModel(double sx, double sy, double sz){
-  GlColor colorWindows = new GlColor(0.2,0.2,0.2);
-  GlColor color1 = new GlColor(1.0,1.0,1.0);
-  GlColor color2 = new GlColor(0.5,0.5,0.5);
-
-  DoubleHelper h = new DoubleHelper(1.0,sy);
-  DoubleHelper hCarBottom = new DoubleHelper(0.5,sy);
-  DoubleHelper hWindow = new DoubleHelper(0.5,sy);
-
-  DoubleHelper d = new DoubleHelper(1.0,sz);
-  DoubleHelper dRoof = new DoubleHelper(0.8,sz);
-  DoubleHelper dWindow = new DoubleHelper(0.1,sz);
-
-  DoubleHelper dStripeLeft = new DoubleHelper(0.3,sz);
-  DoubleHelper dStripeMid = new DoubleHelper(0.4,sz);
-  DoubleHelper dStripeRight = new DoubleHelper(0.3,sz);
-
-  DoubleHelper dStripeRoofLeft = new DoubleHelper(0.2,sz);
-  DoubleHelper dStripeRoofMid = new DoubleHelper(0.4,sz);
-  DoubleHelper dStripeRoofRight = new DoubleHelper(0.2,sz);
-
-  DoubleHelper w = new DoubleHelper(1.0,sx);
-  DoubleHelper wHood = new DoubleHelper(0.3,sx);
-  DoubleHelper wRoof = new DoubleHelper(0.3,sx);
-  DoubleHelper wRear = new DoubleHelper(0.2,sx);
-  DoubleHelper wWindowFront = new DoubleHelper(0.1,sx);
-  DoubleHelper wWindowRear = new DoubleHelper(0.1,sx);
-
-
-  GlModelBuffer model = new GlModel([
-    //floor
-    new GlRectangle.withWD(-w.h,0.0, -d.h, w.v, d.v, true),
-    //hood
-    new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, d.h-dStripeRight.v, wHood.v, dStripeRight.v, false),
-    new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h, wHood.v, dStripeLeft.v, false),
-    //rear top
-    new GlRectangle.withWD(-w.h,hCarBottom.v, d.h-dStripeRight.v, wRear.v, dStripeRight.v, false),
-    new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h, wRear.v, dStripeLeft.v, false),
-    //roof
-    new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, d.h-dWindow.v-dStripeRoofRight.v, wRoof.v, dStripeRoofRight.v, false),
-    new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, -d.h+dWindow.v, wRoof.v, dStripeRoofLeft.v, false),
-    //front
-    new GlRectangle.withHD(w.h,0.0, -d.h, hCarBottom.v, d.v, true),
-    //rear
-    new GlRectangle.withHD(-w.h,0.0, -d.h, hCarBottom.v, d.v, false),
-    //right side
-    //bottom
-    new GlRectangle.withWH(-w.h,0.0, d.h, w.v, hCarBottom.v, true),
-    //left side
-    //bottom
-    new GlRectangle.withWH(-w.h,0.0, -d.h, w.v, hCarBottom.v, false),
-
-  ]).createBuffers(layer);
-
-  GlModelBuffer modelStripe = new GlModel([
-    //hood
-    new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h+dStripeLeft.v, wHood.v, dStripeMid.v, false),
-    //rear top
-    new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h+dStripeLeft.v, wRear.v, dStripeMid.v, false),
-    //roof
-    new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, -d.h+dWindow.v+dStripeRoofLeft.v, wRoof.v, dStripeRoofMid.v, false),
-
-  ]).createBuffers(layer);
-
-  GlModelBuffer modelWindows = new GlModel([
-    //WindowFront
-    new GlTriangle([
-      new GlPoint(w.h-wHood.v, hCarBottom.v, d.h),
-      new GlPoint(w.h-wHood.v-wWindowFront.v, h.v, -d.h+dWindow.v),
-      new GlPoint(w.h-wHood.v-wWindowFront.v, h.v, d.h-dWindow.v),
-    ]),
-    new GlTriangle([
-      new GlPoint(w.h-wHood.v,hCarBottom.v,d.h),
-      new GlPoint(w.h-wHood.v,hCarBottom.v,-d.h),
-      new GlPoint(w.h-wHood.v-wWindowFront.v, h.v, -d.h+dWindow.v),
-    ]),
-    //WindowRear
-    new GlTriangle([
-      new GlPoint(-w.h+wRear.v, hCarBottom.v, d.h),
-      new GlPoint(-w.h+wRear.v+wWindowRear.v, h.v, d.h-dWindow.v),
-      new GlPoint(-w.h+wRear.v+wWindowRear.v, h.v, -d.h+dWindow.v),
-    ]),
-    new GlTriangle([
-      new GlPoint(-w.h+wRear.v,hCarBottom.v,d.h),
-      new GlPoint(-w.h+wRear.v+wWindowRear.v, h.v, -d.h+dWindow.v),
-      new GlPoint(-w.h+wRear.v,hCarBottom.v,-d.h),
-    ]),
-    //windowLeft
-    new GlTriangle([
-      new GlPoint(-w.h+wRear.v,hCarBottom.v,d.h),
-      new GlPoint(w.h-wHood.v-wWindowFront.v,h.v,d.h-dWindow.v),
-      new GlPoint(-w.h+wRear.v+wWindowRear.v,h.v,d.h-dWindow.v),
-    ]),
-    new GlTriangle([
-      new GlPoint(-w.h+wRear.v,hCarBottom.v,d.h),
-      new GlPoint(w.h-wHood.v,hCarBottom.v,d.h),
-      new GlPoint(w.h-wHood.v-wWindowFront.v,h.v,d.h-dWindow.v),
-    ]),
-    //windowRight
-    new GlTriangle([
-      new GlPoint(-w.h+wRear.v,hCarBottom.v,-d.h),
-      new GlPoint(-w.h+wRear.v+wWindowRear.v,h.v,-d.h+dWindow.v),
-      new GlPoint(w.h-wHood.v-wWindowFront.v,h.v,-d.h+dWindow.v),
-    ]),
-    new GlTriangle([
-      new GlPoint(-w.h+wRear.v,hCarBottom.v,-d.h),
-      new GlPoint(w.h-wHood.v-wWindowFront.v,h.v,-d.h+dWindow.v),
-      new GlPoint(w.h-wHood.v,hCarBottom.v,-d.h),
-    ]),
-  ]).createBuffers(layer);
-
-  return new GlModelInstanceCollection([new GlModelInstance(model, color1), new GlModelInstance(modelStripe, color2),new GlModelInstance(modelWindows, colorWindows)]);
 }

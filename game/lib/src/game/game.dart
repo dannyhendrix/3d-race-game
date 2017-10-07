@@ -1,6 +1,6 @@
 part of micromachines;
 
-Map leveljson = {"w":1500,"d":800,"walls":[{"x":750.0,"z":5.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":750.0,"z":795.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":5.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":1495.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":740.0,"z":190.0,"r":0.0,"w":800.0,"d":10.0,"h":10.0},{"x":1180.0,"z":350.0,"r":1.4,"w":300.0,"d":10.0,"h":10.0},{"x":320.0,"z":350.0,"r":1.7,"w":300.0,"d":10.0,"h":10.0},{"x":730.0,"z":610.0,"r":1.6,"w":300.0,"d":10.0,"h":10.0}],"path":{"circular":true,"laps":-1,"checkpoints":[{"x":190.0,"z":110.0,"radius":100.0},{"x":1300.0,"z":100.0,"radius":100.0},{"x":1300.0,"z":640.0,"radius":100.0},{"x":950.0,"z":630.0,"radius":100.0},{"x":750.0,"z":310.0,"radius":100.0},{"x":470.0,"z":600.0,"radius":100.0},{"x":180.0,"z":650.0,"radius":100.0}]}};
+Map leveljson = {"w":1500,"d":800,"walls":[{"x":750.0,"z":5.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":750.0,"z":795.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":5.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":1495.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":740.0,"z":190.0,"r":0.0,"w":800.0,"d":10.0,"h":10.0},{"x":1180.0,"z":350.0,"r":1.4,"w":300.0,"d":10.0,"h":10.0},{"x":320.0,"z":350.0,"r":1.7,"w":300.0,"d":10.0,"h":10.0},{"x":730.0,"z":610.0,"r":1.6,"w":300.0,"d":10.0,"h":10.0}],"path":{"circular":true,"laps":3,"checkpoints":[{"x":190.0,"z":110.0,"radius":100.0},{"x":1300.0,"z":100.0,"radius":100.0},{"x":1300.0,"z":640.0,"radius":100.0},{"x":950.0,"z":630.0,"radius":100.0},{"x":750.0,"z":310.0,"radius":100.0},{"x":470.0,"z":600.0,"radius":100.0},{"x":180.0,"z":650.0,"radius":100.0}]}};
 class Game{
   List<GameObject> gameobjects = [];
   List<MoveableGameObject> _movableGameObjects = [];
@@ -10,7 +10,7 @@ class Game{
   Path path;
   Game(){
     humanPlayer = new HumanPlayer();
-    players = [humanPlayer,new AiPlayer(),new AiPlayer(),new AiPlayer()];
+    players = [humanPlayer,new AiPlayer(),new AiPlayer(),new AiPlayer(),new AiPlayer(),new AiPlayer()];
   }
   void init(){
     //"load" level
@@ -29,7 +29,7 @@ class Game{
     LevelLoader levelLoader = new LevelLoader();
     levelLoader.loadLevelJson(this, leveljson);
 
-    List<Point> startLocation = [new Point(80.0,100.0),new Point(80.0,160.0),new Point(120.0,100.0),new Point(120.0,160.0)];
+    List<Point> startLocation = [new Point(80.0,100.0),new Point(80.0,160.0),new Point(120.0,100.0),new Point(120.0,160.0),new Point(160.0,100.0),new Point(160.0,160.0)];
     int i = 0;
     for(Player player in players){
       Vehicle v = new Vehicle(this,player);
