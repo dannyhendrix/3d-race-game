@@ -9,8 +9,14 @@ class Game{
   String info = "";
   Path path;
   Game(){
-    humanPlayer = new HumanPlayer();
-    players = [humanPlayer, new AiPlayer(),new AiPlayer(),new AiPlayer(),new AiPlayer(),new AiPlayer()];
+    humanPlayer = new HumanPlayer("Player1", new VehicleTheme(VehicleThemeColor.Yellow,VehicleThemeColor.Blue));
+    players = [
+      humanPlayer,
+      new AiPlayer("Tom", new VehicleTheme(VehicleThemeColor.Red,VehicleThemeColor.White)),
+      new AiPlayer("Jake", new VehicleTheme(VehicleThemeColor.Blue,VehicleThemeColor.Gray)),
+      new AiPlayer("Rose", new VehicleTheme(VehicleThemeColor.Pink,VehicleThemeColor.White)),
+      new AiPlayer("Marie", new VehicleTheme(VehicleThemeColor.Black,VehicleThemeColor.Green)),
+      new AiPlayer("Adam", new VehicleTheme(VehicleThemeColor.Orange,VehicleThemeColor.White))];
   }
   void init(){
     //"load" level

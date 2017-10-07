@@ -4,6 +4,11 @@ class HumanPlayer extends Player{
   bool _isSteeringLeft;
   bool _isSteeringRight;
 
+  HumanPlayer(name, VehicleTheme theme){
+    this.theme = theme;
+    this.name = name;
+  }
+
   void onControl(Control control, bool active){
     switch(control){
       case Control.Accelerate:
@@ -40,6 +45,10 @@ class HumanPlayer extends Player{
   }
 }
 class AiPlayer extends Player{
+  AiPlayer(name, VehicleTheme theme){
+    this.theme = theme;
+    this.name = name;
+  }
   void update(){
     if(pathProgress.finished){
       vehicle.setSteer(Steer.Left);
@@ -131,6 +140,8 @@ abstract class Player{
   Game _game;
   Vehicle vehicle;
   PathProgress pathProgress;
+  String name = "Player";
+  VehicleTheme theme = new VehicleTheme.withDefaults();
 
   void init(Game game){
     _game = game;

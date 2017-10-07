@@ -71,23 +71,31 @@ void main()
   game = new Game();
   game.init();
   game.start();
+
+  Map<VehicleThemeColor, GlColor> colorMapping = {
+    VehicleThemeColor.Black : new GlColor(0.2,0.2,0.2),
+    VehicleThemeColor.White : new GlColor(1.0,1.0,1.0),
+    VehicleThemeColor.Gray : new GlColor(0.7,0.7,0.7),
+    VehicleThemeColor.Red : new GlColor(1.0,0.0,0.0),
+    VehicleThemeColor.Green : new GlColor(0.0,1.0,0.0),
+    VehicleThemeColor.Blue : new GlColor(0.0,0.0,1.0),
+    VehicleThemeColor.Yellow : new GlColor(1.0,1.0,0.0),
+    VehicleThemeColor.Orange : new GlColor(1.0,0.5,0.0),
+    VehicleThemeColor.Pink : new GlColor(1.0,0.3,1.0),
+  };
+
 //units/actual
   //4 4 8
   GlModelCollection modelCollection = new GlModelCollection(layer);
-  GlModel_Vehicle vehicleModel2 = new GlModel_Vehicle();
-  vehicleModel2.loadModel(modelCollection,game.players[0].vehicle.w/1.0, 50.0/1.0, game.players[0].vehicle.h/1.0);
+  GlModel_Vehicle vehicleModel = new GlModel_Vehicle();
+  vehicleModel.loadModel(modelCollection,game.players[0].vehicle.w/1.0, 50.0/1.0, game.players[0].vehicle.h/1.0);
   //createVehicleModel().modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
   GlColor colorWindows = new GlColor(0.2,0.2,0.2);
-  var colors1 = [new GlColor(1.0,1.0,0.0),new GlColor(1.0,0.0,0.0),new GlColor(0.0,1.0,0.0),new GlColor(1.0,0.0,1.0),new GlColor(1.0,1.0,1.0),new GlColor(1.0,1.0,1.0)];
-  var colors2 = [new GlColor(0.0,0.0,1.0),new GlColor(1.0,1.0,1.0),new GlColor(0.2,0.2,0.2),new GlColor(1.0,1.0,1.0),new GlColor(1.0,0.0,0.0),new GlColor(0.0,0.0,1.0)];
-  int c = 0;
   //create all buffer
   for(GameObject o in game.gameobjects){
     if(o is Vehicle){
-      modelInstances.add(new GlModelInstanceFromVehicle(o, vehicleModel2.getModelInstance(modelCollection, colors1[c], colors2[c], colorWindows)));
-
-      c++;
-      if(c >= colors1.length) c = 0;
+      Vehicle v = o;
+      modelInstances.add(new GlModelInstanceFromVehicle(o, vehicleModel.getModelInstance(modelCollection, colorMapping[v.player.theme.color1], colorMapping[v.player.theme.color2], colorWindows)));
     }else{
       double h = o is Wall ? 150.0 : 80.0;
       GlModelBuffer cube = new GlCube.fromTopCenter(0.0,0.0,0.0,o.w,h,o.h).createBuffers(layer);
