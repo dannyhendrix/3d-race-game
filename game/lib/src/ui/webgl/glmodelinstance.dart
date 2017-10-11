@@ -10,7 +10,7 @@ class GlModelInstance{
   GlModelBuffer modelBuffer;
   GlColor color;
   GlMatrix _transformMatrix;
-  GlMatrix CreateTransformMatrix() => GlMatrix.identityMatrix();
+  GlMatrix CreateTransformMatrix() => _transformMatrix;
   GlModelInstance(this.modelBuffer, this.color, [this._transformMatrix]){
     if(_transformMatrix == null){
       _transformMatrix = GlMatrix.identityMatrix();
@@ -21,7 +21,7 @@ class GlModelInstance{
 class GlModelInstanceCollection{
   List<GlModelInstance> modelInstances;
   GlMatrix _transformMatrix;
-  GlMatrix CreateTransformMatrix() => GlMatrix.identityMatrix();
+  GlMatrix CreateTransformMatrix() => _transformMatrix;
   GlModelInstanceCollection([List<GlModelInstance> modelInstances, this._transformMatrix]): modelInstances = modelInstances ?? []{
     if(_transformMatrix == null){
       _transformMatrix = GlMatrix.identityMatrix();

@@ -95,6 +95,14 @@ GlModelInstanceCollection createVehicleModel(double sx, double sy, double sz){
   DoubleHelper wWindowFront = new DoubleHelper(0.1,sx);
   DoubleHelper wWindowRear = new DoubleHelper(0.1,sx);
 
+  DoubleHelper wWheelOffsetRear = new DoubleHelper(0.2,sx);
+  DoubleHelper wWheelOffsetFront = new DoubleHelper(0.2,sx);
+  DoubleHelper dWheelOffsetIn = new DoubleHelper(0.1,sz);
+  DoubleHelper hWheelOffsetIn = new DoubleHelper(0.1,sy);
+  DoubleHelper wWheel = new DoubleHelper(0.2,sx);
+  DoubleHelper dWheel = new DoubleHelper(0.4,sz);
+  DoubleHelper hWheel = new DoubleHelper(0.3,sy);
+
   GlModelBuffer model = new GlAreaModel([
     //floor
     new GlRectangle.withWD(-w.h,0.0, -d.h, w.v, d.v, true),
@@ -177,11 +185,25 @@ GlModelInstanceCollection createVehicleModel(double sx, double sy, double sz){
     ]),
   ]).createBuffers(layer);
 
+  GlModelBuffer modelWheel = new GlCube.fromTopCenter(0.0,0.0,0.0,wWheel.v,hWheel.v,dWheel.v).createBuffers(layer);
+  GlMatrix wheelPositionFrontRight = GlMatrix.translationMatrix(w.h-wWheelOffsetFront.v,hWheelOffsetIn.v,-d.h+dWheelOffsetIn.v);
+  GlMatrix wheelPositionRearRight = GlMatrix.translationMatrix(-w.h+wWheelOffsetRear.v,hWheelOffsetIn.v,-d.h+dWheelOffsetIn.v);
+  GlMatrix wheelPositionFrontLeft =  GlMatrix.translationMatrix(w.h-wWheelOffsetFront.v,hWheelOffsetIn.v,d.h-dWheelOffsetIn.v)*GlMatrix.rotationYMatrix(Math.PI);
+  GlMatrix wheelPositionRearLeft = GlMatrix.translationMatrix(-w.h+wWheelOffsetRear.v,hWheelOffsetIn.v,d.h-dWheelOffsetIn.v)*GlMatrix.rotationYMatrix(Math.PI);
 
   var color = new GlColor(1.0,1.0,0.0);
   var color2 = new GlColor(0.0,0.0,1.0);
   var colorWindows = new GlColor(0.0,0.0,0.2);
-  return new GlModelInstanceCollection([new GlModelInstance(model, color),new GlModelInstance(modelStripe, color2),new GlModelInstance(modelWindows, colorWindows)]);
+  var colorWheel = new GlColor(0.2,0.2,0.2);
+  return new GlModelInstanceCollection([
+    new GlModelInstance(model, color),
+    new GlModelInstance(modelStripe, color2),
+    new GlModelInstance(modelWindows, colorWindows),
+    new GlModelInstance(modelWheel, colorWheel, wheelPositionFrontRight),
+    new GlModelInstance(modelWheel, colorWheel, wheelPositionFrontLeft),
+    new GlModelInstance(modelWheel, colorWheel, wheelPositionRearRight),
+    new GlModelInstance(modelWheel, colorWheel, wheelPositionRearLeft),
+  ]);
 }
 
 GlModelInstanceCollection createXYZMark(){

@@ -129,7 +129,7 @@ void main()
   //4 4 8
   GlModelCollection modelCollection = new GlModelCollection(layer);
   GlModel_Vehicle vehicleModel = new GlModel_Vehicle();
-  vehicleModel.loadModel(modelCollection,game.players[0].vehicle.w/1.0, 50.0/1.0, game.players[0].vehicle.h/1.0);
+  vehicleModel.loadModel(modelCollection);
   //createVehicleModel().modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
   GlColor colorWindows = new GlColor(0.2,0.2,0.2);
   //create all buffer
