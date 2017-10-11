@@ -4,7 +4,79 @@
     <meta charset="utf-8">
     <meta name = "viewport" content = "initial-scale = 1.0, maximum-scale = 1.0, user-scalable = no, width = device-width">
     <title>MicroMachines</title>
-    <style>canvas {background:#333;}</style>
+    <style>
+        canvas {
+            background:#333;
+        }
+        html{
+            background: #353535;
+        }
+        body{
+            font-family: arial;
+            font-size: 12px;
+            width: 800px;
+            margin:0px auto;
+        }
+        .players {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            height: 100px;
+            width: 150px;
+        }
+        .rounds {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            font-weight: bold;
+            background: #1F2629;
+            color: #FFEB3B;
+            padding: 12px;
+            font-size: 21px;
+        }
+        .playername{
+            padding: 7px;
+            float:left;
+        }
+        .position{
+            padding: 7px;
+            float: left;
+            font-weight: bold;
+            background: #1F2629;
+            color: #FFEB3B;
+        }
+        .color{
+            padding: 7px;
+            height: 10px; width:24px; float:left;
+        }
+        .color1{
+            width:16px;
+        }
+        .color2{
+            width:8px;
+        }
+        .color1,.color2{
+            height: 10px;  float:left;
+        }
+        .player {
+            position: absolute;
+            background: #CECECE;
+            width: 100%;
+            color: #101010;
+            border-radius: 0px 0px 34px 0px;
+            border-bottom: 1px solid #808080;
+        }
+        .humanplayer {
+            background: #FFFFFF;
+            font-weight: bold;
+            font-style: italic;
+        }
+        .hud {
+            position: absolute;
+            top: 0px;
+            width: 800px;
+        }
+    </style>
 </head>
 <body>
 <script type="application/dart" src="webgl_game.dart"></script>

@@ -67,5 +67,12 @@ class Game{
     for(MoveableGameObject o in _movableGameObjects){
       o.update();
     }
+    players.sort((Player a, Player b){
+      double ap = a.pathProgress.progress;
+      double bp = b.pathProgress.progress;
+      if(ap < bp) return 1;
+      if(ap > bp) return -1;
+      return 0;
+    });
   }
 }

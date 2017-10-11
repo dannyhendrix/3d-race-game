@@ -18,6 +18,21 @@ List<GlModelInstanceCollection> modelInstances = [];
 GlCameraDistanseToTarget camera;
 double cameraZOffset = 1800.0;
 double cameraZRotation = -1.0;
+Map<Player,PlayerStats> playerElements;
+Element el_rounds;
+
+
+Map<VehicleThemeColor, String> colorMappingCss = {
+  VehicleThemeColor.Black   : "#333",
+  VehicleThemeColor.White   : "#FFF",
+  VehicleThemeColor.Gray    : "#999",
+  VehicleThemeColor.Red     : "#F00",
+  VehicleThemeColor.Green   : "#0F0",
+  VehicleThemeColor.Blue    : "#00F",
+  VehicleThemeColor.Yellow  : "#FF0",
+  VehicleThemeColor.Orange  : "#F80",
+  VehicleThemeColor.Pink    : "#F4F",
+};
 
 class GlModelInstanceFromVehicle extends GlModelInstanceCollection{
   GameObject gameObject;
@@ -52,6 +67,8 @@ void main()
   double windowH = 500.0;
   layer = new GlRenderLayer.withSize(windowW.toInt(),windowH.toInt());
   el_Fps = new DivElement();
+  el_rounds = new DivElement();
+  el_rounds.className = "rounds";
   document.body.append(layer.canvas);
   document.body.append(el_Fps);
   print("Hi");
@@ -70,6 +87,22 @@ void main()
 
   game = new Game();
   game.init();
+
+  //create UI
+  Element el_hud = new DivElement();
+  el_hud.className = "hud";
+  Element el_playersWrapper = new DivElement();
+  el_playersWrapper.className = "players";
+  playerElements = {};
+  for(Player p in game.players){
+    var stats = new PlayerStats(p);
+    el_playersWrapper.append(stats.element);
+    playerElements[p] = stats;
+  }
+  el_hud.append(el_playersWrapper);
+  el_hud.append(el_rounds);
+  document.body.append(el_hud);
+
   game.start();
 
   Map<VehicleThemeColor, GlColor> colorMapping = {
@@ -159,7 +192,7 @@ tick(time) {
 
   layer.clearForNextFrame();
 
-  camera.setCameraAngleAndOffset(new GlVector(game.players[0].vehicle.position.x,0.0,game.players[0].vehicle.position.y),rx:cameraZRotation,offsetZ:cameraZOffset);
+  camera.setCameraAngleAndOffset(new GlVector(game.humanPlayer.vehicle.position.x,0.0,game.humanPlayer.vehicle.position.y),rx:cameraZRotation,offsetZ:cameraZOffset);
   /*
   camera.tx = game.players[0].vehicle.position.x;
   camera.x = game.players[0].vehicle.position.x;
@@ -185,6 +218,18 @@ tick(time) {
     layer.setWorld(objPerspective,viewProjectionMatrix*objPerspective, new GlVector(-1.0,0.8,0.6), 0.4);
     for(GlModelInstance mi in m.modelInstances) layer.drawModel(mi);
   }
+  //b.pathProgress.progress.compareTo(a.pathProgress.progress));
+
+  int h = 30;
+  int y = 0;
+  int pos = 1;
+  for(Player p in game.players){
+    //str += "${p.name} ${p.pathProgress.round} ${p.pathProgress.completedFactor} ${p.pathProgress.progress}<br/>";
+    playerElements[p].setPosition(pos++);
+    playerElements[p].element.style.top = "${y}px";
+    y+=h;
+  }
+  el_rounds.text = "${game.humanPlayer.pathProgress.round}";
 }
 
 /// FPS meter - activated when the url parameter "fps" is included.
@@ -247,5 +292,43 @@ class InputWithDoubleValue extends InputWithValue<double>{
     element.append(label);
     element.append(_readValue);
     element.append(_inputElement);
+  }
+}
+
+class PlayerStats{
+  Element element;
+  Element el_position;
+  Player player;
+  PlayerStats(this.player){
+    element = _createElement();
+  }
+  void setPosition(int position){
+    el_position.text = "$position";
+  }
+  Element _createElement(){
+    DivElement el = new DivElement();
+    if(player is HumanPlayer)
+      el.className = "humanplayer player";
+    else
+      el.className = "player";
+    Element el_name = new DivElement();
+    el_position = new DivElement();
+    el_position.className = "position";
+    el_name.className = "playername";
+    el_name.text = player.name;
+    Element el_color = new DivElement();
+    el_color.className = "color";
+    Element el_color1 = new DivElement();
+    el_color1.className = "color1";
+    el_color1.style.background = "${colorMappingCss[player.theme.color1]}";
+    Element el_color2 = new DivElement();
+    el_color2.className = "color2";
+    el_color2.style.background = "${colorMappingCss[player.theme.color2]}";
+    el_color.append(el_color1);
+    el_color.append(el_color2);
+    el.append(el_position);
+    el.append(el_color);
+    el.append(el_name);
+    return el;
   }
 }

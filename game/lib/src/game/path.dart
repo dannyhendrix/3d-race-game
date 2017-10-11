@@ -5,21 +5,25 @@ class PathProgress{
   Path path;
   bool finished = false;
   int _index = 0;
+  int _roundCompleted = 0;
 
   PathCheckPoint get current => path.point(_index);
-  double get completedFactor => _index.toDouble()/path.length.toDouble();
+  double get completedFactor => _roundCompleted.toDouble()/path.length.toDouble();
+  double get progress => round*1.0 + completedFactor;
 
   PathProgress(this.path);
 
   void next(){
     if(_index == 0){
       round++;
+      _roundCompleted = 0;
       if(path.roundsToFinish > -1 && round >= path.roundsToFinish){
         finished = true;
         return;
       }
     }
     _index++;
+    _roundCompleted++;
     if(_index >= path.length){
       _index = 0;
       if(!path.circular) finished = true;
