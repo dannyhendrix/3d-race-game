@@ -239,13 +239,12 @@ void draw(){
   //2 call draw method with buffer
   for(GlModelInstanceCollection m in modelInstances){
 
-    GlMatrix objPerspective = worldMatrix.translate(m.x,m.y,m.z);
-    objPerspective = objPerspective.rotateX(m.rx);
-    objPerspective = objPerspective.rotateY(m.ry);
-    objPerspective = objPerspective.rotateZ(m.rz);
+    GlMatrix objPerspective = viewProjectionMatrix*worldMatrix*m.CreateTransformMatrix();
 
-    layer.setWorld(worldMatrix,viewProjectionMatrix*objPerspective, new GlVector(lx,ly,lz),lightImpact);
-    for(GlModelInstance mi in m.modelInstances)layer.drawModel(mi);
+    for(GlModelInstance mi in m.modelInstances){
+      layer.setWorld(worldMatrix,objPerspective*mi.CreateTransformMatrix(), new GlVector(lx,ly,lz),lightImpact);
+      layer.drawModel(mi);
+    }
   }
 }
 

@@ -36,19 +36,23 @@ Map<VehicleThemeColor, String> colorMappingCss = {
 
 class GlModelInstanceFromVehicle extends GlModelInstanceCollection{
   GameObject gameObject;
-  double get x => gameObject.position.x;
-  double get z => gameObject.position.y;
-  double get ry => -gameObject.r;
   GlModelInstanceFromVehicle(this.gameObject, GlModelInstanceCollection model):super([]){
     this.modelInstances = model.modelInstances;
+  }
+  GlMatrix CreateTransformMatrix(){
+    GlMatrix m = GlMatrix.translationMatrix(gameObject.position.x,0.0,gameObject.position.y);
+    m = m.rotateY(-gameObject.r);
+    return m;
   }
 }
 class GlModelInstanceFromGameObject extends GlModelInstanceCollection{
   GameObject gameObject;
-  double get x => gameObject.position.x;
-  double get z => gameObject.position.y;
-  double get ry => -gameObject.r;
   GlModelInstanceFromGameObject(this.gameObject, GlModelInstanceCollection model):super(model.modelInstances);
+  GlMatrix CreateTransformMatrix(){
+    GlMatrix m = GlMatrix.translationMatrix(gameObject.position.x,0.0,gameObject.position.y);
+    m = m.rotateY(-gameObject.r);
+    return m;
+  }
 }
 class GlModelInstanceCheckpoint extends GlModelInstanceCollection{
   Game game;
@@ -56,6 +60,10 @@ class GlModelInstanceCheckpoint extends GlModelInstanceCollection{
   double get z => game.humanPlayer.pathProgress.current.y;
   double get ry => 0.0;
   GlModelInstanceCheckpoint(this.game, GlModelInstanceCollection model):super(model.modelInstances);
+  GlMatrix CreateTransformMatrix(){
+    GlMatrix m = GlMatrix.translationMatrix(game.humanPlayer.pathProgress.current.x,0.0,game.humanPlayer.pathProgress.current.y);
+    return m;
+  }
 }
 
 void main()
@@ -211,12 +219,11 @@ tick(time) {
 
   //2 call draw method with buffer
   for(GlModelInstanceCollection m in modelInstances){
-    GlMatrix objPerspective = worldMatrix.translate(m.x,m.y,m.z);
-    objPerspective = objPerspective.rotateX(m.rx);
-    objPerspective = objPerspective.rotateY(m.ry);
-    objPerspective = objPerspective.rotateZ(m.rz);
-    layer.setWorld(objPerspective,viewProjectionMatrix*objPerspective, new GlVector(-1.0,0.8,0.6), 0.4);
-    for(GlModelInstance mi in m.modelInstances) layer.drawModel(mi);
+    GlMatrix objPerspective = worldViewProjectionMatrix*m.CreateTransformMatrix();
+    for(GlModelInstance mi in m.modelInstances){
+      layer.setWorld(worldMatrix,objPerspective*mi.CreateTransformMatrix(), new GlVector(-1.0,0.8,0.6),0.4);
+      layer.drawModel(mi);
+    }
   }
   //b.pathProgress.progress.compareTo(a.pathProgress.progress));
 

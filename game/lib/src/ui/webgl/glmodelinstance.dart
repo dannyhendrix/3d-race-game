@@ -9,16 +9,24 @@ class GlModelBuffer{
 class GlModelInstance{
   GlModelBuffer modelBuffer;
   GlColor color;
-  GlMatrix transformMatrix;//TODO: use this matrix to translate, rotate and scale objects
-  GlModelInstance(this.modelBuffer, this.color);
+  GlMatrix _transformMatrix;
+  GlMatrix CreateTransformMatrix() => GlMatrix.identityMatrix();
+  GlModelInstance(this.modelBuffer, this.color, [this._transformMatrix]){
+    if(_transformMatrix == null){
+      _transformMatrix = GlMatrix.identityMatrix();
+    }
+  }
 }
 
 class GlModelInstanceCollection{
   List<GlModelInstance> modelInstances;
-  double x,y,z;
-  double rx=0.0,ry=0.0,rz=0.0;
-  GlMatrix transformMatrix;//TODO: use this matrix to translate, rotate and scale object collections (and remove x,y,z,rx,ry,rz
-  GlModelInstanceCollection([List<GlModelInstance> modelInstances, this.x=0.0,this.y=0.0,this.z=0.0]): modelInstances = modelInstances ?? [];
+  GlMatrix _transformMatrix;
+  GlMatrix CreateTransformMatrix() => GlMatrix.identityMatrix();
+  GlModelInstanceCollection([List<GlModelInstance> modelInstances, this._transformMatrix]): modelInstances = modelInstances ?? []{
+    if(_transformMatrix == null){
+      _transformMatrix = GlMatrix.identityMatrix();
+    }
+  }
 }
 
 class GlColor{
