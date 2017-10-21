@@ -4,9 +4,6 @@ import "dart:html";
 import "dart:web_gl";
 import "dart:math" as Math;
 import 'dart:typed_data';
-import 'package:micromachines/game.dart';
-
-part "src/ui/webgl/matrix4.dart";
 
 part "src/ui/webgl/glarea.dart";
 part "src/ui/webgl/glrenderlayer.dart";
