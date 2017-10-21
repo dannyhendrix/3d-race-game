@@ -6,7 +6,7 @@ part of gameutils.math;
 /**
 Simple vector class
 **/
-class Vector extends Point{
+class Vector extends Point2d{
 
   Vector(double x, double y):super(x,y);
   Vector.empty():this(0.0,0.0);

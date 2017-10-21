@@ -11,9 +11,9 @@ class MinMax{
 }
 
 class Polygon{
-  List<Point> points;
+  List<Point2d> points;
   List<Vector> edges;
-  Point center;
+  Point2d center;
   // Note that closed can only be set to false for lines. Otherwise the polygon is not convex anymore (one of the assumptions for collision detection).
   Polygon(this.points, [bool closed = true]){
     edges = _createEdges(closed);
@@ -22,7 +22,7 @@ class Polygon{
 
   List<Vector> _createEdges(bool closed){
     if(points.length <= 1) return [];
-    Point p1,p2;
+    Point2d p1,p2;
     List<Vector> edges = [];
     p1 = points[0];
     for(int i = 1; i < points.length; i++){
@@ -37,49 +37,49 @@ class Polygon{
     return edges;
   }
 
-  Point _createCenter(){
+  Point2d _createCenter(){
     double totalX = 0.0;
     double totalY = 0.0;
     int totalP = points.length;
-    for (Point p in points) {
+    for (Point2d p in points) {
       totalX += p.x;
       totalY += p.y;
     }
-    return new Point(totalX/totalP, totalY/totalP);
+    return new Point2d(totalX/totalP, totalY/totalP);
   }
 
   Polygon applyMatrix(Matrix2d M){
-    return new Polygon(points.map((Point p) => M.apply(p)).toList());
+    return new Polygon(points.map((Point2d p) => M.apply(p)).toList());
   }
 
   //TODO: use matrices here (rather than rotate and translate seperatly)
-  Polygon rotate(double r, Point origin){
-    List<Point> newPoints = [];
-    for(Point p in points){
+  Polygon rotate(double r, Point2d origin){
+    List<Point2d> newPoints = [];
+    for(Point2d p in points){
       newPoints.add(p.rotate(r,origin));
     }
     return new Polygon(newPoints);
   }
 
-  Polygon translate(Point position, Point origin){
-    List<Point> newPoints = [];
-    for(Point p in points){
+  Polygon translate(Point2d position, Point2d origin){
+    List<Point2d> newPoints = [];
+    for(Point2d p in points){
       newPoints.add(position-(origin - p));
     }
     return new Polygon(newPoints);
   }
   Polygon offset(Vector offset){
-    List<Point> newPoints = [];
-    for(Point p in points){
+    List<Point2d> newPoints = [];
+    for(Point2d p in points){
       newPoints.add(p-offset);
     }
     return new Polygon(newPoints);
   }
 
-  Polygon rotateAndTranslate(Point position,double r, Point origin){
-    List<Point> newPoints = [];
-    for(Point p in points){
-      Point translated = position-(origin-p);
+  Polygon rotateAndTranslate(Point2d position,double r, Point2d origin){
+    List<Point2d> newPoints = [];
+    for(Point2d p in points){
+      Point2d translated = position-(origin-p);
       newPoints.add(translated.rotate(r,position));
     }
     return new Polygon(newPoints);
@@ -166,7 +166,7 @@ class Polygon{
         minIntervalDistance = intervalDistance;
         translationAxis = axis;
 
-        Point d = polygonA.center - polygonB.center;
+        Point2d d = polygonA.center - polygonB.center;
         if (translationAxis.dotProduct(d) < 0) translationAxis = -translationAxis;
       }
     }
@@ -190,7 +190,7 @@ class Polygon{
     double d = axis.dotProduct(polygon.points[0]);
     double min = d;
     double max = d;
-    for (Point p in polygon.points){
+    for (Point2d p in polygon.points){
       d = axis.dotProduct(p);
       if (d < min) min = d;
       else if (d > max) max = d;

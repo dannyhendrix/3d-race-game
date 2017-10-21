@@ -5,17 +5,17 @@ class Ball extends MoveableGameObject{
   double maxSpeed = 2.0;
   double speed = 0.0;
  Ball(this.game){
-   position = new Point(400.0, 400.0);
+   position = new Point2d(400.0, 400.0);
    r = 1.7;
    w = 20.0;
    h = 20.0;
    double hw = w/2;
    double hh= h/2;
    collisionField = new Polygon([
-     new Point(-hw,-hh),
-     new Point(hw,-hh),
-     new Point(hw,hh),
-     new Point(-hw,hh),
+     new Point2d(-hw,-hh),
+     new Point2d(hw,-hh),
+     new Point2d(hw,hh),
+     new Point2d(-hw,hh),
    ]);
  }
 

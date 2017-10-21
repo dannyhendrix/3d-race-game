@@ -33,14 +33,14 @@ class PathToPolygons
     double distance = A.distanceTo(B);
     Matrix2d M = (new Matrix2d.translationPoint(A)).rotate(A.angleWith(B));
     return new Polygon([
-      M.apply(new Point(0.0, -roadWidthA)),
-      M.apply(new Point(distance, -roadWidthB)),
-      M.apply(new Point(distance, roadWidthB)),
-      M.apply(new Point(0.0, roadWidthA)),
+      M.apply(new Point2d(0.0, -roadWidthA)),
+      M.apply(new Point2d(distance, -roadWidthB)),
+      M.apply(new Point2d(distance, roadWidthB)),
+      M.apply(new Point2d(0.0, roadWidthA)),
     ]);
   }
 
-  List<Polygon> _createIntersections(List<Point> path, List<Polygon> roads, bool pathLoop)
+  List<Polygon> _createIntersections(List<Point2d> path, List<Polygon> roads, bool pathLoop)
   {
     List<Polygon> intersections = [];
     for(int i = 1; i < path.length - 1; i++)
@@ -55,7 +55,7 @@ class PathToPolygons
     return intersections;
   }
 
-  Polygon _createIntersection(Point P, Polygon roadPrev, Polygon roadNext)
+  Polygon _createIntersection(Point2d P, Polygon roadPrev, Polygon roadNext)
   {
     // Take both top lines of the roads. If they intersect, connect the bottom. Otherwise connect the top.
     if(_intersect(roadPrev.points[0], roadPrev.points[1], roadNext.points[0], roadNext.points[1]))
@@ -92,12 +92,12 @@ class PathToPolygons
     return polygons;
   }
 
-  bool _intersect(Point A, Point B, Point C, Point D)
+  bool _intersect(Point2d A, Point2d B, Point2d C, Point2d D)
   {
     return _ccw(A, C, D) != _ccw(B, C, D) && _ccw(A, B, C) != _ccw(A, B, D);
   }
 
-  bool _ccw(Point A, Point B, Point C)
+  bool _ccw(Point2d A, Point2d B, Point2d C)
   {
     return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x);
   }

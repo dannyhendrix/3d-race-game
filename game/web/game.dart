@@ -147,7 +147,7 @@ ButtonElement createButton(String text, Function onClick){
 void drawPolygon(Polygon polygon, RenderLayer layer, String color, [bool stroke = false]){
   layer.ctx.beginPath();
   layer.ctx.moveTo(polygon.points.first.x,polygon.points.first.y);
-  for(Point p in polygon.points){
+  for(Point2d p in polygon.points){
     layer.ctx.lineTo(p.x,p.y);
   }
   if(stroke)  {
@@ -162,7 +162,7 @@ void drawRoadPolygon(Polygon polygon,RenderLayer layer){
   layer.ctx.beginPath();
   var first = polygon.points.first;
   layer.ctx.moveTo(first.x,first.y);
-  for(Point p in polygon.points){
+  for(Point2d p in polygon.points){
     layer.ctx.lineTo(p.x,p.y);
   }
   layer.ctx.lineTo(first.x,first.y);

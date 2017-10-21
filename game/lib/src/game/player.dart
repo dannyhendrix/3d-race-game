@@ -41,8 +41,8 @@ class HumanPlayer extends Player{
   }
 
   void update(){
-    Point p =  pathProgress.current;
-    Point v =  vehicle.position;
+    Point2d p =  pathProgress.current;
+    Point2d v =  vehicle.position;
     Vector V =  new Vector(p.x-v.x,p.y-v.y);
     vehicle.info = "${pathProgress.finished}";
     if(V.magnitude < pathProgress.current.radius){
@@ -62,8 +62,8 @@ class AiPlayer extends Player{
       return;
     }
     if(_game.state != GameState.Racing) return;
-    Point p =  pathProgress.current;
-    Point v =  vehicle.position;
+    Point2d p =  pathProgress.current;
+    Point2d v =  vehicle.position;
     Vector V =  new Vector(p.x-v.x,p.y-v.y);
     if(V.magnitude < pathProgress.current.radius){
       pathProgress.next();
@@ -76,8 +76,8 @@ class AiPlayer extends Player{
   }
 
   void controlToTarget(){
-    Point p =  pathProgress.current;
-    Point v =  vehicle.position;
+    Point2d p =  pathProgress.current;
+    Point2d v =  vehicle.position;
     vehicle.setSteer(steerToPoint(v,vehicle.r,p));
     vehicle.setAccelarate(true);
   }
@@ -109,7 +109,7 @@ class AiPlayer extends Player{
     return Steer.None;*/
   }
 
-  Steer steerToPoint(Point A, double RA, Point B){
+  Steer steerToPoint(Point2d A, double RA, Point2d B){
     var dist = B-A;
     var normT = new Vector(dist.x,dist.y).normalized;
     var normA = new Vector.fromAngleRadians(RA,1.0);

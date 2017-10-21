@@ -7,10 +7,10 @@ void main()
 {
   test("Edges", (){
     Polygon polygon = new Polygon([
-      new Point(0.0,0.0),
-      new Point(4.0,0.0),
-      new Point(4.0,8.0),
-      new Point(0.0,8.0)
+      new Point2d(0.0,0.0),
+      new Point2d(4.0,0.0),
+      new Point2d(4.0,8.0),
+      new Point2d(0.0,8.0)
     ], false);
     var center = polygon.center;
     expect(center.x, equals(2.0));
@@ -26,10 +26,10 @@ void main()
   });
   test("EdgesClosed", (){
     Polygon polygon = new Polygon([
-      new Point(0.0,0.0),
-      new Point(4.0,0.0),
-      new Point(4.0,8.0),
-      new Point(0.0,8.0)
+      new Point2d(0.0,0.0),
+      new Point2d(4.0,0.0),
+      new Point2d(4.0,8.0),
+      new Point2d(0.0,8.0)
     ], true);
     var center = polygon.center;
     expect(center.x, equals(2.0));
@@ -46,13 +46,13 @@ void main()
     expect(edges[3].y, equals(-8.0));
   });
   test("Translate", (){
-    Point center = new Point(2.0,4.0);
-    Point targetPosition = new Point(12.0,14.0);
+    Point2d center = new Point2d(2.0,4.0);
+    Point2d targetPosition = new Point2d(12.0,14.0);
     Polygon polygon = new Polygon([
-      new Point(0.0,0.0),
-      new Point(4.0,0.0),
-      new Point(4.0,8.0),
-      new Point(0.0,8.0)
+      new Point2d(0.0,0.0),
+      new Point2d(4.0,0.0),
+      new Point2d(4.0,8.0),
+      new Point2d(0.0,8.0)
     ]);
     Polygon translated = polygon.translate(targetPosition,center);
     expect(translated.points.length, equals(4));
@@ -66,12 +66,12 @@ void main()
     expect(translated.points[3].y, equals(18.0));
   });/*
   test("Rotate", (){
-    Point center = new Point(2.0,4.0);
+    Point2d center = new Point2d(2.0,4.0);
     Polygon polygon = new Polygon([
-      new Point(0.0,0.0),
-      new Point(4.0,0.0),
-      new Point(4.0,8.0),
-      new Point(0.0,8.0)
+      new Point2d(0.0,0.0),
+      new Point2d(4.0,0.0),
+      new Point2d(4.0,8.0),
+      new Point2d(0.0,8.0)
     ]);
     Polygon translated = polygon.rotate(Math.PI/2,center);
     expect(translated.points.length, equals(4));
@@ -86,37 +86,37 @@ void main()
   });*/
   test("Collision", (){
     Polygon polygonA = new Polygon([
-      new Point(0.0,0.0),
-      new Point(4.0,0.0),
-      new Point(4.0,8.0),
-      new Point(0.0,8.0)
+      new Point2d(0.0,0.0),
+      new Point2d(4.0,0.0),
+      new Point2d(4.0,8.0),
+      new Point2d(0.0,8.0)
     ]);
     Polygon polygonB = new Polygon([
-      new Point(0.0,0.0),
-      new Point(4.0,0.0),
-      new Point(4.0,8.0),
-      new Point(0.0,8.0)
+      new Point2d(0.0,0.0),
+      new Point2d(4.0,0.0),
+      new Point2d(4.0,8.0),
+      new Point2d(0.0,8.0)
     ]);
-    CollisionResult res = polygonA.collision(polygonB, new Vector.empty());
+    CollisionResult res = polygonA.collisionWithVector(polygonB, new Vector.empty());
 
   });
   test("CollisionLine", (){
     Polygon polygonA = new Polygon([
-      new Point(0.0,2.0),
-      new Point(4.0,2.0)
+      new Point2d(0.0,2.0),
+      new Point2d(4.0,2.0)
     ]);
     Polygon polygonB = new Polygon([
-      new Point(2.0,0.0),
-      new Point(2.0,4.0)
+      new Point2d(2.0,0.0),
+      new Point2d(2.0,4.0)
     ]);
     Polygon polygonC = new Polygon([
-      new Point(-1.0,0.0),
-      new Point(-1.0,4.0)
+      new Point2d(-1.0,0.0),
+      new Point2d(-1.0,4.0)
     ]);
-    CollisionResult res = polygonA.collision(polygonB, new Vector.empty());
+    CollisionResult res = polygonA.collisionWithVector(polygonB, new Vector.empty());
     expect(res.intersect, equals(true));
     expect(res.willIntersect, equals(true));
-    res = polygonA.collision(polygonC, new Vector(2.0,0.0));
+    res = polygonA.collisionWithVector(polygonC, new Vector(2.0,0.0));
     expect(res.intersect, equals(false));
     //expect(res.willIntersect, equals(true));
   });

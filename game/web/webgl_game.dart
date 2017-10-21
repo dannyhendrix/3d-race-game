@@ -149,7 +149,7 @@ void main()
   }
 
   //GlModel worldModel = new GlAreaModel([new GlRectangle.withWD(0.0,0.0,0.0,1500.0,800.0,false)]);
-  var triangles = game.path.roadPolygons.map((Polygon p)=>new GlTriangle(p.points.map((Point p)=>new GlPoint(p.x,0.0,p.y)).toList(growable: false))).toList(growable: false);
+  var triangles = game.path.roadPolygons.map((Polygon p)=>new GlTriangle(p.points.map((Point2d p)=>new GlPoint(p.x,0.0,p.y)).toList(growable: false))).toList(growable: false);
   GlModel roadModel = new GlAreaModel(triangles);
   GlModelBuffer road = roadModel.createBuffers(layer);
   modelInstances.add(new GlModelInstanceCollection([new GlModelInstance(road, new GlColor(0.3,0.3,0.3))]));

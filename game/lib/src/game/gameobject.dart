@@ -1,6 +1,6 @@
 part of micromachines;
 class GameObject{
-  Point position;
+  Point2d position;
   double r;
   double w,h;
   Polygon collisionField = new Polygon([]);

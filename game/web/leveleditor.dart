@@ -185,7 +185,7 @@ class Preview{
     ctx.beginPath();
     var first = polygon.points.first;
     ctx.moveTo(first.x,first.y);
-    for(Point p in polygon.points){
+    for(Point2d p in polygon.points){
       ctx.lineTo(p.x,p.y);
     }
     ctx.lineTo(first.x,first.y);

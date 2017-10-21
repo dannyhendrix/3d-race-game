@@ -3,15 +3,15 @@ part of micromachines;
 class CheckPoint extends GameObject{
   Game game;
   CheckPoint(this.game, double nx, double ny, [double nr = 0.0]){
-    position = new Point(nx,ny);
+    position = new Point2d(nx,ny);
     w = 20.0;
     h = 20.0;
     r = nr;
     collisionField = new Polygon([
-      new Point(0.0,0.0),
-      new Point(w,0.0),
-      new Point(w,h),
-      new Point(0.0,h),
+      new Point2d(0.0,0.0),
+      new Point2d(w,0.0),
+      new Point2d(w,h),
+      new Point2d(0.0,h),
     ]);
   }
   bool onCollision(GameObject other){

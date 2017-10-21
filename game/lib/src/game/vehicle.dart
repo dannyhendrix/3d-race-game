@@ -34,7 +34,7 @@ class VehicleSettings{
 class VehicleSensor{
   Polygon polygon;
   bool collides = false;
-  VehicleSensor.fromVector(Point origin, Vector v){
+  VehicleSensor.fromVector(Point2d origin, Vector v){
     polygon = new Polygon([origin, origin + v],false);
   }
 }
@@ -93,25 +93,25 @@ class Vehicle extends MoveableGameObject{
   bool sensorCollision = false;
 
   Vehicle(this.game, this.player){
-    position = new Point(150.0, 50.0);
+    position = new Point2d(150.0, 50.0);
     r = 0.0;
     w = 50.0;
     h = 30.0;
     double hw = w/2;
     double hh= h/2;
     collisionField = new Polygon([
-      new Point(-hw,-hh),
-      new Point(hw,-hh),
-      new Point(hw,hh),
-      new Point(-hw,hh),
+      new Point2d(-hw,-hh),
+      new Point2d(hw,-hh),
+      new Point2d(hw,hh),
+      new Point2d(-hw,hh),
     ]);
-    sensorLeftFrontAngle = new VehicleSensor.fromVector(new Point(hw,-hh), new Vector.fromAngleRadians(-sensorFrontAngle, sensorLengthFrontSide));
-    sensorLeftFront = new VehicleSensor.fromVector(new Point(hw,-hh), new Vector(sensorLength, 0.0));
-    sensorFront = new VehicleSensor.fromVector(new Point(hw,0.0), new Vector(sensorLength, 0.0));
-    sensorRightFront = new VehicleSensor.fromVector(new Point(hw,hh), new Vector(sensorLength, 0.0));
-    sensorRightFrontAngle = new VehicleSensor.fromVector(new Point(hw,hh), new Vector.fromAngleRadians(sensorFrontAngle, sensorLengthFrontSide));
-    sensorLeft = new VehicleSensor.fromVector(new Point(0.0,-hh), new Vector(0.0, -sensorLengthSide));
-    sensorRight = new VehicleSensor.fromVector(new Point(0.0,hh), new Vector(0.0, sensorLengthSide));
+    sensorLeftFrontAngle = new VehicleSensor.fromVector(new Point2d(hw,-hh), new Vector.fromAngleRadians(-sensorFrontAngle, sensorLengthFrontSide));
+    sensorLeftFront = new VehicleSensor.fromVector(new Point2d(hw,-hh), new Vector(sensorLength, 0.0));
+    sensorFront = new VehicleSensor.fromVector(new Point2d(hw,0.0), new Vector(sensorLength, 0.0));
+    sensorRightFront = new VehicleSensor.fromVector(new Point2d(hw,hh), new Vector(sensorLength, 0.0));
+    sensorRightFrontAngle = new VehicleSensor.fromVector(new Point2d(hw,hh), new Vector.fromAngleRadians(sensorFrontAngle, sensorLengthFrontSide));
+    sensorLeft = new VehicleSensor.fromVector(new Point2d(0.0,-hh), new Vector(0.0, -sensorLengthSide));
+    sensorRight = new VehicleSensor.fromVector(new Point2d(0.0,hh), new Vector(0.0, sensorLengthSide));
     sensors = [sensorLeftFrontAngle, sensorLeftFront, sensorFront, sensorRightFront, sensorRightFrontAngle, sensorLeft, sensorRight];
   }
   void setAccelarate(bool a){
