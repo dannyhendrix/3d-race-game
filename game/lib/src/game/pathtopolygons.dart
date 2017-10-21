@@ -66,8 +66,8 @@ class PathToPolygons
     }
     return new Polygon([
       P,
-      roadPrev.points[1],
       roadNext.points[0],
+      roadPrev.points[1],
     ]);
   }
 
@@ -78,13 +78,13 @@ class PathToPolygons
     {
       polygons.add(new Polygon([
         P.points[0],
-        P.points[1],
         P.points[2],
+        P.points[1],
       ]));
       polygons.add(new Polygon([
         P.points[2],
-        P.points[3],
         P.points[0],
+        P.points[3],
       ]));
     }
     return polygons;

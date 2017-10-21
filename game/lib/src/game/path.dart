@@ -46,4 +46,21 @@ class Path{
     PathToPolygons pathToPolygons = new PathToPolygons();
     roadPolygons = pathToPolygons.createRoadPolygons(_path, roadWith, circular);
   }
+  bool onRoad(Point p){
+    for(int i = 0; i< roadPolygons.length; i++){
+      if(_inTriangle(p,roadPolygons[i])){
+        return true;
+      }
+    }
+    return false;
+  }
+  bool _inTriangle(Point P, Polygon p){
+    var A = p.points[0];
+    var B = p.points[1];
+    var C = p.points[2];
+    var Area = 0.5 *(-B.y*C.x + A.y*(-B.x + C.x) + A.x*(B.y - C.y) + B.x*C.y);
+    var s = 1/(2*Area)*(A.y*C.x - A.x*C.y + (C.y - A.y)*P.x + (A.x - C.x)*P.y);
+    var t = 1/(2*Area)*(A.x*B.y - A.y*B.x + (A.y - B.y)*P.x + (B.x - A.x)*P.y);
+    return s > 0 && t > 0 && 1-s-t > 0;
+  }
 }

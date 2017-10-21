@@ -139,6 +139,12 @@ class Vehicle extends MoveableGameObject{
         vehicleSettings.getValue(VehicleSettingKeys.reverse_acceleration_max),
         _currentStandStillDelay==0, _isAccelerating, _isBraking);
     _speed = _applyFriction(_speed,vehicleSettings.getValue(VehicleSettingKeys.friction));
+
+    // slower off road
+    // TODO: make this level dependant?
+    if(!player.pathProgress.path.onRoad(position)){
+      _speed *= 0.9;
+    }
     _currentStandStillDelay = _updateStandStillDelay(_currentStandStillDelay,vehicleSettings.getValue(VehicleSettingKeys.standstill_delay), wasStandingStill, _speed==0);
 
     vector = new Vector.fromAngleRadians(r,_speed);
