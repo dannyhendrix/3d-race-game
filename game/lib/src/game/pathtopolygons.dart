@@ -2,39 +2,41 @@ part of micromachines;
 
 class PathToPolygons
 {
-  List<Polygon> createRoadPolygons(List<Point> path, double roadWidth, bool pathLoop)
+  List<Polygon> createRoadPolygons(List<PathCheckPoint> path, bool circular)
   {
     List<Polygon> polygons = [];
     // 1 create square parts of the roads
-    List<Polygon> roads = _createSquareRoadPolygons(path, roadWidth, pathLoop);
+    List<Polygon> roads = _createSquareRoadPolygons(path, circular);
     // 2 create triangle intersections between roads
-    polygons.addAll(_createIntersections(path, roads, pathLoop));
+    polygons.addAll(_createIntersections(path, roads, circular));
     // 3 create triangles for square roads
     polygons.addAll(_splitRoadsInTriangles(roads));
     //polygons.addAll((roads));
     return polygons;
   }
 
-  List<Polygon> _createSquareRoadPolygons(List<Point> path, double roadWidth, bool pathLoop)
+  List<Polygon> _createSquareRoadPolygons(List<PathCheckPoint> path, bool circular)
   {
     List<Polygon> roads = [];
     for(int i = 1; i < path.length; i++)
     {
-      roads.add(_createSquareRoad(path[i-1], path[i], roadWidth));
+      roads.add(_createSquareRoad(path[i-1], path[i]));
     }
-    if(pathLoop) roads.add(_createSquareRoad(path.last, path.first, roadWidth));
+    if(circular) roads.add(_createSquareRoad(path.last, path.first));
     return roads;
   }
 
-  Polygon _createSquareRoad(Point A, Point B, double roadWidth)
+  Polygon _createSquareRoad(PathCheckPoint A, PathCheckPoint B)
   {
+    double roadWidthA = A.radius;
+    double roadWidthB = B.radius;
     double distance = A.distanceTo(B);
     Matrix2d M = (new Matrix2d.translationPoint(A)).rotate(A.angleWith(B));
     return new Polygon([
-      M.apply(new Point(0.0, -roadWidth)),
-      M.apply(new Point(distance, -roadWidth)),
-      M.apply(new Point(distance, roadWidth)),
-      M.apply(new Point(0.0, roadWidth)),
+      M.apply(new Point(0.0, -roadWidthA)),
+      M.apply(new Point(distance, -roadWidthB)),
+      M.apply(new Point(distance, roadWidthB)),
+      M.apply(new Point(0.0, roadWidthA)),
     ]);
   }
 

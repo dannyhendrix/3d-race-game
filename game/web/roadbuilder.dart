@@ -9,15 +9,15 @@ void main(){
   RenderLayer layer = new RenderLayer.withSize(800,800);
   document.body.append(layer.canvas);
 
-  Polygon path = new Polygon([
-    new Point(100.0,100.0),
-    new Point(300.0,300.0),
-    new Point(700.0,500.0),
-    new Point(500.0,700.0),
-    new Point(200.0,600.0),
-  ]);
+  List<PathCheckPoint> path = [
+    new PathCheckPoint(100.0,100.0,180.0),
+    new PathCheckPoint(300.0,300.0,180.0),
+    new PathCheckPoint(700.0,500.0,80.0),
+    new PathCheckPoint(500.0,700.0,180.0),
+    new PathCheckPoint(200.0,600.0,180.0),
+  ];
   var roadToPolygon = new PathToPolygons();
-  var roadPolygons = roadToPolygon.createRoadPolygons(path.points, 50.0, true);
+  var roadPolygons = roadToPolygon.createRoadPolygons(path, true);
   layer.ctx.strokeStyle = "#fff";
   layer.ctx.fillStyle = "#000";
   for(var P in roadPolygons){

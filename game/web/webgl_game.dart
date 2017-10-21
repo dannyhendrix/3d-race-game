@@ -229,7 +229,7 @@ tick(time) {
   }
   //b.pathProgress.progress.compareTo(a.pathProgress.progress));
 
-  int h = 30;
+  int h = 24;
   int y = 0;
   int pos = 1;
   for(Player p in game.players){

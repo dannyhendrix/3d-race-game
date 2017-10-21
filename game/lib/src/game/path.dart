@@ -42,9 +42,9 @@ class Path{
   int roundsToFinish;
   int get length => _path.length;
   PathCheckPoint point(int index) => _path[index];
-  Path(this._path, [this.circular = false, this.roundsToFinish = -1 /*-1 is infinite*/, double roadWith = 80.0]){
+  Path(this._path, [this.circular = false, this.roundsToFinish = -1 /*-1 is infinite*/]){
     PathToPolygons pathToPolygons = new PathToPolygons();
-    roadPolygons = pathToPolygons.createRoadPolygons(_path, roadWith, circular);
+    roadPolygons = pathToPolygons.createRoadPolygons(_path, circular);
   }
   bool onRoad(Point p){
     for(int i = 0; i< roadPolygons.length; i++){
