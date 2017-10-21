@@ -35,9 +35,9 @@ Map<VehicleThemeColor, String> colorMappingCss = {
   VehicleThemeColor.Pink    : "#F4F",
 };
 
-class GlModelInstanceFromVehicle extends GlModelInstanceCollection{
+class GlModelInstanceFromModel extends GlModelInstanceCollection{
   GameObject gameObject;
-  GlModelInstanceFromVehicle(this.gameObject, GlModelInstanceCollection model):super([]){
+  GlModelInstanceFromModel(this.gameObject, GlModelInstanceCollection model):super([]){
     this.modelInstances = model.modelInstances;
   }
   GlMatrix CreateTransformMatrix(){
@@ -133,14 +133,23 @@ void main()
   //4 4 8
   GlModelCollection modelCollection = new GlModelCollection(layer);
   GlModel_Vehicle vehicleModel = new GlModel_Vehicle();
+  GlModel_Caravan caravanModel = new GlModel_Caravan();
   vehicleModel.loadModel(modelCollection);
+  caravanModel.loadModel(modelCollection);
   //createVehicleModel().modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
   GlColor colorWindows = new GlColor(0.2,0.2,0.2);
   //create all buffer
   for(GameObject o in game.gameobjects){
-    if(o is Vehicle){
+    if(o is Vehicle)
+    {
       Vehicle v = o;
-      modelInstances.add(new GlModelInstanceFromVehicle(o, vehicleModel.getModelInstance(modelCollection, colorMapping[v.player.theme.color1], colorMapping[v.player.theme.color2], colorWindows)));
+      modelInstances.add(new GlModelInstanceFromModel(o, vehicleModel
+          .getModelInstance(modelCollection, colorMapping[v.player.theme
+          .color1], colorMapping[v.player.theme.color2], colorWindows)));
+    }else if(o is Trailer){
+      Trailer t = o;
+      modelInstances.add(new GlModelInstanceFromModel(o, caravanModel
+          .getModelInstance(modelCollection, colorMapping[t.vehicle.player.theme.color1], colorMapping[t.vehicle.player.theme.color2], colorWindows)));
     }else{
       double h = o is Wall ? 150.0 : 80.0;
       GlModelBuffer cube = new GlCube.fromTopCenter(0.0,(h/2),0.0,o.w,h,o.h).createBuffers(layer);
