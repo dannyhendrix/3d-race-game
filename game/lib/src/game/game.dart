@@ -46,7 +46,8 @@ class Game{
       new AiPlayer("Jake", new VehicleTheme(VehicleThemeColor.Blue,VehicleThemeColor.Blue)),
       new AiPlayer("Rose", new VehicleTheme(VehicleThemeColor.Pink,VehicleThemeColor.White)),
       new AiPlayer("Marie", new VehicleTheme(VehicleThemeColor.Black,VehicleThemeColor.Green)),
-      new AiPlayer("Adam", new VehicleTheme(VehicleThemeColor.Orange,VehicleThemeColor.Orange))];
+      new AiPlayer("Adam", new VehicleTheme(VehicleThemeColor.Orange,VehicleThemeColor.Orange)),
+    ];
   }
   void init(){
     //"load" level
@@ -68,7 +69,7 @@ class Game{
 
     StartingPositions startingPositionsCreater = new StartingPositions();
     //TODO: vehicle W and H should be known here
-    List<StartingPosition> startingPositions = startingPositionsCreater.DetermineStartPositions(path.point(0),path.point(0),players.length,50.0,30.0,15.0,15.0,path.point(0).radius*2);
+    List<StartingPosition> startingPositions = startingPositionsCreater.DetermineStartPositions(path.point(0),path.point(0),players.length,50.0+15.0+25.0,30.0,15.0,15.0,path.point(0).radius*2);
     int i = 0;
     for(Player player in players){
       Vehicle v = new Vehicle(this,player);
@@ -77,6 +78,11 @@ class Game{
       player.start(v, path);
       gameobjects.add(v);
       _movableGameObjects.add(v);
+
+      Trailer t = new Trailer(v);
+      gameobjects.add(t);
+      _movableGameObjects.add(t);
+
       i++;
     }
     var ball = new Ball(this);

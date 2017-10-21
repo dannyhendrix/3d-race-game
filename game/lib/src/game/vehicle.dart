@@ -51,6 +51,7 @@ class Vehicle extends MoveableGameObject{
   bool _isCollided = false;
   VehicleSettings vehicleSettings = new VehicleSettings();
   int theme = 0;
+  Point2d trailerSnapPoint;
 
 
   /**
@@ -93,10 +94,11 @@ class Vehicle extends MoveableGameObject{
   bool sensorCollision = false;
 
   Vehicle(this.game, this.player){
-    position = new Point2d(150.0, 50.0);
+    position = new Point2d(0.0, 50.0);
     r = 0.0;
     w = 50.0;
     h = 30.0;
+    trailerSnapPoint = new Point2d(-w/2,0.0);
     double hw = w/2;
     double hh= h/2;
     collisionField = new Polygon([
@@ -127,7 +129,6 @@ class Vehicle extends MoveableGameObject{
   bool get isCollided => _isCollided;
 
   void update(){
-
     //Steering
     r = _applySteering(r,vehicleSettings.getValue(VehicleSettingKeys.steering_speed), _isSteering);
 
