@@ -1,6 +1,6 @@
 part of micromachines;
 
-Map leveljson = {"w":1500,"d":800,"walls":[{"x":750.0,"z":5.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":750.0,"z":795.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":5.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":1495.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":740.0,"z":190.0,"r":0.0,"w":800.0,"d":10.0,"h":10.0},{"x":1180.0,"z":350.0,"r":1.4,"w":300.0,"d":10.0,"h":10.0},{"x":320.0,"z":350.0,"r":1.7,"w":300.0,"d":10.0,"h":10.0},{"x":730.0,"z":610.0,"r":1.6,"w":300.0,"d":10.0,"h":10.0}],"path":{"circular":true,"laps":-1,"checkpoints":[{"x":190.0,"z":110.0,"radius":100.0},{"x":1300.0,"z":100.0,"radius":100.0},{"x":1300.0,"z":640.0,"radius":100.0},{"x":950.0,"z":630.0,"radius":100.0},{"x":750.0,"z":310.0,"radius":100.0},{"x":470.0,"z":600.0,"radius":100.0},{"x":180.0,"z":650.0,"radius":100.0}]}};
+Map leveljson = {"w":1500,"d":800,"walls":[{"x":750.0,"z":5.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":750.0,"z":795.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":5.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":1495.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":740.0,"z":190.0,"r":0.0,"w":800.0,"d":10.0,"h":10.0},{"x":1180.0,"z":350.0,"r":1.4,"w":300.0,"d":10.0,"h":10.0},{"x":320.0,"z":350.0,"r":1.7,"w":300.0,"d":10.0,"h":10.0},{"x":730.0,"z":610.0,"r":1.6,"w":300.0,"d":10.0,"h":10.0}],"path":{"circular":true,"laps":-1,"roadwidth":80.0,"checkpoints":[{"x":190.0,"z":110.0,"radius":100.0},{"x":1300.0,"z":100.0,"radius":100.0},{"x":1300.0,"z":640.0,"radius":100.0},{"x":950.0,"z":630.0,"radius":100.0},{"x":750.0,"z":310.0,"radius":100.0},{"x":470.0,"z":600.0,"radius":100.0},{"x":180.0,"z":650.0,"radius":100.0}]}};
 class Game{
   List<GameObject> gameobjects = [];
   List<MoveableGameObject> _movableGameObjects = [];
@@ -48,16 +48,6 @@ class Game{
     print(_movableGameObjects.length);
     var ball = new Ball(this);
     _movableGameObjects.add(ball);
-    double wallD = 15.0;
-    /*
-    //gameobjects.add(new Wall(0.0,0.0,1500,800));
-    gameobjects.add(new Wall.zeroOnLeftTop(0.0,0.0,1500.0,wallD));
-    gameobjects.add(new Wall.zeroOnLeftTop(0.0,800.0-wallD,1500.0,wallD));
-    gameobjects.add(new Wall.zeroOnLeftTop(0.0,0.0,wallD,800.0));
-    gameobjects.add(new Wall.zeroOnLeftTop(1500.0-wallD,0.0,wallD,800.0));
-    gameobjects.add(new Wall(500.0, 200.0, 100.0, 20.0, 1.0));
-    gameobjects.add(new Wall(700.0, 600.0, 60.0, 20.0, 0.3));
-    */
     gameobjects.add(ball);
     //gameobjects.add(new CheckPoint(this, 1100.0, 100.0, 0.3));
   }

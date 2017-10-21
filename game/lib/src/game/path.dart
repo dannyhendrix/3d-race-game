@@ -37,9 +37,13 @@ class PathCheckPoint extends Point{
 }
 class Path{
   List<PathCheckPoint> _path;
+  List<Polygon> roadPolygons;
   bool circular;
   int roundsToFinish;
   int get length => _path.length;
   PathCheckPoint point(int index) => _path[index];
-  Path(this._path, [this.circular = false, this.roundsToFinish = -1]);//-1 inf
+  Path(this._path, [this.circular = false, this.roundsToFinish = -1 /*-1 is infinite*/, double roadWith = 80.0]){
+    PathToPolygons pathToPolygons = new PathToPolygons();
+    roadPolygons = pathToPolygons.createRoadPolygons(_path, roadWith, circular);
+  }
 }

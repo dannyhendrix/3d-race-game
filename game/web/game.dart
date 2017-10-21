@@ -29,6 +29,13 @@ void main()
     game.update();
     layer.clear();
 
+    //draw road
+    layer.ctx.fillStyle = "#111";
+    layer.ctx.strokeStyle = "#111";
+    for(Polygon p in game.path.roadPolygons){
+      drawRoadPolygon(p, layer);
+    }
+
     //draw path
     var startPoint = game.path.point(0);
     layer.ctx.beginPath();
@@ -144,4 +151,15 @@ void drawPolygon(Polygon polygon, RenderLayer layer, String color, [bool stroke 
     layer.ctx.fillStyle = color;
     layer.ctx.fill();
   }
+}
+void drawRoadPolygon(Polygon polygon,RenderLayer layer){
+  layer.ctx.beginPath();
+  var first = polygon.points.first;
+  layer.ctx.moveTo(first.x,first.y);
+  for(Point p in polygon.points){
+    layer.ctx.lineTo(p.x,p.y);
+  }
+  layer.ctx.lineTo(first.x,first.y);
+  layer.ctx.fill();
+  layer.ctx.stroke();
 }

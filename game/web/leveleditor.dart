@@ -5,7 +5,7 @@ import "package:micromachines/game.dart";
 import "package:gameutils/math.dart";
 
 
-Map leveljson = {"w":1500,"d":800,"walls":[{"x":750.0,"z":5.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":750.0,"z":795.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":5.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":1495.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":740.0,"z":190.0,"r":0.0,"w":800.0,"d":10.0,"h":10.0},{"x":1180.0,"z":350.0,"r":1.4,"w":300.0,"d":10.0,"h":10.0},{"x":320.0,"z":350.0,"r":1.7,"w":300.0,"d":10.0,"h":10.0},{"x":730.0,"z":610.0,"r":1.6,"w":300.0,"d":10.0,"h":10.0}],"path":{"circular":true,"laps":-1, "roadwith":50.0,"checkpoints":[{"x":190.0,"z":110.0,"radius":100.0},{"x":1300.0,"z":100.0,"radius":100.0},{"x":1300.0,"z":640.0,"radius":100.0},{"x":950.0,"z":630.0,"radius":100.0},{"x":750.0,"z":310.0,"radius":100.0},{"x":470.0,"z":600.0,"radius":100.0},{"x":180.0,"z":650.0,"radius":100.0}]}};
+Map leveljson = {"w":1500,"d":800,"walls":[{"x":750.0,"z":5.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":750.0,"z":795.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":5.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":1495.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":740.0,"z":190.0,"r":0.0,"w":800.0,"d":10.0,"h":10.0},{"x":1180.0,"z":350.0,"r":1.4,"w":300.0,"d":10.0,"h":10.0},{"x":320.0,"z":350.0,"r":1.7,"w":300.0,"d":10.0,"h":10.0},{"x":730.0,"z":610.0,"r":1.6,"w":300.0,"d":10.0,"h":10.0}],"path":{"circular":true,"laps":-1, "roadwidth":80.0,"checkpoints":[{"x":190.0,"z":110.0,"radius":100.0},{"x":1300.0,"z":100.0,"radius":100.0},{"x":1300.0,"z":640.0,"radius":100.0},{"x":950.0,"z":630.0,"radius":100.0},{"x":750.0,"z":310.0,"radius":100.0},{"x":470.0,"z":600.0,"radius":100.0},{"x":180.0,"z":650.0,"radius":100.0}]}};
 
 
 abstract class LevelElement{
@@ -76,13 +76,13 @@ class CheckPoint extends LevelElement with LevelElementXZ{
 class Path extends LevelElement{
   bool circular = false;
   int laps = -1;
-  double roadwith = 80.0;
+  double roadwidth = 80.0;
   List<CheckPoint> checkpoints = [];
   Map toJson(){
     return {
       "circular" : circular,
       "laps" : laps,
-      "roadwith" : roadwith,
+      "roadwidth" : roadwidth,
       "checkpoints" : checkpoints.map((CheckPoint o) => o.toJson()).toList()
     };
   }
@@ -90,7 +90,7 @@ class Path extends LevelElement{
     Element el = new SpanElement();
     el.append(createInputElementBool("circular",circular,(bool v)=>circular=v));
     el.append(createInputElementInt("laps",laps,(int v)=>laps=v));
-    el.append(createInputElementDouble("roadwith",roadwith,(double v)=>roadwith=v));
+    el.append(createInputElementDouble("roadwidth",roadwidth,(double v)=>roadwidth=v));
     el.append(new ListInput<CheckPoint>().createInputElementList("checkpoints",checkpoints,(){var n =new CheckPoint(); checkpoints.add(n); return n;},(CheckPoint p)=>checkpoints.remove(p)));
     return el;
   }
@@ -103,7 +103,7 @@ class LevelLoader{
     level.d = json["d"];
     level.path.circular = json["path"]["circular"];
     level.path.laps = json["path"]["laps"];
-    level.path.roadwith = json["path"]["roadwith"];
+    level.path.roadwidth = json["path"]["roadwidth"];
     level.path.checkpoints = (json["path"]["checkpoints"]).map((Map m)=>new CheckPoint(m["x"],m["z"],m["radius"])).toList();
     level.walls = json["walls"].map((Map m)=>new Wall(m["x"],m["z"],m["r"],m["w"],m["d"],m["h"])).toList();
     return level;
@@ -194,10 +194,10 @@ class Preview{
 
     //draw road
     PathToPolygons pathToPolygons = new PathToPolygons();
-    var roadPolygons = pathToPolygons.createRoadPolygons(level.path.checkpoints.map((p) => new Point(p.x, p.z)).toList(), level.path.roadwith, level.path.circular);
+    var roadPolygons = pathToPolygons.createRoadPolygons(level.path.checkpoints.map((p) => new Point(p.x, p.z)).toList(), level.path.roadwidth, level.path.circular);
 
-    ctx.fillStyle = "#666";
-    ctx.strokeStyle = "#666";
+    ctx.fillStyle = "#999";
+    ctx.strokeStyle = "#999";
     for(Polygon p in roadPolygons){
       drawRoadPolygon(p);
     }
