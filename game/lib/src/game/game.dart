@@ -62,8 +62,9 @@ class Game{
     players.forEach((player) => player.init(this));
   }
   void start(){
-    LevelLoader levelLoader = new LevelLoader();
-    levelLoader.loadLevelJson(this, leveljson);
+    GameLevelLoader levelLoader = new GameLevelLoader();
+    GameLevel level = levelLoader.loadLevelJson(leveljson);
+    _loadLevel(level);
 
     StartingPositions startingPositionsCreater = new StartingPositions();
     //TODO: vehicle W and H should be known here
@@ -103,5 +104,16 @@ class Game{
       if(ap > bp) return -1;
       return 0;
     });
+  }
+
+  void _loadLevel(GameLevel level){
+    for(GameLevelWall wall in level.walls){
+      gameobjects.add(new Wall(wall.x, wall.z, wall.w, wall.d, wall.r));
+    }
+    List<PathCheckPoint> checkpoints = [];
+    for(GameLevelCheckPoint c in level.path.checkpoints){
+      checkpoints.add(new PathCheckPoint(c.x,c.z,c.radius));
+    }
+    path = new Path(checkpoints,level.path.circular, level.path.laps);
   }
 }

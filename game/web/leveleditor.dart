@@ -4,112 +4,59 @@ import "dart:convert";
 import "package:micromachines/game.dart";
 import "package:gameutils/math.dart";
 
+class LevelEditorForm{
+  Element createNewElement(GameLevelElement gameLevelElement){
+    if(gameLevelElement is GameLevel){
+      return _formLevel(gameLevelElement);
+    }else if(gameLevelElement is GameLevelWall){
+      return _formWall(gameLevelElement);
+    }else if(gameLevelElement is GameLevelPath){
+      return _formPath(gameLevelElement);
+    }else if(gameLevelElement is GameLevelCheckPoint){
+      return _formCheckPoint(gameLevelElement);
+    }
+  }
+  Element _formLevel(GameLevel level){
+    Element el = new SpanElement();
+    el.append(createInputElementInt("w",level.w,(int v)=>level.w=v));
+    el.append(createInputElementInt("d",level.d,(int v)=>level.d=v));
+    el.append(new ObjInput<GameLevelPath>().createInputElementObj("path",level.path));
+    el.append(new ListInput<GameLevelWall>().createInputElementList("walls",level.walls,(){var n =new GameLevelWall(); level.walls.add(n); return n;},(GameLevelWall p)=>level.walls.remove(p)));
+    return el;
+  }
 
-Map leveljson = {"w":1500,"d":800,"walls":[{"x":750.0,"z":5.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":750.0,"z":795.0,"r":0.0,"w":300.0,"d":10.0,"h":10.0},{"x":5.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":1495.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":740.0,"z":215.0,"r":0.0,"w":800.0,"d":10.0,"h":10.0},{"x":1160.0,"z":360.0,"r":1.4,"w":300.0,"d":10.0,"h":10.0},{"x":320.0,"z":360.0,"r":1.7,"w":300.0,"d":10.0,"h":10.0},{"x":730.0,"z":620.0,"r":1.6,"w":350.0,"d":10.0,"h":10.0}],"path":{"circular":true,"laps":-1,"checkpoints":[{"x":190.0,"z":110.0,"radius":100.0},{"x":1300.0,"z":100.0,"radius":100.0},{"x":1300.0,"z":640.0,"radius":100.0},{"x":950.0,"z":630.0,"radius":100.0},{"x":750.0,"z":310.0,"radius":60.0},{"x":470.0,"z":600.0,"radius":100.0},{"x":180.0,"z":650.0,"radius":100.0}]}};
-
-abstract class LevelElement{
-  Map toJson();
-  Element createElement();
-}
-abstract class LevelElementXZ{
-  double x,z;
-}
-class Level extends LevelElement{
-  List<Wall> walls = [];
-  Path path = new Path();
-  int w = 800;
-  int d = 500;
-  Map toJson(){
-    return {
-      "w":w,
-      "d":d,
-      "walls" : walls.map((Wall o) => o.toJson()).toList(),
-      "path" : path.toJson()
-    };
-  }
-  Element createElement(){
+  Element _formWall(GameLevelWall wall){
     Element el = new SpanElement();
-    el.append(createInputElementInt("w",w,(int v)=>w=v));
-    el.append(createInputElementInt("d",d,(int v)=>d=v));
-    el.append(new ObjInput<Path>().createInputElementObj("path",path));
-    el.append(new ListInput<Wall>().createInputElementList("walls",walls,(){var n =new Wall(); walls.add(n); return n;},(Wall p)=>walls.remove(p)));
+    el.append(createInputElementDouble("x",wall.x,(double v)=>wall.x=v));
+    el.append(createInputElementDouble("z",wall.z,(double v)=>wall.z=v));
+    el.append(createInputElementDouble("r",wall.r,(double v)=>wall.r=v));
+    el.append(createInputElementDouble("w",wall.w,(double v)=>wall.w=v));
+    el.append(createInputElementDouble("d",wall.d,(double v)=>wall.d=v));
+    el.append(createInputElementDouble("h",wall.h,(double v)=>wall.h=v));
     return el;
   }
-}
-class Wall extends LevelElement with LevelElementXZ{
-  double x = 0.0,z = 0.0,r = 0.0;
-  double w = 1.0,d = 1.0,h = 1.0;
-  Wall([this.x=0.0,this.z=0.0,this.r=0.0, this.w = 1.0,this.d = 1.0,this.h = 1.0]);
-  Map toJson(){
-    return {
-      "x":x,"z":z, "r":r,
-      "w":w,"d":d, "h":h,
-    };
-  }
-  Element createElement(){
+  Element _formPath(GameLevelPath path){
     Element el = new SpanElement();
-    el.append(createInputElementDouble("x",x,(double v)=>x=v));
-    el.append(createInputElementDouble("z",z,(double v)=>z=v));
-    el.append(createInputElementDouble("r",r,(double v)=>r=v));
-    el.append(createInputElementDouble("w",w,(double v)=>w=v));
-    el.append(createInputElementDouble("d",d,(double v)=>d=v));
-    el.append(createInputElementDouble("h",h,(double v)=>h=v));
+    el.append(createInputElementBool("circular",path.circular,(bool v)=>path.circular=v));
+    el.append(createInputElementInt("laps",path.laps,(int v)=>path.laps=v));
+    el.append(new ListInput<GameLevelCheckPoint>().createInputElementList("checkpoints",path.checkpoints,(){var n =new GameLevelCheckPoint(); path.checkpoints.add(n); return n;},(GameLevelCheckPoint p)=>path.checkpoints.remove(p)));
     return el;
   }
-}
-class CheckPoint extends LevelElement with LevelElementXZ{
-  double x = 0.0,z = 0.0;
-  double radius = 50.0;
-  CheckPoint([this.x=0.0,this.z=0.0, this.radius = 50.0]);
-  Map toJson(){
-    return {"x":x,"z":z, "radius":radius};
-  }
-  Element createElement(){
+  Element _formCheckPoint(GameLevelCheckPoint checkpoint){
     Element el = new SpanElement();
-    el.append(createInputElementDouble("x",x,(double v)=>x=v));
-    el.append(createInputElementDouble("z",z,(double v)=>z=v));
-    el.append(createInputElementDouble("radius",radius,(double v)=>radius=v));
+    el.append(createInputElementDouble("x",checkpoint.x,(double v)=>checkpoint.x=v));
+    el.append(createInputElementDouble("z",checkpoint.z,(double v)=>checkpoint.z=v));
+    el.append(createInputElementDouble("radius",checkpoint.radius,(double v)=>checkpoint.radius=v));
     return el;
-  }
-}
-class Path extends LevelElement{
-  bool circular = false;
-  int laps = -1;
-  List<CheckPoint> checkpoints = [];
-  Map toJson(){
-    return {
-      "circular" : circular,
-      "laps" : laps,
-      "checkpoints" : checkpoints.map((CheckPoint o) => o.toJson()).toList()
-    };
-  }
-  Element createElement(){
-    Element el = new SpanElement();
-    el.append(createInputElementBool("circular",circular,(bool v)=>circular=v));
-    el.append(createInputElementInt("laps",laps,(int v)=>laps=v));
-    el.append(new ListInput<CheckPoint>().createInputElementList("checkpoints",checkpoints,(){var n =new CheckPoint(); checkpoints.add(n); return n;},(CheckPoint p)=>checkpoints.remove(p)));
-    return el;
-  }
-}
-
-class LevelLoader{
-  Level loadLevel(Map json){
-    Level level = new Level();
-    level.w = json["w"];
-    level.d = json["d"];
-    level.path.circular = json["path"]["circular"];
-    level.path.laps = json["path"]["laps"];
-    level.path.checkpoints = (json["path"]["checkpoints"]).map((Map m)=>new CheckPoint(m["x"],m["z"],m["radius"])).toList();
-    level.walls = json["walls"].map((Map m)=>new Wall(m["x"],m["z"],m["r"],m["w"],m["d"],m["h"])).toList();
-    return level;
   }
 }
 
 class Container
 {
-  Level level = new Level();
+  GameLevel level = new GameLevel();
   Preview preview = new Preview();
-  LevelElementXZ currentXY;
+  LevelEditorForm form = new LevelEditorForm();
+  GameLevelElement currentXY;
   Container();
 }
 Container container = new Container();
@@ -117,7 +64,7 @@ Container container = new Container();
 void main(){
   document.body.append(container.preview.createElement());
   Element el_level = new DivElement();
-  Element el_form = new ObjInput<Level>().createInputElementObj("level",container.level);
+  Element el_form = new ObjInput<GameLevel>().createInputElementObj("level",container.level);
   el_level.append(el_form);
   document.body.append(el_level);
   document.body.append(createLoadSaveLevelElement(el_form,el_level));
@@ -133,15 +80,16 @@ Element createLoadSaveLevelElement(Element el_form, Element el_level){
   el_wrap.append(el_txt);
   el_txt.className = "json";
   el_wrap.append(createButton("CreateJson",(Event e){
-    Map json = container.level.toJson();
+    GameLevelSaver levelSaver = new GameLevelSaver();
+    Map json = levelSaver.levelToJson(container.level);
     el_txt.value = JSON.encode(json);
   }));
   el_wrap.append(createButton("ReadJson",(Event e){
-    LevelLoader levelLoader = new LevelLoader();
+    GameLevelLoader levelLoader = new GameLevelLoader();
     Map json = JSON.decode(el_txt.value);
-    container.level = levelLoader.loadLevel(json);
+    container.level = levelLoader.loadLevelJson(json);
     el_form.remove();
-    el_form = new ObjInput<Level>().createInputElementObj("level",container.level);
+    el_form = new ObjInput<GameLevel>().createInputElementObj("level",container.level);
     el_level.append(el_form);
   }));
   el_txt.value = JSON.encode(leveljson);
@@ -178,12 +126,12 @@ class Preview{
       el_y.text = e.offset.y.toString();
     });
     el.onMouseDown.listen((MouseEvent e){
-      container.currentXY.x = 1.0*e.offset.x;
-      container.currentXY.z= 1.0*e.offset.y;
+      //container.currentXY.x = 1.0*e.offset.x;
+      //container.currentXY.z= 1.0*e.offset.y;
     });
     return el;
   }
-  void paintLevel(Level level){
+  void paintLevel(GameLevel level){
     canvas.width = level.w;
     canvas.height = level.d;
 
@@ -225,7 +173,7 @@ class Preview{
     }
     //draw walls
     ctx.fillStyle = "#222";
-    for(Wall o in level.walls){
+    for(GameLevelWall o in level.walls){
       ctx.save();
       ctx.translate(o.x,o.z);
       ctx.rotate(o.r);
@@ -297,7 +245,7 @@ Element createInputElementBool(String label, bool value, OnBoolValueChange onCha
   el_wrap.className = "in boolIn";
   return el_wrap;
 }
-class ListInput<T extends LevelElement>
+class ListInput<T extends GameLevelElement>
 {
   Element createInputElementList(String label, List<T> value, OnAddObject<T> onAdd, OnRemoveObject<T> onRemove)
   {
@@ -323,7 +271,7 @@ class ListInput<T extends LevelElement>
 
   void addNew(T obj, Element el_content, OnRemoveObject<T> onRemove){
     Element el_item = new DivElement();
-    el_item.append(obj.createElement());
+    el_item.append( container.form.createNewElement(obj));
 
     el_item.append(createButton("remove", (Event e)
     {
@@ -335,14 +283,14 @@ class ListInput<T extends LevelElement>
     onInputValueChange();
   }
 }
-class ObjInput<T extends LevelElement>
+class ObjInput<T extends GameLevelElement>
 {
   Element createInputElementObj(String label, T value){
     Element el_wrap = new FieldSetElement();
     Element el_legend = new LegendElement();
     el_legend.text = label;
     el_wrap.append(el_legend);
-    el_wrap.append(value.createElement());
+    el_wrap.append( container.form.createNewElement(value));
     el_wrap.className = "in objIn";
     return el_wrap;
   }
@@ -353,7 +301,7 @@ Element createButton(String labelText, Function onClick){
   btn.onClick.listen(onClick);
   return btn;
 }
-Element createButtonSetCurrent(String labelText, LevelElementXZ obj){
+Element createButtonSetCurrent(String labelText, GameLevelElement obj){
   var btn = new ButtonElement();
   btn.text = labelText;
   btn.onClick.listen((Event e){
