@@ -18,14 +18,14 @@ void main(){
   ]);
   var roadToPolygon = new PathToPolygons();
   var roadPolygons = roadToPolygon.createRoadPolygons(path.points, 50.0, true);
+  layer.ctx.strokeStyle = "#fff";
+  layer.ctx.fillStyle = "#000";
   for(var P in roadPolygons){
     drawPolygon(P,layer);
   }
 }
 
 void drawPolygon(Polygon polygon, RenderLayer layer){
-  layer.ctx.strokeStyle = "#fff";
-  layer.ctx.fillStyle = "#000";
   layer.ctx.beginPath();
   var first = polygon.points.first;
   layer.ctx.moveTo(first.x,first.y);
@@ -33,6 +33,6 @@ void drawPolygon(Polygon polygon, RenderLayer layer){
     layer.ctx.lineTo(p.x,p.y);
   }
   layer.ctx.lineTo(first.x,first.y);
-  //layer.ctx.stroke();
+  layer.ctx.stroke();
   layer.ctx.fill();
 }

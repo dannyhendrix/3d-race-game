@@ -139,14 +139,16 @@ void main()
       modelInstances.add(new GlModelInstanceFromVehicle(o, vehicleModel.getModelInstance(modelCollection, colorMapping[v.player.theme.color1], colorMapping[v.player.theme.color2], colorWindows)));
     }else{
       double h = o is Wall ? 150.0 : 80.0;
-      GlModelBuffer cube = new GlCube.fromTopCenter(0.0,0.0,0.0,o.w,h,o.h).createBuffers(layer);
+      GlModelBuffer cube = new GlCube.fromTopCenter(0.0,(h/2),0.0,o.w,h,o.h).createBuffers(layer);
       modelInstances.add(new GlModelInstanceFromGameObject(o, new GlModelInstanceCollection([new GlModelInstance(cube, new GlColor(1.0,1.0,1.0))])));
     }
   }
 
-  GlModel worldModel = new GlAreaModel([new GlRectangle.withWD(0.0,0.0,0.0,1500.0,800.0,false)]);
-  GlModelBuffer world = worldModel.createBuffers(layer);
-  modelInstances.add(new GlModelInstanceCollection([new GlModelInstance(world, new GlColor(0.6,0.6,0.6))]));
+  //GlModel worldModel = new GlAreaModel([new GlRectangle.withWD(0.0,0.0,0.0,1500.0,800.0,false)]);
+  var triangles = game.path.roadPolygons.map((Polygon p)=>new GlTriangle(p.points.map((Point p)=>new GlPoint(p.x,0.0,p.y)).toList(growable: false))).toList(growable: false);
+  GlModel roadModel = new GlAreaModel(triangles);
+  GlModelBuffer road = roadModel.createBuffers(layer);
+  modelInstances.add(new GlModelInstanceCollection([new GlModelInstance(road, new GlColor(0.3,0.3,0.3))]));
 
   GlModelBuffer cube = new GlCube.fromTopCenter(0.0,0.0,0.0,30.0,30.0,30.0).createBuffers(layer);
   modelInstances.add(new GlModelInstanceCheckpoint(game, new GlModelInstanceCollection([new GlModelInstance(cube, new GlColor(1.0,1.0,0.0))])));
