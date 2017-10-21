@@ -14,10 +14,11 @@ class PathProgress{
   PathProgress(this.path);
 
   void next(){
+    if(finished) return;
     if(_index == 0){
       round++;
       _roundCompleted = 0;
-      if(path.roundsToFinish > -1 && round >= path.roundsToFinish){
+      if(path.roundsToFinish > -1 && round > path.roundsToFinish){
         finished = true;
         return;
       }
