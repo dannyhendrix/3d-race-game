@@ -78,7 +78,7 @@ class Vehicle extends MoveableGameObject{
    *  if 6 Steer right 0.2
    *  if 7 Steer left 0.2
    */
-  double sensorLength = 20.0;
+  double sensorLength = 30.0;
   double sensorFrontAngle = 1.0;
   VehicleSensor sensorLeftFrontAngle;
   VehicleSensor sensorLeftFront;

@@ -12,5 +12,6 @@ part "src/game/wall.dart";
 part "src/game/checkpoint.dart";
 part "src/game/ball.dart";
 part "src/game/path.dart";
+part "src/game/pathtopolygons.dart";
 part "src/game/levelloader.dart";
 part "src/game/vehicletheme.dart";

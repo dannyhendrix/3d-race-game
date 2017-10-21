@@ -15,6 +15,9 @@ class Point{
     double ny = p.y-y;
     return Math.sqrt(nx*nx+ny*ny);
   }
+  double angleWith(Point p){
+    return Math.atan2(p.y - y, p.x - x);
+  }
   Point rotate(double r, Point origin){
     Point translated = this - origin;
     Point rotated = new Point(
