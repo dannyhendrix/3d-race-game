@@ -79,6 +79,8 @@ class Vehicle extends MoveableGameObject{
    *  if 7 Steer left 0.2
    */
   double sensorLength = 30.0;
+  double sensorLengthSide = 10.0;
+  double sensorLengthFrontSide = 20.0;
   double sensorFrontAngle = 1.0;
   VehicleSensor sensorLeftFrontAngle;
   VehicleSensor sensorLeftFront;
@@ -103,13 +105,13 @@ class Vehicle extends MoveableGameObject{
       new Point(hw,hh),
       new Point(-hw,hh),
     ]);
-    sensorLeftFrontAngle = new VehicleSensor.fromVector(new Point(hw,-hh), new Vector.fromAngleRadians(-sensorFrontAngle, sensorLength));
+    sensorLeftFrontAngle = new VehicleSensor.fromVector(new Point(hw,-hh), new Vector.fromAngleRadians(-sensorFrontAngle, sensorLengthFrontSide));
     sensorLeftFront = new VehicleSensor.fromVector(new Point(hw,-hh), new Vector(sensorLength, 0.0));
     sensorFront = new VehicleSensor.fromVector(new Point(hw,0.0), new Vector(sensorLength, 0.0));
     sensorRightFront = new VehicleSensor.fromVector(new Point(hw,hh), new Vector(sensorLength, 0.0));
-    sensorRightFrontAngle = new VehicleSensor.fromVector(new Point(hw,hh), new Vector.fromAngleRadians(sensorFrontAngle, sensorLength));
-    sensorLeft = new VehicleSensor.fromVector(new Point(0.0,-hh), new Vector(0.0, -sensorLength));
-    sensorRight = new VehicleSensor.fromVector(new Point(0.0,hh), new Vector(0.0, sensorLength));
+    sensorRightFrontAngle = new VehicleSensor.fromVector(new Point(hw,hh), new Vector.fromAngleRadians(sensorFrontAngle, sensorLengthFrontSide));
+    sensorLeft = new VehicleSensor.fromVector(new Point(0.0,-hh), new Vector(0.0, -sensorLengthSide));
+    sensorRight = new VehicleSensor.fromVector(new Point(0.0,hh), new Vector(0.0, sensorLengthSide));
     sensors = [sensorLeftFrontAngle, sensorLeftFront, sensorFront, sensorRightFront, sensorRightFrontAngle, sensorLeft, sensorRight];
   }
   void setAccelarate(bool a){

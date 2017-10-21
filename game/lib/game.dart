@@ -15,3 +15,4 @@ part "src/game/path.dart";
 part "src/game/pathtopolygons.dart";
 part "src/game/levelloader.dart";
 part "src/game/vehicletheme.dart";
+part "src/game/startingpositions.dart";

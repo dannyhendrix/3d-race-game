@@ -65,11 +65,14 @@ class Game{
     LevelLoader levelLoader = new LevelLoader();
     levelLoader.loadLevelJson(this, leveljson);
 
-    List<Point> startLocation = [new Point(80.0,100.0),new Point(80.0,160.0),new Point(120.0,100.0),new Point(120.0,160.0),new Point(160.0,100.0),new Point(160.0,160.0)];
+    StartingPositions startingPositionsCreater = new StartingPositions();
+    //TODO: vehicle W and H should be known here
+    List<StartingPosition> startingPositions = startingPositionsCreater.DetermineStartPositions(path.point(0),path.point(0),players.length,50.0,30.0,15.0,15.0,path.point(0).radius*2);
     int i = 0;
     for(Player player in players){
       Vehicle v = new Vehicle(this,player);
-      v.position = startLocation[i];
+      v.position = startingPositions[i].point;
+      v.r = startingPositions[i].r;
       player.start(v, path);
       gameobjects.add(v);
       _movableGameObjects.add(v);
