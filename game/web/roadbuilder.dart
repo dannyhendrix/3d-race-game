@@ -33,6 +33,6 @@ void drawPolygon(Polygon polygon, RenderLayer layer){
     layer.ctx.lineTo(p.x,p.y);
   }
   layer.ctx.lineTo(first.x,first.y);
-  layer.ctx.stroke();
+  //layer.ctx.stroke();
   layer.ctx.fill();
 }

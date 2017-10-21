@@ -21,6 +21,7 @@ class GameLevelCheckPoint extends GameLevelElement{
 class GameLevelPath extends GameLevelElement{
   bool circular = false;
   int laps = -1;
+  double roadwith = 80.0;
   List<GameLevelCheckPoint> checkpoints = [];
 }
 
@@ -31,6 +32,7 @@ class LevelLoader{
     level.d = json["d"];
     level.path.circular = json["path"]["circular"];
     level.path.laps = json["path"]["laps"];
+    level.path.roadwith = json["path"]["roadwith"];
     level.path.checkpoints = json["path"]["checkpoints"].map((Map m)=>new GameLevelCheckPoint(m["x"],m["z"],m["radius"])).toList();
     level.walls = json["walls"].map((Map m)=>new GameLevelWall(m["x"],m["z"],m["r"],m["w"],m["d"],m["h"])).toList();
     loadLevel(game, level);
