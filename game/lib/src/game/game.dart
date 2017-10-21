@@ -1,6 +1,32 @@
 part of micromachines;
 
-Map leveljson ={"w":1500,"d":800,"walls":[{"x":750.0,"z":5.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":750.0,"z":795.0,"r":0.0,"w":300.0,"d":10.0,"h":10.0},{"x":5.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":1495.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":740.0,"z":215.0,"r":0.0,"w":800.0,"d":10.0,"h":10.0},{"x":1160.0,"z":360.0,"r":1.4,"w":300.0,"d":10.0,"h":10.0},{"x":320.0,"z":360.0,"r":1.7,"w":300.0,"d":10.0,"h":10.0},{"x":730.0,"z":620.0,"r":1.6,"w":350.0,"d":10.0,"h":10.0}],"path":{"circular":true,"laps":-1,"checkpoints":[{"x":190.0,"z":110.0,"radius":100.0},{"x":1300.0,"z":100.0,"radius":100.0},{"x":1300.0,"z":640.0,"radius":100.0},{"x":950.0,"z":630.0,"radius":100.0},{"x":750.0,"z":310.0,"radius":60.0},{"x":470.0,"z":600.0,"radius":100.0},{"x":180.0,"z":650.0,"radius":100.0}]}};
+enum GameState {Initialized, Running, Countdown, Racing, Finished}
+
+typedef void onCountdownComplete();
+class Countdown{
+  int frameDelay;
+  int count;
+  bool complete = false;
+  int _tick = 0;
+  onCountdownComplete _onComplete;
+  Countdown(this._onComplete,[this.frameDelay = 60, this.count = 3]);
+  void start(){
+    _tick = frameDelay;
+  }
+  void tick(){
+    _tick--;
+    if(_tick == 0){
+      _tick = frameDelay;
+      count--;
+      if(count == 0){
+        complete = true;
+        _onComplete();
+      }
+    }
+  }
+}
+
+Map leveljson ={"w":1500,"d":800,"walls":[{"x":750.0,"z":5.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":750.0,"z":795.0,"r":0.0,"w":300.0,"d":10.0,"h":10.0},{"x":5.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":1495.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":740.0,"z":215.0,"r":0.0,"w":800.0,"d":10.0,"h":10.0},{"x":1160.0,"z":360.0,"r":1.4,"w":300.0,"d":10.0,"h":10.0},{"x":320.0,"z":360.0,"r":1.7,"w":300.0,"d":10.0,"h":10.0},{"x":730.0,"z":620.0,"r":1.6,"w":350.0,"d":10.0,"h":10.0}],"path":{"circular":true,"laps":5,"checkpoints":[{"x":190.0,"z":110.0,"radius":100.0},{"x":1300.0,"z":100.0,"radius":100.0},{"x":1300.0,"z":640.0,"radius":100.0},{"x":950.0,"z":630.0,"radius":100.0},{"x":750.0,"z":310.0,"radius":60.0},{"x":470.0,"z":600.0,"radius":100.0},{"x":180.0,"z":650.0,"radius":100.0}]}};
 class Game{
   List<GameObject> gameobjects = [];
   List<MoveableGameObject> _movableGameObjects = [];
@@ -8,6 +34,10 @@ class Game{
   HumanPlayer humanPlayer;
   String info = "";
   Path path;
+
+  GameState state = GameState.Countdown;
+  Countdown countdown;
+
   Game(){
     humanPlayer = new HumanPlayer("Player1", new VehicleTheme(VehicleThemeColor.Yellow,VehicleThemeColor.Blue));
     players = [
@@ -45,14 +75,20 @@ class Game{
       _movableGameObjects.add(v);
       i++;
     }
-    print(_movableGameObjects.length);
     var ball = new Ball(this);
     _movableGameObjects.add(ball);
     gameobjects.add(ball);
     //gameobjects.add(new CheckPoint(this, 1100.0, 100.0, 0.3));
+    countdown = new Countdown((){
+      state = GameState.Racing;
+    });
+    countdown.start();
   }
 
   void update(){
+    if(!countdown.complete){
+      countdown.tick();
+    }
     for(Player p in players) p.update();
     for(MoveableGameObject o in _movableGameObjects){
       o.update();

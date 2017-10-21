@@ -3,6 +3,8 @@ part of micromachines;
 class HumanPlayer extends Player{
   bool _isSteeringLeft;
   bool _isSteeringRight;
+  bool _isAccelarating;
+  bool _isBreaking;
 
   HumanPlayer(name, VehicleTheme theme){
     this.theme = theme;
@@ -10,22 +12,26 @@ class HumanPlayer extends Player{
   }
 
   void onControl(Control control, bool active){
+    bool canMove = _game.state == GameState.Racing && _game.state.index < GameState.Finished.index; //TODO: should this be a player state? after finished it cannot move..
+    bool canSteer = _game.state.index >= GameState.Countdown.index;
     switch(control){
       case Control.Accelerate:
-        vehicle.setAccelarate(active);
+        _isAccelarating = active;
         break;
       case Control.Brake:
-        vehicle.setBrake(active);
+        _isBreaking = active;
         break;
       case Control.SteerLeft:
-        _isSteeringLeft = active;
+        if(canSteer) _isSteeringLeft = active;
         break;
       case Control.SteerRight:
-        _isSteeringRight = active;
+        if(canSteer) _isSteeringRight = active;
         break;
       default:
         break;
     }
+    vehicle.setAccelarate(canMove && _isAccelarating);
+    vehicle.setBrake(canMove && _isBreaking);
     if(_isSteeringRight && !_isSteeringLeft)
       vehicle.setSteer(Steer.Right);
     else if(!_isSteeringRight && _isSteeringLeft)
@@ -55,6 +61,7 @@ class AiPlayer extends Player{
       vehicle.setAccelarate(false);
       return;
     }
+    if(_game.state != GameState.Racing) return;
     Point p =  pathProgress.current;
     Point v =  vehicle.position;
     Vector V =  new Vector(p.x-v.x,p.y-v.y);

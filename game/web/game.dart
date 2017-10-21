@@ -25,7 +25,7 @@ void main()
   RenderLayer layer = new RenderLayer.withSize(1500,800);
   document.body.append(layer.canvas);
 
-  GameLoop gameloop = new GameLoop((int now){
+  var loop = (int now){
     game.update();
     layer.clear();
 
@@ -90,9 +90,19 @@ void main()
     layer.ctx.font = "10px Arial";
     layer.ctx.fillText("Vehicle: ${game.players[0].vehicle.info}",10,10);
     layer.ctx.fillText("Game: ${game.info}",10,50);
-  });
+    if(!game.countdown.complete){
+      layer.ctx.font = "124px Arial";
+      layer.ctx.fillText("${game.countdown.count}",400,400);
+    }
+  };
 
+  GameLoop gameloop = new GameLoop(loop);
+  //loop(0);
   gameloop.play();
+  registerControls(game,gameloop);
+}
+
+void registerControls(Game game, GameLoop gameloop){
 
   var handleKey = (KeyboardEvent e)
   {
@@ -125,10 +135,6 @@ void main()
 
   document.onKeyDown.listen(handleKey);
   document.onKeyUp.listen(handleKey);
-  document.body.append(createButton("reset",(MouseEvent e){
-    game.players[0].vehicle.position = new Point(10.0, 10.0);
-    game.players[1].vehicle.position = new Point(200.0, 200.0);
-  }));
 }
 
 ButtonElement createButton(String text, Function onClick){

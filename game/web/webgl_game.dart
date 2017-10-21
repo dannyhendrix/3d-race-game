@@ -20,6 +20,7 @@ double cameraZOffset = 1800.0;
 double cameraZRotation = -1.0;
 Map<Player,PlayerStats> playerElements;
 Element el_rounds;
+Element el_countdown;
 
 
 Map<VehicleThemeColor, String> colorMappingCss = {
@@ -77,6 +78,8 @@ void main()
   el_Fps = new DivElement();
   el_rounds = new DivElement();
   el_rounds.className = "rounds";
+  el_countdown = new DivElement();
+  el_countdown.className = "countdown";
   document.body.append(layer.canvas);
   document.body.append(el_Fps);
   print("Hi");
@@ -109,6 +112,7 @@ void main()
   }
   el_hud.append(el_playersWrapper);
   el_hud.append(el_rounds);
+  el_hud.append(el_countdown);
   document.body.append(el_hud);
 
   game.start();
@@ -188,7 +192,6 @@ void main()
   document.onKeyDown.listen(handleKey);
   document.onKeyUp.listen(handleKey);
 }
-
 /**
  * This is the infinite animation loop; we request that the web browser
  * call us back every time its ready for a new frame to be rendered. The [time]
@@ -199,6 +202,14 @@ tick(time) {
   frameCount(time);
 
   game.update();
+  if(game.countdown.complete){
+    if(el_countdown != null){
+      el_countdown.remove();
+      el_countdown = null;
+    }
+  }else{
+    el_countdown.text = "${game.countdown.count}";
+  }
 
   layer.clearForNextFrame();
 
