@@ -68,6 +68,7 @@ void main(){
   el_level.append(el_form);
   document.body.append(el_level);
   document.body.append(createLoadSaveLevelElement(el_form,el_level));
+  document.body.append(createScaleLevel());
 }
 
 Element createLoadSaveLevelElement(Element el_form, Element el_level){
@@ -98,6 +99,23 @@ Element createLoadSaveLevelElement(Element el_form, Element el_level){
 
 void onInputValueChange(){
   container.preview.paintLevel(container.level);
+}
+
+void scaleLevel(GameLevel level, double scale){
+  level.d = (level.d*scale).round();
+  level.w = (level.w*scale).round();
+  level.walls.forEach((GameLevelWall w){
+    w.d = w.d*scale;
+    w.h = w.h*scale;
+    w.w = w.w*scale;
+    w.x = w.x*scale;
+    w.z = w.z*scale;
+  });
+  level.path.checkpoints.forEach((GameLevelCheckPoint c){
+    c.x = c.x*scale;
+    c.z = c.z*scale;
+    c.radius = c.radius*scale;
+  });
 }
 
 /**
@@ -132,12 +150,13 @@ class Preview{
     return el;
   }
   void paintLevel(GameLevel level){
-    canvas.width = level.w;
-    canvas.height = level.d;
+    double scale = 0.5;
+    canvas.width = (level.w*scale).round();
+    canvas.height = (level.d*scale).round();
 
     //draw road
     PathToPolygons pathToPolygons = new PathToPolygons();
-    var roadPolygons = pathToPolygons.createRoadPolygons(level.path.checkpoints.map((p) => new PathCheckPoint(p.x, p.z,p.radius)).toList(), level.path.circular);
+    var roadPolygons = pathToPolygons.createRoadPolygons(level.path.checkpoints.map((p) => new PathCheckPoint(p.x*scale, p.z*scale,p.radius*scale)).toList(), level.path.circular);
 
     ctx.fillStyle = "#999";
     ctx.strokeStyle = "#999";
@@ -150,15 +169,15 @@ class Preview{
     {
       var startPoint = level.path.checkpoints[0];
       ctx.beginPath();
-      ctx.moveTo(startPoint.x, startPoint.z);
+      ctx.moveTo(startPoint.x*scale, startPoint.z*scale);
       for (int i = 1; i < level.path.checkpoints.length; i++)
       {
         var p = level.path.checkpoints[i];
-        ctx.lineTo(p.x, p.z);
+        ctx.lineTo(p.x*scale, p.z*scale);
       }
       if (level.path.circular)
       {
-        ctx.lineTo(startPoint.x, startPoint.z);
+        ctx.lineTo(startPoint.x*scale, startPoint.z*scale);
       }
       ctx.strokeStyle = '#555';
       ctx.stroke();
@@ -167,7 +186,7 @@ class Preview{
       {
         var p = level.path.checkpoints[i];
         ctx.beginPath();
-        ctx.arc(p.x, p.z, p.radius, 0, 2 * Math.PI, false);
+        ctx.arc(p.x*scale, p.z*scale, p.radius*scale, 0, 2 * Math.PI, false);
         ctx.stroke();
       }
     }
@@ -175,9 +194,9 @@ class Preview{
     ctx.fillStyle = "#222";
     for(GameLevelWall o in level.walls){
       ctx.save();
-      ctx.translate(o.x,o.z);
+      ctx.translate(o.x*scale,o.z*scale);
       ctx.rotate(o.r);
-      ctx.fillRect(-o.w/2, -o.d/2, o.w, o.d);
+      ctx.fillRect(-o.w*scale/2, -o.d*scale/2, o.w*scale, o.d*scale);
       ctx.restore();
     }
   }
@@ -294,6 +313,18 @@ class ObjInput<T extends GameLevelElement>
     el_wrap.className = "in objIn";
     return el_wrap;
   }
+}
+Element createScaleLevel(){
+  Element el = new DivElement();
+  InputElement el_in = new InputElement();
+  el_in.value = "1.0";
+  Element el_btn = createButton("Scale level",(Event e){
+    double scale = double.parse(el_in.value);
+    scaleLevel(container.level,scale);
+  });
+  el.append(el_in);
+  el.append(el_btn);
+  return el;
 }
 Element createButton(String labelText, Function onClick){
   var btn = new ButtonElement();
