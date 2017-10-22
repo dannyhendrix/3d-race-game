@@ -10,11 +10,12 @@ class Wall extends GameObject{
 
     double hw = w/2;
     double hh= h/2;
-    collisionField = [new Polygon([
+    relativeCollisionFields = [new Polygon([
       new Point2d(-hw,-hh),
       new Point2d(hw,-hh),
       new Point2d(hw,hh),
       new Point2d(-hw,hh),
     ])];
+    setAbsoluteCollisionFieldsCache();
   }
 }

@@ -71,6 +71,9 @@ class Game{
     if(!countdown.complete){
       countdown.tick();
     }
+    for(MoveableGameObject o in _movableGameObjects){
+      o.resetCache();
+    }
     for(Player p in players) p.update();
     for(MoveableGameObject o in _movableGameObjects){
       o.update();

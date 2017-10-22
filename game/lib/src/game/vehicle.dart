@@ -102,7 +102,7 @@ class Vehicle extends MoveableGameObject{
     trailerSnapPoint = new Point2d(-w/2,0.0);
     double hw = w/2;
     double hh= h/2;
-    collisionField = [new Polygon([
+    relativeCollisionFields = [new Polygon([
       new Point2d(-hw,-hh),
       new Point2d(hw,-hh),
       new Point2d(hw,hh),

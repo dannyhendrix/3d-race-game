@@ -18,9 +18,10 @@ class CheckPoint extends GameObject{
       new Point2d(wallWh,wallHh),
       new Point2d(-wallWh,wallHh),
     ]);
-    collisionField = [
+    relativeCollisionFields = [
       wall.applyMatrix(new Matrix2d.translation(-pathCheckpoint.radius,0.0)),
       wall.applyMatrix(new Matrix2d.translation(pathCheckpoint.radius,0.0)),
     ];
+    setAbsoluteCollisionFieldsCache();
   }
 }

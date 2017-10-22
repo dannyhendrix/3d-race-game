@@ -24,18 +24,26 @@ class GameObject{
   Point2d position;
   double r;
   double w,h;
-  List<Polygon> collisionField = [];
+  List<Polygon> relativeCollisionFields = [];
+  List<Polygon> _absoluteCollisionFieldsCache = [];
+  void setAbsoluteCollisionFieldsCache(){
+    Matrix2d M = getTransformation();
+    _absoluteCollisionFieldsCache = relativeCollisionFields.map((Polygon p)=>p.applyMatrix(M)).toList();
+  }
+  List<Polygon> getAbsoluteCollisionFields(){
+    return _absoluteCollisionFieldsCache;
+  }
 
   GameObjectCollision collides(GameObject other, [bool checkAllPolygons = false]){
-    Matrix2d M = getTransformation();
-    Matrix2d oM = other.getTransformation();
+    List<Polygon> collisionsA = getAbsoluteCollisionFields();
+    List<Polygon> collisionsB = other.getAbsoluteCollisionFields();
     List<GameObjectCollisionPolygon> polygonCollisions = [];
     bool found = false;
     bool stop = false;
-    for(int ai =0; !stop && ai<collisionField.length; ai++){
-      Polygon A = collisionField[ai].applyMatrix(M);
-      for(int bi =0; !stop && bi<other.collisionField.length; bi++){
-        Polygon B = other.collisionField[bi].applyMatrix(oM);
+    for(int ai =0; !stop && ai<collisionsA.length; ai++){
+      Polygon A = collisionsA[ai];
+      for(int bi =0; !stop && bi<collisionsB.length; bi++){
+        Polygon B = collisionsB[bi];
         if(A.collision(B)){
           polygonCollisions.add(new GameObjectCollisionPolygon(ai,bi));
           found = true;
@@ -46,15 +54,15 @@ class GameObject{
     return new GameObjectCollision(this, other, found,polygonCollisions);
   }
   GameObjectCollision collidesVector(Vector V, GameObject other, [bool checkAllPolygons = false]){
-    Matrix2d M = getTransformation();
-    Matrix2d oM = other.getTransformation();
+    List<Polygon> collisionsA = getAbsoluteCollisionFields();
+    List<Polygon> collisionsB = other.getAbsoluteCollisionFields();
     List<GameObjectCollisionPolygon> polygonCollisions = [];
     bool found = false;
     bool stop = false;
-    for(int ai =0; !stop && ai<collisionField.length; ai++){
-      Polygon A = collisionField[ai].applyMatrix(M);
-      for(int bi =0; !stop && bi<other.collisionField.length; bi++){
-        Polygon B = other.collisionField[bi].applyMatrix(oM);
+    for(int ai =0; !stop && ai<collisionsA.length; ai++){
+      Polygon A = collisionsA[ai];
+      for(int bi =0; !stop && bi<collisionsB.length; bi++){
+        Polygon B = collisionsB[bi];
         CollisionResult c = A.collisionWithVector(B,V);
         if(c.intersect || c.willIntersect){
           polygonCollisions.add(new GameObjectCollisionPolygon(ai,bi,c));
@@ -66,12 +74,12 @@ class GameObject{
     return new GameObjectCollision(this, other, found,polygonCollisions);
   }
   GameObjectPolygonCollision collidesPolygon(Polygon B, [bool checkAllPolygons = false]){
-    Matrix2d M = getTransformation();
+    List<Polygon> collisionsA = getAbsoluteCollisionFields();
     List<int> polygonCollisions = [];
     bool found = false;
     bool stop = false;
-    for(int ai =0; !stop && ai<collisionField.length; ai++){
-      Polygon A = collisionField[ai].applyMatrix(M);
+    for(int ai =0; !stop && ai<collisionsA.length; ai++){
+      Polygon A = collisionsA[ai];
       if(A.collision(B)){
         polygonCollisions.add(ai);
         found = true;

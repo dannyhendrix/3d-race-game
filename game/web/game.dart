@@ -60,16 +60,17 @@ void main()
     //draw gameObjects
     for(GameObject o in game.gameobjects){
       Matrix2d M = o.getTransformation();
+      var absolutePolygons = o.getAbsoluteCollisionFields();
       //draw gameObjects
       if(o is Vehicle){
         Vehicle v = o;
-        drawPolygon(o.collisionField.first.applyMatrix(M), layer, v.isCollided ? "red" : "green");
+        drawPolygon(absolutePolygons.first, layer, v.isCollided ? "red" : "green");
         for(var s in v.sensors){
           //print(s.collides);
           drawPolygon(s.polygon.applyMatrix(M), layer, s.collides ? "red" : "#ffffff", true);
         }
       }else{
-        for(Polygon p in o.collisionField) drawPolygon(p.applyMatrix(M), layer, "blue");
+        for(Polygon p in absolutePolygons) drawPolygon(p, layer, "blue");
       }
 
       layer.ctx.beginPath();
