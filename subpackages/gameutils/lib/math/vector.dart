@@ -19,5 +19,4 @@ class Vector extends Point2d{
     double m = magnitude;
     return new Vector(x / m, y / m);
   }
-  double get angle => Math.atan2(y,x);
 }

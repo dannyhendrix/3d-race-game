@@ -2,21 +2,25 @@ part of micromachines;
 
 class CheckPoint extends GameObject{
   Game game;
-  CheckPoint(this.game, double nx, double ny, [double nr = 0.0]){
-    position = new Point2d(nx,ny);
-    w = 20.0;
-    h = 20.0;
-    r = nr;
-    collisionField = [new Polygon([
-      new Point2d(0.0,0.0),
-      new Point2d(w,0.0),
-      new Point2d(w,h),
-      new Point2d(0.0,h),
-    ])];
-  }
-  bool onCollision(GameObjectCollision collision){
-    //TODO: what should this do?
-    // Everytime you hit it you mark it as checked?
-    return true;
+  double wallW = 8.0;
+  double wallH = 8.0;
+  CheckPoint(this.game, PathCheckPoint pathCheckpoint, double angle){
+    position = new Point2d(pathCheckpoint.x,pathCheckpoint.y);
+    w = wallW+pathCheckpoint.radius*2;
+    h = wallH;
+    double wallWh = wallW/2;
+    double wallHh = wallH/2;
+    //TODO: calculate angle from prev and next point
+    r = angle;
+    Polygon wall = new Polygon([
+      new Point2d(-wallWh,-wallHh),
+      new Point2d(wallWh,-wallHh),
+      new Point2d(wallWh,wallHh),
+      new Point2d(-wallWh,wallHh),
+    ]);
+    collisionField = [
+      wall.applyMatrix(new Matrix2d.translation(-pathCheckpoint.radius,0.0)),
+      wall.applyMatrix(new Matrix2d.translation(pathCheckpoint.radius,0.0)),
+    ];
   }
 }

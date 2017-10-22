@@ -89,9 +89,34 @@ class Game{
       gameobjects.add(new Wall(wall.x, wall.z, wall.w, wall.d, wall.r));
     }
     List<PathCheckPoint> checkpoints = [];
-    for(GameLevelCheckPoint c in level.path.checkpoints){
+
+    for(int i = 0; i < level.path.checkpoints.length; i++){
+      GameLevelCheckPoint c = level.path.checkpoints[i];
       checkpoints.add(new PathCheckPoint(c.x,c.z,c.radius));
     }
+
+    for(int i = 1; i < checkpoints.length-1; i++){
+      PathCheckPoint c = checkpoints[i];
+      gameobjects.add(new CheckPoint(this,c,_getCheckpointAngle(c,checkpoints[i-1],checkpoints[i+1])));
+    }
+    //first checkpoint
+    if(level.path.circular)
+    {
+      gameobjects.add(new CheckPoint(this, checkpoints[0], _getCheckpointAngle(checkpoints[0], checkpoints.last, checkpoints[1])));
+      gameobjects.add(new CheckPoint(this, checkpoints.last, _getCheckpointAngle(checkpoints.last, checkpoints[checkpoints.length - 2], checkpoints[0])));
+    }
+    else{
+      gameobjects.add(new CheckPoint(this, checkpoints[0], _getCheckpointAngleToNext(checkpoints[0], checkpoints[1])));
+      gameobjects.add(new CheckPoint(this, checkpoints.last, _getCheckpointAngleToNext(checkpoints.last, checkpoints[0])));
+
+    }
     path = new Path(checkpoints,level.path.circular, level.path.laps);
+  }
+
+  double _getCheckpointAngleToNext(PathCheckPoint c,PathCheckPoint cNext){
+    return (cNext-c).angle;
+  }
+  double _getCheckpointAngle(PathCheckPoint c,PathCheckPoint cPrev,PathCheckPoint cNext){
+    return ((cPrev-c)+(cNext-c)).angle;
   }
 }

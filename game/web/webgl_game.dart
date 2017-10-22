@@ -35,6 +35,16 @@ Map<VehicleThemeColor, String> colorMappingCss = {
   VehicleThemeColor.Pink    : "#F4F",
 };
 
+class GlModelInstanceFromModelStatic extends GlModelInstanceCollection{
+  GlMatrix _transform;
+  GlModelInstanceFromModelStatic(double x, double y, double z, double rx, double ry, double rz, GlModelInstanceCollection model):super([]){
+    this.modelInstances = model.modelInstances;
+    _transform = GlMatrix.translationMatrix(x,y,z).rotateX(rx).rotateY(ry).rotateZ(rz);
+  }
+  GlMatrix CreateTransformMatrix(){
+    return _transform;
+  }
+}
 class GlModelInstanceFromModel extends GlModelInstanceCollection{
   GameObject gameObject;
   GlModelInstanceFromModel(this.gameObject, GlModelInstanceCollection model):super([]){
@@ -134,8 +144,10 @@ void main()
   GlModelCollection modelCollection = new GlModelCollection(layer);
   GlModel_Vehicle vehicleModel = new GlModel_Vehicle();
   GlModel_Caravan caravanModel = new GlModel_Caravan();
+  GlModel_Wall wallModel = new GlModel_Wall();
   vehicleModel.loadModel(modelCollection);
   caravanModel.loadModel(modelCollection);
+  wallModel.loadModel(modelCollection);
   //createVehicleModel().modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
   GlColor colorWindows = new GlColor(0.2,0.2,0.2);
   //create all buffer
@@ -150,8 +162,15 @@ void main()
       Trailer t = o;
       modelInstances.add(new GlModelInstanceFromModel(o, caravanModel
           .getModelInstance(modelCollection, colorMapping[t.vehicle.player.theme.color1], colorMapping[t.vehicle.player.theme.color2], colorWindows)));
+    }else if(o is Wall){
+      modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,75.0,o.position.y, 0.0,-o.r,0.0, wallModel
+          .getModelInstance(modelCollection, o.w, 150.0, o.h)));
+    /*}else if(o is CheckPoint){
+      CheckPoint checkpoint = o;
+      modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,75.0,o.position.y, 0.0,-o.r,0.0, wallModel
+          .getModelInstance(modelCollection, o.w, 150.0, o.h)));*/
     }else{
-      double h = o is Wall ? 150.0 : 80.0;
+      double h = 80.0;
       GlModelBuffer cube = new GlCube.fromTopCenter(0.0,(h/2),0.0,o.w,h,o.h).createBuffers(layer);
       modelInstances.add(new GlModelInstanceFromGameObject(o, new GlModelInstanceCollection([new GlModelInstance(cube, new GlColor(1.0,1.0,1.0))])));
     }

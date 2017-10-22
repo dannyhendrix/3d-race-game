@@ -18,6 +18,7 @@ class Point2d{
   double angleWith(Point2d p){
     return Math.atan2(p.y - y, p.x - x);
   }
+  double get angle => Math.atan2(y,x);
   Point2d rotate(double r, Point2d origin){
     Point2d translated = this - origin;
     Point2d rotated = new Point2d(
