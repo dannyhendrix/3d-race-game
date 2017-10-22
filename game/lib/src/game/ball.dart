@@ -11,12 +11,12 @@ class Ball extends MoveableGameObject{
    h = 20.0;
    double hw = w/2;
    double hh= h/2;
-   collisionField = new Polygon([
+   collisionField = [new Polygon([
      new Point2d(-hw,-hh),
      new Point2d(hw,-hh),
      new Point2d(hw,hh),
      new Point2d(-hw,hh),
-   ]);
+   ])];
  }
 
   void onHit(double r){
@@ -37,18 +37,12 @@ class Ball extends MoveableGameObject{
      if(g == this) continue;
      if(g is Vehicle) continue;
 
+     GameObjectCollision collision = g.collides(this);
 
-     Matrix2d M = getTransformation();
-     Polygon A = collisionField.applyMatrix(M);
-     Matrix2d oM = g.getTransformation();
-     Polygon B = g.collisionField.applyMatrix(oM);
-
-     CollisionResult r = A.collisionWithVector(B, vector);
-
-     if (r.willIntersect) {
-       if(!g.onCollision(this)){
+     if (collision.collision) {
+       if(!g.onCollision(collision)){
          collide = true;
-         collisionCorrection += r.minimumTranslationVector;
+         //collisionCorrection += r.minimumTranslationVector;
         vector = -vector;
        }
        //g.onCollision(this,polygonATranslation);

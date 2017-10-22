@@ -92,6 +92,7 @@ class Vehicle extends MoveableGameObject{
   VehicleSensor sensorRight;
   List<VehicleSensor> sensors = [];
   bool sensorCollision = false;
+  Trailer trailer;
 
   Vehicle(this.game, this.player){
     position = new Point2d(0.0, 50.0);
@@ -101,12 +102,12 @@ class Vehicle extends MoveableGameObject{
     trailerSnapPoint = new Point2d(-w/2,0.0);
     double hw = w/2;
     double hh= h/2;
-    collisionField = new Polygon([
+    collisionField = [new Polygon([
       new Point2d(-hw,-hh),
       new Point2d(hw,-hh),
       new Point2d(hw,hh),
       new Point2d(-hw,hh),
-    ]);
+    ])];
     sensorLeftFrontAngle = new VehicleSensor.fromVector(new Point2d(hw,-hh), new Vector.fromAngleRadians(-sensorFrontAngle, sensorLengthFrontSide));
     sensorLeftFront = new VehicleSensor.fromVector(new Point2d(hw,-hh), new Vector(sensorLength, 0.0));
     sensorFront = new VehicleSensor.fromVector(new Point2d(hw,0.0), new Vector(sensorLength, 0.0));
@@ -160,35 +161,29 @@ class Vehicle extends MoveableGameObject{
     //check collisions
     for(GameObject g in game.gameobjects){
       if(g == this) continue;
-      /*if(g is Ball){
-        Ball b = g;
-        b.vector += new Vector.fromAngleRadians(this.r,10.0);
-        print("hit");
-        continue;
-      }*/
+
       Matrix2d M = getTransformation();
-      Polygon A = collisionField.applyMatrix(M);
-      Matrix2d oM = g.getTransformation();
-      Polygon B = g.collisionField.applyMatrix(oM);
 
       //sensors
       for(VehicleSensor s in sensors){
         if(s.collides) continue;
-        s.collides = s.polygon.applyMatrix(M).collision(B);
+        Polygon A = s.polygon.applyMatrix(M);
+        s.collides = g.collidesPolygon(A, false).collision;//s.polygon.applyMatrix(M).collision(B);
         if(s.collides) sensorCollision = true;
       }
 
-      CollisionResult r = A.collisionWithVector(B, vector);
+      //CollisionResult r = A.collisionWithVector(B, vector);
+      GameObjectCollision collision = collidesVector(vector,g,false);
 
-      if (r.willIntersect) {
+      if (collision.collision) {
         if(g is Ball){
           Ball b = g;
           b.onHit(this.r);
           continue;
         }
-        else if(!g.onCollision(this)){
+        else if(!g.onCollision(collision)){
           collide = true;
-          collisionCorrection += r.minimumTranslationVector;
+          collisionCorrection += collision.polygonCollisions.first.collisionResult.minimumTranslationVector;
         }
         //g.onCollision(this,polygonATranslation);
       }
@@ -210,7 +205,7 @@ class Vehicle extends MoveableGameObject{
     position += vector + collisionCorrection;
   }
 
-  bool onCollision(GameObject o){
+  bool onCollision(GameObjectCollision o){
     //if(_speed != 0) _speed = -(_speed/2);
     /*
     _speed = -_speed/2;

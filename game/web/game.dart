@@ -63,13 +63,14 @@ void main()
       //draw gameObjects
       if(o is Vehicle){
         Vehicle v = o;
-        drawPolygon(o.collisionField.applyMatrix(M), layer, v.isCollided ? "red" : "green");
+        drawPolygon(o.collisionField.first.applyMatrix(M), layer, v.isCollided ? "red" : "green");
         for(var s in v.sensors){
           //print(s.collides);
           drawPolygon(s.polygon.applyMatrix(M), layer, s.collides ? "red" : "#ffffff", true);
         }
-
-      }else drawPolygon(o.collisionField.applyMatrix(M), layer, "blue");
+      }else{
+        for(Polygon p in o.collisionField) drawPolygon(p.applyMatrix(M), layer, "blue");
+      }
 
       layer.ctx.beginPath();
       layer.ctx.arc(o.position.x, o.position.y, 2, 0, 2 * Math.PI, false);

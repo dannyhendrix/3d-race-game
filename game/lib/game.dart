@@ -17,3 +17,4 @@ part "src/game/pathtopolygons.dart";
 part "src/game/gamelevelloader.dart";
 part "src/game/vehicletheme.dart";
 part "src/game/startingpositions.dart";
+part "src/game/countdown.dart";

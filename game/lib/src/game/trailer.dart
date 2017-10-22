@@ -11,15 +11,19 @@ class Trailer extends MoveableGameObject{
     double hh = h/2;
     wheelPoint = new Point2d(0.0,0.0);
     vehicleSnapPoint = new Point2d(hw+25.0,0.0);
-    r = vehicle.r;
-    var M = vehicle.getTransformation();
-    position = M.apply(vehicle.trailerSnapPoint-vehicleSnapPoint);
-    collisionField = new Polygon([
+    collisionField = [new Polygon([
       new Point2d(-hw,-hh),
       new Point2d(hw,-hh),
       new Point2d(hw,hh),
       new Point2d(-hw,hh),
-    ]);
+    ])];
+    vehicle.trailer = this;
+    updateVehiclePosition();
+  }
+  void updateVehiclePosition(){
+    var M = vehicle.getTransformation();
+    position = M.apply(vehicle.trailerSnapPoint-vehicleSnapPoint);
+    r = vehicle.r;
   }
   void update(){
     Matrix2d Mv = new Matrix2d.translationPoint(vehicle.position);
