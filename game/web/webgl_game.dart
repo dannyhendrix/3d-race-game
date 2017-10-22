@@ -165,10 +165,17 @@ void main()
     }else if(o is Wall){
       modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,75.0,o.position.y, 0.0,-o.r,0.0, wallModel
           .getModelInstance(modelCollection, o.w, 150.0, o.h)));
-    /*}else if(o is CheckPoint){
-      CheckPoint checkpoint = o;
-      modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,75.0,o.position.y, 0.0,-o.r,0.0, wallModel
-          .getModelInstance(modelCollection, o.w, 150.0, o.h)));*/
+    }else if(o is CheckPoint){
+      var color = new GlColor(0.0,1.0,0.0);
+      List<Polygon> absoluteCollisionFields = o.getAbsoluteCollisionFields();
+      Point2d wallLeftPosition = absoluteCollisionFields[0].center;
+      Point2d wallRightPosition = absoluteCollisionFields[1].center;
+      modelInstances.add(new GlModelInstanceFromModelStatic(wallLeftPosition.x,75.0,wallLeftPosition.y, 0.0,-o.r,0.0, wallModel
+          .getModelInstance(modelCollection, o.wallW, 150.0, o.wallH,color)));
+      modelInstances.add(new GlModelInstanceFromModelStatic(wallRightPosition.x,75.0,wallRightPosition.y, 0.0,-o.r,0.0, wallModel
+          .getModelInstance(modelCollection, o.wallW, 150.0, o.wallH,color)));
+      modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,150.0+30.0,o.position.y, 0.0,-o.r,0.0, wallModel
+          .getModelInstance(modelCollection, o.w, 60.0, o.h,color)));
     }else{
       double h = 80.0;
       GlModelBuffer cube = new GlCube.fromTopCenter(0.0,(h/2),0.0,o.w,h,o.h).createBuffers(layer);
