@@ -2,7 +2,7 @@ part of micromachines;
 
 enum GameState {Initialized, Running, Countdown, Racing, Finished}
 
-Map leveljson ={"w":1500,"d":800,"walls":[{"x":750.0,"z":5.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":750.0,"z":795.0,"r":0.0,"w":300.0,"d":10.0,"h":10.0},{"x":5.0,"z":480.0,"r":0.0,"w":10.0,"d":600.0,"h":10.0},{"x":1495.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":740.0,"z":215.0,"r":0.0,"w":800.0,"d":10.0,"h":10.0},{"x":1160.0,"z":360.0,"r":1.4,"w":300.0,"d":10.0,"h":10.0},{"x":320.0,"z":360.0,"r":1.7,"w":300.0,"d":10.0,"h":10.0},{"x":730.0,"z":620.0,"r":1.6,"w":350.0,"d":10.0,"h":10.0}],"path":{"circular":true,"laps":5,"checkpoints":[{"x":190.0,"z":110.0,"radius":100.0},{"x":1300.0,"z":100.0,"radius":100.0},{"x":1300.0,"z":640.0,"radius":100.0},{"x":950.0,"z":630.0,"radius":100.0},{"x":750.0,"z":310.0,"radius":60.0},{"x":470.0,"z":600.0,"radius":100.0},{"x":180.0,"z":650.0,"radius":100.0}]}};
+Map leveljson ={"w":1500,"d":800,"walls":[{"x":750.0,"z":5.0,"r":0.0,"w":1500.0,"d":10.0,"h":10.0},{"x":750.0,"z":795.0,"r":0.0,"w":300.0,"d":10.0,"h":10.0},{"x":5.0,"z":480.0,"r":0.0,"w":10.0,"d":600.0,"h":10.0},{"x":1495.0,"z":400.0,"r":0.0,"w":10.0,"d":780.0,"h":10.0},{"x":740.0,"z":215.0,"r":0.0,"w":800.0,"d":10.0,"h":10.0},{"x":1160.0,"z":360.0,"r":1.4,"w":300.0,"d":10.0,"h":10.0},{"x":320.0,"z":360.0,"r":1.7,"w":300.0,"d":10.0,"h":10.0},{"x":730.0,"z":620.0,"r":1.6,"w":350.0,"d":10.0,"h":10.0}],"path":{"circular":true,"laps":5,"checkpoints":[{"x":590.0,"z":110.0,"radius":100.0},{"x":1300.0,"z":100.0,"radius":100.0},{"x":1300.0,"z":640.0,"radius":100.0},{"x":950.0,"z":630.0,"radius":100.0},{"x":750.0,"z":310.0,"radius":60.0},{"x":470.0,"z":600.0,"radius":100.0},{"x":180.0,"z":650.0,"radius":100.0},{"x":190.0,"z":360.0,"radius":100.0},{"x":190.0,"z":110.0,"radius":100.0}]}};
 
 class Game{
   List<GameObject> gameobjects = [];
@@ -47,9 +47,22 @@ class Game{
       _movableGameObjects.add(t);
     }
     Vehicle v = players.first.vehicle;
-    double totalLength = v.w+v.trailerSnapPoint.x+v.trailer.vehicleSnapPoint.x+v.trailer.w/2;
+    double totalLength = v.w-v.trailerSnapPoint.x+v.trailer.vehicleSnapPoint.x+v.trailer.w/2;
     double totalWidth = v.h;
-    List<StartingPosition> startingPositions = startingPositionsCreater.DetermineStartPositions(path.point(0),path.point(0),players.length,totalLength,totalWidth,15.0,15.0,path.point(0).radius*2);
+    Point2d start = path.point(0);
+    Point2d second = path.point(1);
+    Point2d last = path.point(path.length-1);
+    double angle = level.path.circular ? _getCheckpointAngle(start,second,last) : start.angleWith(second);
+    List<StartingPosition> startingPositions = startingPositionsCreater.DetermineStartPositions(
+        path.point(0),
+        angle,
+        players.length,
+        totalLength,
+        totalWidth,
+        15.0,
+        15.0,
+        path.point(0).radius*2
+    );
     int i = 0;
     for(Player player in players){
       player.vehicle.position = startingPositions[i].point;
@@ -120,6 +133,8 @@ class Game{
     return (cNext-c).angle;
   }
   double _getCheckpointAngle(PathCheckPoint c,PathCheckPoint cPrev,PathCheckPoint cNext){
-    return ((cPrev-c)+(cNext-c)).angle;
+    double angle = ((cPrev-c)+(c-cNext)).angle;
+    angle += Math.PI/2;
+    return angle;
   }
 }
