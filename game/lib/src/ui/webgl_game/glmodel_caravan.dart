@@ -46,7 +46,7 @@ class GlModel_Caravan{
   GlModelInstanceCollection getModelInstance(GlModelCollection collection, GlColor colorBase, GlColor colorStripe, GlColor colorWindow){
 
     GlMatrix wheelPositionRight = GlMatrix.translationMatrix(0.0,hWheelOffsetIn.v,-d.h+dWheelOffsetIn.v);
-    GlMatrix wheelPositionLeft =  GlMatrix.translationMatrix(0.0,hWheelOffsetIn.v,d.h-dWheelOffsetIn.v)*GlMatrix.rotationYMatrix(Math.PI);
+    GlMatrix wheelPositionLeft =  GlMatrix.translationMatrix(0.0,hWheelOffsetIn.v,d.h-dWheelOffsetIn.v).multThis(GlMatrix.rotationYMatrix(Math.PI));
 
     var colorWheel = new GlColor(0.2,0.2,0.2);
     return new GlModelInstanceCollection([

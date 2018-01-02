@@ -39,7 +39,7 @@ class GlModelInstanceFromModelStatic extends GlModelInstanceCollection{
   GlMatrix _transform;
   GlModelInstanceFromModelStatic(double x, double y, double z, double rx, double ry, double rz, GlModelInstanceCollection model):super([]){
     this.modelInstances = model.modelInstances;
-    _transform = GlMatrix.translationMatrix(x,y,z).rotateX(rx).rotateY(ry).rotateZ(rz);
+    _transform = GlMatrix.translationMatrix(x,y,z).rotateXThis(rx).rotateYThis(ry).rotateZThis(rz);
   }
   GlMatrix CreateTransformMatrix(){
     return _transform;
@@ -52,7 +52,7 @@ class GlModelInstanceFromModel extends GlModelInstanceCollection{
   }
   GlMatrix CreateTransformMatrix(){
     GlMatrix m = GlMatrix.translationMatrix(gameObject.position.x,0.0,gameObject.position.y);
-    m = m.rotateY(-gameObject.r);
+    m.rotateYThis(-gameObject.r);
     return m;
   }
 }
@@ -61,7 +61,7 @@ class GlModelInstanceFromGameObject extends GlModelInstanceCollection{
   GlModelInstanceFromGameObject(this.gameObject, GlModelInstanceCollection model):super(model.modelInstances);
   GlMatrix CreateTransformMatrix(){
     GlMatrix m = GlMatrix.translationMatrix(gameObject.position.x,0.0,gameObject.position.y);
-    m = m.rotateY(-gameObject.r);
+    m.rotateYThis(-gameObject.r);
     return m;
   }
 }
@@ -171,7 +171,7 @@ void main()
       modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,75.0,o.position.y, 0.0,-o.r,0.0, treeModel
           .getModelInstance(modelCollection)));
     }else if(o is CheckPoint){
-      var color = new GlColor(0.0,1.0,0.0);
+      var color = new GlColor(1.0,0.0,0.0);
       List<Polygon> absoluteCollisionFields = o.getAbsoluteCollisionFields();
       Point2d wallLeftPosition = absoluteCollisionFields[0].center;
       Point2d wallRightPosition = absoluteCollisionFields[1].center;
@@ -260,21 +260,21 @@ tick(time) {
   camera.tz = game.players[0].vehicle.position.y;
   camera.z = game.players[0].vehicle.position.y-300.0;
 */
-  var viewProjectionMatrix = camera.cameraMatrix;//perspective*viewMatrix;
+  GlMatrix viewProjectionMatrix = camera.cameraMatrix;//perspective*viewMatrix;
 
 
   // Draw a F at the origin
-  var worldMatrix = GlMatrix.rotationYMatrix(0.0);
+  GlMatrix worldMatrix = GlMatrix.rotationYMatrix(0.0);
 
   // Multiply the matrices.
-  var worldViewProjectionMatrix = viewProjectionMatrix * worldMatrix;
+  GlMatrix worldViewProjectionMatrix = worldMatrix.clone().multThis(viewProjectionMatrix);
 
 
   //2 call draw method with buffer
   for(GlModelInstanceCollection m in modelInstances){
-    GlMatrix objPerspective = worldViewProjectionMatrix*m.CreateTransformMatrix();
+    GlMatrix objPerspective = worldViewProjectionMatrix.clone().multThis(m.CreateTransformMatrix());
     for(GlModelInstance mi in m.modelInstances){
-      layer.setWorld(worldMatrix,objPerspective*mi.CreateTransformMatrix(), new GlVector(-1.0,0.8,0.6),0.4);
+      layer.setWorld(worldMatrix,objPerspective.clone().multThis(mi.CreateTransformMatrix()), new GlVector(-1.0,0.8,0.6),0.4);
       layer.drawModel(mi);
     }
   }

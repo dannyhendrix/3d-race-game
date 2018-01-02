@@ -55,7 +55,7 @@ class GlRenderLayer{
   }
 
   void setWorld(GlMatrix world, GlMatrix worldViewProjection, GlVector lightSource, double lightImpact){
-    lightSource = lightSource.normalize();
+    lightSource.clone().normalizeThis();
     ctx.uniform3fv(program.uni_reverseLightDirection, new Float32List.fromList([lightSource.x,lightSource.y,lightSource.z]));
     ctx.uniformMatrix4fv(program.uni_world, false, world.buffer);
     ctx.uniformMatrix4fv(program.uni_worldViewProjection, false, worldViewProjection.buffer);

@@ -18,16 +18,16 @@ class GlCameraDistanseToTarget extends GlCameraWithPerspective{
 
   void setCameraAngleAndOffset(GlVector targetPosition, {double rx:0.0, double ry:0.0, double rz:0.0, double offsetX : 0.0, double offsetY : 0.0, double offsetZ : 0.0}){
     GlMatrix cameraMatrix = GlMatrix.identityMatrix();
-    cameraMatrix = cameraMatrix.translate(targetPosition.x, targetPosition.y, targetPosition.z);
+    cameraMatrix.translateThis(targetPosition.x, targetPosition.y, targetPosition.z);
     // 1 rotate camera on 0,0
-    cameraMatrix = cameraMatrix.rotateX(rx);
-    cameraMatrix = cameraMatrix.rotateY(ry);
-    cameraMatrix = cameraMatrix.rotateZ(rz);
+    cameraMatrix.rotateXThis(rx);
+    cameraMatrix.rotateYThis(ry);
+    cameraMatrix.rotateZThis(rz);
     // 2 move camera away from 0,0
-    cameraMatrix = cameraMatrix.translate(offsetX,offsetY,offsetZ);
+    cameraMatrix.translateThis(offsetX,offsetY,offsetZ);
     // 3 make camera 0,0 and reverse the world
-    GlMatrix viewMatrix = cameraMatrix.inverse();
-    viewProjectionMatrix = perspective*viewMatrix;
+    GlMatrix viewMatrix = cameraMatrix.clone().inverseThis();
+    viewProjectionMatrix = perspective.clone().multThis(viewMatrix);
   }
 }
 
@@ -42,7 +42,7 @@ class GlCameraPositionToTarget extends GlCameraWithPerspective{
     GlMatrix cameraMatrix = GlMatrix.lookAtMatrix(cameraPosition, targetPosition, up);
 
     // 2 make camera 0,0 and reverse the world
-    GlMatrix viewMatrix = cameraMatrix.inverse();
-    viewProjectionMatrix = perspective*viewMatrix;
+    GlMatrix viewMatrix = cameraMatrix.clone().inverseThis();
+    viewProjectionMatrix = perspective.clone().multThis(viewMatrix);
   }
 }

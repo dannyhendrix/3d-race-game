@@ -324,8 +324,8 @@ GlModelInstanceCollection createVehicleModel(double sx, double sy, double sz){
   GlModelBuffer modelWheel = new GlCube.fromTopCenter(0.0,0.0,0.0,wWheel.v,hWheel.v,dWheel.v).createBuffers(layer);
   GlMatrix wheelPositionFrontRight = GlMatrix.translationMatrix(w.h-wWheelOffsetFront.v,hWheelOffsetIn.v,-d.h+dWheelOffsetIn.v);
   GlMatrix wheelPositionRearRight = GlMatrix.translationMatrix(-w.h+wWheelOffsetRear.v,hWheelOffsetIn.v,-d.h+dWheelOffsetIn.v);
-  GlMatrix wheelPositionFrontLeft =  GlMatrix.translationMatrix(w.h-wWheelOffsetFront.v,hWheelOffsetIn.v,d.h-dWheelOffsetIn.v)*GlMatrix.rotationYMatrix(Math.PI);
-  GlMatrix wheelPositionRearLeft = GlMatrix.translationMatrix(-w.h+wWheelOffsetRear.v,hWheelOffsetIn.v,d.h-dWheelOffsetIn.v)*GlMatrix.rotationYMatrix(Math.PI);
+  GlMatrix wheelPositionFrontLeft =  GlMatrix.translationMatrix(w.h-wWheelOffsetFront.v,hWheelOffsetIn.v,d.h-dWheelOffsetIn.v).multThis(GlMatrix.rotationYMatrix(Math.PI));
+  GlMatrix wheelPositionRearLeft = GlMatrix.translationMatrix(-w.h+wWheelOffsetRear.v,hWheelOffsetIn.v,d.h-dWheelOffsetIn.v).multThis(GlMatrix.rotationYMatrix(Math.PI));
 
   var color = new GlColor(1.0,1.0,0.0);
   var color2 = new GlColor(0.0,0.0,1.0);
@@ -456,16 +456,16 @@ GlModelInstanceCollection createXYZMark(){
 void draw(){
   layer.clearForNextFrame();
   camera.setCameraAngleAndOffset(new GlVector(0.0,0.0,0.0),rx:rx,ry:ry,rz:rz,offsetX:ox,offsetY:oy,offsetZ:oz);
-  var viewProjectionMatrix = camera.cameraMatrix;//createMatrix();
-  var worldMatrix = GlMatrix.rotationYMatrix(0.0);
+  GlMatrix viewProjectionMatrix = camera.cameraMatrix;//createMatrix();
+  GlMatrix worldMatrix = GlMatrix.rotationYMatrix(0.0);
 
   //2 call draw method with buffer
   for(GlModelInstanceCollection m in modelInstances){
-
-    GlMatrix objPerspective = viewProjectionMatrix*worldMatrix*m.CreateTransformMatrix();
+    GlMatrix matrix = m.CreateTransformMatrix().multThis(worldMatrix);
+    GlMatrix objPerspective = viewProjectionMatrix.clone().multThis(matrix);
 
     for(GlModelInstance mi in m.modelInstances){
-      layer.setWorld(worldMatrix,objPerspective*mi.CreateTransformMatrix(), new GlVector(lx,ly,lz),lightImpact);
+      layer.setWorld(worldMatrix,objPerspective.clone().multThis(mi.CreateTransformMatrix()), new GlVector(lx,ly,lz),lightImpact);
       layer.drawModel(mi);
     }
   }
