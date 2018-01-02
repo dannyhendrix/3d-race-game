@@ -145,9 +145,11 @@ void main()
   GlModel_Vehicle vehicleModel = new GlModel_Vehicle();
   GlModel_Caravan caravanModel = new GlModel_Caravan();
   GlModel_Wall wallModel = new GlModel_Wall();
+  GlModel_Tree treeModel = new GlModel_Tree();
   vehicleModel.loadModel(modelCollection);
   caravanModel.loadModel(modelCollection);
   wallModel.loadModel(modelCollection);
+  treeModel.loadModel(modelCollection);
   //createVehicleModel().modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
   GlColor colorWindows = new GlColor(0.2,0.2,0.2);
   //create all buffer
@@ -165,6 +167,9 @@ void main()
     }else if(o is Wall){
       modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,75.0,o.position.y, 0.0,-o.r,0.0, wallModel
           .getModelInstance(modelCollection, o.w, 150.0, o.h)));
+    }else if(o is Tree){
+      modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,75.0,o.position.y, 0.0,-o.r,0.0, treeModel
+          .getModelInstance(modelCollection)));
     }else if(o is CheckPoint){
       var color = new GlColor(0.0,1.0,0.0);
       List<Polygon> absoluteCollisionFields = o.getAbsoluteCollisionFields();

@@ -34,7 +34,8 @@ void main(){
   modelInstances.add(createXYZMark());
   //var car = createVehicleModel(5.0,4.0,3.0);
   //modelInstances.add(car);
-  var car = createTrailerModel(5.0,4.0,3.0,1.0);
+  //var car = createTrailerModel(5.0,4.0,3.0,1.0);
+  var car = createTreeModel(5.0);
   modelInstances.add(car);
 
   document.body.append(createTitle("Light"));
@@ -338,6 +339,71 @@ GlModelInstanceCollection createVehicleModel(double sx, double sy, double sz){
     new GlModelInstance(modelWheel, colorWheel, wheelPositionFrontLeft),
     new GlModelInstance(modelWheel, colorWheel, wheelPositionRearRight),
     new GlModelInstance(modelWheel, colorWheel, wheelPositionRearLeft),
+  ]);
+}
+
+GlModelInstanceCollection createTreeModel(double scale){
+  DoubleHelper h = new DoubleHelper(1.0,scale);
+  DoubleHelper hLeaves = new DoubleHelper(0.7,scale);
+  DoubleHelper hTrunk = new DoubleHelper(0.3,scale);
+
+  DoubleHelper d = new DoubleHelper(0.4,scale);
+  DoubleHelper dLeaves = new DoubleHelper(0.4,scale);
+  DoubleHelper dTrunk = new DoubleHelper(0.1,scale);
+
+  DoubleHelper w = new DoubleHelper(0.4,scale);
+  DoubleHelper wLeaves = new DoubleHelper(0.4,scale);
+  DoubleHelper wTrunk = new DoubleHelper(0.1,scale);
+
+  GlModelBuffer trunk = new GlAreaModel([
+    // top
+    //new GlRectangle.withWD(-wTrunk.h, hTrunk.v, -dTrunk.h, wTrunk.v, dTrunk.v, false),
+    new GlRectangle.withWD(-wTrunk.h,0.0, -dTrunk.h, wTrunk.v, dTrunk.v, true),
+    //front
+    new GlRectangle.withWH(-wTrunk.h,0.0, -dTrunk.h, wTrunk.v, hTrunk.v, false),
+    //back
+    new GlRectangle.withWH(-wTrunk.h,0.0, dTrunk.h, wTrunk.v, hTrunk.v, true),
+    //left
+    new GlRectangle.withHD(-wTrunk.h,0.0, -dTrunk.h, hTrunk.v, dTrunk.v, false),
+    new GlRectangle.withHD(wTrunk.h,0.0, -dTrunk.h, hTrunk.v, dTrunk.v, true),
+  ]).createBuffers(layer);
+
+  GlModelBuffer leaves = new GlAreaModel([
+
+    //bottom square
+    //4 triangle to top
+
+    new GlRectangle.withWD(-wLeaves.h, hTrunk.v, -dLeaves.h, wLeaves.v, dLeaves.v, true),
+
+    new GlTriangle([
+      new GlPoint(-wLeaves.h, hTrunk.v, -dLeaves.h),
+      new GlPoint(0.0, h.v, 0.0),
+      new GlPoint(wLeaves.h, hTrunk.v, -dLeaves.h),
+    ]),
+    new GlTriangle([
+      new GlPoint(-wLeaves.h, hTrunk.v, dLeaves.h),
+      new GlPoint(wLeaves.h, hTrunk.v, dLeaves.h),
+      new GlPoint(0.0, h.v, 0.0),
+    ]),
+    new GlTriangle([
+      new GlPoint(wLeaves.h, hTrunk.v, -dLeaves.h),
+      new GlPoint(0.0, h.v, 0.0),
+      new GlPoint(wLeaves.h, hTrunk.v, dLeaves.h),
+    ]),
+    new GlTriangle([
+      new GlPoint(-wLeaves.h, hTrunk.v, -dLeaves.h),
+      new GlPoint(-wLeaves.h, hTrunk.v, dLeaves.h),
+      new GlPoint(0.0, h.v, 0.0),
+    ]),
+
+
+  ]).createBuffers(layer);
+
+  var colorTrunk = new GlColor(1.0,0.7,0.6);
+  var colorLeaves = new GlColor(0.0,1.0,0.0);
+  return new GlModelInstanceCollection([
+    new GlModelInstance(trunk, colorTrunk),
+    new GlModelInstance(leaves, colorLeaves),
   ]);
 }
 

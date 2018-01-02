@@ -10,6 +10,8 @@ class LevelEditorForm{
       return _formLevel(gameLevelElement);
     }else if(gameLevelElement is GameLevelWall){
       return _formWall(gameLevelElement);
+    }else if(gameLevelElement is GameLevelStaticObject){
+      return _formStaticObject(gameLevelElement);
     }else if(gameLevelElement is GameLevelPath){
       return _formPath(gameLevelElement);
     }else if(gameLevelElement is GameLevelCheckPoint){
@@ -22,6 +24,7 @@ class LevelEditorForm{
     el.append(createInputElementInt("d",level.d,(int v)=>level.d=v));
     el.append(new ObjInput<GameLevelPath>().createInputElementObj("path",level.path));
     el.append(new ListInput<GameLevelWall>().createInputElementList("walls",level.walls,(){var n =new GameLevelWall(); level.walls.add(n); return n;},(GameLevelWall p)=>level.walls.remove(p)));
+    el.append(new ListInput<GameLevelStaticObject>().createInputElementList("staticobjects",level.staticobjects,(){var n =new GameLevelStaticObject(); level.staticobjects.add(n); return n;},(GameLevelStaticObject p)=>level.staticobjects.remove(p)));
     return el;
   }
 
@@ -33,6 +36,14 @@ class LevelEditorForm{
     el.append(createInputElementDouble("w",wall.w,(double v)=>wall.w=v));
     el.append(createInputElementDouble("d",wall.d,(double v)=>wall.d=v));
     el.append(createInputElementDouble("h",wall.h,(double v)=>wall.h=v));
+    return el;
+  }
+  Element _formStaticObject(GameLevelStaticObject obj){
+    Element el = new SpanElement();
+    el.append(createInputElementInt("id",obj.id,(int v)=>obj.id=v));
+    el.append(createInputElementDouble("x",obj.x,(double v)=>obj.x=v));
+    el.append(createInputElementDouble("z",obj.z,(double v)=>obj.z=v));
+    el.append(createInputElementDouble("r",obj.r,(double v)=>obj.r=v));
     return el;
   }
   Element _formPath(GameLevelPath path){
@@ -197,6 +208,16 @@ class Preview{
       ctx.translate(o.x*scale,o.z*scale);
       ctx.rotate(o.r);
       ctx.fillRect(-o.w*scale/2, -o.d*scale/2, o.w*scale, o.d*scale);
+      ctx.restore();
+    }
+    ctx.fillStyle = "#282";
+    for(GameLevelStaticObject o in level.staticobjects){
+      ctx.save();
+      ctx.translate(o.x*scale,o.z*scale);
+      ctx.rotate(o.r);
+      double w = 30.0;
+      double d = 30.0;
+      ctx.fillRect(-w*scale/2, -d*scale/2, w*scale, d*scale);
       ctx.restore();
     }
   }
