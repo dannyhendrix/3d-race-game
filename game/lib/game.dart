@@ -19,3 +19,4 @@ part "src/game/gamelevelloader.dart";
 part "src/game/vehicletheme.dart";
 part "src/game/startingpositions.dart";
 part "src/game/countdown.dart";
+part "src/game/gamesettings.dart";

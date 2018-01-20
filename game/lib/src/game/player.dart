@@ -12,8 +12,6 @@ class HumanPlayer extends Player{
   }
 
   void onControl(Control control, bool active){
-    bool canMove = _game.state == GameState.Racing && _game.state.index < GameState.Finished.index; //TODO: should this be a player state? after finished it cannot move..
-    bool canSteer = _game.state.index >= GameState.Countdown.index;
     switch(control){
       case Control.Accelerate:
         _isAccelarating = active;
@@ -22,16 +20,16 @@ class HumanPlayer extends Player{
         _isBreaking = active;
         break;
       case Control.SteerLeft:
-        if(canSteer) _isSteeringLeft = active;
+        _isSteeringLeft = active;
         break;
       case Control.SteerRight:
-        if(canSteer) _isSteeringRight = active;
+        _isSteeringRight = active;
         break;
       default:
         break;
     }
-    vehicle.setAccelarate(canMove && _isAccelarating);
-    vehicle.setBrake(canMove && _isBreaking);
+    vehicle.setAccelarate(_isAccelarating);
+    vehicle.setBrake(_isBreaking);
     if(_isSteeringRight && !_isSteeringLeft)
       vehicle.setSteer(Steer.Right);
     else if(!_isSteeringRight && _isSteeringLeft)
@@ -111,7 +109,7 @@ class AiPlayer extends Player{
 
   Steer steerToPoint(Point2d A, double RA, Point2d B){
     var dist = B-A;
-    var normT = new Vector(dist.x,dist.y).normalized;
+    var normT = new Vector(dist.x,dist.y);//.normalized;
     var normA = new Vector.fromAngleRadians(RA,1.0);
     var ra = normA.angle;
     var rt = normT.angle;
@@ -150,10 +148,10 @@ abstract class Player{
   String name = "Player";
   VehicleTheme theme = new VehicleTheme.withDefaults();
 
-  void init(Game game){
+  bool get finished => pathProgress.finished;
+
+  void init(Game game, Vehicle v, Path path){
     _game = game;
-  }
-  void start(Vehicle v, Path path){
     vehicle = v;
     pathProgress = new PathProgress(path);
   }

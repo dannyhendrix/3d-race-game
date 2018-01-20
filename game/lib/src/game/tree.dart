@@ -3,8 +3,8 @@ part of micromachines;
 class Tree extends GameObject{
   Tree(double nx, double ny, [double nr = 0.0]){
     position = new Point2d(nx,ny);
-    w = 30.0;
-    h = 30.0;
+    w = 20.0;
+    h = 20.0;
     r = nr;
 
     double hw = w/2;

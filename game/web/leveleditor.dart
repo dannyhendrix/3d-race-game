@@ -2,84 +2,80 @@ import "dart:html";
 import "dart:math" as Math;
 import "dart:convert";
 import "package:micromachines/game.dart";
+import "package:micromachines/leveleditor.dart";
+import "package:micromachines/webgl_game.dart";
 import "package:gameutils/math.dart";
 
-class LevelEditorForm{
-  Element createNewElement(GameLevelElement gameLevelElement){
-    if(gameLevelElement is GameLevel){
-      return _formLevel(gameLevelElement);
-    }else if(gameLevelElement is GameLevelWall){
-      return _formWall(gameLevelElement);
-    }else if(gameLevelElement is GameLevelStaticObject){
-      return _formStaticObject(gameLevelElement);
-    }else if(gameLevelElement is GameLevelPath){
-      return _formPath(gameLevelElement);
-    }else if(gameLevelElement is GameLevelCheckPoint){
-      return _formCheckPoint(gameLevelElement);
-    }
-  }
-  Element _formLevel(GameLevel level){
-    Element el = new SpanElement();
-    el.append(createInputElementInt("w",level.w,(int v)=>level.w=v));
-    el.append(createInputElementInt("d",level.d,(int v)=>level.d=v));
-    el.append(new ObjInput<GameLevelPath>().createInputElementObj("path",level.path));
-    el.append(new ListInput<GameLevelWall>().createInputElementList("walls",level.walls,(){var n =new GameLevelWall(); level.walls.add(n); return n;},(GameLevelWall p)=>level.walls.remove(p)));
-    el.append(new ListInput<GameLevelStaticObject>().createInputElementList("staticobjects",level.staticobjects,(){var n =new GameLevelStaticObject(); level.staticobjects.add(n); return n;},(GameLevelStaticObject p)=>level.staticobjects.remove(p)));
-    return el;
+abstract class DrawObject{
+  void paint(CanvasRenderingContext2D ctx);
+  void paintAsCurrent(CanvasRenderingContext2D ctx);
+  bool pointInObj(double x, double y);
+}
+class DrawObjectPolygon extends DrawObject{
+  Polygon polygon;
+  String style;
+  DrawObjectPolygon.FromSquare(double x, double y, double w, double h, double r, this.style){
+    double hw = w/2;
+    double hh = h/2;
+    polygon = new Polygon([new Point2d(-hw,-hh),new Point2d(hw,-hh),new Point2d(hw,hh),new Point2d(-hw,hh)]);
+    //Matrix2d transform = new Matrix2d.rotation(r).translate(x,y);
+    Matrix2d transform = new Matrix2d.translation(x,y).rotate(r);
+    polygon = polygon.applyMatrix(transform);
   }
 
-  Element _formWall(GameLevelWall wall){
-    Element el = new SpanElement();
-    el.append(createInputElementDouble("x",wall.x,(double v)=>wall.x=v));
-    el.append(createInputElementDouble("z",wall.z,(double v)=>wall.z=v));
-    el.append(createInputElementDouble("r",wall.r,(double v)=>wall.r=v));
-    el.append(createInputElementDouble("w",wall.w,(double v)=>wall.w=v));
-    el.append(createInputElementDouble("d",wall.d,(double v)=>wall.d=v));
-    el.append(createInputElementDouble("h",wall.h,(double v)=>wall.h=v));
-    return el;
+  void paint(CanvasRenderingContext2D ctx){
+    ctx.fillStyle = style;
+    ctx.strokeStyle = "#999";
+    _drawRoadPolygon(ctx,polygon);
   }
-  Element _formStaticObject(GameLevelStaticObject obj){
-    Element el = new SpanElement();
-    el.append(createInputElementInt("id",obj.id,(int v)=>obj.id=v));
-    el.append(createInputElementDouble("x",obj.x,(double v)=>obj.x=v));
-    el.append(createInputElementDouble("z",obj.z,(double v)=>obj.z=v));
-    el.append(createInputElementDouble("r",obj.r,(double v)=>obj.r=v));
-    return el;
+  void paintAsCurrent(CanvasRenderingContext2D ctx){
+    ctx.fillStyle = "green";
+    ctx.strokeStyle = "#999";
+    _drawRoadPolygon(ctx,polygon);
   }
-  Element _formPath(GameLevelPath path){
-    Element el = new SpanElement();
-    el.append(createInputElementBool("circular",path.circular,(bool v)=>path.circular=v));
-    el.append(createInputElementInt("laps",path.laps,(int v)=>path.laps=v));
-    el.append(new ListInput<GameLevelCheckPoint>().createInputElementList("checkpoints",path.checkpoints,(){var n =new GameLevelCheckPoint(); path.checkpoints.add(n); return n;},(GameLevelCheckPoint p)=>path.checkpoints.remove(p)));
-    return el;
+  void _drawRoadPolygon(CanvasRenderingContext2D ctx,Polygon polygon){
+    ctx.beginPath();
+    var first = polygon.points.first;
+    ctx.moveTo(first.x,first.y);
+    for(Point2d p in polygon.points){
+      ctx.lineTo(p.x,p.y);
+    }
+    ctx.lineTo(first.x,first.y);
+    ctx.fill();
+    ctx.stroke();
   }
-  Element _formCheckPoint(GameLevelCheckPoint checkpoint){
-    Element el = new SpanElement();
-    el.append(createInputElementDouble("x",checkpoint.x,(double v)=>checkpoint.x=v));
-    el.append(createInputElementDouble("z",checkpoint.z,(double v)=>checkpoint.z=v));
-    el.append(createInputElementDouble("radius",checkpoint.radius,(double v)=>checkpoint.radius=v));
-    return el;
+  bool pointInObj(double x, double y){
+    return polygon.pointInPoligon(x,y);
   }
 }
 
-class Container
-{
-  GameLevel level = new GameLevel();
+class Container{
   Preview preview = new Preview();
-  LevelEditorForm form = new LevelEditorForm();
+  Input input;
   GameLevelElement currentXY;
-  Container();
+  bool changed;
+  Container(){
+    input = Input.createInput(GameLevel, (Input input){ changed = true;});
+  }
 }
 Container container = new Container();
 
 void main(){
   document.body.append(container.preview.createElement());
   Element el_level = new DivElement();
-  Element el_form = new ObjInput<GameLevel>().createInputElementObj("level",container.level);
-  el_level.append(el_form);
+  Element el_form = container.input.createElement("level", new GameLevel());
   document.body.append(el_level);
+  document.body.append(el_form);
   document.body.append(createLoadSaveLevelElement(el_form,el_level));
   document.body.append(createScaleLevel());
+
+  window.requestAnimationFrame(loop);
+}
+
+void loop(int num){
+  if(container.changed) container.preview.paintLevel(container.input.createValue());
+  container.changed = false;
+  window.requestAnimationFrame(loop);
 }
 
 Element createLoadSaveLevelElement(Element el_form, Element el_level){
@@ -91,25 +87,22 @@ Element createLoadSaveLevelElement(Element el_form, Element el_level){
   TextAreaElement el_txt = new TextAreaElement();
   el_wrap.append(el_txt);
   el_txt.className = "json";
-  el_wrap.append(createButton("CreateJson",(Event e){
+  el_wrap.append(createButton("file_download",(Event e){
     GameLevelSaver levelSaver = new GameLevelSaver();
-    Map json = levelSaver.levelToJson(container.level);
+    GameLevel level = container.input.createValue();
+    Map json = levelSaver.levelToJson(level);
     el_txt.value = JSON.encode(json);
   }));
-  el_wrap.append(createButton("ReadJson",(Event e){
+  el_wrap.append(createButton("file_upload",(Event e){
     GameLevelLoader levelLoader = new GameLevelLoader();
     Map json = JSON.decode(el_txt.value);
-    container.level = levelLoader.loadLevelJson(json);
     el_form.remove();
-    el_form = new ObjInput<GameLevel>().createInputElementObj("level",container.level);
+    el_form = container.input.createElement("level", levelLoader.loadLevelJson(json));
     el_level.append(el_form);
+    container.changed = true;
   }));
   el_txt.value = JSON.encode(leveljson);
   return el_wrap;
-}
-
-void onInputValueChange(){
-  container.preview.paintLevel(container.level);
 }
 
 void scaleLevel(GameLevel level, double scale){
@@ -133,6 +126,8 @@ void scaleLevel(GameLevel level, double scale){
  * Preview canvas
  */
 class Preview{
+  double mouseX = 0.0;
+  double mouseY = 0.0;
   CanvasElement canvas = new CanvasElement();
   CanvasRenderingContext2D ctx;
   Preview(){
@@ -151,8 +146,11 @@ class Preview{
     el_pos.append(el_y);
     el.append(el_pos);
     el.onMouseMove.listen((MouseEvent e){
-      el_x.text = e.offset.x.toString();
-      el_y.text = e.offset.y.toString();
+      mouseX = e.offset.x;
+      el_x.text = mouseX.toString();
+      mouseY = e.offset.y;
+      el_y.text = mouseY.toString();
+      container.changed = true;
     });
     el.onMouseDown.listen((MouseEvent e){
       //container.currentXY.x = 1.0*e.offset.x;
@@ -160,6 +158,7 @@ class Preview{
     });
     return el;
   }
+
   void paintLevel(GameLevel level){
     double scale = 0.5;
     canvas.width = (level.w*scale).round();
@@ -174,6 +173,27 @@ class Preview{
     for(Polygon p in roadPolygons){
       drawRoadPolygon(p);
     }
+    //List<DrawObject> drawobjects = [];
+    Input current = null;
+    container.input.map((Input input){
+      if(input is InputObj){
+        DrawObject drawObject;
+        if(input.objType == GameLevelWall){
+          GameLevelWall value = input.createValue();
+          drawObject = new DrawObjectPolygon.FromSquare(value.x*scale, value.z*scale, value.w*scale, value.d*scale, value.r, "red");
+        }else if(input.objType == GameLevelStaticObject){
+          GameLevelStaticObject value = input.createValue();
+          drawObject = new DrawObjectPolygon.FromSquare(value.x*scale, value.z*scale, 50*scale, 50*scale, value.r, "green");
+        }
+        if(drawObject == null) return;
+        if(current == null && drawObject.pointInObj(mouseX,mouseY)){
+          drawObject.paintAsCurrent(ctx);
+          current = input;
+        }else{
+          drawObject.paint(ctx);
+        }
+      }
+    });
 
     //draw path
     if(level.path.checkpoints.length > 0)
@@ -201,6 +221,7 @@ class Preview{
         ctx.stroke();
       }
     }
+    /*
     //draw walls
     ctx.fillStyle = "#222";
     for(GameLevelWall o in level.walls){
@@ -220,6 +241,7 @@ class Preview{
       ctx.fillRect(-w*scale/2, -d*scale/2, w*scale, d*scale);
       ctx.restore();
     }
+    */
   }
   void drawRoadPolygon(Polygon polygon){
     ctx.beginPath();
@@ -233,125 +255,17 @@ class Preview{
     ctx.stroke();
   }
 }
-CanvasElement createPreview(){
-  CanvasElement canvas = new CanvasElement();
-}
-
-/**
- * Html input
- */
-typedef void OnDoubleValueChange(double newvalue);
-typedef void OnBoolValueChange(bool newvalue);
-typedef void OnIntValueChange(int newvalue);
-typedef T OnAddObject<T>();
-typedef void OnRemoveObject<T>(T obj);
-
-Element createInputElementDouble(String label, double value, OnDoubleValueChange onChange){
-  Element el_wrap = new SpanElement();
-  InputElement el = new InputElement();
-  el.value = value.toString();
-  el.onChange.listen((Event e){
-    onChange(double.parse(el.value));
-    onInputValueChange();
-  });
-  el_wrap.appendText(label);
-  el_wrap.append(el);
-  el_wrap.className = "in doubleIn";
-  return el_wrap;
-}
-Element createInputElementInt(String label, int value, OnIntValueChange onChange){
-  Element el_wrap = new SpanElement();
-  InputElement el = new InputElement();
-  el.value = value.toString();
-  el.onChange.listen((Event e){
-    onChange(int.parse(el.value));
-    onInputValueChange();
-  });
-  el_wrap.appendText(label);
-  el_wrap.append(el);
-  el_wrap.className = "in intIn";
-  return el_wrap;
-}
-Element createInputElementBool(String label, bool value, OnBoolValueChange onChange){
-  Element el_wrap = new SpanElement();
-  CheckboxInputElement el = new CheckboxInputElement();
-  el.checked = value;
-  el.onChange.listen((Event e){
-    onChange(el.checked);
-    onInputValueChange();
-  });
-  el_wrap.append(el);
-  el_wrap.appendText(label);
-  el_wrap.className = "in boolIn";
-  return el_wrap;
-}
-class ListInput<T extends GameLevelElement>
-{
-  Element createInputElementList(String label, List<T> value, OnAddObject<T> onAdd, OnRemoveObject<T> onRemove)
-  {
-    Element el_wrap = new FieldSetElement();
-    Element el_legend = new LegendElement();
-    el_legend.text = label;
-    el_wrap.append(el_legend);
-    Element el_content = new DivElement();
-    el_wrap.append(el_content);
-
-    for(T v in value){
-      addNew(v, el_content, onRemove);
-    }
-
-    el_wrap.append(createButton("add", (Event e)
-    {
-      T obj = onAdd();
-      addNew(obj, el_content, onRemove);
-    }));
-    el_wrap.className = "in listIn";
-    return el_wrap;
-  }
-
-  void addNew(T obj, Element el_content, OnRemoveObject<T> onRemove){
-    Element el_item = new DivElement();
-    el_item.append( container.form.createNewElement(obj));
-
-    el_item.append(createButton("remove", (Event e)
-    {
-      el_item.remove();
-      onRemove(obj);
-      onInputValueChange();
-    }));
-    el_content.append(el_item);
-    onInputValueChange();
-  }
-}
-class ObjInput<T extends GameLevelElement>
-{
-  Element createInputElementObj(String label, T value){
-    Element el_wrap = new FieldSetElement();
-    Element el_legend = new LegendElement();
-    el_legend.text = label;
-    el_wrap.append(el_legend);
-    el_wrap.append( container.form.createNewElement(value));
-    el_wrap.className = "in objIn";
-    return el_wrap;
-  }
-}
 Element createScaleLevel(){
   Element el = new DivElement();
   InputElement el_in = new InputElement();
   el_in.value = "1.0";
   Element el_btn = createButton("Scale level",(Event e){
     double scale = double.parse(el_in.value);
-    scaleLevel(container.level,scale);
+    scaleLevel(container.input.createValue(),scale);
   });
   el.append(el_in);
   el.append(el_btn);
   return el;
-}
-Element createButton(String labelText, Function onClick){
-  var btn = new ButtonElement();
-  btn.text = labelText;
-  btn.onClick.listen(onClick);
-  return btn;
 }
 Element createButtonSetCurrent(String labelText, GameLevelElement obj){
   var btn = new ButtonElement();

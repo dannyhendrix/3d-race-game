@@ -130,8 +130,10 @@ class Vehicle extends MoveableGameObject{
   bool get isCollided => _isCollided;
 
   void update(){
+    bool gameStateRacing = game.state == GameState.Racing;
+    //bool gameStateRacingOrCountDown = game.state == GameState.Racing || game.state == GameState.Countdown;
     //Steering
-    r = _applySteering(r,vehicleSettings.getValue(VehicleSettingKeys.steering_speed), _isSteering);
+    if(gameStateRacing) r = _applySteering(r,vehicleSettings.getValue(VehicleSettingKeys.steering_speed), _isSteering);
 
     //Apply Forces
     bool wasStandingStill = _speed == 0;
@@ -141,7 +143,7 @@ class Vehicle extends MoveableGameObject{
         vehicleSettings.getValue(VehicleSettingKeys.brake_speed),
         vehicleSettings.getValue(VehicleSettingKeys.acceleration_max),
         vehicleSettings.getValue(VehicleSettingKeys.reverse_acceleration_max),
-        _currentStandStillDelay==0, _isAccelerating, _isBraking);
+        _currentStandStillDelay==0,  _isAccelerating && gameStateRacing, _isBraking && gameStateRacing);
     _speed = _applyFriction(_speed,vehicleSettings.getValue(VehicleSettingKeys.friction));
 
     // slower off road

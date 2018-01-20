@@ -1,0 +1,46 @@
+.in{
+font-family:Arial;
+font-size:12px;
+}
+span.in {
+padding: 5px;
+}
+.in input {
+width: 30px;
+border: 1px solid #DDDDDD;
+border-radius: 5px;
+padding: 5px;
+}
+.in select {
+width: 90px;
+border: 1px solid #DDDDDD;
+border-radius: 5px;
+padding: 5px;
+}
+.stringIn input {
+width: 90px;
+}
+.btn {
+background: #f3f3f3;
+border: 1px solid #ddd;
+padding: 2px 4px;
+border-radius: 5px;
+margin: 3px;
+color: #333;
+}
+.material-icons{
+font-size:18px;
+}
+.btn:hover {
+background: #FF9966;
+border-color: #A0715A;
+}
+fieldset {
+border: 1px solid #DDDDDD;
+padding: 5px;
+}
+legend {
+padding: 7px;
+font-weight: bold;
+color: #FF5400;
+}

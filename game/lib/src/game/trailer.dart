@@ -1,10 +1,30 @@
 part of micromachines;
 
-class Trailer extends MoveableGameObject{
+abstract class Trailer extends MoveableGameObject{
   Vehicle vehicle;
   Point2d wheelPoint;
   Point2d vehicleSnapPoint;
-  Trailer(this.vehicle){
+  void updateVehiclePosition();
+  void update();
+}
+
+class NullTrailer extends Trailer{
+  NullTrailer(Vehicle vehicle){
+    this.vehicle = vehicle;
+    w = 0.0;
+    h = 0.0;
+    wheelPoint = new Point2d(0.0,0.0);
+    vehicleSnapPoint = new Point2d(0.0,0.0);
+    relativeCollisionFields = [];
+    vehicle.trailer = this;
+  }
+  void updateVehiclePosition(){}
+  void update(){}
+}
+
+class CarTrailer extends Trailer{
+  CarTrailer(Vehicle vehicle){
+    this.vehicle = vehicle;
     w = 50.0;
     h = 30.0;
     double hw = w/2;

@@ -1,13 +1,21 @@
 part of micromachines;
 
+class GameLevelInvalidException implements Exception{
+  final String msg;
+  GameLevelInvalidException(this.msg);
+  String toString() => "Exception: Invalid game settings: $msg";
+}
+
 abstract class GameLevelElement{
 }
 class GameLevel extends GameLevelElement{
-  List<GameLevelWall> walls = [];
-  List<GameLevelStaticObject> staticobjects = [];
-  GameLevelPath path = new GameLevelPath();
   int w = 800;
   int d = 500;
+  GameLevelPath path = new GameLevelPath();
+  List<GameLevelWall> walls = [];
+  List<GameLevelStaticObject> staticobjects = [];
+
+  void validate(){} // TODO: validate level
 }
 class GameLevelWall extends GameLevelElement{
   double x,z,r;
@@ -15,8 +23,8 @@ class GameLevelWall extends GameLevelElement{
   GameLevelWall([this.x=0.0,this.z=0.0,this.r=0.0, this.w = 1.0,this.d = 1.0,this.h = 1.0]);
 }
 class GameLevelStaticObject extends GameLevelElement{
-  double x,z,r;
   int id;
+  double x,z,r;
   GameLevelStaticObject([this.id = 0, this.x=0.0,this.z=0.0,this.r=0.0]);
 }
 class GameLevelCheckPoint extends GameLevelElement{
