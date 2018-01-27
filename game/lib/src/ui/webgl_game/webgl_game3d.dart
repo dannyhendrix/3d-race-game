@@ -106,6 +106,7 @@ class WebglGame3d extends WebglGame{
       _gameloop.stop();
       el_countdown.style.display = "block";
       el_countdown.text = "Finished";
+      if(onGameFinished != null) onGameFinished(game.createGameResult());
       return;
     }
 

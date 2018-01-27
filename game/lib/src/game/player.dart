@@ -146,6 +146,7 @@ abstract class Player{
   Vehicle vehicle;
   PathProgress pathProgress;
   String name = "Player";
+  int playerId = 0;
   VehicleTheme theme = new VehicleTheme.withDefaults();
 
   bool get finished => pathProgress.finished;

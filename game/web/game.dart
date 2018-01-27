@@ -36,13 +36,23 @@ void main()
   var input = Input.createInput(GameSettings, (Input input){ });
 
   Element el_wrap = new DivElement();
+  Element el_result = new DivElement();
+  el_wrap.append(el_result);
   SelectElement el_displayType = createSelect(["2d","3d"]);
   el_wrap.append(createButton("start", (e){
-    el_wrap.remove();
+    el_wrap.style.display = "none";
     WebglGame game = el_displayType.selectedIndex == 0 ? new WebglGame2d() : new WebglGame3d();
+    Element element;
+    game.onGameFinished = (result){
+      element.remove();
+      el_wrap.style.display = "block";
+      el_result.text = result.toString();
+      game = null;
+    };
     GameSettings settings = input.createValue();
     settings.level = createGameLevelTemp();
-    var element = game.initAndCreateDom(settings);
+    settings.level.path.laps = 1;
+    element = game.initAndCreateDom(settings);
     document.body.append(element);
     document.body.append(createButton("Pause",(e)=>game.pause()));
     game.start();

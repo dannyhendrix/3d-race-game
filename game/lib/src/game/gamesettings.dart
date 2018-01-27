@@ -21,6 +21,7 @@ class GameSettings{
 
 class GameSettingsPlayer{
   String name = "Player";
+  int playerId = 0;
   bool isHuman = false;
   VehicleType vehicle = VehicleType.Car;
   TrailerType trailer = TrailerType.None;
@@ -33,4 +34,24 @@ class GameSettingsPlayer{
   void validate(){
     if(vehicleTheme == null) throw new GameSettingsInvalidException("Player.vehicleTheme is null");
   }
+}
+
+class GameResult{
+  GameResultTime gameTime;
+  List<GamePlayerResult> playerResults;
+  String toString() => "${playerResults.map((p)=>p.toString()).join("\n")}$gameTime";
+}
+class GamePlayerResult{
+  GameResultTime raceTime;
+  int position;
+  String name;
+  int playerId;// allows to relate the player to the player in the gameInput
+  String toString() => "$position $name($playerId) $raceTime";
+}
+class GameResultTime{
+  int hours;
+  int minutes;
+  int seconds;
+  int milliseconds;
+  String toString() => "$hours.$minutes.$seconds:$milliseconds";
 }

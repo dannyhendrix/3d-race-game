@@ -87,6 +87,21 @@ class Game{
     }
   }
 
+  GameResult createGameResult(){
+    //TODO: fill raceTimes
+    GameResult result = new GameResult();
+    result.playerResults = [];
+    for(int i = 0; i < players.length; i++){
+      Player p = players[i];
+      GamePlayerResult playerResult = new GamePlayerResult();
+      playerResult.name = p.name;
+      playerResult.playerId = p.playerId;
+      playerResult.position = i;
+      result.playerResults.add(playerResult);
+    }
+    return result;
+  }
+
   void _loadLevel(GameLevel level){
     for(GameLevelWall wall in level.walls){
       gameobjects.add(new Wall(wall.x, wall.z, wall.w, wall.d, wall.r));

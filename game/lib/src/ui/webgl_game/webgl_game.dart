@@ -6,7 +6,10 @@ part of webgl_game;
  * WebglGame.start(gameSettings);
  */
 
+typedef void OnGameFinished(GameResult result);
+
 abstract class WebglGame{
+  OnGameFinished onGameFinished;
   Element initAndCreateDom(GameSettings settings);
   void start();
   void pause([bool forceStart = null]);
