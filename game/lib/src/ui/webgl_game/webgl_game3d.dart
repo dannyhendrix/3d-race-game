@@ -139,10 +139,14 @@ class WebglGame3d extends WebglGame{
   List<GlModelInstanceCollection> _createModels(){
     GlModelCollection modelCollection = new GlModelCollection(layer);
     GlModel_Vehicle vehicleModel = new GlModel_Vehicle();
+    GlModel_Truck truckModel = new GlModel_Truck();
+    GlModel_TruckTrailer truckTrailerModel = new GlModel_TruckTrailer();
     GlModel_Caravan caravanModel = new GlModel_Caravan();
     GlModel_Wall wallModel = new GlModel_Wall();
     GlModel_Tree treeModel = new GlModel_Tree();
     vehicleModel.loadModel(modelCollection);
+    truckModel.loadModel(modelCollection);
+    truckTrailerModel.loadModel(modelCollection);
     caravanModel.loadModel(modelCollection);
     wallModel.loadModel(modelCollection);
     treeModel.loadModel(modelCollection);
@@ -153,15 +157,24 @@ class WebglGame3d extends WebglGame{
     GlColor colorWindows = new GlColor(0.2,0.2,0.2);
     //create all buffer
     for(GameObject o in game.gameobjects){
-      if(o is Vehicle)
+      if(o is Car)
       {
         Vehicle v = o;
         modelInstances.add(new GlModelInstanceFromModel(o, vehicleModel
             .getModelInstance(modelCollection, colorMappingGl[v.player.theme
             .color1], colorMappingGl[v.player.theme.color2], colorWindows)));
-      }else if(o is Trailer){
+      }else if(o is Truck){
+        Vehicle v = o;
+        modelInstances.add(new GlModelInstanceFromModel(o, truckModel
+            .getModelInstance(modelCollection, colorMappingGl[v.player.theme
+            .color1], colorMappingGl[v.player.theme.color2], colorWindows)));
+      }else if(o is Caravan){
         Trailer t = o;
         modelInstances.add(new GlModelInstanceFromModel(o, caravanModel
+            .getModelInstance(modelCollection, colorMappingGl[t.vehicle.player.theme.color1], colorMappingGl[t.vehicle.player.theme.color2], colorWindows)));
+      }else if(o is TruckTrailer){
+        Trailer t = o;
+        modelInstances.add(new GlModelInstanceFromModel(o, truckTrailerModel
             .getModelInstance(modelCollection, colorMappingGl[t.vehicle.player.theme.color1], colorMappingGl[t.vehicle.player.theme.color2], colorWindows)));
       }else if(o is Wall){
         modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,75.0,o.position.y, 0.0,-o.r,0.0, wallModel

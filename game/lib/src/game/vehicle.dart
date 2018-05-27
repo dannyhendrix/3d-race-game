@@ -29,6 +29,9 @@ class VehicleSettings{
   dynamic getValue(VehicleSettingKeys key){
     return data[key.toString()];
   }
+  void setValue(VehicleSettingKeys key, dynamic value){
+    data[key.toString()] = value;
+  }
 }
 // TODO: maybe make the whole car body a sensor?
 class VehicleSensor{
@@ -38,8 +41,29 @@ class VehicleSensor{
     polygon = new Polygon([origin, origin + v],false);
   }
 }
-
-class Vehicle extends MoveableGameObject{
+class Truck extends Vehicle{
+  Truck(Game game, Player player) : super(game,player, 50.0, 40.0){
+    /*
+    VehicleSettingKeys.acceleration.toString() :0.3,
+    VehicleSettingKeys.acceleration_max.toString() : 5.0,
+    VehicleSettingKeys.reverse_acceleration.toString() : 0.1,
+    VehicleSettingKeys.reverse_acceleration_max.toString() : 2.0,
+    VehicleSettingKeys.friction.toString() : 0.05,
+    VehicleSettingKeys.brake_speed.toString() : 0.2,
+    VehicleSettingKeys.steering_speed.toString() : 0.1,
+    VehicleSettingKeys.standstill_delay.toString() : 6,
+    VehicleSettingKeys.collision_force.toString() : 4.0,
+    VehicleSettingKeys.collision_force_after_collision.toString() : 0.35,
+     */
+    vehicleSettings.setValue(VehicleSettingKeys.acceleration, 0.2);
+    vehicleSettings.setValue(VehicleSettingKeys.acceleration_max, 5.0);
+    vehicleSettings.setValue(VehicleSettingKeys.standstill_delay, 8);
+  }
+}
+class Car extends Vehicle{
+  Car(Game game, Player player) : super(game,player, 50.0, 30.0);
+}
+abstract class Vehicle extends MoveableGameObject{
   Game game;
   Player player;
   bool _isBraking = false;
@@ -94,11 +118,11 @@ class Vehicle extends MoveableGameObject{
   bool sensorCollision = false;
   Trailer trailer;
 
-  Vehicle(this.game, this.player){
+  Vehicle(this.game, this.player, double w, double h){
     position = new Point2d(0.0, 50.0);
     r = 0.0;
-    w = 50.0;
-    h = 30.0;
+    this.w = w;//50.0;
+    this.h = h;//30.0;
     trailerSnapPoint = new Point2d(-w/2,0.0);
     double hw = w/2;
     double hh= h/2;

@@ -27,6 +27,9 @@ class GlModelInstanceCollection{
       _transformMatrix = GlMatrix.identityMatrix();
     }
   }
+  void move(GlMatrix m){
+    _transformMatrix = _transformMatrix.multThis(m);
+  }
 }
 
 class GlColor{

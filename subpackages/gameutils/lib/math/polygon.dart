@@ -197,4 +197,17 @@ class Polygon{
     }
     return new MinMax(min,max);
   }
+
+  bool pointInPoligon(double x, double y){
+    bool inside = false;
+    Vector p = new Vector(x,y);
+    for ( int i = 0, j = points.length - 1 ; i < points.length ; j = i++ )
+    {
+      if ( ( points[i].y > p.y ) != ( points[j].y > p.y ) && p.x < ( points[j].x - points[i].x ) * (p.y - points[i].y ) / ( points[j].y - points[i].y ) + points[i].x)
+      {
+        inside = !inside;
+      }
+    }
+    return inside;
+  }
 }

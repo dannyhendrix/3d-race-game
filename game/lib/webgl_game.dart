@@ -18,6 +18,8 @@ import 'package:micromachines/game.dart';
 part 'src/ui/webgl_game/glmodel_vehicle.dart';
 part 'src/ui/webgl_game/glmodel_caravan.dart';
 part 'src/ui/webgl_game/glmodel_wall.dart';
+part 'src/ui/webgl_game/glmodel_truck.dart';
+part 'src/ui/webgl_game/glmodel_trucktrailer.dart';
 part 'src/ui/webgl_game/glmodel_tree.dart';
 part 'src/ui/webgl_game/hud.dart';
 part 'src/ui/webgl_game/webgl_game.dart';

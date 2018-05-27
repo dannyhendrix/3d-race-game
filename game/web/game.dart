@@ -10,14 +10,30 @@ GameLevel createGameLevelTemp(){
 }
 GameSettings createGameSettingsTemp(){
   GameSettings settings = new GameSettings();
-  settings.players = [
-    new GameSettingsPlayer.asHumanPlayer("Player1",new VehicleTheme.withColor(VehicleThemeColor.Yellow,VehicleThemeColor.Blue),VehicleType.Car,TrailerType.Caravan),
-    new GameSettingsPlayer.asAiPlayer("Tom",new VehicleTheme.withColor(VehicleThemeColor.Red,VehicleThemeColor.White),VehicleType.Car,TrailerType.Caravan),
-    new GameSettingsPlayer.asAiPlayer("Jake", new VehicleTheme.withColor(VehicleThemeColor.Blue,VehicleThemeColor.Blue),VehicleType.Car,TrailerType.Caravan),
-    new GameSettingsPlayer.asAiPlayer("Rose", new VehicleTheme.withColor(VehicleThemeColor.Pink,VehicleThemeColor.White),VehicleType.Car,TrailerType.Caravan),
-    new GameSettingsPlayer.asAiPlayer("Marie", new VehicleTheme.withColor(VehicleThemeColor.Black,VehicleThemeColor.Green),VehicleType.Car,TrailerType.Caravan),
-    new GameSettingsPlayer.asAiPlayer("Adam", new VehicleTheme.withColor(VehicleThemeColor.Orange,VehicleThemeColor.Orange),VehicleType.Car,TrailerType.Caravan),
-  ];
+  GameSettingsTeam team = new GameSettingsTeam.withTheme(new VehicleTheme.withColor(VehicleThemeColor.Yellow,VehicleThemeColor.Blue));
+  team.players.add(new GameSettingsPlayer.asHumanPlayer("Player1",VehicleType.Truck,TrailerType.TruckTrailer));
+  settings.teams.add(team);
+
+  team = new GameSettingsTeam.withTheme(new VehicleTheme.withColor(VehicleThemeColor.Red,VehicleThemeColor.White));
+  team.players.add(new GameSettingsPlayer.asAiPlayer("CPU1",VehicleType.Truck,TrailerType.TruckTrailer));
+  settings.teams.add(team);
+
+  team = new GameSettingsTeam.withTheme(new VehicleTheme.withColor(VehicleThemeColor.Blue,VehicleThemeColor.Blue));
+  team.players.add(new GameSettingsPlayer.asAiPlayer("CPU2",VehicleType.Truck,TrailerType.TruckTrailer));
+  settings.teams.add(team);
+
+  team = new GameSettingsTeam.withTheme(new VehicleTheme.withColor(VehicleThemeColor.Pink,VehicleThemeColor.White));
+  team.players.add(new GameSettingsPlayer.asAiPlayer("CPU3",VehicleType.Car,TrailerType.Caravan));
+  settings.teams.add(team);
+
+  team = new GameSettingsTeam.withTheme(new VehicleTheme.withColor(VehicleThemeColor.Black,VehicleThemeColor.Green));
+  team.players.add(new GameSettingsPlayer.asAiPlayer("CPU4",VehicleType.Car,TrailerType.Caravan));
+  settings.teams.add(team);
+
+  team = new GameSettingsTeam.withTheme(new VehicleTheme.withColor(VehicleThemeColor.Orange,VehicleThemeColor.Orange));
+  team.players.add(new GameSettingsPlayer.asAiPlayer("CPU5",VehicleType.Car,TrailerType.Caravan));
+  settings.teams.add(team);
+
   return settings;
 }
 
@@ -33,7 +49,7 @@ void main()
 
   print("Hi");
 
-  var input = Input.createInput(GameSettings, (Input input){ });
+  //var input = Input.createInput(GameSettings, (Input input){ });
 
   Element el_wrap = new DivElement();
   Element el_result = new DivElement();
@@ -49,16 +65,16 @@ void main()
       el_result.text = result.toString();
       game = null;
     };
-    GameSettings settings = input.createValue();
+    GameSettings settings = createGameSettingsTemp();
     settings.level = createGameLevelTemp();
     settings.level.path.laps = 1;
     element = game.initAndCreateDom(settings);
     document.body.append(element);
-    document.body.append(createButton("Pause",(e)=>game.pause()));
+    element.append(createButton("Pause",(e)=>game.pause()));
     game.start();
   }));
   el_wrap.append(el_displayType);
-  el_wrap.append(input.createElement("GameSettings", createGameSettingsTemp()));
+  //el_wrap.append(input.createElement("GameSettings", createGameSettingsTemp()));
   document.body.append(el_wrap);
 }
 

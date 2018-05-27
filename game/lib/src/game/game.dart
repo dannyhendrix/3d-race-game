@@ -25,22 +25,31 @@ class Game{
 
     // 2. load players
     players = [];
-    for(var p in gameSettings.players){
+    for(var t in gameSettings.teams){
       Player player;
+      var p = t.players[0];
       if(p.isHuman){
-        player = new HumanPlayer(p.name, p.vehicleTheme);
+        player = new HumanPlayer(p.name, t.vehicleTheme);
         humanPlayer = player;
       }else{
-        player = new AiPlayer(p.name, p.vehicleTheme);
+        player = new AiPlayer(p.name, t.vehicleTheme);
       }
       players.add(player);
 
-      Vehicle v = new Vehicle(this,player);
+      Vehicle v;
+      if(p.vehicle == VehicleType.Truck)
+        v = new Truck(this,player);
+      else
+        v = new Car(this,player);
       gameobjects.add(v);
       _movableGameObjects.add(v);
 
       if(p.trailer != TrailerType.None){
-        Trailer t = new CarTrailer(v);
+        Trailer t;
+        if(p.trailer == TrailerType.TruckTrailer)
+          t = new TruckTrailer(v);
+        else
+          t = new Caravan(v);
         gameobjects.add(t);
         _movableGameObjects.add(t);
       }else{

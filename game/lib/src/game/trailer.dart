@@ -8,38 +8,7 @@ abstract class Trailer extends MoveableGameObject{
   void update();
 }
 
-class NullTrailer extends Trailer{
-  NullTrailer(Vehicle vehicle){
-    this.vehicle = vehicle;
-    w = 0.0;
-    h = 0.0;
-    wheelPoint = new Point2d(0.0,0.0);
-    vehicleSnapPoint = new Point2d(0.0,0.0);
-    relativeCollisionFields = [];
-    vehicle.trailer = this;
-  }
-  void updateVehiclePosition(){}
-  void update(){}
-}
-
-class CarTrailer extends Trailer{
-  CarTrailer(Vehicle vehicle){
-    this.vehicle = vehicle;
-    w = 50.0;
-    h = 30.0;
-    double hw = w/2;
-    double hh = h/2;
-    wheelPoint = new Point2d(0.0,0.0);
-    vehicleSnapPoint = new Point2d(hw+25.0,0.0);
-    relativeCollisionFields = [new Polygon([
-      new Point2d(-hw,-hh),
-      new Point2d(hw,-hh),
-      new Point2d(hw,hh),
-      new Point2d(-hw,hh),
-    ])];
-    vehicle.trailer = this;
-    updateVehiclePosition();
-  }
+abstract class SimpleTrailer extends Trailer{
   void updateVehiclePosition(){
     var M = vehicle.getTransformation();
     position = M.apply(vehicle.trailerSnapPoint-vehicleSnapPoint);
@@ -58,5 +27,59 @@ class CarTrailer extends Trailer{
     Matrix2d M = new Matrix2d.translationPoint(A);
     M = M.rotate(r);
     position = M.apply(-vehicleSnapPoint);
+  }
+}
+
+class NullTrailer extends Trailer{
+  NullTrailer(Vehicle vehicle){
+    this.vehicle = vehicle;
+    w = 0.0;
+    h = 0.0;
+    wheelPoint = new Point2d(0.0,0.0);
+    vehicleSnapPoint = new Point2d(0.0,0.0);
+    relativeCollisionFields = [];
+    vehicle.trailer = this;
+  }
+  void updateVehiclePosition(){}
+  void update(){}
+}
+
+class Caravan extends SimpleTrailer{
+  Caravan(Vehicle vehicle){
+    this.vehicle = vehicle;
+    w = 50.0;
+    h = 30.0;
+    double hw = w/2;
+    double hh = h/2;
+    wheelPoint = new Point2d(0.0,0.0);
+    vehicleSnapPoint = new Point2d(hw+25.0,0.0);
+    relativeCollisionFields = [new Polygon([
+      new Point2d(-hw,-hh),
+      new Point2d(hw,-hh),
+      new Point2d(hw,hh),
+      new Point2d(-hw,hh),
+    ])];
+    vehicle.trailer = this;
+    updateVehiclePosition();
+  }
+}
+
+class TruckTrailer extends SimpleTrailer{
+  TruckTrailer(Vehicle vehicle){
+    this.vehicle = vehicle;
+    w = 100.0;
+    h = 40.0;
+    double hw = w/2;
+    double hh = h/2;
+    wheelPoint = new Point2d(-25.0,0.0);
+    vehicleSnapPoint = new Point2d(hw-10.0,0.0);
+    relativeCollisionFields = [new Polygon([
+      new Point2d(-hw,-hh),
+      new Point2d(hw-40.0,-hh),
+      new Point2d(hw-40.0,hh),
+      new Point2d(-hw,hh),
+    ])];
+    vehicle.trailer = this;
+    updateVehiclePosition();
   }
 }
