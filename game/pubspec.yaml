@@ -8,6 +8,8 @@ dependencies:
   logging: ">=0.11.3"
   gameutils:
     path: ../subpackages/gameutils
+  dashboard:
+    path: ../subpackages/dashboard
   preloader:
     path: ../subpackages/preloader
   renderlayer:

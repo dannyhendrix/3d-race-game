@@ -1,0 +1,78 @@
+#gamewrapper {
+}
+
+#gamewrapper canvas {
+	background:#333;
+}
+#gamewrapper .listIn .objIn {
+	display: inline;
+}
+#gamewrapper .players {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    height: 100px;
+    width: 150px;
+}
+#gamewrapper .rounds {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.57);
+    color: #FFFF00;
+    padding: 12px;
+    font-size: 21px;
+}
+#gamewrapper .countdown {
+	position: absolute;
+	left: 330px;
+	top: 150px;
+	font-weight: bold;
+	background: rgba(0, 0, 0, 0.57);
+	color: #FFFF00;
+	padding: 10px 26px;
+	font-size: 124px;
+}
+#gamewrapper .playername{
+    padding: 4px;
+    float:left;
+}
+#gamewrapper .position{
+    padding: 4px;
+    float: left;
+    font-weight: bold;
+    background: #1F2629;
+    color: #FFEB3B;
+}
+#gamewrapper .color{
+    padding: 4px;
+    height: 10px; width:24px; float:left;
+}
+#gamewrapper .color1{
+    width:16px;
+}
+#gamewrapper .color2{
+    width:8px;
+}
+#gamewrapper .color1,.color2{
+    height: 10px;  
+	float:left;
+}
+#gamewrapper .player {
+    position: absolute;
+    font-size: 11px;
+    background: rgba(72, 72, 72, 0.5);
+    width: 100%;
+    color: #fff;
+}
+#gamewrapper .humanplayer {
+    background: rgba(150, 150, 150, 0.5);
+    font-weight: bold;
+    font-style: italic;
+}
+#gamewrapper .hud {
+    position: absolute;
+    top: 0px;
+    width: 800px;
+}
