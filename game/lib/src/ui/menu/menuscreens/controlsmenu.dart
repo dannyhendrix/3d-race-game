@@ -3,9 +3,6 @@ part of game.menu;
 class ControlsMenu extends GameMenuScreen
 {
   bool showStoreIncookie = true;
-  Map<ControlType, Element> panels = {};
-  Map<ControlType, Element> tabs = {};
-  ControlType _currentControlType;
   EnterKey enterKey = new EnterKey();
   Map<int, Element> keyToElementMapping = {};
 
@@ -14,88 +11,19 @@ class ControlsMenu extends GameMenuScreen
   Element setupFields()
   {
     Element el = super.setupFields();
-
-    Element tabs = new DivElement();
-    tabs.id = "menu_controls_tabs";
-    //tabs.append(_createTab(ControlType.Keyboard,"keyboard"));
-    tabs.append(_createTab(ControlType.KeyboardMouse,"keyboard"));
-    tabs.append(_createTab(ControlType.Touch,"touch_app"));
-    //tabs.append(_createTab(ControlType.TouchOrientation,"screen_rotation"));
-    //tabs.append(_createTab(ControlType.All,"keyboard"));
-
-    Element panels = new DivElement();
-    panels.id = "menu_controls_panels";
-    //panels.append(_createKeyboardControls());
-    panels.append(_createKeyboardControls());
-    panels.append(_createTouchControls());
-    //panels.append(_createTouchOrientationControls());
-
-    el.append(tabs);
-    el.append(panels);
+    el.append(_createKeyboardControls());
     el.append(enterKey.createEnterKeyScreen());
     return el;
   }
 
-  Element _createTab(ControlType id, String icon)
-  {
-    Element el = new DivElement();
-    el.className = "menu_controls_tab";
-    for(String i in icon.split(" "))
-    {
-      Element iel = new SpanElement();
-      iel.className = "material-icons";
-      iel.text = i;
-      el.append(iel);
-    }
-    el.onClick.listen((Event e){
-      setToControlType(id);
-    });
-    tabs[id] = el;
-    return el;
-  }
-
-  void setToControlType(ControlType controlType)
-  {
-    if(_currentControlType != null)
-    {
-      panels[_currentControlType].style.display = "none";
-      tabs[_currentControlType].classes.remove("selected");
-    }
-    _currentControlType = controlType;
-    panels[_currentControlType].style.display = "block";
-    tabs[_currentControlType].classes.add("selected");
-  }
-
-  Element _createTabContext(ControlType id)
-  {
-    Element el = new DivElement();
-    el.className = "menu_controls_tab_content";
-    panels[id] = el;
-    el.style.display = "none";
-    return el;
-  }
-
-  Element _createTouchOrientationControls()
-  {
-    Element el = _createTabContext(ControlType.TouchOrientation);
-
-    Element txt_touch = new SpanElement();
-    txt_touch.text = "Use on-screen buttons to jump and shoot.";
-    el.append(txt_touch);
-    return el;
-  }
-  Element _createTouchControls()
-  {
-    Element el = _createTabContext(ControlType.Touch);
-    el.text = "Use on-screen buttons to play.";
-    return el;
-  }
   Element _createKeyboardControls()
   {
-    Element el = _createTabContext(ControlType.KeyboardMouse);
+    Element el = new DivElement();
     //tabs
     Element el_tabs = new DivElement();
+    el_tabs.className = "tabs";
     Element el_tabs_content = new DivElement();
+    el_tabs_content.className = "tabs_content";
     Element el_current_tab;
     Element el_current_tab_content;
     var setCurrentTab = (Element newCurrent, Element newCurrentContent, [ControlKeyType keyType])
@@ -132,13 +60,7 @@ class ControlsMenu extends GameMenuScreen
     el.append(el_tabs_content);
     return el;
   }
-  Element _createKeyboardMouseControls()
-  {
-    Element el = _createTabContext(ControlType.KeyboardMouse);
-    el.append(_createKeyboardControlsTable(menu.settings.client_keys.v, true));
-    return el;
-  }
-  Element _createKeyboardControlsTable(Map<int, int> keyMapping, [bool editable = false])
+  Element _createKeyboardControlsTable(Map<int, Control> keyMapping, [bool editable = false])
   {
     TableElement ta = new TableElement();
     ta.className = "controls_menu_table";
@@ -153,35 +75,20 @@ class ControlsMenu extends GameMenuScreen
       tr = new TableRowElement();
       ta.append(tr);
     };
-    var addControl = (String description, String image, int key)
+    var addControl = (String description, Control key)
     {
-      tdWrapperAppend("controls_image",_createControlImage(description, image));
+      tdWrapperAppend("controls_image",new Text(description));
       tdWrapperAppend("controls_keys",createEditKeyElement(key, keyMapping, editable));
     };
     newTr();
-    addControl("walk_left", "Walk left",GameControls.CONTROL_LEFT);
-    addControl("shoot_main", "Shoot main gun",GameControls.CONTROL_SHOOT_WEAPON_MAIN);
+    addControl("Accelerate",Control.Accelerate);
     newTr();
-    addControl("walk_right", "Walk right",GameControls.CONTROL_RIGHT);
-    addControl("shoot_sub", "Shoot secondary gun",GameControls.CONTROL_SHOOT_WEAPON_SUB);
+    addControl("Brake",Control.Brake);
     newTr();
-    addControl("aim_up", "Aim up",GameControls.CONTROL_AIM_UP);
-    addControl("throw", "Throw bomb",GameControls.CONTROL_THROW);
+    addControl("Steer left",Control.SteerLeft);
     newTr();
-    addControl("aim_down", "Aim down",GameControls.CONTROL_AIM_DOWN);
-    addControl("jump", "Jump",GameControls.CONTROL_JUMP);
+    addControl("Steer right",Control.SteerRight);
     return ta;
-  }
-  Element _createControlImage([String className, String title])
-  {
-    Element img = new DivElement();
-    if(className != null)
-      img.className = "control_image $className";
-    else
-      img.className = "control_image";
-    if(title != null)
-      img.title = title;
-    return img;
   }
   Element createKeyElement(int key, bool editable)
   {
@@ -201,14 +108,14 @@ class ControlsMenu extends GameMenuScreen
     }
     return el;
   }
-  Element createEditKeyElement(int controlkey, Map<int,int> keyMapping, [bool editable = false])
+  Element createEditKeyElement(Control controlkey, Map<int,Control> keyMapping, [bool editable = false])
   {
     // <div><span>keys</span>+</div>
     DivElement el = new DivElement();
     SpanElement keysWrapper = new SpanElement();
 
     //add list of keys as elements
-    keyMapping.forEach((int key, int value){
+    keyMapping.forEach((int key, Control value){
       if(value != controlkey)
         return;
       keysWrapper.append(createKeyElement(key, editable));
@@ -241,15 +148,8 @@ class ControlsMenu extends GameMenuScreen
   @override
   void hide([int effect = 0])
   {
-    menu.settings.client_controltype.v = _currentControlType;
     menu.settings.saveToCookie();
     super.hide(effect);
-  }
-  @override
-  void show([int effect = 0])
-  {
-    setToControlType(menu.settings.client_controltype.v);
-    super.show(effect);
   }
 }
 

@@ -1,5 +1,6 @@
 library micromachines;
 import "package:gameutils/math.dart";
+import "package:gameutils/settings.dart";
 import "dart:math" as Math;
 
 part "src/game/game.dart";
@@ -20,3 +21,4 @@ part "src/game/vehicletheme.dart";
 part "src/game/startingpositions.dart";
 part "src/game/countdown.dart";
 part "src/game/gamesettings.dart";
+part "src/game/gameinput.dart";

@@ -10,42 +10,15 @@ typedef void OnGameFinished(GameResult result);
 
 abstract class WebglGame{
   OnGameFinished onGameFinished;
-  Element initAndCreateDom(GameSettings settings);
+  Element initAndCreateDom(GameInput input, GeneralSettings settings);
   void start();
   void pause([bool forceStart = null]);
+  void onControl(Control control, bool active);
 
-  void _registerControls(Game game, GameLoop gameloop){
-    var handleKey = (KeyboardEvent e)
-    {
-      if(!gameloop.playing || gameloop.stopping)
-        return;
-      e.preventDefault();
-      int key = e.keyCode;
-      bool down = e.type == "keydown";//event.KEYDOWN
-      Control control;
-      if(key == 38)//up
-        game.humanPlayer.onControl(Control.Accelerate,down);
-      else if(key == 40)//down
-        game.humanPlayer.onControl(Control.Brake,down);
-      else if(key == 37)//left
-        game.humanPlayer.onControl(Control.SteerLeft,down);
-      else if(key == 39)//right
-        game.humanPlayer.onControl(Control.SteerRight,down);
-/*
-    else if(key == 87)//w
-      game.players[1].onControl(Control.Accelerate,down);
-    else if(key == 83)//s
-      game.players[1].onControl(Control.Brake,down);
-    else if(key == 65)//a
-      game.players[1].onControl(Control.SteerLeft,down);
-    else if(key == 68)//d
-      game.players[1].onControl(Control.SteerRight,down);
-      */
-      else return;
-    };
-
-    document.onKeyDown.listen(handleKey);
-    document.onKeyUp.listen(handleKey);
+  void _registerControls(InputController inputController){
+    inputController.onControlChange = onControl;
+    document.onKeyDown.listen(inputController.handleKey);
+    document.onKeyUp.listen(inputController.handleKey);
   }
 }
 
@@ -53,17 +26,24 @@ class WebglGame2d extends WebglGame{
   Game game;
   RenderLayer layer;
   GameLoop _gameloop;
-  WebglGame2d(){
-    game = new Game();
+  WebglGame2d(GameSettings settings){
+    game = new Game(settings);
     _gameloop = new GameLoop(_loop);
   }
 
-  Element initAndCreateDom(GameSettings settings){
-    game.initSession(settings);
+  Element initAndCreateDom(GameInput input, GeneralSettings settings){
+    game.initSession(input);
     layer = new RenderLayer.withSize(1500,800);
     //document.body.append(layer.canvas);
-    _registerControls(game,_gameloop);
+    InputController inputController = new InputController(settings);
+    _registerControls(inputController);
     return layer.canvas;
+  }
+
+  void onControl(Control control, bool active){
+    if(!_gameloop.playing || _gameloop.stopping)
+      return;
+    game.humanPlayer.onControl(control,active);
   }
 
   void start(){

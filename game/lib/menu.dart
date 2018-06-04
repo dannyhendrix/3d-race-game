@@ -5,8 +5,10 @@ import "dart:math" as Math;
 
 //import "package:dashboard/dashboard.dart";
 import "package:dashboard/menu.dart";
-import "package:micromachines/game.dart";
-import "package:micromachines/webgl_game.dart";
+import "game.dart";
+import "webgl_game.dart";
+import "ui.dart";
+import "input.dart";
 
 part "src/ui/menu/gamemenuscreen.dart";
 part "src/ui/menu/gamemenucontroller.dart";
@@ -16,4 +18,5 @@ part "src/ui/menu/menuscreens/creditsmenu.dart";
 part "src/ui/menu/menuscreens/singleplayermenu.dart";
 part "src/ui/menu/menuscreens/gameresultmenu.dart";
 part "src/ui/menu/menuscreens/playgamemenu.dart";
-//part "src/ui/menu/menuscreens/controlsmenu.dart";
+part "src/ui/menu/menuscreens/controlsmenu.dart";
+part "src/ui/menu/enterkey.dart";

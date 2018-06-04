@@ -13,12 +13,13 @@ class Game{
 
   GameState state = GameState.Countdown;
   Countdown countdown;
+  GameSettings settings;
 
-  Game(){
+  Game(settings){
   }
 
 
-  void initSession(GameSettings gameSettings){
+  void initSession(GameInput gameSettings){
     gameSettings.validate();
     // 1. load level
     _loadLevel(gameSettings.level);

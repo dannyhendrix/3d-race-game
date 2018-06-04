@@ -1,4 +1,4 @@
-part of teamx.ui;
+part of game.menu;
 
 typedef void OnEnterKey(int keyId);
 

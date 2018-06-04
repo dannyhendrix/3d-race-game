@@ -12,8 +12,9 @@ import "package:renderlayer/renderlayer.dart";
 import "package:gameutils/gameloop.dart";
 import "package:gameutils/math.dart";
 
-import 'package:micromachines/webgl.dart';
-import 'package:micromachines/game.dart';
+import 'webgl.dart';
+import 'game.dart';
+import 'input.dart';
 
 part 'src/ui/webgl_game/glmodel_vehicle.dart';
 part 'src/ui/webgl_game/glmodel_caravan.dart';

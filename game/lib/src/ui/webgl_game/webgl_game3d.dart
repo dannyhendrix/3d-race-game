@@ -32,13 +32,13 @@ class WebglGame3d extends WebglGame{
   Element el_rounds;
   Element el_countdown;
 
-  WebglGame3d(){
-    game = new Game();
+  WebglGame3d(GameSettings settings){
+    game = new Game(settings);
     _gameloop = new GameLoop(_loop);
   }
   @override
-  Element initAndCreateDom(GameSettings settings) {
-    game.initSession(settings);
+  Element initAndCreateDom(GameInput input, GeneralSettings settings) {
+    game.initSession(input);
     double windowW = 800.0;
     double windowH = 500.0;
     layer = new GlRenderLayer.withSize(windowW.toInt(),windowH.toInt());
@@ -77,8 +77,17 @@ class WebglGame3d extends WebglGame{
     element.append(layer.canvas);
     element.append(el_hud);
     element.append(el_Fps);
-    _registerControls(game,_gameloop);
+
+    InputController inputController = new InputController(settings);
+    _registerControls(inputController);
     return element;
+  }
+
+  @override
+  void onControl(Control control, bool active){
+    if(!_gameloop.playing || _gameloop.stopping)
+      return;
+    game.humanPlayer.onControl(control,active);
   }
 
   @override

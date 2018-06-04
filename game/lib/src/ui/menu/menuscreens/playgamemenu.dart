@@ -21,15 +21,15 @@ class PlayGameMenu extends GameMenuScreen{
     return el;
   }
 
-  void startGame(GameSettings gameSettings, OnGameFinished onFinished, [GameDisplayType displayType = GameDisplayType.Webgl3d]){
-    WebglGame game = displayType == GameDisplayType.Webgl2d ? new WebglGame2d() : new WebglGame3d();
+  void startGame(GameInput gameSettings, OnGameFinished onFinished, [GameDisplayType displayType = GameDisplayType.Webgl3d]){
+    WebglGame game = displayType == GameDisplayType.Webgl2d ? new WebglGame2d(menu.settings) : new WebglGame3d(menu.settings);
     Element element;
     game.onGameFinished = (result){
       element.remove();
       game = null;
       onFinished(result);
     };
-    element = game.initAndCreateDom(gameSettings);
+    element = game.initAndCreateDom(gameSettings, menu.settings);
     gameContent.append(element);
     //element.append(createButton("Pause",(e)=>game.pause()));
     game.start();

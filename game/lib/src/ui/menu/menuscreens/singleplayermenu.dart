@@ -7,7 +7,7 @@ class SingleplayerMenu extends GameMenuScreen{
   {
     Element el = super.setupFields();
     el.append(createMenuButtonWithIcon("Random race","play_arrow",(Event e){
-      GameSettings settings = createGameSettingsTemp();
+      GameInput settings = createGameSettingsTemp();
       settings.level = createGameLevelTemp();
       settings.level.path.laps = 1;
       menu.showPlayGameMenu(settings);
@@ -37,8 +37,8 @@ class SingleplayerMenu extends GameMenuScreen{
     GameLevelLoader levelLoader = new GameLevelLoader();
     return levelLoader.loadLevelJson(leveljson);
   }
-  GameSettings createGameSettingsTemp(){
-    GameSettings settings = new GameSettings();
+  GameInput createGameSettingsTemp(){
+    GameInput settings = new GameInput();
     GameSettingsTeam team = new GameSettingsTeam.withTheme(new VehicleTheme.withColor(VehicleThemeColor.Yellow,VehicleThemeColor.Blue));
     team.players.add(new GameSettingsPlayer.asHumanPlayer("Player1",VehicleType.Truck,TrailerType.TruckTrailer));
     settings.teams.add(team);

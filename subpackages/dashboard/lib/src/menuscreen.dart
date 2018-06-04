@@ -24,6 +24,7 @@ class MenuScreen<T extends Menu>
   {
     Element el = new DivElement();
     el.className = "menu";
+    el.id = title.toLowerCase().replaceAll(" ","_");
     return el;
   }
 

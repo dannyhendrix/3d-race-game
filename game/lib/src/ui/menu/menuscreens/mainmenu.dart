@@ -10,7 +10,7 @@ class MainMenu extends GameMenuScreen
     el.append(createOpenMenuButtonWithIcon("Singleplayer","account_circle",menu.MENU_SINGLEPLAYER));
     el.append(createOpenMenuButtonWithIcon("Multiplayer","supervised_user_circle",menu.MENU_MAIN));
     el.append(createOpenMenuButtonWithIcon("Settings","settings",menu.MENU_MAIN));
-    el.append(createOpenMenuButtonWithIcon("Controls","videogame_asset",menu.MENU_MAIN));
+    el.append(createOpenMenuButtonWithIcon("Controls","videogame_asset",menu.MENU_CONTROLS));
     el.append(createOpenMenuButtonWithIcon("Credits","info",menu.MENU_CREDITS));
 /*
     if(menu.settings.debug.v)

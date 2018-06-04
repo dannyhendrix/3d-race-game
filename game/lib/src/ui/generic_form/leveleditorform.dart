@@ -139,7 +139,7 @@ class InputObj extends Input{
     InstanceMirror instance = reflect(currentValue);
     ClassMirror cm = instance.type;
     while(cm != null){
-      cm.declarations.values.where((x) => x is VariableMirror).forEach((VariableMirror dm){
+      cm.declarations.values.where((x) => x is VariableMirror && !x.isPrivate).forEach((VariableMirror dm){
         Symbol s = dm.simpleName;
         Input input = Input.createInput(dm.type.reflectedType, onValueChanged);
         _inputs[s] = input;

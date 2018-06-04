@@ -19,8 +19,9 @@ class GameMenuController extends Menu<GameMenuScreen, GameMessageMenuScreen>
   Element el_storeCookie;
   GameResultMenu menu_gameresult;
   PlayGameMenu menu_playgame;
+  GeneralSettings settings;
 
-  GameMenuController() : super()
+  GameMenuController(this.settings) : super()
   {
 
   }
@@ -126,7 +127,7 @@ class GameMenuController extends Menu<GameMenuScreen, GameMessageMenuScreen>
     menu_playgame = new PlayGameMenu(this);
     return {
       MENU_MAIN : new MainMenu(this),
-      /*MENU_CONTROLS: new ControlsMenu(this),*/
+      MENU_CONTROLS: new ControlsMenu(this),
       MENU_CREDITS: new CreditsMenu(this),
       MENU_SINGLEPLAYER: new SingleplayerMenu(this),
       MENU_GAMERESULT: menu_gameresult,
@@ -170,7 +171,7 @@ class GameMenuController extends Menu<GameMenuScreen, GameMessageMenuScreen>
     super.hideMenu(effect);
   }
 
-  void showPlayGameMenu(GameSettings settings, [int effect = 0, bool storeInHistory = true]){
+  void showPlayGameMenu(GameInput settings, [int effect = 0, bool storeInHistory = true]){
     menu_playgame.startGame(settings,(GameResult result){
       showGameResultMenu(result);
     });
