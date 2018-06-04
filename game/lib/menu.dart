@@ -10,6 +10,7 @@ import "game.dart";
 import "webgl_game.dart";
 import "ui.dart";
 import "input.dart";
+import "gamemode.dart";
 
 part "src/ui/menu/gamemenuscreen.dart";
 part "src/ui/menu/gamemenucontroller.dart";

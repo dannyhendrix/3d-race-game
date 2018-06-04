@@ -7,9 +7,8 @@ class SingleplayerMenu extends GameMenuScreen{
   {
     Element el = super.setupFields();
     el.append(createMenuButtonWithIcon("Random race","play_arrow",(Event e){
-      GameInput settings = createGameSettingsTemp();
-      settings.level = createGameLevelTemp();
-      settings.level.path.laps = 1;
+      GameBuilder gb = new GameBuilder(menu.settings);
+      GameInput settings = gb.newRandomGame();
       menu.showPlayGameMenu(settings);
     }));
     el.append(createOpenMenuButtonWithIcon("Single race","play_arrow",menu.MENU_MAIN));
