@@ -1,4 +1,4 @@
-part of teamx.ui;
+part of game.menu;
 
 typedef T GetValueFromInput<T>();
 typedef void SetValueToInput<T>(T val);
@@ -11,13 +11,13 @@ class SettingInput<T>
   SettingInput(this.getter, this.setter);
 }
 
-class OptionMenuDebug extends TeamxMenuScreen
+class OptionMenuDebug extends GameMenuScreen
 {
   bool showStoreIncookie = true;
 
   Map<String, SettingInput> settingElementMapping = {};
   
-  OptionMenuDebug(TeamxMenuController m) : super(m, "Options");
+  OptionMenuDebug(GameMenuController m) : super(m, "Options");
 
   Element setupFields()
   {

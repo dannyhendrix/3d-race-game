@@ -31,13 +31,13 @@ class GeneralSettings extends SettingsStoredInCookie with GameSettings
 
   List<GameSetting> getStoredSettingsKeys()
   {
-    return [user_characters,user_characters_name,progress_locked,client_theme, client_keys, client_controltype, client_controlkeytype,client_enablemouseaiming, camerapanning, camerascale, cameraborder, debug];
+    return [user_name,user_wins,user_races,user_color1,user_color2,client_theme, client_controlkeytype, debug];
   }
   
   List<GameSetting> getMenuSettings()
   {
     if(debug.v == true)
-      return [client_controltype, client_controlkeytype, client_enablemouseaiming, camerapanning, client_theme, cameraborder, camerascale, storeInCookie,debug];
-    return [client_controltype, storeInCookie];
+      return [user_name, user_color1, user_color2, client_theme, storeInCookie, debug];
+    return [storeInCookie];
   }
 }

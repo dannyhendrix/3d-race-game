@@ -134,9 +134,9 @@ class GameMenuController extends Menu<GameMenuScreen, GameMessageMenuScreen>
       MENU_GAMEPLAY: menu_playgame,
       /*MENU_CHARACTER: new CharacterMenu(this),
       MENU_LEVEL: new LevelMenu(this),
-      MENU_CHARACTER : new CharacterMenu(this),
+      MENU_CHARACTER : new CharacterMenu(this),*/
       MENU_OPTION : settings.debug.v ? new OptionMenuDebug(this) : new OptionMenu(this),
-      MENU_LEVEL_MESSAGE : new LevelMessageMenu(this)*/
+      /*MENU_LEVEL_MESSAGE : new LevelMessageMenu(this)*/
     };
   }
   

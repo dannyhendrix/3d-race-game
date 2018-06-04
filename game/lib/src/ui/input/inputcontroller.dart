@@ -1,6 +1,6 @@
 part of  game.input;
 
-typedef void OnControlChange(Control control, bool active);
+typedef bool OnControlChange(Control control, bool active);
 
 class InputController
 {
@@ -69,11 +69,6 @@ class InputController
 
   InputController(this.settings);
 
-  void handleControl(Control key, [bool down = true])
-  {
-    onControlChange(key, down);
-  }
-
   Control getKeyFromSettings(int index)
   {
     switch(settings.client_controlkeytype.v)
@@ -89,7 +84,7 @@ class InputController
 
   int getFirstKeyFromControl(int control)
   {
-    Map<int, int> lookup;
+    Map<int, Control> lookup;
     switch(settings.client_controlkeytype.v)
     {
       case ControlKeyType.Default:
@@ -128,11 +123,12 @@ class InputController
 
   void handleKey(KeyboardEvent e)
   {
-    e.preventDefault();
+
     int key = e.keyCode;
     bool down = e.type == "keydown";//event.KEYDOWN
 
-    handleControl(getKey(key), down);
+    if(onControlChange(getKey(key), down))
+      e.preventDefault();
   }
 
   void mouseDown(MouseEvent e)

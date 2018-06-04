@@ -39,8 +39,8 @@ class SingleplayerMenu extends GameMenuScreen{
   }
   GameInput createGameSettingsTemp(){
     GameInput settings = new GameInput();
-    GameSettingsTeam team = new GameSettingsTeam.withTheme(new VehicleTheme.withColor(VehicleThemeColor.Yellow,VehicleThemeColor.Blue));
-    team.players.add(new GameSettingsPlayer.asHumanPlayer("Player1",VehicleType.Truck,TrailerType.TruckTrailer));
+    GameSettingsTeam team = new GameSettingsTeam.withTheme(new VehicleTheme.withColor(menu.settings.user_color1.v,menu.settings.user_color2.v));
+    team.players.add(new GameSettingsPlayer.asHumanPlayer(menu.settings.user_name.v,VehicleType.Truck,TrailerType.TruckTrailer));
     settings.teams.add(team);
 
     team = new GameSettingsTeam.withTheme(new VehicleTheme.withColor(VehicleThemeColor.Red,VehicleThemeColor.White));
