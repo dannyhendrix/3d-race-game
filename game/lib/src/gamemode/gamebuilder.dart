@@ -21,6 +21,21 @@ class GameBuilder{
     return settings;
   }
 
+  GameInput newGame(List<PlayerProfile> players, VehicleType vehicle, TrailerType trailer, String gameLevel, int laps){
+    GameInput settings = _createSimpleGameSettings(players, vehicle, trailer);
+    //TODO: select random map
+    settings.level = _createGameLevelTemp();
+    settings.level.path.laps = laps;
+    return settings;
+  }
+  GameInput newGameRandomPlayers(int numberOfPlayers, VehicleType vehicle, TrailerType trailer, String gameLevel, int laps){
+    GameInput settings = _createSimpleGameSettings(_aiplayers.getRandom(numberOfPlayers), vehicle, trailer);
+    //TODO: select random map
+    settings.level = _createGameLevelTemp();
+    settings.level.path.laps = laps;
+    return settings;
+  }
+
   GameLevel _createGameLevelTemp(){
     GameLevelLoader levelLoader = new GameLevelLoader();
     return levelLoader.loadLevelJson(leveljson);

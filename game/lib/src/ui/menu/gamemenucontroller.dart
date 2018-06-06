@@ -14,6 +14,7 @@ class GameMenuController extends Menu<GameMenuScreen, GameMessageMenuScreen>
   final MENU_SINGLEPLAYER = 30;
   final MENU_GAMEPLAY = 31;
   final MENU_GAMERESULT = 32;
+  final MENU_SINGLERACE = 33;
   final MENU_MULTIPLAYER = 40;
 
   Element el_storeCookie;
@@ -130,6 +131,7 @@ class GameMenuController extends Menu<GameMenuScreen, GameMessageMenuScreen>
       MENU_CONTROLS: new ControlsMenu(this),
       MENU_CREDITS: new CreditsMenu(this),
       MENU_SINGLEPLAYER: new SingleplayerMenu(this),
+      MENU_SINGLERACE: new SingleRaceMenu(this),
       MENU_GAMERESULT: menu_gameresult,
       MENU_GAMEPLAY: menu_playgame,
       /*MENU_CHARACTER: new CharacterMenu(this),

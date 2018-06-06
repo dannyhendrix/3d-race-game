@@ -1,18 +1,21 @@
 part of game.menu;
 
 class SingleplayerMenu extends GameMenuScreen{
-  SingleplayerMenu(GameMenuController m) : super(m, "Singleplayer");
+  GameBuilder _gameBuilder;
+
+  SingleplayerMenu(GameMenuController m) : super(m, "Singleplayer"){
+    _gameBuilder = new GameBuilder(menu.settings);
+  }
 
   Element setupFields()
   {
     Element el = super.setupFields();
     el.append(createMenuButtonWithIcon("Random race","play_arrow",(Event e){
-      GameBuilder gb = new GameBuilder(menu.settings);
-      GameInput settings = gb.newRandomGame();
-      menu.showPlayGameMenu(settings);
+      menu.showPlayGameMenu(_gameBuilder.newRandomGame());
     }));
-    el.append(createOpenMenuButtonWithIcon("Single race","play_arrow",menu.MENU_MAIN));
+    el.append(createOpenMenuButtonWithIcon("Single race","play_arrow",menu.MENU_SINGLERACE));
     el.append(createOpenMenuButtonWithIcon("Story mode","table_chart",menu.MENU_MAIN));
+    /*
     el.append(createMenuButtonWithIcon("Result","play_arrow",(Event e){
       var a = new GameResult();
       var p1 = new GamePlayerResult();
@@ -25,43 +28,10 @@ class SingleplayerMenu extends GameMenuScreen{
       a.playerResults.add(p2);
       menu.showGameResultMenu(a);
     }));
-
+*/
     closebutton = false;
 
     //add(createOpenMenuButton("Options",TeamxMenuController.MENU_OPTION));
     return el;
-  }
-
-  GameLevel createGameLevelTemp(){
-    GameLevelLoader levelLoader = new GameLevelLoader();
-    return levelLoader.loadLevelJson(leveljson);
-  }
-  GameInput createGameSettingsTemp(){
-    GameInput settings = new GameInput();
-    GameSettingsTeam team = new GameSettingsTeam.withTheme(new VehicleTheme.withColor(menu.settings.user_color1.v,menu.settings.user_color2.v));
-    team.players.add(new GameSettingsPlayer.asHumanPlayer(menu.settings.user_name.v,VehicleType.Truck,TrailerType.TruckTrailer));
-    settings.teams.add(team);
-
-    team = new GameSettingsTeam.withTheme(new VehicleTheme.withColor(VehicleThemeColor.Red,VehicleThemeColor.White));
-    team.players.add(new GameSettingsPlayer.asAiPlayer("CPU1",VehicleType.Truck,TrailerType.TruckTrailer));
-    settings.teams.add(team);
-
-    team = new GameSettingsTeam.withTheme(new VehicleTheme.withColor(VehicleThemeColor.Blue,VehicleThemeColor.Blue));
-    team.players.add(new GameSettingsPlayer.asAiPlayer("CPU2",VehicleType.Truck,TrailerType.TruckTrailer));
-    settings.teams.add(team);
-
-    team = new GameSettingsTeam.withTheme(new VehicleTheme.withColor(VehicleThemeColor.Pink,VehicleThemeColor.White));
-    team.players.add(new GameSettingsPlayer.asAiPlayer("CPU3",VehicleType.Car,TrailerType.Caravan));
-    settings.teams.add(team);
-
-    team = new GameSettingsTeam.withTheme(new VehicleTheme.withColor(VehicleThemeColor.Black,VehicleThemeColor.Green));
-    team.players.add(new GameSettingsPlayer.asAiPlayer("CPU4",VehicleType.Car,TrailerType.Caravan));
-    settings.teams.add(team);
-
-    team = new GameSettingsTeam.withTheme(new VehicleTheme.withColor(VehicleThemeColor.Orange,VehicleThemeColor.Orange));
-    team.players.add(new GameSettingsPlayer.asAiPlayer("CPU5",VehicleType.Car,TrailerType.Caravan));
-    settings.teams.add(team);
-
-    return settings;
   }
 }

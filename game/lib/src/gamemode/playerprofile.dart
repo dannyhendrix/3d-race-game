@@ -14,14 +14,20 @@ class AiPlayerProfileDatabase{
 
   List<PlayerProfile> _aiplayers = [
     new PlayerProfile.withColors("Dom",VehicleThemeColor.Black, VehicleThemeColor.Blue),
-    new PlayerProfile.withColors("Sally",VehicleThemeColor.Green, VehicleThemeColor.White),
+    new PlayerProfile.withColors("Sally",VehicleThemeColor.Green, VehicleThemeColor.Green),
     new PlayerProfile.withColors("Hank",VehicleThemeColor.White, VehicleThemeColor.White),
-    new PlayerProfile.withColors("Mel",VehicleThemeColor.Pink, VehicleThemeColor.White),
-    new PlayerProfile.withColors("Luke",VehicleThemeColor.Blue, VehicleThemeColor.Yellow),
-    new PlayerProfile.withColors("Jen",VehicleThemeColor.Blue, VehicleThemeColor.Gray),
-    new PlayerProfile.withColors("Sam",VehicleThemeColor.Orange, VehicleThemeColor.Black),
-    new PlayerProfile.withColors("Jo",VehicleThemeColor.Yellow, VehicleThemeColor.Blue),
-    new PlayerProfile.withColors("Z",VehicleThemeColor.Red, VehicleThemeColor.Gray),
+    new PlayerProfile.withColors("Mel",VehicleThemeColor.Pink, VehicleThemeColor.Pink),
+    new PlayerProfile.withColors("Luke",VehicleThemeColor.Blue, VehicleThemeColor.Blue),
+    new PlayerProfile.withColors("Jen",VehicleThemeColor.Blue, VehicleThemeColor.White),
+    new PlayerProfile.withColors("Sam",VehicleThemeColor.Orange, VehicleThemeColor.Orange),
+    new PlayerProfile.withColors("Jo",VehicleThemeColor.Yellow, VehicleThemeColor.Yellow),
+    new PlayerProfile.withColors("Z",VehicleThemeColor.Red, VehicleThemeColor.White),
+    new PlayerProfile.withColors("Ann",VehicleThemeColor.Green, VehicleThemeColor.Gray),
+    new PlayerProfile.withColors("Seb",VehicleThemeColor.Red, VehicleThemeColor.Red),
+    new PlayerProfile.withColors("Flora",VehicleThemeColor.White, VehicleThemeColor.Red),
+    new PlayerProfile.withColors("Ric",VehicleThemeColor.White, VehicleThemeColor.Blue),
+    new PlayerProfile.withColors("Uri",VehicleThemeColor.White, VehicleThemeColor.Green),
+    new PlayerProfile.withColors("Cal",VehicleThemeColor.White, VehicleThemeColor.Black),
   ];
 
   Math.Random random = new Math.Random();
