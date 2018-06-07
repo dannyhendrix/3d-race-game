@@ -8,6 +8,7 @@ import "package:dashboard/menu.dart";
 import "package:gameutils/settings.dart";
 import "game.dart";
 import "webgl_game.dart";
+import "webgl.dart";
 import "ui.dart";
 import "input.dart";
 import "gamemode.dart";

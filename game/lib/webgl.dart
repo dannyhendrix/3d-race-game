@@ -13,3 +13,4 @@ part "src/ui/webgl/glcamera.dart";
 part "src/ui/webgl/glmodelcollection.dart";
 part "src/ui/webgl/glmodel.dart";
 part "src/ui/webgl/glmodelinstance.dart";
+part "src/ui/webgl/glpreview.dart";

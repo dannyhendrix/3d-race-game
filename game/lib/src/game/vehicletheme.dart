@@ -1,6 +1,6 @@
 part of micromachines;
 
-enum VehicleType {Car, Pickup, GrandPrix, Truck, Bus}
+enum VehicleType {Car, Truck, /*Pickup, GrandPrix, Bus*/}
 // combinations should be blocked in UI
 enum TrailerType {None, Caravan, TruckTrailer}
 

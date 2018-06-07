@@ -41,6 +41,9 @@ class SingleRaceMenu extends GameMenuScreen{
       menu.showPlayGameMenu(createGameInput());
     }));
 
+    _vehicleSelection.onIndexChanged(-1, 0);
+    _trailerSelection.onIndexChanged(-1, 0);
+
     return el;
   }
 
@@ -49,18 +52,60 @@ class SingleRaceMenu extends GameMenuScreen{
   }
 }
 
-class GameInputSelectionVehicle extends GameInputSelection{
-  GameInputSelectionVehicle() : super(VehicleType.values.length);
+class GameInputSelectionVehicle extends GameInputSelectionVehicleBase{
 
-  void onIndexChanged(int oldIndex, int newIndex){
-    el_content.text = VehicleType.values[newIndex].toString();
+  GameInputSelectionVehicle() : super(VehicleType.values.length){
+    _typeToPreview[VehicleType.Car.index] = _createPreviewFromModel(new GlModel_Vehicle());
+    _typeToPreview[VehicleType.Truck.index] = _createPreviewFromModel(new GlModel_Truck());
   }
 }
-class GameInputSelectionTrailer extends GameInputSelection{
-  GameInputSelectionTrailer() : super(TrailerType.values.length);
+class GameInputSelectionTrailer extends GameInputSelectionVehicleBase{
+  GameInputSelectionTrailer() : super(TrailerType.values.length){
+    _typeToPreview[TrailerType.Caravan.index] = _createPreviewFromModel(new GlModel_Caravan());
+    _typeToPreview[TrailerType.TruckTrailer.index] = _createPreviewFromModel(new GlModel_TruckTrailer());
+  }
+}
+class GameInputSelectionVehicleBase extends GameInputSelection
+{
+  Map<int, String> _typeToPreview = {};
+  ImageElement img_preview;
+
+  GameInputSelectionVehicleBase(int optionsLength) : super(optionsLength){
+    img_preview = new ImageElement();
+    el_content.append(img_preview);
+  }
 
   void onIndexChanged(int oldIndex, int newIndex){
-    el_content.text = TrailerType.values[newIndex].toString();
+    if(_typeToPreview.containsKey(newIndex))
+    {
+      img_preview.src = _typeToPreview[newIndex];
+    }
+    else{
+      img_preview.src = "";
+    }
+  }
+
+  String _createPreviewFromModel(dynamic model){
+    GlPreview preview = new GlPreview(150.0,100.0,(GlModelCollection modelCollection){
+      model.loadModel(modelCollection);
+      var instance = model
+          .getModelInstance(modelCollection, new GlColor(0.8, 0.4, 0.0), new GlColor(1.0, 1.0, 1.0), new GlColor(0.0, 0.0, 0.3));
+
+      return [instance];
+
+    });
+    preview.ox = 0.0;
+    preview.oy = 26.0;
+    preview.oz = 240.0;
+    preview.rx = 1.0;
+    preview.ry = 2.6;
+    preview.rz = 5.8;
+    preview.lx = 0.3;
+    preview.ly = 0.7;
+    preview.lz = 0.1;
+    preview.create();
+    preview.draw();
+    return preview.layer.canvas.toDataUrl("image/png");
   }
 }
 class GameInputSelection{
@@ -92,7 +137,6 @@ class GameInputSelection{
     element.append(_btn_prev);
     element.append(el_content);
     element.append(_btn_next);
-    onIndexChanged(-1,index);
   }
   void onIndexChanged(int oldIndex, int newIndex){
     el_content.text = newIndex.toString();
