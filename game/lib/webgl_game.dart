@@ -6,8 +6,8 @@ import "dart:math" as Math;
 import "package:renderlayer/renderlayer.dart";
 import "package:gameutils/gameloop.dart";
 import "package:gameutils/math.dart";
+import "package:webgl/webgl.dart";
 
-import 'webgl.dart';
 import 'game.dart';
 import 'input.dart';
 import 'definitions.dart';

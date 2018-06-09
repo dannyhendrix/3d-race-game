@@ -1,8 +1,7 @@
 import "dart:html";
 import "dart:math" as Math;
-import "package:micromachines/webgl.dart";
+import "package:webgl/webgl.dart";
 import "package:micromachines/webgl_game.dart";
-import "dart:web_gl";
 
 void applyView(GlPreview preview, double rx, double ry, double rz){
   preview.rx = rx;

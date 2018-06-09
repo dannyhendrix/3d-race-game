@@ -1,7 +1,6 @@
-import "package:preloader/preloader.dart";
 import "package:logging/logging.dart";
 import "package:micromachines/game.dart";
-import "package:renderlayer/renderlayer.dart";
+import "package:micromachines/definitions.dart";
 import "package:gameutils/gameloop.dart";
 import "package:gameutils/math.dart";
 import "dart:html";
