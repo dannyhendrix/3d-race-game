@@ -1,9 +1,10 @@
 part of game.menu;
 
 class SingleplayerMenu extends GameMenuScreen{
+  GameMenuController menu;
   GameBuilder _gameBuilder;
 
-  SingleplayerMenu(GameMenuController m) : super(m, "Singleplayer"){
+  SingleplayerMenu(this.menu) : super("Singleplayer"){
     _gameBuilder = new GameBuilder(menu.settings);
   }
 
@@ -13,8 +14,8 @@ class SingleplayerMenu extends GameMenuScreen{
     el.append(createMenuButtonWithIcon("Random race","play_arrow",(Event e){
       menu.showPlayGameMenu(_gameBuilder.newRandomGame());
     }));
-    el.append(createOpenMenuButtonWithIcon("Single race","play_arrow",menu.MENU_SINGLERACE));
-    el.append(createOpenMenuButtonWithIcon("Story mode","table_chart",menu.MENU_MAIN));
+    el.append(createOpenMenuButtonWithIcon(menu,"Single race","play_arrow",menu.MENU_SINGLERACE));
+    el.append(createOpenMenuButtonWithIcon(menu,"Story mode","table_chart",menu.MENU_MAIN));
     /*
     el.append(createMenuButtonWithIcon("Result","play_arrow",(Event e){
       var a = new GameResult();

@@ -162,6 +162,7 @@ class Polygon{
       // the interval distance and the current distance.
       // This will be used to calculate the minimum translation vector
       intervalDistance = intervalDistance.abs();
+
       if (intervalDistance < minIntervalDistance) {
         minIntervalDistance = intervalDistance;
         translationAxis = axis;
@@ -169,6 +170,7 @@ class Polygon{
         Point2d d = polygonA.center - polygonB.center;
         if (translationAxis.dotProduct(d) < 0) translationAxis = -translationAxis;
       }
+
     }
 
     // The minimum translation vector can be used to push the polygons appart.

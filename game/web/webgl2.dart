@@ -77,9 +77,9 @@ void main(){
   document.body.append(createSlider("offsetx",0.0,300.0,1.0,ox,(String val){ ox = double.parse(val); draw(); }));
   document.body.append(createSlider("offsety",0.0,300.0,1.0,oy,(String val){ oy = double.parse(val); draw(); }));
   document.body.append(createSlider("offsetz",0.0,900.0,1.0,oz,(String val){ oz = double.parse(val); draw(); }));
-  document.body.append(createSlider("rotatex",0.0,2*Math.PI,0.1,rx,(String val){ rx = double.parse(val); draw(); }));
-  document.body.append(createSlider("rotatey",0.0,2*Math.PI,0.1,ry,(String val){ ry = double.parse(val); draw(); }));
-  document.body.append(createSlider("rotatez",0.0,2*Math.PI,0.1,rz,(String val){ rz = double.parse(val); draw(); }));
+  document.body.append(createSlider("rotatex",0.0,2*Math.pi,0.1,rx,(String val){ rx = double.parse(val); draw(); }));
+  document.body.append(createSlider("rotatey",0.0,2*Math.pi,0.1,ry,(String val){ ry = double.parse(val); draw(); }));
+  document.body.append(createSlider("rotatez",0.0,2*Math.pi,0.1,rz,(String val){ rz = double.parse(val); draw(); }));
 
   draw();
 }

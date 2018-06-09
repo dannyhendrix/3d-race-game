@@ -125,7 +125,7 @@ class GlMatrix{
     ]);
   }
   static GlMatrix perspectiveMatrix(double fieldOfViewInRadians,double aspect,double near,double far) {
-    double f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
+    double f = Math.tan(Math.pi * 0.5 - 0.5 * fieldOfViewInRadians);
     double rangeInv = 1.0 / (near - far);
 
     return new GlMatrix.fromList([

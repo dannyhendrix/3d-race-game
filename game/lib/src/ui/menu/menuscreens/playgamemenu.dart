@@ -3,7 +3,8 @@ part of game.menu;
 enum GameDisplayType {Webgl3d, Webgl2d}
 
 class PlayGameMenu extends GameMenuScreen{
-  PlayGameMenu(GameMenuController m) : super(m, "Play game");
+  GameMenuController menu;
+  PlayGameMenu(this.menu) : super("Play game");
 
   Element gameContent;
 

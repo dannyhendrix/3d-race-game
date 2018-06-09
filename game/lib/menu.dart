@@ -2,20 +2,19 @@ library game.menu;
 
 import "dart:html";
 import "dart:math" as Math;
+import "dart:async";
 
 //import "package:dashboard/dashboard.dart";
 import "package:dashboard/menu.dart";
 import "package:gameutils/settings.dart";
-import "game.dart";
 import "webgl_game.dart";
 import "webgl.dart";
-import "ui.dart";
 import "input.dart";
 import "gamemode.dart";
+import "definitions.dart";
 
 part "src/ui/menu/gamemenuscreen.dart";
 part "src/ui/menu/gamemenucontroller.dart";
-part "src/ui/menu/gamemessagemenu.dart";
 part "src/ui/menu/menuscreens/mainmenu.dart";
 part "src/ui/menu/menuscreens/creditsmenu.dart";
 part "src/ui/menu/menuscreens/singleplayermenu.dart";

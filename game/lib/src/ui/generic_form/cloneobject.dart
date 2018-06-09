@@ -51,13 +51,15 @@ class CloneObject{
   static dynamic _cloneFromObj(InstanceMirror instance, ClassMirror cm)
   {
     InstanceMirror newinstance = cm.newInstance(new Symbol(""), []);
-    while(cm != null){
-      cm.declarations.values.where((x) => x is VariableMirror).forEach((VariableMirror dm){
-        Symbol s = dm.simpleName;
-        newinstance.setField(s, _clone(instance.getField(s).reflectee, dm.type));
-      });
-      cm = cm.superclass;
+
+    for(var x in cm.declarations.values){
+      if(!(x is VariableMirror)) continue;
+      VariableMirror dm = x;
+      Symbol s = dm.simpleName;
+      newinstance.setField(s, _clone(instance.getField(s).reflectee, dm.type));
     }
+    cm = cm.superclass;
+
     return newinstance.reflectee;
   }
 }

@@ -72,7 +72,7 @@ void main(){
   window.requestAnimationFrame(loop);
 }
 
-void loop(int num){
+void loop(num num){
   if(container.changed) container.preview.paintLevel(container.input.createValue());
   container.changed = false;
   window.requestAnimationFrame(loop);
@@ -91,17 +91,17 @@ Element createLoadSaveLevelElement(Element el_form, Element el_level){
     GameLevelSaver levelSaver = new GameLevelSaver();
     GameLevel level = container.input.createValue();
     Map json = levelSaver.levelToJson(level);
-    el_txt.value = JSON.encode(json);
+    el_txt.value = jsonEncode(json);
   }));
   el_wrap.append(createButton("file_upload",(Event e){
     GameLevelLoader levelLoader = new GameLevelLoader();
-    Map json = JSON.decode(el_txt.value);
+    Map json = jsonDecode(el_txt.value);
     el_form.remove();
     el_form = container.input.createElement("level", levelLoader.loadLevelJson(json));
     el_level.append(el_form);
     container.changed = true;
   }));
-  el_txt.value = JSON.encode(leveljson);
+  el_txt.value = jsonEncode(leveljson);
   return el_wrap;
 }
 
@@ -217,7 +217,7 @@ class Preview{
       {
         var p = level.path.checkpoints[i];
         ctx.beginPath();
-        ctx.arc(p.x*scale, p.z*scale, p.radius*scale, 0, 2 * Math.PI, false);
+        ctx.arc(p.x*scale, p.z*scale, p.radius*scale, 0, 2 * Math.pi, false);
         ctx.stroke();
       }
     }

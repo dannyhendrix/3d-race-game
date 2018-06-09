@@ -4,99 +4,34 @@ typedef bool OnControlChange(Control control, bool active);
 
 class InputController
 {
-  static Map<int,Control> defaultKeys = {
-    /*
-    Base
-    */
-    65 : Control.SteerLeft,//a
-    68 : Control.SteerRight,//d
-    87 : Control.Accelerate,//w
-    83 : Control.Brake,//s
-
-    /*
-    Shared
-    */
-    /*
-    9 : GameControls.CONTROL_SWITCH_CARACTER,//tab
-    27 : GameControls.CONTROL_MENU,//esc
-    36 : GameControls.CONTROL_CAMERA_HOME,//home
-    107 : GameControls.CONTROL_ZOOM_IN,//+
-    109 : GameControls.CONTROL_ZOOM_OUT,//-
-    */
-  };
-  static Map<int,Control> defaultUserKeys = {
-    /*
-    Base
-    */
-    65 : Control.SteerLeft,//a
-    68 : Control.SteerRight,//d
-    87 : Control.Accelerate,//w
-    83 : Control.Brake,//s
-    /*
-    Shared
-    */
-    /*
-    9 : GameControls.CONTROL_SWITCH_CARACTER,//tab
-    27 : GameControls.CONTROL_MENU,//esc
-    36 : GameControls.CONTROL_CAMERA_HOME,//home
-    107 : GameControls.CONTROL_ZOOM_IN,//+
-    109 : GameControls.CONTROL_ZOOM_OUT,//-
-    */
-  };
-  static Map<int,Control> alternativeKeys = {
-    /*
-    Base
-    */
-    37 : Control.SteerLeft,//left
-    39 : Control.SteerRight,//right
-    38 : Control.Accelerate,//up
-    40 : Control.Brake,//down
-
-    /*
-    Shared
-    */
-    /*
-    9 : GameControls.CONTROL_SWITCH_CARACTER,//tab
-    27 : GameControls.CONTROL_MENU,//esc
-    36 : GameControls.CONTROL_CAMERA_HOME,//home
-    107 : GameControls.CONTROL_ZOOM_IN,//+
-    109 : GameControls.CONTROL_ZOOM_OUT,//-
-    */
-  };
-
   OnControlChange onControlChange = (Control control, bool active){};
-  GeneralSettings settings;
+  GameSettings settings;
 
   InputController(this.settings);
 
   Control getKeyFromSettings(int index)
   {
+    return _getCurrentLookup()[index];
+  }
+
+  Map<int, Control> _getCurrentLookup() {
     switch(settings.client_controlkeytype.v)
     {
       case ControlKeyType.Default:
-        return defaultKeys[index];
+        return settings.getDefaultKeys();
+        break;
       case ControlKeyType.Alternative:
-        return alternativeKeys[index];
+        return settings.getAlternativeKeys();
+        break;
       default:
-        return settings.client_keys.v[index];
+        return settings.client_keys.v;
+        break;
     }
   }
 
   int getFirstKeyFromControl(int control)
   {
-    Map<int, Control> lookup;
-    switch(settings.client_controlkeytype.v)
-    {
-      case ControlKeyType.Default:
-        lookup = defaultKeys;
-        break;
-      case ControlKeyType.Alternative:
-        lookup = alternativeKeys;
-        break;
-      default:
-        lookup = settings.client_keys.v;
-        break;
-    }
+    Map<int, Control> lookup = _getCurrentLookup();
     for(int key in lookup.keys)
     {
       if(lookup[key] == control)
@@ -123,7 +58,6 @@ class InputController
 
   void handleKey(KeyboardEvent e)
   {
-
     int key = e.keyCode;
     bool down = e.type == "keydown";//event.KEYDOWN
 

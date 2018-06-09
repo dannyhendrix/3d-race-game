@@ -1,6 +1,6 @@
 part of game.menu;
 
-class GameMenuController extends Menu<GameMenuScreen, GameMessageMenuScreen>
+class GameMenuController extends Menu
 {
   final MENU_MAIN = 0;
   final MENU_MESSAGE = 1;
@@ -20,7 +20,7 @@ class GameMenuController extends Menu<GameMenuScreen, GameMessageMenuScreen>
   Element el_storeCookie;
   GameResultMenu menu_gameresult;
   PlayGameMenu menu_playgame;
-  GeneralSettings settings;
+  GameSettings settings;
 
   GameMenuController(this.settings) : super()
   {
@@ -117,10 +117,6 @@ class GameMenuController extends Menu<GameMenuScreen, GameMessageMenuScreen>
     _setupMenus();
   }
   */
-  GameMessageMenuScreen createMessageMenu()
-  {
-    return new GameMessageMenuScreen(this);
-  }
   
   Map<int,GameMenuScreen> getMenus()
   {
@@ -140,15 +136,6 @@ class GameMenuController extends Menu<GameMenuScreen, GameMessageMenuScreen>
       MENU_OPTION : settings.debug.v ? new OptionMenuDebug(this) : new OptionMenu(this),
       /*MENU_LEVEL_MESSAGE : new LevelMessageMenu(this)*/
     };
-  }
-  
-  void showMessage(String title, String message, [bool viewCloseButton = true, bool viewBackButton = false])
-  {
-    messagemenu.setShowRestart(false);
-    messagemenu.setShowLevel(false);
-    messagemenu.setShowNextLevel(false);
-    messagemenu.setShowText();
-    super.showMessage(title, message,viewCloseButton, viewBackButton);
   }
 
   void showMenu(int m, [int effect = 0, bool storeInHistory = true])
@@ -174,13 +161,13 @@ class GameMenuController extends Menu<GameMenuScreen, GameMessageMenuScreen>
   }
 
   void showPlayGameMenu(GameInput settings, [int effect = 0, bool storeInHistory = true]){
-    menu_playgame.startGame(settings,(GameResult result){
+    menu_playgame.startGame(settings,(GameOutput result){
       showGameResultMenu(result);
     });
     showMenu(MENU_GAMEPLAY,effect,storeInHistory);
   }
 
-  void showGameResultMenu(GameResult result, [int effect = 0, bool storeInHistory = true]){
+  void showGameResultMenu(GameOutput result, [int effect = 0, bool storeInHistory = true]){
     menu_gameresult.setGameResult(result);
     showMenu(MENU_GAMERESULT,effect,storeInHistory);
   }

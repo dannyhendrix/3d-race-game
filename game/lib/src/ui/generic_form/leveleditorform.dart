@@ -104,10 +104,12 @@ class InputObj extends Input{
     ClassMirror cm = _cm;
     InstanceMirror newinstance = cm.newInstance(new Symbol(""), []);
     while(cm != null){
-      cm.declarations.values.where((x) => x is VariableMirror).forEach((VariableMirror dm){
+      for(var x in cm.declarations.values){
+        if(!(x is VariableMirror)) continue;
+        VariableMirror dm = x;
         Symbol s = dm.simpleName;
         newinstance.setField(s, _inputs[s].createValue());
-      });
+      }
       cm = cm.superclass;
     }
     return newinstance.reflectee;
@@ -139,12 +141,14 @@ class InputObj extends Input{
     InstanceMirror instance = reflect(currentValue);
     ClassMirror cm = instance.type;
     while(cm != null){
-      cm.declarations.values.where((x) => x is VariableMirror && !x.isPrivate).forEach((VariableMirror dm){
+      for(var x in cm.declarations.values){
+        if(!(x is VariableMirror)) continue;
+        VariableMirror dm = x;
         Symbol s = dm.simpleName;
         Input input = Input.createInput(dm.type.reflectedType, onValueChanged);
         _inputs[s] = input;
         el_wrap.append(input.createElement(MirrorSystem.getName(s), instance.getField(s).reflectee));
-      });
+      }
       cm = cm.superclass;
     }
     return el_wrap;

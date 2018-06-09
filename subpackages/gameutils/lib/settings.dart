@@ -144,7 +144,10 @@ class SettingsStoredInCookie
     Map result = {};
     for(GameSetting s in getStoredSettingsKeys())
 		if(s is GameSettingWithTranslator)
-			result[s.k] = s.convertTo(s.v);
+    {
+      GameSettingWithTranslator ss = s as GameSettingWithTranslator;
+      result[s.k] = ss.convertTo(s.v);
+    }
 		else
 			result[s.k] = s.v;
 			
@@ -156,8 +159,11 @@ class SettingsStoredInCookie
     for(GameSetting s in getStoredSettingsKeys())
       if(stored.containsKey(s.k))
 	  {
-		  if(s is GameSettingWithTranslator)
-			  s.v = s.convertFrom(stored[s.k]);
+      if(s is GameSettingWithTranslator)
+      {
+        GameSettingWithTranslator ss = s as GameSettingWithTranslator;
+        s.v = ss.convertFrom(stored[s.k]);
+      }
 		  else
 			  s.v = stored[s.k];
 		}

@@ -6,14 +6,14 @@ part of webgl_game;
  * WebglGame.start(gameSettings);
  */
 
-typedef void OnGameFinished(GameResult result);
+typedef void OnGameFinished(GameOutput result);
 
 abstract class WebglGame{
   OnGameFinished onGameFinished;
-  Element initAndCreateDom(GameInput input, GeneralSettings settings);
+  Element initAndCreateDom(GameInput input, GameSettings settings);
   void start();
   void pause([bool forceStart = null]);
-  void onControl(Control control, bool active);
+  bool onControl(Control control, bool active);
 
   void _registerControls(InputController inputController){
     inputController.onControlChange = onControl;
@@ -31,7 +31,7 @@ class WebglGame2d extends WebglGame{
     _gameloop = new GameLoop(_loop);
   }
 
-  Element initAndCreateDom(GameInput input, GeneralSettings settings){
+  Element initAndCreateDom(GameInput input, GameSettings settings){
     game.initSession(input);
     layer = new RenderLayer.withSize(1500,800);
     //document.body.append(layer.canvas);
@@ -40,10 +40,11 @@ class WebglGame2d extends WebglGame{
     return layer.canvas;
   }
 
-  void onControl(Control control, bool active){
+  bool onControl(Control control, bool active){
     if(!_gameloop.playing || _gameloop.stopping)
-      return;
+      return false;
     game.humanPlayer.onControl(control,active);
+    return true;
   }
 
   void start(){
@@ -83,7 +84,7 @@ class WebglGame2d extends WebglGame{
     for(int i = 0; i < game.path.length; i++){
       var p =game.path.point(i);
       layer.ctx.beginPath();
-      layer.ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI, false);
+      layer.ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.pi, false);
       layer.ctx.stroke();
     }
 
@@ -104,7 +105,7 @@ class WebglGame2d extends WebglGame{
       }
 
       layer.ctx.beginPath();
-      layer.ctx.arc(o.position.x, o.position.y, 2, 0, 2 * Math.PI, false);
+      layer.ctx.arc(o.position.x, o.position.y, 2, 0, 2 * Math.pi, false);
       layer.ctx.fillStyle = 'green';
       layer.ctx.fill();
     }

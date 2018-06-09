@@ -86,13 +86,13 @@ void main(){
 
 double getCheckpointAngle(PathCheckPoint c,PathCheckPoint cPrev,PathCheckPoint cNext){
   double angle = ((cPrev-c)+(c-cNext)).angle;
-  angle += Math.PI/2;
+  angle += Math.pi/2;
   return angle;
 }
 
 void drawCheckPoint(PathCheckPoint point, RenderLayer layer){
   layer.ctx.beginPath();
-  layer.ctx.arc(point.x, point.y,point.radius,0,2*Math.PI);
+  layer.ctx.arc(point.x, point.y,point.radius,0,2*Math.pi);
   layer.ctx.stroke();
 }
 

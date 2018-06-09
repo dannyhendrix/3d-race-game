@@ -46,7 +46,7 @@ Element createTriangleInput(){
 
   el_wrapper.append(createButton("CreateJson", (Event e){
     var infoJsonList = infos.map((Info info)=>info.toJson()).toList(growable:false);
-    output.innerHtml = JSON.encode(infoJsonList);
+    output.innerHtml = jsonEncode(infoJsonList);
   }));
 
   el_wrapper.append(output);

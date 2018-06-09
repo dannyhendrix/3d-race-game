@@ -1,9 +1,9 @@
 part of menu;
 
-class MessageMenu<T extends Menu> extends MenuScreen<T>
+class MessageMenu extends MenuScreen
 {
   //TODO: known bug: if 2 messages are shown in 1 menusession, the message/title is overwritten
-  MessageMenu(T m): super(m,"Message");
+  MessageMenu(): super("Message");
   Element txt_message;
 
   Element setupFields()

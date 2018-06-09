@@ -7,7 +7,7 @@ class Point2d{
   Point2d operator -(Point2d p) => new Point2d(x - p.x, y - p.y);
   Point2d operator -() => new Point2d(-x,-y);
   Vector operator *(num factor) => new Vector(x*factor, y*factor);
-  bool operator ==(Point2d p) => x == p.x && y == p.y;
+  bool operator ==(dynamic p) => p is Point2d ? x == p.x && y == p.y : false;
   int get hashCode => x.hashCode ^ y.hashCode;
   double dotProduct(Point2d v) => x*v.x+y*v.y;
   double distanceTo(Point2d p){

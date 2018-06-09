@@ -37,7 +37,7 @@ class WebglGame3d extends WebglGame{
     _gameloop = new GameLoop(_loop);
   }
   @override
-  Element initAndCreateDom(GameInput input, GeneralSettings settings) {
+  Element initAndCreateDom(GameInput input, GameSettings settings) {
     game.initSession(input);
     double windowW = 800.0;
     double windowH = 500.0;
@@ -84,10 +84,11 @@ class WebglGame3d extends WebglGame{
   }
 
   @override
-  void onControl(Control control, bool active){
+  bool onControl(Control control, bool active){
     if(!_gameloop.playing || _gameloop.stopping)
-      return;
+      return false;
     game.humanPlayer.onControl(control,active);
+    return true;
   }
 
   @override
@@ -146,14 +147,17 @@ class WebglGame3d extends WebglGame{
   }
 
   List<GlModelInstanceCollection> _createModels(){
+    //TODO: why load all the models? (why load truck if we only have cars?)
     GlModelCollection modelCollection = new GlModelCollection(layer);
     GlModel_Vehicle vehicleModel = new GlModel_Vehicle();
+    GlModel_Formula formulaModel = new GlModel_Formula();
     GlModel_Truck truckModel = new GlModel_Truck();
     GlModel_TruckTrailer truckTrailerModel = new GlModel_TruckTrailer();
     GlModel_Caravan caravanModel = new GlModel_Caravan();
     GlModel_Wall wallModel = new GlModel_Wall();
     GlModel_Tree treeModel = new GlModel_Tree();
     vehicleModel.loadModel(modelCollection);
+    formulaModel.loadModel(modelCollection);
     truckModel.loadModel(modelCollection);
     truckTrailerModel.loadModel(modelCollection);
     caravanModel.loadModel(modelCollection);
@@ -170,6 +174,11 @@ class WebglGame3d extends WebglGame{
       {
         Vehicle v = o;
         modelInstances.add(new GlModelInstanceFromModel(o, vehicleModel
+            .getModelInstance(modelCollection, colorMappingGl[v.player.theme
+            .color1], colorMappingGl[v.player.theme.color2], colorWindows)));
+      }else if(o is FormulaCar){
+        Vehicle v = o;
+        modelInstances.add(new GlModelInstanceFromModel(o, formulaModel
             .getModelInstance(modelCollection, colorMappingGl[v.player.theme
             .color1], colorMappingGl[v.player.theme.color2], colorWindows)));
       }else if(o is Truck){

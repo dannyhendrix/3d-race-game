@@ -1,10 +1,72 @@
-part of game.ui;
+part of game.definitions;
 
 enum ControlKeyType {Default, Alternative, UserDefined}
 enum GameDashboardTheme {Default, Red, Green, Blue}
 
-class GeneralSettings extends SettingsStoredInCookie with GameSettings
+class GameSettings extends SettingsStoredInCookie
 {
+  static Map<int,Control> _defaultKeys = {
+    /*
+    Base
+    */
+    65 : Control.SteerLeft,//a
+    68 : Control.SteerRight,//d
+    87 : Control.Accelerate,//w
+    83 : Control.Brake,//s
+
+    /*
+    Shared
+    */
+    /*
+    9 : GameControls.CONTROL_SWITCH_CARACTER,//tab
+    27 : GameControls.CONTROL_MENU,//esc
+    36 : GameControls.CONTROL_CAMERA_HOME,//home
+    107 : GameControls.CONTROL_ZOOM_IN,//+
+    109 : GameControls.CONTROL_ZOOM_OUT,//-
+    */
+  };
+  static Map<int,Control> _defaultUserKeys = {
+    /*
+    Base
+    */
+    65 : Control.SteerLeft,//a
+    68 : Control.SteerRight,//d
+    87 : Control.Accelerate,//w
+    83 : Control.Brake,//s
+    /*
+    Shared
+    */
+    /*
+    9 : GameControls.CONTROL_SWITCH_CARACTER,//tab
+    27 : GameControls.CONTROL_MENU,//esc
+    36 : GameControls.CONTROL_CAMERA_HOME,//home
+    107 : GameControls.CONTROL_ZOOM_IN,//+
+    109 : GameControls.CONTROL_ZOOM_OUT,//-
+    */
+  };
+  static Map<int,Control> _alternativeKeys = {
+    /*
+    Base
+    */
+    37 : Control.SteerLeft,//left
+    39 : Control.SteerRight,//right
+    38 : Control.Accelerate,//up
+    40 : Control.Brake,//down
+
+    /*
+    Shared
+    */
+    /*
+    9 : GameControls.CONTROL_SWITCH_CARACTER,//tab
+    27 : GameControls.CONTROL_MENU,//esc
+    36 : GameControls.CONTROL_CAMERA_HOME,//home
+    107 : GameControls.CONTROL_ZOOM_IN,//+
+    109 : GameControls.CONTROL_ZOOM_OUT,//-
+    */
+  };
+
+  GameSetting<bool> debug = new GameSetting("debug", false);
+
   GameSettingWithEnum<ControlKeyType> client_controlkeytype = new GameSettingWithEnum("client_controlkeytype", ControlKeyType.Default, ControlKeyType.values, "Controls keys");
   GameSettingWithEnum<GameDashboardTheme> client_theme = new GameSettingWithEnum("client_theme", GameDashboardTheme.Default, GameDashboardTheme.values, "Theme");
 
@@ -14,7 +76,7 @@ class GeneralSettings extends SettingsStoredInCookie with GameSettings
   GameSetting<bool> client_showStoreInCookie = new GameSetting("client_enablemouseaiming", true, "Enable mouse aiming");
 
   // list of key ids to movement
-  IntMapSettings<int> client_keys = new IntMapSettings("client_keys", InputController.defaultUserKeys, "Keys");
+  IntMapSettings<Control> client_keys = new IntMapSettings("client_keys", _defaultUserKeys, "Keys");
 
   //GameSetting<Map> progress_locked = new GameSetting("progress_locked", {  }, "Progress");
   GameSetting<String> user_name = new GameSetting("user_name", "Player1", "Username");
@@ -23,7 +85,7 @@ class GeneralSettings extends SettingsStoredInCookie with GameSettings
   GameSettingWithEnum<VehicleThemeColor> user_color1 = new GameSettingWithEnum("user_color1", VehicleThemeColor.Blue, VehicleThemeColor.values, "Theme color 1");
   GameSettingWithEnum<VehicleThemeColor> user_color2 = new GameSettingWithEnum("user_color2", VehicleThemeColor.Yellow, VehicleThemeColor.values, "Theme color 2");
 
-  GeneralSettings([bool autoload = true])
+  GameSettings([bool autoload = true])
   {
     if(autoload)
       loadFromCookie();
@@ -33,11 +95,15 @@ class GeneralSettings extends SettingsStoredInCookie with GameSettings
   {
     return [user_name,user_wins,user_races,user_color1,user_color2,client_theme, client_controlkeytype, debug];
   }
-  
+
   List<GameSetting> getMenuSettings()
   {
     if(debug.v == true)
       return [user_name, user_color1, user_color2, client_theme, storeInCookie, debug];
     return [storeInCookie];
   }
+
+  Map<int,Control> getDefaultKeys() => _defaultUserKeys;
+  Map<int,Control> getAlternativeKeys() => _alternativeKeys;
 }
+

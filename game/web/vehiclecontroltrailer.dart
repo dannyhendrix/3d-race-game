@@ -18,10 +18,10 @@ void main()
   VehicleSettings vehicleSettings = new VehicleSettings();
 
   var txtArea = new TextAreaElement();
-  txtArea.value = JSON.encode(vehicleSettings.data);
+  txtArea.value = jsonEncode(vehicleSettings.data);
   document.body.append(txtArea);
   txtArea.onChange.listen((Event e){
-    vehicleSettings.data = JSON.decode(txtArea.value);
+    vehicleSettings.data = jsonDecode(txtArea.value);
   });
 
 

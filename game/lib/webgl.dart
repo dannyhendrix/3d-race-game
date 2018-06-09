@@ -5,6 +5,7 @@ import "dart:web_gl";
 import "dart:math" as Math;
 import 'dart:typed_data';
 
+//TODO: webgl should be subpackage
 part "src/ui/webgl/glarea.dart";
 part "src/ui/webgl/glrenderlayer.dart";
 part "src/ui/webgl/glprogram.dart";

@@ -1,24 +1,18 @@
 part of menu;
 
-class Menu <T extends MenuScreen, M extends MessageMenu>
+class Menu
 {
   //menu element
   Element element;
-  Map<int,T> menus;
+  Map<int,MenuScreen> menus;
   int _currentmenu = -1;
   Element btn_back;
   Element btn_close;
   //txt_title is the element with text==title
   Element txt_title;
   List _backqueue = new List<int>();
-  M messagemenu;
 
-  Menu()
-  {
-
-  }
-
-  Map<int,T> getMenus()
+  Map<int,MenuScreen> getMenus()
   {
     return {};
   }
@@ -26,8 +20,6 @@ class Menu <T extends MenuScreen, M extends MessageMenu>
   void init([bool appendToBody = true])
   {
     menus = getMenus();
-    messagemenu = createMessageMenu();
-    menus[-2] = messagemenu;
     element = setupFields();
     element.style.display = "none";
     if(appendToBody)
@@ -92,21 +84,10 @@ class Menu <T extends MenuScreen, M extends MessageMenu>
     el.id = "menu_title";
     return el;
   }
-  
-  M createMessageMenu()
-  {
-	return new MessageMenu(this);
-  }
 
   bool isActiveMenu()
   {
     return _currentmenu != -1;
-  }
-
-  void showMessage(String title, String message, [bool viewCloseButton = true, bool viewBackButton = false])
-  {
-    messagemenu.setMessage(title, message,viewCloseButton, viewBackButton);
-    showMenu(-2);
   }
 
   void showMenu(int m, [int effect = 0, bool storeInHistory = true])
@@ -145,11 +126,6 @@ class Menu <T extends MenuScreen, M extends MessageMenu>
       hideMenu(effect);
     else
       showMenu(m,effect);
-  }
-
-  T getMenu(int menu)
-  {
-    return menus[menu];
   }
 }
 

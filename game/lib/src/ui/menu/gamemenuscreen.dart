@@ -1,10 +1,10 @@
 part of game.menu;
 
-class GameMenuScreen extends MenuScreen<GameMenuController>
+class GameMenuScreen extends MenuScreen
 {
   bool showStoreIncookie = false;
 
-  GameMenuScreen(GameMenuController m, String title) : super(m, title);
+  GameMenuScreen(String title) : super(title);
 /*
   ButtonElement createMenuIconButton(String icon, [Function onclick])
   {
@@ -22,27 +22,19 @@ class GameMenuScreen extends MenuScreen<GameMenuController>
     return btn;
   }
 
-  ButtonElement createMenuButtonWithIcon(String label, String icon, [Function onclick])
+  Element createMenuButtonWithIcon(String label, String icon, [Function onclick])
   {
-    ButtonElement btn = createButtonWithIcon(icon, onclick);
+    Element btn = createButtonWithIcon(icon, onclick);
     btn.appendText(label);
     btn.classes.add("menu_button");
     return btn;
   }
 
-  ButtonElement createOpenMenuButtonWithIcon(String label, String icon, int menuId)
+  Element createOpenMenuButtonWithIcon(Menu menu, String label, String icon, int menuId)
   {
     return createMenuButtonWithIcon(label,icon,(Event e)
     {
       menu.showMenu(menuId, 0);
     });
   }
-}
-
-class GameMessageMenuScreen extends MessageMenu<GameMenuController>
-{
-  bool showStoreIncookie = false;
-
-  GameMessageMenuScreen(GameMenuController m) : super(m);
-
 }

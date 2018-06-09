@@ -3,8 +3,11 @@ version: 1.0.0
 author: Danny Hendrix
 description: MicroMachines
 homepage: http://www.dannyhendrix.com
+sdk: ">=2.0.0"
+dev_dependencies:
+  build_runner: "^0.8.2"
+  build_web_compilers: ">=0.3.6 <0.5.0"
 dependencies:
-  browser: any
   logging: ">=0.11.3"
   gameutils:
     path: ../subpackages/gameutils

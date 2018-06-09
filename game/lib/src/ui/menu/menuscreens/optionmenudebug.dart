@@ -13,11 +13,12 @@ class SettingInput<T>
 
 class OptionMenuDebug extends GameMenuScreen
 {
+  GameMenuController menu;
   bool showStoreIncookie = true;
 
   Map<String, SettingInput> settingElementMapping = {};
   
-  OptionMenuDebug(GameMenuController m) : super(m, "Options");
+  OptionMenuDebug(this.menu) : super("Options");
 
   Element setupFields()
   {
@@ -111,7 +112,7 @@ class OptionMenuDebug extends GameMenuScreen
       CheckboxInputElement iel = new CheckboxInputElement();
       settingElementMapping[s.k] = new SettingInput((){
         return iel.checked;
-      },(bool v){
+      },(var v){
         iel.checked = s.v;
       });
       iel.onChange.listen((Event e){

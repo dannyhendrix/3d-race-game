@@ -63,6 +63,13 @@ class Truck extends Vehicle{
 class Car extends Vehicle{
   Car(Game game, Player player) : super(game,player, 50.0, 30.0);
 }
+class FormulaCar extends Vehicle{
+  FormulaCar(Game game, Player player) : super(game,player, 50.0, 30.0){
+    vehicleSettings.setValue(VehicleSettingKeys.acceleration, 2.0);
+    vehicleSettings.setValue(VehicleSettingKeys.acceleration_max, 7.0);
+    vehicleSettings.setValue(VehicleSettingKeys.standstill_delay, 4);
+  }
+}
 abstract class Vehicle extends MoveableGameObject{
   Game game;
   Player player;
@@ -179,7 +186,7 @@ abstract class Vehicle extends MoveableGameObject{
 
     vector = new Vector.fromAngleRadians(r,_speed);
     //position += vector;
-    var collisionCorrection = vector;
+    Point2d collisionCorrection = vector;
     bool collide = false;
 
     sensorCollision = false;

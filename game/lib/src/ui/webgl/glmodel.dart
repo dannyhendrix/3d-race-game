@@ -35,28 +35,28 @@ class GlJsonModel extends GlModel{
 }
 
 class GlAreaModel extends GlModel{
-  List<GlArea> areas;
-  GlAreaModel([List<GlArea> areas]): areas = areas ?? [];
+  List<GlModelPart> areas;
+  GlAreaModel([List<GlModelPart> areas]): areas = areas ?? [];
   GlModelBuffer createBuffers(GlRenderLayer layer){
     Buffer vertexBuffer = loadInBuffer(_toDoubleVertex(),layer);
     Buffer normalsBuffer = loadInBuffer(_toNormalsVertex(), layer);
     return new GlModelBuffer(vertexBuffer, normalsBuffer, _getNumberOfTriangles());
   }
-  void addArea(GlArea area) => areas.add(area);
+  void addArea(GlModelPart area) => areas.add(area);
 
   int _getNumberOfTriangles(){
     int total = 0;
-    for(GlArea area in areas) total += area.getNumberOfTriangles();
+    for(GlModelPart area in areas) total += area.getNumberOfTriangles();
     return total;
   }
   List<double> _toDoubleVertex(){
     List<double> result = [];
-    for(GlArea area in areas) result.addAll(area.toDoubleVertex());
+    for(GlModelPart area in areas) result.addAll(area.toDoubleVertex());
     return result;
   }
   List<double> _toNormalsVertex(){
     List<double> result = [];
-    for(GlArea area in areas) result.addAll(area.toNormalsVertex());
+    for(GlModelPart area in areas) result.addAll(area.toNormalsVertex());
     return result;
   }
 }

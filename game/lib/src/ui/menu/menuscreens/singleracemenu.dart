@@ -1,6 +1,7 @@
 part of game.menu;
 
 class SingleRaceMenu extends GameMenuScreen{
+  GameMenuController menu;
   GameBuilder _gameBuilder;
   GameInputSelection _vehicleSelection;
   GameInputSelection _trailerSelection;
@@ -8,7 +9,7 @@ class SingleRaceMenu extends GameMenuScreen{
   InputElement _in_laps;
   InputElement _in_oponents;
 
-  SingleRaceMenu(GameMenuController m) : super(m, "Single Race"){
+  SingleRaceMenu(this.menu) : super("Single Race"){
     _gameBuilder = new GameBuilder(menu.settings);
   }
 
@@ -57,6 +58,7 @@ class GameInputSelectionVehicle extends GameInputSelectionVehicleBase{
   GameInputSelectionVehicle() : super(VehicleType.values.length){
     _typeToPreview[VehicleType.Car.index] = _createPreviewFromModel(new GlModel_Vehicle());
     _typeToPreview[VehicleType.Truck.index] = _createPreviewFromModel(new GlModel_Truck());
+    _typeToPreview[VehicleType.Formula.index] = _createPreviewFromModel(new GlModel_Formula());
   }
 }
 class GameInputSelectionTrailer extends GameInputSelectionVehicleBase{
@@ -89,7 +91,7 @@ class GameInputSelectionVehicleBase extends GameInputSelection
     GlPreview preview = new GlPreview(150.0,100.0,(GlModelCollection modelCollection){
       model.loadModel(modelCollection);
       var instance = model
-          .getModelInstance(modelCollection, new GlColor(0.8, 0.4, 0.0), new GlColor(1.0, 1.0, 1.0), new GlColor(0.0, 0.0, 0.3));
+          .getModelInstance(modelCollection, new GlColor(0.8, 0.4, 0.0), new GlColor(1.0, 1.0, 1.0), new GlColor(0.7, 0.7, 0.9));
 
       return [instance];
 

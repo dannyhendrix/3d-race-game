@@ -1,10 +1,10 @@
 part of micromachines;
 
 class HumanPlayer extends Player{
-  bool _isSteeringLeft;
-  bool _isSteeringRight;
-  bool _isAccelarating;
-  bool _isBreaking;
+  bool _isSteeringLeft = false;
+  bool _isSteeringRight = false;
+  bool _isAccelarating = false;
+  bool _isBreaking = false;
 
   HumanPlayer(name, VehicleTheme theme){
     this.theme = theme;
@@ -28,6 +28,7 @@ class HumanPlayer extends Player{
       default:
         break;
     }
+
     vehicle.setAccelarate(_isAccelarating);
     vehicle.setBrake(_isBreaking);
     if(_isSteeringRight && !_isSteeringLeft)
@@ -130,11 +131,11 @@ class AiPlayer extends Player{
       return Steer.Right;
     }
     if(ra < 0 && rt > 0){
-      if(rt-ra > Math.PI) return Steer.Left;
+      if(rt-ra > Math.pi) return Steer.Left;
       return Steer.Right;
     }
     if(ra > 0 && rt < 0){
-      if(ra-rt > Math.PI) return Steer.Right;
+      if(ra-rt > Math.pi) return Steer.Right;
       return Steer.Left;
     }
     return Steer.None;

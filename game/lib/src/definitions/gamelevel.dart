@@ -1,4 +1,4 @@
-part of micromachines;
+part of game.definitions;
 
 class GameLevelInvalidException implements Exception{
   final String msg;
@@ -12,8 +12,8 @@ class GameLevel extends GameLevelElement{
   int w = 800;
   int d = 500;
   GameLevelPath path = new GameLevelPath();
-  List<GameLevelWall> walls = [];
-  List<GameLevelStaticObject> staticobjects = [];
+  List<GameLevelWall> walls = <GameLevelWall>[];
+  List<GameLevelStaticObject> staticobjects = <GameLevelStaticObject>[];
 
   void validate(){} // TODO: validate level
 }
@@ -35,7 +35,7 @@ class GameLevelCheckPoint extends GameLevelElement{
 class GameLevelPath extends GameLevelElement{
   bool circular = false;
   int laps = -1;
-  List<GameLevelCheckPoint> checkpoints = [];
+  List<GameLevelCheckPoint> checkpoints = <GameLevelCheckPoint>[];
 }
 
 class GameLevelLoader{
@@ -45,9 +45,9 @@ class GameLevelLoader{
     level.d = json["d"];
     level.path.circular = json["path"]["circular"];
     level.path.laps = json["path"]["laps"];
-    level.path.checkpoints = json["path"]["checkpoints"].map((Map m)=>new GameLevelCheckPoint(m["x"],m["z"],m["radius"])).toList();
-    if(json.containsKey("walls")) level.walls = json["walls"].map((Map m)=>new GameLevelWall(m["x"],m["z"],m["r"],m["w"],m["d"],m["h"])).toList();
-    if(json.containsKey("staticobjects")) level.staticobjects = json["staticobjects"].map((Map m)=>new GameLevelStaticObject(m["id"],m["x"],m["z"],m["r"])).toList();
+    level.path.checkpoints = json["path"]["checkpoints"].map<GameLevelCheckPoint>((Map m)=>new GameLevelCheckPoint(m["x"],m["z"],m["radius"])).toList();
+    if(json.containsKey("walls")) level.walls = json["walls"].map<GameLevelWall>((Map m)=>new GameLevelWall(m["x"],m["z"],m["r"],m["w"],m["d"],m["h"])).toList();
+    if(json.containsKey("staticobjects")) level.staticobjects = json["staticobjects"].map<GameLevelStaticObject>((Map m)=>new GameLevelStaticObject(m["id"],m["x"],m["z"],m["r"])).toList();
     return level;
   }
 }

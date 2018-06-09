@@ -2,11 +2,12 @@ part of game.menu;
 
 class ControlsMenu extends GameMenuScreen
 {
+  GameMenuController menu;
   bool showStoreIncookie = true;
   EnterKey enterKey = new EnterKey();
   Map<int, Element> keyToElementMapping = {};
 
-  ControlsMenu(GameMenuController m) : super(m, "Controls");
+  ControlsMenu(this.menu) : super("Controls");
 
   Element setupFields()
   {
@@ -52,8 +53,8 @@ class ControlsMenu extends GameMenuScreen
       if(menu.settings.client_controlkeytype.v == keyType)
         setCurrentTab(el, el_content);
     };
-    addTab("Default",_createKeyboardControlsTable(InputController.defaultKeys, false), ControlKeyType.Default);
-    addTab("Alternative",_createKeyboardControlsTable(InputController.alternativeKeys, false), ControlKeyType.Alternative);
+    addTab("Default",_createKeyboardControlsTable(menu.settings.getDefaultKeys(), false), ControlKeyType.Default);
+    addTab("Alternative",_createKeyboardControlsTable(menu.settings.getAlternativeKeys(), false), ControlKeyType.Alternative);
     addTab("User defined",_createKeyboardControlsTable(menu.settings.client_keys.v, true), ControlKeyType.UserDefined);
     //el.append(_createKeyboardControlsTable(menu.settings.client_keys.v, true));
     el.append(el_tabs);
@@ -65,7 +66,7 @@ class ControlsMenu extends GameMenuScreen
     TableElement ta = new TableElement();
     ta.className = "controls_menu_table";
     TableRowElement tr;
-    var tdWrapperAppend = (String className, Element el) {
+    var tdWrapperAppend = (String className, Node el) {
       TableCellElement td = new TableCellElement();
       td.className = className;
       td.append(el);

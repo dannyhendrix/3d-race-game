@@ -58,7 +58,7 @@ class GameLoop
     play();
   }
 
-  void loop(double looptime)
+  void loop(num looptime)
   {
     if(stopping == true)
     {

@@ -1,6 +1,6 @@
 part of menu;
 
-class MenuScreen<T extends Menu>
+class MenuScreen
 {
   Element element;
 
@@ -8,9 +8,7 @@ class MenuScreen<T extends Menu>
   bool closebutton = true;
   String title;
 
-  T menu;
-
-  MenuScreen(this.menu,this.title)
+  MenuScreen(this.title)
   {
 
   }
@@ -37,7 +35,7 @@ class MenuScreen<T extends Menu>
     element.style.display = "none";
   }
 
-  ButtonElement createMenuButton(String label, [Function onclick])
+  Element createMenuButton(String label, [Function onclick])
   {
     ButtonElement btn = new ButtonElement();
     btn.text = label;
@@ -47,7 +45,7 @@ class MenuScreen<T extends Menu>
     return btn;
   }
 
-  ButtonElement createMenuIconButton(String icon, [Function onclick])
+  Element createMenuIconButton(String icon, [Function onclick])
   {
     ButtonElement btn = new ButtonElement();
     btn.append(createIcon(icon));
@@ -65,7 +63,7 @@ class MenuScreen<T extends Menu>
     return iel;
   }
 
-  ButtonElement createOpenMenuButton(String label, int menuId)
+  Element createOpenMenuButton(Menu menu, String label, int menuId)
   {
     return createMenuButton(label,(Event e)
     {
@@ -73,7 +71,7 @@ class MenuScreen<T extends Menu>
     });
   }
 
-  ButtonElement createOpenMenuIconButton(String icon, int menuId)
+  Element createOpenMenuIconButton(Menu menu, String icon, int menuId)
   {
     return createMenuIconButton(icon,(Event e)
     {
@@ -81,7 +79,7 @@ class MenuScreen<T extends Menu>
     });
   }
 
-  HeadingElement createTitleElement(String title)
+  Element createTitleElement(String title)
   {
     HeadingElement h = new HeadingElement.h1();
     h.text = title;
@@ -89,7 +87,7 @@ class MenuScreen<T extends Menu>
     return h;
   }
 
-  HeadingElement createSubTitleElement(String title)
+  Element createSubTitleElement(String title)
   {
     HeadingElement h = new HeadingElement.h2();
     h.text = title;
@@ -97,7 +95,7 @@ class MenuScreen<T extends Menu>
     return h;
   }
 
-  DivElement createSpacerElement()
+  Element createSpacerElement()
   {
     DivElement e = new DivElement();
     e.classes.add("menu_spacer");

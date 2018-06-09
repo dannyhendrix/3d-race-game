@@ -40,8 +40,8 @@ class GlModel_TruckTrailer{
 
     GlMatrix wheelPositionRight = GlMatrix.translationMatrix(-w.h+wWheelOffsetRear.v,hWheelOffsetIn.v,-d.h+dWheelOffsetIn.v);
     GlMatrix wheelPositionRight2 = GlMatrix.translationMatrix(-w.h+wWheelOffsetRear2.v,hWheelOffsetIn.v,-d.h+dWheelOffsetIn.v);
-    GlMatrix wheelPositionLeft =  GlMatrix.translationMatrix(-w.h+wWheelOffsetRear.v,hWheelOffsetIn.v,d.h-dWheelOffsetIn.v).multThis(GlMatrix.rotationYMatrix(Math.PI));
-    GlMatrix wheelPositionLeft2 =  GlMatrix.translationMatrix(-w.h+wWheelOffsetRear2.v,hWheelOffsetIn.v,d.h-dWheelOffsetIn.v).multThis(GlMatrix.rotationYMatrix(Math.PI));
+    GlMatrix wheelPositionLeft =  GlMatrix.translationMatrix(-w.h+wWheelOffsetRear.v,hWheelOffsetIn.v,d.h-dWheelOffsetIn.v).multThis(GlMatrix.rotationYMatrix(Math.pi));
+    GlMatrix wheelPositionLeft2 =  GlMatrix.translationMatrix(-w.h+wWheelOffsetRear2.v,hWheelOffsetIn.v,d.h-dWheelOffsetIn.v).multThis(GlMatrix.rotationYMatrix(Math.pi));
 
     var colorWheel = new GlColor(0.2,0.2,0.2);
     return new GlModelInstanceCollection([

@@ -3,10 +3,11 @@ part of game.menu;
 class OptionMenu extends GameMenuScreen
 {
   bool showStoreIncookie = true;
+  GameMenuController menu;
 
   Map<String, SettingInput> settingElementMapping = {};
   
-  OptionMenu(GameMenuController m) : super(m, "Settings");
+  OptionMenu(this.menu) : super("Settings");
 
   Element setupFields()
   {
