@@ -8,8 +8,8 @@ import "dart:async";
 import "package:dashboard/menu.dart";
 import "package:gameutils/settings.dart";
 import "package:webgl/webgl.dart";
+
 import "webgl_game.dart";
-import "input.dart";
 import "gamemode.dart";
 import "definitions.dart";
 
