@@ -130,6 +130,7 @@ class GameMenuController extends Menu
       MENU_SINGLERACE: new SingleRaceMenu(this),
       MENU_GAMERESULT: menu_gameresult,
       MENU_GAMEPLAY: menu_playgame,
+      MENU_PROFILE: new ProfileSideMenu(this),
       /*MENU_CHARACTER: new CharacterMenu(this),
       MENU_LEVEL: new LevelMenu(this),
       MENU_CHARACTER : new CharacterMenu(this),*/
