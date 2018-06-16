@@ -5,10 +5,7 @@ class MainMenu extends GameMenuScreen
   Map<GameMainMenuItem, GameMenuScreen> _sideMenus;
   MenuScreen _currentMenu = null;
   GameMenuController menu;
-  GameBuilder _gameBuilder;
   MainMenu(this.menu){
-    _gameBuilder = new GameBuilder(menu.settings);
-
     GameMenuScreen settingsMenu = menu.settings.debug.v ? new SettingsMenuDebug(menu) : new SettingsMenu(menu);
     _sideMenus = {
       GameMainMenuItem.Profile : new ProfileMenu(menu),
@@ -45,7 +42,7 @@ class MainMenu extends GameMenuScreen
 
     //el_left.append(createOpenMenuButtonWithIcon(menu,"Singleplayer","account_circle",menu.MENU_SINGLEPLAYER));
     el_left.append(createMenuButtonWithIcon("Random race","play_arrow",(Event e){
-      menu.showMenu(new GameInputMenuStatus("Random race", _gameBuilder.newRandomGame(), (GameOutput result){
+      menu.showMenu(new GameInputMenuStatus("Random race", menu.gameBuilder.newRandomGame(), (GameOutput result){
         menu.showMenu(new GameOutputMenuStatus("Race results", result));
       }));
     }));

@@ -38,21 +38,27 @@ class GameMenuController extends Menu<GameMenuStatus>
   Map<GameMenuItem, GameMenuScreen> menus;
   MenuScreen _currentMenu = null;
 
+  GameBuilder gameBuilder;
+  LevelManager levelManager;
+
   GameMenuController(this.settings) : super()
   {
-    menu_gameresult = new GameResultMenu(this);
-    menu_playgame = new PlayGameMenu(this);
+    levelManager = new LevelManager();
+    gameBuilder = new GameBuilder(settings, levelManager);
     menus = {
       GameMenuItem.Main : new MainMenu(this),
       GameMenuItem.SingleGame : new SingleRaceMenu(this),
-      GameMenuItem.Game : menu_playgame,
-      GameMenuItem.GameResult : menu_gameresult,
+      GameMenuItem.Game : new PlayGameMenu(this),
+      GameMenuItem.GameResult : new GameResultMenu(this),
     };
   }
 
   @override
   Element setupFields()
   {
+    //TODO: where to preload levels?
+    levelManager.preLoadLevels();
+
     Element el = new DivElement();
     el.id = "menu_bg";
     Element ell = new DivElement();
@@ -143,19 +149,5 @@ class GameMenuController extends Menu<GameMenuStatus>
   {
     super.hideMenu();
   }
-/*
-  //TODO: use GameInputMenuStatus
-  void showPlayGameMenu(GameInput settings, [bool storeInHistory = true]){
-    menu_playgame.startGame(settings,(GameOutput result){
-      showGameResultMenu(result);
-    });
-    showMenu(MENU_GAME,storeInHistory);
-  }
-
-  //TODO: use GameResultMenuStatus
-  void showGameResultMenu(GameOutput result, [bool storeInHistory = true]){
-    menu_gameresult.setGameResult(result);
-    showMenu(MENU_GAMERESULT,storeInHistory);
-  }*/
 }
 

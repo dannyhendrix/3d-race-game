@@ -2,15 +2,13 @@ part of game.menu;
 
 class SingleRaceMenu extends GameMenuScreen{
   GameMenuController menu;
-  GameBuilder _gameBuilder;
-  GameInputSelection _vehicleSelection;
-  GameInputSelection _trailerSelection;
-  GameInputSelection _levelSelection;
+  GameInputSelectionVehicle _vehicleSelection;
+  GameInputSelectionTrailer _trailerSelection;
+  GameInputSelectionLevel _levelSelection;
   IntValueSelection _in_laps;
   IntValueSelection _in_oponents;
 
   SingleRaceMenu(this.menu){
-    _gameBuilder = new GameBuilder(menu.settings);
   }
 
   Element setupFields()
@@ -27,7 +25,7 @@ class SingleRaceMenu extends GameMenuScreen{
 
     _vehicleSelection = new GameInputSelectionVehicle();
     _trailerSelection = new GameInputSelectionTrailer();
-    _levelSelection = new GameInputSelection(1, "Track");
+    _levelSelection = new GameInputSelectionLevel(menu.levelManager);
 
     _in_oponents = new IntValueSelection((int newValue){});
     Element el_oponents = _in_oponents.setupFields(3,[0,1,2,3,4], "Oponents");
@@ -35,11 +33,11 @@ class SingleRaceMenu extends GameMenuScreen{
     _in_laps = new IntValueSelection((int newValue){});
     Element el_laps = _in_laps.setupFields(3,[1,2,3,5,10], "Laps");
 
-    el_left.append(_levelSelection.element);
+    el_left.append(_levelSelection.setupFieldsForLevels());
     el_left.append(el_laps);
 
-    el_right.append(_vehicleSelection.element);
-    el_right.append(_trailerSelection.element);
+    el_right.append(_vehicleSelection.setupFieldsForVehicles());
+    el_right.append(_trailerSelection.setupFieldsForTrailers());
     el_right.append(el_oponents);
 
     el.append(createMenuButtonWithIcon("Start","play_arrow",(Event e){
@@ -50,28 +48,30 @@ class SingleRaceMenu extends GameMenuScreen{
 
     _vehicleSelection.onIndexChanged(-1, 0);
     _trailerSelection.onIndexChanged(-1, 0);
+    _levelSelection.onIndexChanged(-1, 0);
 
     return el;
   }
 
   GameInput createGameInput(){
-    return _gameBuilder.newGameRandomPlayers(_in_oponents.value,VehicleType.values[_vehicleSelection.index], TrailerType.values[_trailerSelection.index],"", _in_laps.value);
+    return menu.gameBuilder.newGameRandomPlayers(_in_oponents.value,VehicleType.values[_vehicleSelection.index], TrailerType.values[_trailerSelection.index],_levelSelection.index, _in_laps.value);
   }
 }
 
 class GameInputSelectionVehicle extends GameInputSelectionVehicleBase{
-
-  GameInputSelectionVehicle() : super(VehicleType.values.length, "Vehicle"){
+  Element setupFieldsForVehicles(){
     _typeToPreview[VehicleType.Car.index] = _createPreviewFromModel(new GlModel_Vehicle());
     _typeToPreview[VehicleType.Truck.index] = _createPreviewFromModel(new GlModel_Truck());
     _typeToPreview[VehicleType.Formula.index] = _createPreviewFromModel(new GlModel_Formula());
+    return setupFieldsForVehiclesBase(VehicleType.values.length, "Vehicle");
   }
 }
 class GameInputSelectionTrailer extends GameInputSelectionVehicleBase{
-  GameInputSelectionTrailer() : super(TrailerType.values.length, "Trailer"){
+  Element setupFieldsForTrailers(){
     _typeToPreview[TrailerType.None.index] = _createPreviewFromModel(null);
     _typeToPreview[TrailerType.Caravan.index] = _createPreviewFromModel(new GlModel_Caravan());
     _typeToPreview[TrailerType.TruckTrailer.index] = _createPreviewFromModel(new GlModel_TruckTrailer());
+    return setupFieldsForVehiclesBase(TrailerType.values.length, "Trailer");
   }
 }
 class GameInputSelectionVehicleBase extends GameInputSelection
@@ -79,9 +79,11 @@ class GameInputSelectionVehicleBase extends GameInputSelection
   Map<int, String> _typeToPreview = {};
   ImageElement img_preview;
 
-  GameInputSelectionVehicleBase(int optionsLength, String label) : super(optionsLength, label){
+  Element setupFieldsForVehiclesBase(int numberOfOptions, [String label]){
+    Element el = setupFields(numberOfOptions, label);
     img_preview = new ImageElement();
     el_content.append(img_preview);
+    return el;
   }
 
   void onIndexChanged(int oldIndex, int newIndex){
@@ -118,15 +120,48 @@ class GameInputSelectionVehicleBase extends GameInputSelection
     return preview.layer.canvas.toDataUrl("image/png");
   }
 }
+class GameInputSelectionLevel extends GameInputSelection{
+  Map<int, String> _typeToPreview = {};
+  ImageElement img_preview;
+  LevelManager _levelManager;
+
+  GameInputSelectionLevel(this._levelManager);
+
+  Element setupFieldsForLevels(){
+    Element el = setupFields(_levelManager.loadedLevels.length, "Track");
+    int i = 0;
+    for(GameLevel level in _levelManager.loadedLevels.values){
+      _typeToPreview[i++] = _createPreviewFromModel(level);
+    }
+    img_preview = new ImageElement();
+    el_content.append(img_preview);
+    return el;
+  }
+
+  void onIndexChanged(int oldIndex, int newIndex){
+    if(_typeToPreview.containsKey(newIndex))
+    {
+      img_preview.src = _typeToPreview[newIndex];
+    }
+    else{
+      img_preview.src = "";
+    }
+  }
+  String _createPreviewFromModel(GameLevel level){
+    LevelPreview preview = new LevelPreview(150.0,100.0);
+    preview.create();
+    preview.draw(level, "#666");
+    return preview.layer.canvas.toDataUrl("image/png");
+  }
+}
 class GameInputSelection{
   Element _btn_next;
   Element _btn_prev;
   Element el_content;
   int index = 0;
-  int _optionsLength = 0;
   Element element;
 
-  GameInputSelection(this._optionsLength, [String label=""]){
+  Element setupFields(int optionsLength, [String label=""]){
     element = new DivElement();
     element.className = "GameInputSelection";
 
@@ -140,12 +175,12 @@ class GameInputSelection{
     _btn_prev = createButtonWithIcon("navigate_before", (Event e){
       int oldIndex = index--;
       if(index < 0)
-        index = _optionsLength-1;
+        index = optionsLength-1;
       onIndexChanged(oldIndex, index);
     });
     _btn_next = createButtonWithIcon("navigate_next", (Event e){
       int oldIndex = index++;
-      if(index >= _optionsLength)
+      if(index >= optionsLength)
         index = 0;
       onIndexChanged(oldIndex, index);
     });
@@ -155,6 +190,7 @@ class GameInputSelection{
     element.append(_btn_prev);
     element.append(el_content);
     element.append(_btn_next);
+    return element;
   }
   void onIndexChanged(int oldIndex, int newIndex){
     el_content.text = newIndex.toString();

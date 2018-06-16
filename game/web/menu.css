@@ -60,12 +60,11 @@ body { width:800px; margin:0px auto; color:#222; font-family: Arial;}
 .label { font-weight: bold; padding: 10px;}
 
 /** Profile menu **/
-.colorSelection:hover { background-color: rgb(255, 169, 63);}
 .colorSelectionItem { width: 20px; height: 20px; display: inline-block; margin: 4px; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 24px; }
 .colorSelectionItem.selected { border-radius: 0px; width: 32px;}
 .colorSelectionItem:hover { border-radius: 0px;}
 
-.colorSelection{ border-bottom: 3px solid rgba(0, 0, 0, 0.06); background: whitesmoke; width: 300px; padding: 5px; display: inline-block; margin: 10px;}
+.colorSelection{ width: 300px; padding: 5px; display: inline-block; margin: 10px;}
 
 #profile_username input:hover{ background-color: rgb(255, 169, 63);color:black;}
 #profile_username input{ border: 0px; border-bottom: 3px solid rgba(0, 0, 0, 0.06); padding: 14px 20px; outline: 0px; margin: 10px; width: 269px; background: #3f51b5; text-align: center; color: white; font-weight: bold; font-family: monospace;}

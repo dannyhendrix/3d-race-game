@@ -7,8 +7,12 @@ import "dart:async";
 //import "package:dashboard/dashboard.dart";
 import "package:dashboard/menu.dart";
 import "package:gameutils/settings.dart";
+import "package:gameutils/math.dart";
 import "package:webgl/webgl.dart";
+import "package:renderlayer/renderlayer.dart";
 
+//TODO: menu should not need Game (needed for creating levelpath to triangles to draw)
+import "game.dart";
 import "webgl_game.dart";
 import "gamemode.dart";
 import "definitions.dart";
@@ -25,3 +29,4 @@ part "src/ui/menu/menuscreens/settingsmenudebug.dart";
 part "src/ui/menu/menuscreens/singleracemenu.dart";
 part "src/ui/menu/menuscreens/profilemenu.dart";
 part "src/ui/menu/enterkey.dart";
+part "src/ui/menu/levelpreview.dart";
