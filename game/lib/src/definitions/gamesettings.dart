@@ -29,10 +29,16 @@ class GameSettings extends SettingsStoredInCookie
     /*
     Base
     */
+    37 : Control.SteerLeft,//left
+    39 : Control.SteerRight,//right
+    38 : Control.Accelerate,//up
+    40 : Control.Brake,//down
+
     65 : Control.SteerLeft,//a
     68 : Control.SteerRight,//d
     87 : Control.Accelerate,//w
     83 : Control.Brake,//s
+
     /*
     Shared
     */
@@ -103,7 +109,7 @@ class GameSettings extends SettingsStoredInCookie
     return [storeInCookie];
   }
 
-  Map<int,Control> getDefaultKeys() => _defaultUserKeys;
+  Map<int,Control> getDefaultKeys() => _defaultKeys;
   Map<int,Control> getAlternativeKeys() => _alternativeKeys;
 }
 

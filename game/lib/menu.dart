@@ -23,5 +23,5 @@ part "src/ui/menu/menuscreens/controlsmenu.dart";
 part "src/ui/menu/menuscreens/settingsmenu.dart";
 part "src/ui/menu/menuscreens/settingsmenudebug.dart";
 part "src/ui/menu/menuscreens/singleracemenu.dart";
-part "src/ui/menu/menuscreens/profilesidemenu.dart";
+part "src/ui/menu/menuscreens/profilemenu.dart";
 part "src/ui/menu/enterkey.dart";

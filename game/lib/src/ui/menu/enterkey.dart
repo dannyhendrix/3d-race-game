@@ -4,6 +4,9 @@ typedef void OnEnterKey(int keyId);
 
 class EnterKey
 {
+  bool _allowMouse;
+  EnterKey([this._allowMouse = true]);
+
   void requestKey(OnEnterKey callback)
   {
     showEnterKeyWindow(true);
@@ -24,7 +27,7 @@ class EnterKey
       if(key != null)
         callback(key);
     };
-    var onClick = (MouseEvent e){ onKey(e, convertMouseClickToKeyIndex(e)); };
+    var onClick = (MouseEvent e){ onKey(e, _allowMouse ? convertMouseClickToKeyIndex(e) : null); };
     var onKeyDown = (KeyboardEvent e){ onKey(e, e.keyCode); };
     var onTouchStart = (TouchEvent e){ onKey(e, null); };
 
@@ -50,7 +53,8 @@ class EnterKey
   {
     DivElement el = new DivElement();
     el.id = "enterkey";
-    el.text = "Press prefered key or mouse button";
+    el.text = "Press prefered key";
+    if(_allowMouse) el.text += " or mouse button";
     _el_EnterKey = el;
     showEnterKeyWindow(false);
     return el;

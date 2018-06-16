@@ -4,7 +4,7 @@ class ControlsMenu extends GameMenuScreen
 {
   GameMenuController menu;
   bool showStoreIncookie = true;
-  EnterKey enterKey = new EnterKey();
+  EnterKey enterKey = new EnterKey(false);
   Map<int, Element> keyToElementMapping = {};
 
   ControlsMenu(this.menu);
@@ -41,6 +41,7 @@ class ControlsMenu extends GameMenuScreen
       if(keyType != null)
         menu.settings.client_controlkeytype.v = keyType;
     };
+    /*
     var addTab = (String title, Element el_content, ControlKeyType keyType){
       Element el = new DivElement();
       el.text = title;
@@ -58,8 +59,10 @@ class ControlsMenu extends GameMenuScreen
     addTab("Alternative",_createKeyboardControlsTable(menu.settings.getAlternativeKeys(), false), ControlKeyType.Alternative);
     addTab("User defined",_createKeyboardControlsTable(menu.settings.client_keys.v, true), ControlKeyType.UserDefined);
     //el.append(_createKeyboardControlsTable(menu.settings.client_keys.v, true));
-    el.append(el_tabs);
     el.append(el_tabs_content);
+    el.append(el_tabs_content);
+    */
+    el.append(_createKeyboardControlsTable(menu.settings.client_keys.v, true));
     return el;
   }
   Element _createKeyboardControlsTable(Map<int, Control> keyMapping, [bool editable = false])
