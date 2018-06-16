@@ -18,7 +18,7 @@ class SettingsMenuDebug extends GameMenuScreen
 
   Map<String, SettingInput> settingElementMapping = {};
 
-  SettingsMenuDebug(this.menu) : super(menu.MENU_OPTION);
+  SettingsMenuDebug(this.menu);
 
   Element setupFields()
   {

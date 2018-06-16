@@ -23,7 +23,7 @@ class GameMenuController extends Menu<GameMenuStatus>
   final MENU_MAIN = new GameMainMenuStatus("Main menu", GameMainMenuItem.Profile,false);
 
   final MENU_CONTROLS = new GameMainMenuStatus("Controls", GameMainMenuItem.Controls, true);
-  final MENU_OPTION = new GameMainMenuStatus("Settings", GameMainMenuItem.Settings, true);
+  final MENU_SETTINGS = new GameMainMenuStatus("Settings", GameMainMenuItem.Settings, true);
   final MENU_CREDITS = new GameMainMenuStatus("Credits", GameMainMenuItem.Credits, true);
 
   final MENU_PROFILE = new GameMainMenuStatus("Profile", GameMainMenuItem.Profile, true);

@@ -4,7 +4,7 @@ typedef void OnColorChange(VehicleThemeColor newColor);
 
 class ProfileMenu extends GameMenuScreen{
   GameMenuController menu;
-  ProfileMenu(this.menu) : super(menu.MENU_PROFILE);
+  ProfileMenu(this.menu);
 
   ImageElement _el_vehiclePreview;
 

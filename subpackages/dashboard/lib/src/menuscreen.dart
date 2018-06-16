@@ -6,13 +6,6 @@ class MenuScreen<H extends MenuStatus>
 
   bool backbutton = true;
   bool closebutton = true;
-  MenuStatus status;
-
-  MenuScreen(this.status)
-  {
-
-  }
-  H getCurrentStatus() => status;
 
   void init()
   {
@@ -24,7 +17,6 @@ class MenuScreen<H extends MenuStatus>
   {
     Element el = new DivElement();
     el.className = "menu";
-    el.id = status.title.toLowerCase().replaceAll(" ","_");
     return el;
   }
 

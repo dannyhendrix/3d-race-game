@@ -7,7 +7,7 @@ class SettingsMenu extends GameMenuScreen
 
   Map<String, SettingInput> settingElementMapping = {};
 
-  SettingsMenu(this.menu) : super(menu.MENU_OPTION);
+  SettingsMenu(this.menu);
 
   Element setupFields()
   {

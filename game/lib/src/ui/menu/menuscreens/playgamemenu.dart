@@ -11,7 +11,7 @@ class GameInputMenuStatus extends GameMenuStatus{
 
 class PlayGameMenu extends GameMenuScreen{
   GameMenuController menu;
-  PlayGameMenu(this.menu) : super(menu.MENU_GAME);
+  PlayGameMenu(this.menu);
 
   Element gameContent;
 

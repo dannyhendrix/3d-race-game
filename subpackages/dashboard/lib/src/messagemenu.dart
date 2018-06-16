@@ -3,7 +3,6 @@ part of menu;
 abstract class MessageMenu<H extends MenuStatus> extends MenuScreen<H>
 {
   //TODO: known bug: if 2 messages are shown in 1 menusession, the message/title is overwritten
-  MessageMenu(H status): super(status);
   Element txt_message;
 
   Element setupFields()
@@ -16,7 +15,6 @@ abstract class MessageMenu<H extends MenuStatus> extends MenuScreen<H>
 
   void setMessage(String title, String message,[bool viewCloseButton = true, bool viewBackButton = false])
   {
-    this.status.title = title;
     txt_message.innerHtml = message;
     this.backbutton = viewBackButton;
     this.closebutton = viewCloseButton;

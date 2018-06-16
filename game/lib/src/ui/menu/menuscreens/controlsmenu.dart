@@ -7,13 +7,14 @@ class ControlsMenu extends GameMenuScreen
   EnterKey enterKey = new EnterKey();
   Map<int, Element> keyToElementMapping = {};
 
-  ControlsMenu(this.menu) : super(menu.MENU_CONTROLS);
+  ControlsMenu(this.menu);
 
   Element setupFields()
   {
     Element el = super.setupFields();
     el.append(_createKeyboardControls());
     el.append(enterKey.createEnterKeyScreen());
+    el.id = "controls";
     return el;
   }
 

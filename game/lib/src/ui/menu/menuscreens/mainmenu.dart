@@ -6,7 +6,7 @@ class MainMenu extends GameMenuScreen
   MenuScreen _currentMenu = null;
   GameMenuController menu;
   GameBuilder _gameBuilder;
-  MainMenu(this.menu) : super(menu.MENU_MAIN){
+  MainMenu(this.menu){
     _gameBuilder = new GameBuilder(menu.settings);
 
     GameMenuScreen settingsMenu = menu.settings.debug.v ? new SettingsMenuDebug(menu) : new SettingsMenu(menu);
@@ -66,7 +66,7 @@ class MainMenu extends GameMenuScreen
       menu.showGameResultMenu(a);
     }));
 */
-    el_left.append(createOpenMenuButtonWithIcon(menu,"Settings","settings",menu.MENU_OPTION));
+    if(menu.settings.debug.v) el_left.append(createOpenMenuButtonWithIcon(menu,"Settings","settings",menu.MENU_SETTINGS));
     el_left.append(createOpenMenuButtonWithIcon(menu,"Controls","videogame_asset",menu.MENU_CONTROLS));
     el_left.append(createOpenMenuButtonWithIcon(menu,"Credits","info",menu.MENU_CREDITS));
 

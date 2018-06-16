@@ -4,7 +4,6 @@ class GameMenuScreen extends MenuScreen<GameMenuStatus>
 {
   bool showStoreIncookie = false;
 
-  GameMenuScreen(MenuStatus menuStatus) : super(menuStatus);
 /*
   ButtonElement createMenuIconButton(String icon, [Function onclick])
   {

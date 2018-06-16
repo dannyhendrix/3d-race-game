@@ -9,7 +9,7 @@ class SingleRaceMenu extends GameMenuScreen{
   InputElement _in_laps;
   InputElement _in_oponents;
 
-  SingleRaceMenu(this.menu) : super(menu.MENU_SINGLERACE){
+  SingleRaceMenu(this.menu){
     _gameBuilder = new GameBuilder(menu.settings);
   }
 
