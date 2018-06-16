@@ -37,15 +37,24 @@ class PathCheckPoint extends Point2d{
 
 }
 class Path{
-  List<PathCheckPoint> _path;
+  List<PathCheckPoint> checkpoints;
   List<Polygon> roadPolygons;
   bool circular;
   int roundsToFinish;
-  int get length => _path.length;
-  PathCheckPoint point(int index) => _path[index];
-  Path(this._path, [this.circular = false, this.roundsToFinish = -1 /*-1 is infinite*/]){
+  int get length => checkpoints.length;
+  PathCheckPoint point(int index) => checkpoints[index];
+  Path(GameLevelPath path){
+    checkpoints = [];
+
+    for(int i = 0; i < path.checkpoints.length; i++){
+      GameLevelCheckPoint c = path.checkpoints[i];
+      checkpoints.add(new PathCheckPoint(c.x,c.z,c.radius));
+    }
+    circular = path.circular;
+    roundsToFinish = path.laps;
+
     PathToPolygons pathToPolygons = new PathToPolygons();
-    roadPolygons = pathToPolygons.createRoadPolygons(_path, circular);
+    roadPolygons = pathToPolygons.createRoadPolygons(path);
   }
   bool onRoad(Point2d p){
     for(int i = 0; i< roadPolygons.length; i++){

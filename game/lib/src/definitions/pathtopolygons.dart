@@ -1,53 +1,68 @@
-part of micromachines;
+part of game.definitions;
 
 class PathToPolygons
 {
-  List<Polygon> createRoadPolygons(List<PathCheckPoint> path, bool circular)
+  List<Polygon> createRoadPolygons(GameLevelPath path)
   {
+    List<Point2d> points = _pointsFromCheckPoints(path);
     List<Polygon> polygons = [];
     // 1 create square parts of the roads
-    List<Polygon> roads = _createSquareRoadPolygons(path, circular);
+    List<Polygon> roads = _createSquareRoadPolygons(path, points);
     // 2 create triangle intersections between roads
-    polygons.addAll(_createIntersections(path, roads, circular));
+    polygons.addAll(_createIntersections(points, roads, path.circular));
     // 3 create triangles for square roads
     polygons.addAll(_splitRoadsInTriangles(roads));
     //polygons.addAll((roads));
     return polygons;
   }
 
-  List<Polygon> _createSquareRoadPolygons(List<PathCheckPoint> path, bool circular)
+  List<Point2d> _pointsFromCheckPoints(GameLevelPath path){
+    List<Point2d> list = [];
+    for(GameLevelCheckPoint p in path.checkpoints){
+      list.add(_pointFromCheckpoint(p));
+    }
+    return list;
+  }
+
+  Point2d _pointFromCheckpoint(GameLevelCheckPoint p){
+    return new Point2d(p.x, p.z);
+  }
+
+  List<Polygon> _createSquareRoadPolygons(GameLevelPath path, List<Point2d> points)
   {
     List<Polygon> roads = [];
-    for(int i = 1; i < path.length; i++)
+    for(int i = 1; i < points.length; i++)
     {
-      roads.add(_createSquareRoad(path[i-1], path[i]));
+      int a = i-1;
+      int b = i;
+      roads.add(_createSquareRoad(points[a], points[b], path.checkpoints[a].radius, path.checkpoints[b].radius));
     }
-    if(circular) roads.add(_createSquareRoad(path.last, path.first));
+    int a = points.length - 1;
+    int b = 0;
+    if(path.circular) roads.add(_createSquareRoad(points[a], points[b], path.checkpoints[a].radius, path.checkpoints[b].radius));
     return roads;
   }
 
-  Polygon _createSquareRoad(PathCheckPoint A, PathCheckPoint B)
+  Polygon _createSquareRoad(Point2d A, Point2d B, double radiusA, double radiusB)
   {
-    double roadWidthA = A.radius;
-    double roadWidthB = B.radius;
     double distance = A.distanceTo(B);
     Matrix2d M = (new Matrix2d.translationPoint(A)).rotate(A.angleWith(B));
     return new Polygon([
-      M.apply(new Point2d(0.0, -roadWidthA)),
-      M.apply(new Point2d(distance, -roadWidthB)),
-      M.apply(new Point2d(distance, roadWidthB)),
-      M.apply(new Point2d(0.0, roadWidthA)),
+      M.apply(new Point2d(0.0, -radiusA)),
+      M.apply(new Point2d(distance, -radiusB)),
+      M.apply(new Point2d(distance, radiusB)),
+      M.apply(new Point2d(0.0, radiusA)),
     ]);
   }
 
-  List<Polygon> _createIntersections(List<Point2d> path, List<Polygon> roads, bool pathLoop)
+  List<Polygon> _createIntersections(List<Point2d> path, List<Polygon> roads, circular)
   {
     List<Polygon> intersections = [];
     for(int i = 1; i < path.length - 1; i++)
     {
       intersections.add(_createIntersection(path[i], roads[i - 1], roads[i]));
     }
-    if(pathLoop)
+    if(circular)
     {
       intersections.add(_createIntersection(path.first, roads.last, roads.first));
       intersections.add(_createIntersection(path.last, roads[roads.length - 2], roads.last));

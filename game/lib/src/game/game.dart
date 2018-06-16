@@ -120,29 +120,31 @@ class Game{
     for(GameLevelStaticObject obj in level.staticobjects){
       gameobjects.add(new Tree(obj.x, obj.z, obj.r));
     }
+    /*
     List<PathCheckPoint> checkpoints = [];
 
     for(int i = 0; i < level.path.checkpoints.length; i++){
       GameLevelCheckPoint c = level.path.checkpoints[i];
       checkpoints.add(new PathCheckPoint(c.x,c.z,c.radius));
-    }
+    }*/
 
-    for(int i = 1; i < checkpoints.length-1; i++){
-      PathCheckPoint c = checkpoints[i];
-      gameobjects.add(new CheckPoint(this,c,_getCheckpointAngle(c,checkpoints[i-1],checkpoints[i+1])));
+    path = new Path(level.path);
+
+    for(int i = 1; i < path.checkpoints.length-1; i++){
+      PathCheckPoint c = path.checkpoints[i];
+      gameobjects.add(new CheckPoint(this,c,_getCheckpointAngle(c,path.checkpoints[i-1],path.checkpoints[i+1])));
     }
     //first checkpoint
     if(level.path.circular)
     {
-      gameobjects.add(new CheckPoint(this, checkpoints[0], _getCheckpointAngle(checkpoints[0], checkpoints.last, checkpoints[1])));
-      gameobjects.add(new CheckPoint(this, checkpoints.last, _getCheckpointAngle(checkpoints.last, checkpoints[checkpoints.length - 2], checkpoints[0])));
+      gameobjects.add(new CheckPoint(this, path.checkpoints[0], _getCheckpointAngle(path.checkpoints[0], path.checkpoints.last, path.checkpoints[1])));
+      gameobjects.add(new CheckPoint(this, path.checkpoints.last, _getCheckpointAngle(path.checkpoints.last, path.checkpoints[path.checkpoints.length - 2], path.checkpoints[0])));
     }
     else{
-      gameobjects.add(new CheckPoint(this, checkpoints[0], _getCheckpointAngleToNext(checkpoints[0], checkpoints[1])));
-      gameobjects.add(new CheckPoint(this, checkpoints.last, _getCheckpointAngleToNext(checkpoints.last, checkpoints[0])));
+      gameobjects.add(new CheckPoint(this, path.checkpoints[0], _getCheckpointAngleToNext(path.checkpoints[0], path.checkpoints[1])));
+      gameobjects.add(new CheckPoint(this, path.checkpoints.last, _getCheckpointAngleToNext(path.checkpoints.last, path.checkpoints[0])));
 
     }
-    path = new Path(checkpoints,level.path.circular, level.path.laps);
   }
 
   double _getCheckpointAngleToNext(PathCheckPoint c,PathCheckPoint cNext){

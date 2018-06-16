@@ -11,8 +11,6 @@ import "package:gameutils/math.dart";
 import "package:webgl/webgl.dart";
 import "package:renderlayer/renderlayer.dart";
 
-//TODO: menu should not need Game (needed for creating levelpath to triangles to draw)
-import "game.dart";
 import "webgl_game.dart";
 import "gamemode.dart";
 import "definitions.dart";

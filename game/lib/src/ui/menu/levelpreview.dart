@@ -43,22 +43,14 @@ class LevelPreview
     double offsetX = centerOffsetX - minX*scale;
     double offsetY = centerOffsetY - minZ*scale;
 
-    Path path = _createPath(level.path);
+    PathToPolygons pathToPolygons = new PathToPolygons();
+    List<Polygon> roadPolygons = pathToPolygons.createRoadPolygons(level.path);
 
     layer.ctx.strokeStyle = style;
     layer.ctx.fillStyle = style;
-    for(Polygon p in path.roadPolygons){
+    for(Polygon p in roadPolygons){
       _drawRoadPolygon(p, offsetX, offsetY, scale, layer);
     }
-  }
-
-  Path _createPath(GameLevelPath path){
-    List<PathCheckPoint> checkpoints = [];
-    for(int i = 0; i < path.checkpoints.length; i++){
-      GameLevelCheckPoint c = path.checkpoints[i];
-      checkpoints.add(new PathCheckPoint(c.x,c.z,c.radius));
-    }
-    return new Path(checkpoints,path.circular, path.laps);
   }
 
   void _drawRoadPolygon(Polygon polygon, double offsetX, double offsetY, double scale,RenderLayer layer){

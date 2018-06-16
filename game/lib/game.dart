@@ -14,6 +14,5 @@ part "src/game/tree.dart";
 part "src/game/checkpoint.dart";
 part "src/game/ball.dart";
 part "src/game/path.dart";
-part "src/game/pathtopolygons.dart";
 part "src/game/startingpositions.dart";
 part "src/game/countdown.dart";
