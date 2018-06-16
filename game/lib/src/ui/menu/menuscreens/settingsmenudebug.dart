@@ -11,14 +11,14 @@ class SettingInput<T>
   SettingInput(this.getter, this.setter);
 }
 
-class OptionMenuDebug extends GameMenuScreen
+class SettingsMenuDebug extends GameMenuScreen
 {
   GameMenuController menu;
   bool showStoreIncookie = true;
 
   Map<String, SettingInput> settingElementMapping = {};
-  
-  OptionMenuDebug(this.menu) : super("Options");
+
+  SettingsMenuDebug(this.menu) : super(menu.MENU_OPTION);
 
   Element setupFields()
   {
@@ -160,16 +160,16 @@ class OptionMenuDebug extends GameMenuScreen
       settingElementMapping[s.k].setter(s.v);
   }
   
-  void hide([int effect = 0])
+  void hide()
   {
     storeSettings();
-    super.hide(effect);
+    super.hide();
   }
   
-  void show([int effect = 0])
+  void show(GameMenuStatus status)
   {
     loadSettings();
-    super.show(effect);
+    super.show(status);
   }
 }
 

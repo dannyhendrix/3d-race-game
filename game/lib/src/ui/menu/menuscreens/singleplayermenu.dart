@@ -1,5 +1,5 @@
 part of game.menu;
-
+/*
 class SingleplayerMenu extends GameMenuScreen{
   GameMenuController menu;
   GameBuilder _gameBuilder;
@@ -35,4 +35,4 @@ class SingleplayerMenu extends GameMenuScreen{
     //add(createOpenMenuButton("Options",TeamxMenuController.MENU_OPTION));
     return el;
   }
-}
+}*/

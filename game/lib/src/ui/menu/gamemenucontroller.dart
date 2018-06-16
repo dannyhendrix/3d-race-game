@@ -1,30 +1,54 @@
 part of game.menu;
 
-class GameMenuController extends Menu
+enum GameMenuItem {Main, SingleGame, Game, GameResult}
+enum GameMainMenuItem {Controls, Settings, Credits, Profile}
+
+class GameMenuStatus extends MenuStatus{
+  GameMenuItem menuItem;
+  GameMenuStatus(String title, this.menuItem, [bool showBack]) : super(title, showBack, false);
+}
+
+class GameMainMenuStatus extends GameMenuStatus{
+  GameMainMenuItem mainMenuItem;
+  GameMainMenuStatus(String title, this.mainMenuItem, [bool showBack]) : super(title, GameMenuItem.Main, showBack);
+}
+
+//TODO
+class GameResultMenuStatus extends GameMenuStatus{
+  GameOutput gameOutput;
+  GameResultMenuStatus(String title, this.gameOutput) : super(title, GameMenuItem.GameResult, false);
+}
+
+class GameMenuController extends Menu<GameMenuStatus>
 {
-  final MENU_MAIN = 0;
-  final MENU_MESSAGE = 1;
+  final MENU_MAIN = new GameMainMenuStatus("Main menu", GameMainMenuItem.Profile,false);
 
-  final MENU_CONTROLS = 10;
-  final MENU_OPTION = 11;
-  final MENU_CREDITS = 12;
+  final MENU_CONTROLS = new GameMainMenuStatus("Controls", GameMainMenuItem.Controls, true);
+  final MENU_OPTION = new GameMainMenuStatus("Settings", GameMainMenuItem.Settings, true);
+  final MENU_CREDITS = new GameMainMenuStatus("Credits", GameMainMenuItem.Credits, true);
 
-  final MENU_PROFILE = 20;
-
-  final MENU_SINGLEPLAYER = 30;
-  final MENU_GAMEPLAY = 31;
-  final MENU_GAMERESULT = 32;
-  final MENU_SINGLERACE = 33;
-  final MENU_MULTIPLAYER = 40;
+  final MENU_PROFILE = new GameMainMenuStatus("Profile", GameMainMenuItem.Profile, true);
+  final MENU_SINGLERACE = new GameMenuStatus("Single race", GameMenuItem.SingleGame, true);
+  final MENU_GAME = new GameMenuStatus("Game", GameMenuItem.Game, false);
+  final MENU_GAMERESULT = new GameMenuStatus("Game result", GameMenuItem.GameResult, false);
 
   Element el_storeCookie;
   GameResultMenu menu_gameresult;
   PlayGameMenu menu_playgame;
   GameSettings settings;
+  Map<GameMenuItem, GameMenuScreen> menus;
+  MenuScreen _currentMenu = null;
 
   GameMenuController(this.settings) : super()
   {
-
+    menu_gameresult = new GameResultMenu(this);
+    menu_playgame = new PlayGameMenu(this);
+    menus = {
+      GameMenuItem.Main : new MainMenu(this),
+      GameMenuItem.SingleGame : new SingleRaceMenu(this),
+      GameMenuItem.Game : menu_playgame,
+      GameMenuItem.GameResult : menu_gameresult,
+    };
   }
 
   @override
@@ -38,12 +62,10 @@ class GameMenuController extends Menu
     ell.append(createTitleElement(createBackButton(),createCloseButton()));
     //ell.append(createCookieElement());
 
-    for(int k in menus.keys)
-    {
-      menus[k].init();
-      ell.append(menus[k].element);
+    for(GameMenuItem menuItem in menus.keys){
+      menus[menuItem].init();
+      ell.append(menus[menuItem].element);
     }
-
     el.append(ell);
     return el;
   }
@@ -83,18 +105,6 @@ class GameMenuController extends Menu
     return el;
   }
   */
-  /*
-   *  Element createButtonWithIcon(String icon, Function callback)
-  {
-    //<i class="material-icons">menu</i>
-    Element btn = super.createButton("", callback);
-    Element iel = new Element.tag("i");
-    iel.className = "material-icons";
-    iel.text = icon.toLowerCase();
-    btn.append(iel);
-    return btn;
-  }
-   */
   Element createBackButton()
   {
     ButtonElement btn = super.createBackButton();
@@ -105,43 +115,17 @@ class GameMenuController extends Menu
     btn.append(iel);
     return btn;
   }
-/*
-  @override
-  void init()
-  {
-    super.init();
-    DivElement logo = new DivElement();
-    logo.id="logo";
-    document.body.append(logo);
-    document.body.append(document.querySelector("#share"));
-    _setupMenus();
-  }
-  */
-  
-  Map<int,GameMenuScreen> getMenus()
-  {
-    menu_gameresult = new GameResultMenu(this);
-    menu_playgame = new PlayGameMenu(this);
-    return {
-      MENU_MAIN : new MainMenu(this),
-      MENU_CONTROLS: new ControlsMenu(this),
-      MENU_CREDITS: new CreditsMenu(this),
-      MENU_SINGLEPLAYER: new SingleplayerMenu(this),
-      MENU_SINGLERACE: new SingleRaceMenu(this),
-      MENU_GAMERESULT: menu_gameresult,
-      MENU_GAMEPLAY: menu_playgame,
-      MENU_PROFILE: new ProfileSideMenu(this),
-      /*MENU_CHARACTER: new CharacterMenu(this),
-      MENU_LEVEL: new LevelMenu(this),
-      MENU_CHARACTER : new CharacterMenu(this),*/
-      MENU_OPTION : settings.debug.v ? new OptionMenuDebug(this) : new OptionMenu(this),
-      /*MENU_LEVEL_MESSAGE : new LevelMessageMenu(this)*/
-    };
-  }
 
-  void showMenu(int m, [int effect = 0, bool storeInHistory = true])
+  void showMenu(GameMenuStatus m, [bool storeInHistory = true])
   {
-    super.showMenu(m,effect,storeInHistory);
+    super.showMenu(m,storeInHistory);
+    if(_currentMenu != null){
+      _currentMenu.hide();
+    }
+
+    _currentMenu = menus[m.menuItem];
+    _currentMenu.show(m);
+
     /*
     if(menus[m].showStoreIncookie && settings.client_showStoreInCookie.v)
     {
@@ -156,21 +140,23 @@ class GameMenuController extends Menu
     */
   }
 
-  void hideMenu([int effect = 0])
+  void hideMenu()
   {
-    super.hideMenu(effect);
+    super.hideMenu();
   }
 
-  void showPlayGameMenu(GameInput settings, [int effect = 0, bool storeInHistory = true]){
+  //TODO: use GameInputMenuStatus
+  void showPlayGameMenu(GameInput settings, [bool storeInHistory = true]){
     menu_playgame.startGame(settings,(GameOutput result){
       showGameResultMenu(result);
     });
-    showMenu(MENU_GAMEPLAY,effect,storeInHistory);
+    showMenu(MENU_GAME,storeInHistory);
   }
 
-  void showGameResultMenu(GameOutput result, [int effect = 0, bool storeInHistory = true]){
+  //TODO: use GameResultMenuStatus
+  void showGameResultMenu(GameOutput result, [bool storeInHistory = true]){
     menu_gameresult.setGameResult(result);
-    showMenu(MENU_GAMERESULT,effect,storeInHistory);
+    showMenu(MENU_GAMERESULT,storeInHistory);
   }
 }
 

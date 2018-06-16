@@ -71,5 +71,5 @@ body {width:800px; margin:0px auto; color:#222;	font-family: Arial;}
 }
 .GameInputSelection .content {width:200px; background: rgba(158, 158, 158, 0.1); height:100px; float:left;}
 
-.rightPanel {float:left; width:50%;}
+.rightPanel {float:left; width:50%; height: 400px; overflow-y: auto;}
 .leftPanel {float:left; width:50%;}

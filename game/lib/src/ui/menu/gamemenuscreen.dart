@@ -1,10 +1,10 @@
 part of game.menu;
 
-class GameMenuScreen extends MenuScreen
+class GameMenuScreen extends MenuScreen<GameMenuStatus>
 {
   bool showStoreIncookie = false;
 
-  GameMenuScreen(String title) : super(title);
+  GameMenuScreen(MenuStatus menuStatus) : super(menuStatus);
 /*
   ButtonElement createMenuIconButton(String icon, [Function onclick])
   {
@@ -30,11 +30,16 @@ class GameMenuScreen extends MenuScreen
     return btn;
   }
 
-  Element createOpenMenuButtonWithIcon(Menu menu, String label, String icon, int menuId)
+  Element createOpenMenuButtonWithIcon(Menu menu, String label, String icon, MenuStatus status)
   {
     return createMenuButtonWithIcon(label,icon,(Event e)
     {
-      menu.showMenu(menuId, 0);
+      menu.showMenu(status);
     });
   }
+/*
+  @override
+  MenuStatus getCurrentStatus() {
+    // TODO: implement getCurrentStatus
+  }*/
 }

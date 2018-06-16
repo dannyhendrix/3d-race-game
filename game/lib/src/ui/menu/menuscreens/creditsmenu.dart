@@ -3,7 +3,7 @@ part of game.menu;
 class CreditsMenu extends GameMenuScreen
 {
   GameMenuController menu;
-  CreditsMenu(this.menu) : super("Credits");
+  CreditsMenu(this.menu) : super(menu.MENU_CREDITS);
 
   Element setupFields()
   {

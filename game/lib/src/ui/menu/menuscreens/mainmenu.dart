@@ -2,10 +2,35 @@ part of game.menu;
 
 class MainMenu extends GameMenuScreen
 {
+  Map<GameMainMenuItem, GameMenuScreen> _sideMenus;
+  MenuScreen _currentMenu = null;
   GameMenuController menu;
   GameBuilder _gameBuilder;
-  MainMenu(this.menu) : super("Main menu"){
+  MainMenu(this.menu) : super(menu.MENU_MAIN){
     _gameBuilder = new GameBuilder(menu.settings);
+
+    GameMenuScreen settingsMenu = menu.settings.debug.v ? new SettingsMenuDebug(menu) : new SettingsMenu(menu);
+    _sideMenus = {
+      GameMainMenuItem.Profile : new ProfileMenu(menu),
+      GameMainMenuItem.Credits : new CreditsMenu(menu),
+      GameMainMenuItem.Controls : new ControlsMenu(menu),
+      GameMainMenuItem.Settings : settingsMenu,
+    };
+  }
+
+  void show(GameMenuStatus status)
+  {
+    if(_currentMenu != null){
+      _currentMenu.hide();
+    }
+    if(status is GameMainMenuStatus){
+      GameMainMenuStatus mainMenuStatus = status;
+      _currentMenu = _sideMenus[mainMenuStatus.mainMenuItem];
+    }else{
+      _currentMenu = _sideMenus[GameMainMenuItem.Profile];
+    }
+    _currentMenu.show(status);
+    super.show(status);
   }
 
   Element setupFields()
@@ -23,7 +48,8 @@ class MainMenu extends GameMenuScreen
       menu.showPlayGameMenu(_gameBuilder.newRandomGame());
     }));
     el_left.append(createOpenMenuButtonWithIcon(menu,"Single race","play_arrow",menu.MENU_SINGLERACE));
-    el_left.append(createOpenMenuButtonWithIcon(menu,"Story mode","table_chart",menu.MENU_MAIN));
+    //el_left.append(createOpenMenuButtonWithIcon(menu,"Story mode","table_chart",menu.MENU_MAIN));
+    el_left.append(createOpenMenuButtonWithIcon(menu,"Profile","account_circle",menu.MENU_PROFILE));
     /*
     el_left.append(createMenuButtonWithIcon("Result","play_arrow",(Event e){
       var a = new GameResult();
@@ -38,14 +64,14 @@ class MainMenu extends GameMenuScreen
       menu.showGameResultMenu(a);
     }));
 */
-    //el_left.append(createOpenMenuButtonWithIcon(menu,"Settings","settings",menu.MENU_OPTION));
+    el_left.append(createOpenMenuButtonWithIcon(menu,"Settings","settings",menu.MENU_OPTION));
     el_left.append(createOpenMenuButtonWithIcon(menu,"Controls","videogame_asset",menu.MENU_CONTROLS));
     el_left.append(createOpenMenuButtonWithIcon(menu,"Credits","info",menu.MENU_CREDITS));
 
-    GameMenuScreen profileMenu = new ProfileSideMenu(menu);
-    profileMenu.init();
-    profileMenu.show();
-    el_right.append(profileMenu.element);
+    for(GameMainMenuItem menuItem in _sideMenus.keys){
+      _sideMenus[menuItem].init();
+      el_right.append(_sideMenus[menuItem].element);
+    }
 
     closebutton = false;
     backbutton = false;

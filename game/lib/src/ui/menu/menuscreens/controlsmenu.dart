@@ -7,7 +7,7 @@ class ControlsMenu extends GameMenuScreen
   EnterKey enterKey = new EnterKey();
   Map<int, Element> keyToElementMapping = {};
 
-  ControlsMenu(this.menu) : super("Controls");
+  ControlsMenu(this.menu) : super(menu.MENU_CONTROLS);
 
   Element setupFields()
   {
@@ -147,10 +147,10 @@ class ControlsMenu extends GameMenuScreen
   }
 
   @override
-  void hide([int effect = 0])
+  void hide()
   {
     menu.settings.saveToCookie();
-    super.hide(effect);
+    super.hide();
   }
 }
 

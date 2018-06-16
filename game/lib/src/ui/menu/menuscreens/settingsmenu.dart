@@ -1,13 +1,13 @@
 part of game.menu;
 
-class OptionMenu extends GameMenuScreen
+class SettingsMenu extends GameMenuScreen
 {
   bool showStoreIncookie = true;
   GameMenuController menu;
 
   Map<String, SettingInput> settingElementMapping = {};
-  
-  OptionMenu(this.menu) : super("Settings");
+
+  SettingsMenu(this.menu) : super(menu.MENU_OPTION);
 
   Element setupFields()
   {
@@ -24,16 +24,16 @@ class OptionMenu extends GameMenuScreen
   {
   }
   
-  void hide([int effect = 0])
+  void hide()
   {
     storeSettings();
-    super.hide(effect);
+    super.hide();
   }
 
-  void show([int effect = 0])
+  void show(GameMenuStatus status)
   {
     loadSettings();
-    super.show(effect);
+    super.show(status);
   }
 }
 

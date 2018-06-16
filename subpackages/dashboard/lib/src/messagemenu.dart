@@ -1,9 +1,9 @@
 part of menu;
-
-class MessageMenu extends MenuScreen
+//TODO: this is not optimal for the menustatus construction yet
+abstract class MessageMenu<H extends MenuStatus> extends MenuScreen<H>
 {
   //TODO: known bug: if 2 messages are shown in 1 menusession, the message/title is overwritten
-  MessageMenu(): super("Message");
+  MessageMenu(H status): super(status);
   Element txt_message;
 
   Element setupFields()
@@ -16,7 +16,7 @@ class MessageMenu extends MenuScreen
 
   void setMessage(String title, String message,[bool viewCloseButton = true, bool viewBackButton = false])
   {
-    this.title = title;
+    this.status.title = title;
     txt_message.innerHtml = message;
     this.backbutton = viewBackButton;
     this.closebutton = viewCloseButton;

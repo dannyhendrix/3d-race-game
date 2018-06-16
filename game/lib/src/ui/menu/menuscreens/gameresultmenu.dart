@@ -2,7 +2,7 @@ part of game.menu;
 
 class GameResultMenu extends GameMenuScreen{
   GameMenuController menu;
-  GameResultMenu(this.menu) : super("Game result");
+  GameResultMenu(this.menu) : super(menu.MENU_GAMERESULT);
 
   Element gameResultContent;
 

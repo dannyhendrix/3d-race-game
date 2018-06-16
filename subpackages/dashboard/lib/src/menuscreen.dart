@@ -1,17 +1,19 @@
 part of menu;
 
-class MenuScreen
+class MenuScreen<H extends MenuStatus>
 {
   Element element;
 
   bool backbutton = true;
   bool closebutton = true;
-  String title;
+  MenuStatus status;
 
-  MenuScreen(this.title)
+  MenuScreen(this.status)
   {
 
   }
+  H getCurrentStatus() => status;
+
   void init()
   {
     element = setupFields();
@@ -22,15 +24,15 @@ class MenuScreen
   {
     Element el = new DivElement();
     el.className = "menu";
-    el.id = title.toLowerCase().replaceAll(" ","_");
+    el.id = status.title.toLowerCase().replaceAll(" ","_");
     return el;
   }
 
-  void show([int effect])
+  void show(H status)
   {
     element.style.display = "block";
   }
-  void hide(int effect)
+  void hide()
   {
     element.style.display = "none";
   }
@@ -63,19 +65,19 @@ class MenuScreen
     return iel;
   }
 
-  Element createOpenMenuButton(Menu menu, String label, int menuId)
+  Element createOpenMenuButton(Menu menu, String label, H status)
   {
     return createMenuButton(label,(Event e)
     {
-      menu.showMenu(menuId, 0);
+      menu.showMenu(status);
     });
   }
 
-  Element createOpenMenuIconButton(Menu menu, String icon, int menuId)
+  Element createOpenMenuIconButton(Menu menu, String icon, H status)
   {
     return createMenuIconButton(icon,(Event e)
     {
-      menu.showMenu(menuId, 0);
+      menu.showMenu(status);
     });
   }
 

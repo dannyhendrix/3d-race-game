@@ -1,25 +1,50 @@
 part of menu;
 
-class Menu
+class MenuStatus{
+  String title;
+  bool showBack = false;
+  bool showClose = false;
+  MenuStatus(this.title, [this.showBack = false, this.showClose = false]);
+}
+
+class TabView{
+  Map<int, Element>  _menus;
+  int _current = -1;
+  Element setupFields(Map<int, Element> menus)
+  {
+    _menus = menus;
+    Element el = new DivElement();
+    for(int k = 0; k < menus.length; k++)
+    {
+      el.append(menus[k]);
+      menus[k].style.display = "none";
+    }
+    return el;
+  }
+  void showTab(int index){
+    if(_current != -1)
+    {
+      _menus[_current].style.display = "none";
+    }
+    _current = index;
+    _menus[_current].style.display = "block";
+  }
+}
+
+class Menu<H extends MenuStatus>
 {
+  List<H> _backqueue = [];
+  H _currentStatus;
+
   //menu element
   Element element;
-  Map<int,MenuScreen> menus;
-  int _currentmenu = -1;
   Element btn_back;
   Element btn_close;
   //txt_title is the element with text==title
   Element txt_title;
-  List _backqueue = new List<int>();
-
-  Map<int,MenuScreen> getMenus()
-  {
-    return {};
-  }
 
   void init([bool appendToBody = true])
   {
-    menus = getMenus();
     element = setupFields();
     element.style.display = "none";
     if(appendToBody)
@@ -30,19 +55,16 @@ class Menu
   {
     Element el = new DivElement();
     el.id = "menu_bg";
-    Element ell = new DivElement();
+    Element ell = createContent();
     ell.id = "menu_wrapper";
 
     ell.append(createTitleElement(createBackButton(),createCloseButton()));
-
-    for(int k in menus.keys)
-    {
-      menus[k].init();
-      ell.append(menus[k].element);
-    }
-
     el.append(ell);
     return el;
+  }
+
+  Element createContent(){
+    return new DivElement();
   }
 
   Element createBackButton()
@@ -51,8 +73,8 @@ class Menu
     ret.id = "menu_back";
     ret.onClick.listen((Event e)
     {
-      if(_currentmenu != -1 && _backqueue.length > 0)
-        showMenu(_backqueue.removeLast(),0,false);
+      if(_backqueue.isNotEmpty)
+        showMenu(_backqueue.removeLast(), false);
       else
         hideMenu();
     });
@@ -85,47 +107,21 @@ class Menu
     return el;
   }
 
-  bool isActiveMenu()
-  {
-    return _currentmenu != -1;
-  }
-
-  void showMenu(int m, [int effect = 0, bool storeInHistory = true])
-  {
-    int cm = _currentmenu;
-    if(_currentmenu != -1)
-    {
-      if(storeInHistory)
-        _backqueue.add(cm);
-      menus[_currentmenu].hide(effect);
-    }
+  void showMenu(H status, [bool storeInHistory = true]){
+    if(_currentStatus == status) return;
     element.style.display = "block";
+    if(storeInHistory && _currentStatus != null)
+      _backqueue.add(_currentStatus);
+    _currentStatus = status;
 
-    menus[m].show(effect);
-    _currentmenu = m;
-
-    txt_title.text = menus[m].title;
-    btn_back.style.display = (menus[m].backbutton && _backqueue.length > 0) ? "block" : "none";
-    btn_close.style.display = (menus[m].closebutton) ? "block" : "none";
+    txt_title.text = status.title;
+    btn_back.style.display = (status.showBack && _backqueue.isNotEmpty) ? "block" : "none";
+    btn_close.style.display = status.showClose ? "block" : "none";
   }
 
-  void hideMenu([int effect = 0])
-  {
-    if(_currentmenu == -1)
-      return;
-    menus[_currentmenu].hide(effect);
-    _currentmenu = -1;
-
+  void hideMenu(){
     element.style.display = "none";
     _backqueue.clear();
-  }
-
-  void toggleMenu(int m, [int effect = 0])
-  {
-    if(_currentmenu == m)
-      hideMenu(effect);
-    else
-      showMenu(m,effect);
   }
 }
 

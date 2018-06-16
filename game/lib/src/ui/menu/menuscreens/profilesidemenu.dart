@@ -2,9 +2,9 @@ part of game.menu;
 
 typedef void OnColorChange(VehicleThemeColor newColor);
 
-class ProfileSideMenu extends GameMenuScreen{
+class ProfileMenu extends GameMenuScreen{
   GameMenuController menu;
-  ProfileSideMenu(this.menu) : super("Profile");
+  ProfileMenu(this.menu) : super(menu.MENU_PROFILE);
 
   ImageElement _el_vehiclePreview;
 
