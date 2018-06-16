@@ -13,10 +13,9 @@ class GameMainMenuStatus extends GameMenuStatus{
   GameMainMenuStatus(String title, this.mainMenuItem, [bool showBack]) : super(title, GameMenuItem.Main, showBack);
 }
 
-//TODO
-class GameResultMenuStatus extends GameMenuStatus{
+class GameOutputMenuStatus extends GameMenuStatus{
   GameOutput gameOutput;
-  GameResultMenuStatus(String title, this.gameOutput) : super(title, GameMenuItem.GameResult, false);
+  GameOutputMenuStatus(String title, this.gameOutput) : super(title, GameMenuItem.GameResult, false);
 }
 
 class GameMenuController extends Menu<GameMenuStatus>
@@ -144,7 +143,7 @@ class GameMenuController extends Menu<GameMenuStatus>
   {
     super.hideMenu();
   }
-
+/*
   //TODO: use GameInputMenuStatus
   void showPlayGameMenu(GameInput settings, [bool storeInHistory = true]){
     menu_playgame.startGame(settings,(GameOutput result){
@@ -157,6 +156,6 @@ class GameMenuController extends Menu<GameMenuStatus>
   void showGameResultMenu(GameOutput result, [bool storeInHistory = true]){
     menu_gameresult.setGameResult(result);
     showMenu(MENU_GAMERESULT,storeInHistory);
-  }
+  }*/
 }
 

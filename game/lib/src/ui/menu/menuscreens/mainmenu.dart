@@ -45,7 +45,9 @@ class MainMenu extends GameMenuScreen
 
     //el_left.append(createOpenMenuButtonWithIcon(menu,"Singleplayer","account_circle",menu.MENU_SINGLEPLAYER));
     el_left.append(createMenuButtonWithIcon("Random race","play_arrow",(Event e){
-      menu.showPlayGameMenu(_gameBuilder.newRandomGame());
+      menu.showMenu(new GameInputMenuStatus("Random race", _gameBuilder.newRandomGame(), (GameOutput result){
+        menu.showMenu(new GameOutputMenuStatus("Race results", result));
+      }));
     }));
     el_left.append(createOpenMenuButtonWithIcon(menu,"Single race","play_arrow",menu.MENU_SINGLERACE));
     //el_left.append(createOpenMenuButtonWithIcon(menu,"Story mode","table_chart",menu.MENU_MAIN));

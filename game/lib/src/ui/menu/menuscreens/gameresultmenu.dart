@@ -22,7 +22,17 @@ class GameResultMenu extends GameMenuScreen{
     return el;
   }
 
-  void setGameResult(GameOutput gameresult){
+  void show(GameMenuStatus status)
+  {
+    if(status is GameOutputMenuStatus)
+    {
+      GameOutputMenuStatus resultStatus = status;
+      _setGameResult(resultStatus.gameOutput);
+    }
+    super.show(status);
+  }
+
+  void _setGameResult(GameOutput gameresult){
     gameResultContent.text = gameresult.toString();
   }
 }

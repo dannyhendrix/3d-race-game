@@ -39,7 +39,9 @@ class SingleRaceMenu extends GameMenuScreen{
     el.append(_in_oponents);
 
     el.append(createMenuButtonWithIcon("Start","play_arrow",(Event e){
-      menu.showPlayGameMenu(createGameInput());
+      menu.showMenu(new GameInputMenuStatus("Single race", createGameInput(), (GameOutput result){
+        menu.showMenu(new GameOutputMenuStatus("Race results", result));
+      }));
     }));
 
     _vehicleSelection.onIndexChanged(-1, 0);
