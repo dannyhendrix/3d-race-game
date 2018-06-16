@@ -29,6 +29,14 @@ class ProfileMenu extends GameMenuScreen{
 
   void _onColorChange(){
     _el_vehiclePreview.src = _createPreviewFromModel(new GlModel_Vehicle(), colorMappingGl[menu.settings.user_color1.v], colorMappingGl[menu.settings.user_color2.v]);
+
+    if(menu.settings.client_changeCSSWithThemeChange.v)
+    {
+      LinkElement theme1 = document.querySelector("#css_theme1");
+      theme1.href = "theme1/${colorMappingText[menu.settings.user_color1.v].toLowerCase()}.css";
+      LinkElement theme2 = document.querySelector("#css_theme2");
+      theme2.href = "theme2/${colorMappingText[menu.settings.user_color2.v].toLowerCase()}.css";
+    }
   }
 
   Element _createColorSelect(VehicleThemeColor current, OnColorChange onColorChange){

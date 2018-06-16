@@ -1,61 +1,40 @@
 html { background-color:white; }
-body {width:800px; margin:0px auto; color:#222;	font-family: Arial;}
-#menu_bg { /*position:absolute;*/ top:0px; height:100%; left:0px; width:100%; text-align:center;}
-#menu_wrapper {margin: 0px auto;}
-#menu_wrapper .menu {padding: 5px 0px; margin: 0px;}
-#menu_wrapper .menu_button {
-	cursor: pointer;
-	margin: 10px 0px;
-	background: rgba(158, 158, 158, 0.1);
-	border-bottom: 3px solid rgba(0, 0, 0, 0.06);
-	display:block;
-	padding: 20px;
-	text-align: center;
-	font-weight: bold;
-	text-decoration: none;
-	}
-#menu_title {
-	position:relative;
-    font-family: monospace;
-    background: #3F51B5;
-    font-weight: bold;
-    border-bottom: 3px solid rgba(0, 0, 0, 0.17);
-    font-size: 12pt;
-    padding: 9px;
-    color: white;
-}
-/*#menu_wrapper #singleplayer .menu_button {background-color:#FF5722;}*/
+body { width:800px; margin:0px auto; color:#222; font-family: Arial;}
+#menu_bg { top:0px; height:100%; left:0px; width:100%; text-align:center;}
+#menu_wrapper { margin: 0px auto;}
+#menu_wrapper .menu { padding: 5px 0px; margin: 0px;}
+#menu_wrapper .menu_button { cursor: pointer; margin: 10px 0px; background: rgba(158, 158, 158, 0.1); border-bottom: 3px solid rgba(0, 0, 0, 0.06); display:block; padding: 20px; text-align: center; font-weight: bold; text-decoration: none; }
+#menu_title { position:relative; font-family: monospace; background: #3F51B5; font-weight: bold; border-bottom: 3px solid rgba(0, 0, 0, 0.17); font-size: 12pt; padding: 9px; color: white;}
+
 #menu_close { position: absolute; right: 7px; top: 7px; width: 30px; height: 24px; border: 0px solid rgb(111, 111, 111); border-radius: 8px; background: none; outline: 0px; color: white; font-weight: bold; font-size: 15px; padding: 0px; }
 
 #menu_back { position: absolute; left: 7px; top: 7px; width: 30px; height: 24px; border: 0px solid rgb(111, 111, 111); border-radius: 8px; background: none; outline: 0px; color: white; font-weight: bold; font-size: 15px; padding: 0px; }
 
 #menu_wrapper .menu_button:hover { background-color: rgb(255, 169, 63);}
-#menu_wrapper i.material-icons {
-    float: left;
-}
-#logo{     font-family: fantasy;
-    font-size: 30px;
-    color: #ffed00;
-    margin: 0px auto;
-    width: 500px;
-    text-align: center;
-     text-shadow:0px 3px 0 rgba(0,0,0,0.6);}
+#menu_wrapper i.material-icons { float: left;}
 
+.rightPanel { display:inline-block; width:50%; height: 420px; overflow-y: auto;}
+.leftPanel { display:inline-block;  width:50%; height: 420px; overflow-y: auto;}
+
+#menu_wrapper .button {cursor: pointer;}
+#menu_wrapper .button:hover{background-color: rgb(255, 169, 63);}
+
+/** TopBar**/
+#logo{ font-family: fantasy; font-size: 30px; color: #ffed00; margin: 0px auto; width: 500px; text-align: center; text-shadow:0px 3px 0 rgba(0,0,0,0.6);}
+#topbar { background: rgba(0,0,0,0.1); height: 40px; position:static; top:0px; left:0px; width:100%;}
+#topbar .right { float:right;}
+
+/** Game **/
 .profilecolor{ display:inline-block; width:60px; height:30px; background-color:red; margin: 10px;}
 
-#topbar {background: rgba(0,0,0,0.1); height: 40px; position:static; top:0px; left:0px; width:100%;}
-#topbar .item {background-color:green;}
-#topbar .right {float:right;}
 
-#menu_wrapper #controls {padding: 22px 40px;}
+/** Controls menu **/
+#menu_wrapper #controls { padding: 22px 40px;}
 #controls table { border-collapse: collapse; }
 #controls table td { text-align:left; padding:5px; }
-#controls .tabs {display:block;}
-#controls .tabs_content {clear: both; padding: 0px 40px;}
-#controls .tabs {
-    padding: 10px;
-    height: 20px;
-}
+#controls .tabs { display:block;}
+#controls .tabs_content { clear: both; padding: 0px 40px;}
+#controls .tabs { padding: 10px; height: 20px;}
 #controls .control_key.editable:hover { background: rgb(255, 116, 116); color: rgb(89, 0, 0); border-color: rgb(89, 0, 0); cursor: pointer; }
 #controls .control_key.add:hover { background: rgb(116, 255, 116); color: rgb(0, 89, 0); border-color: rgb(0, 89, 0); cursor: pointer; }
 
@@ -66,57 +45,29 @@ body {width:800px; margin:0px auto; color:#222;	font-family: Arial;}
 
 #enterkey { position:absolute; top:0px; left:0px; width:100%; height:245px; background: rgba(0, 0, 0, 0.80); color: white; padding-top: 170px; }
 
-.GameInputSelection {
-    display: inline-block;
-    width: 300px;
-}
-.GameInputSelection .content {width:200px; background: rgba(158, 158, 158, 0.1); height:100px; float:left;}
+/** SingleRace menu **/
+.GameInputSelection { display:inline-block; margin: auto;}
+.GameInputSelection .content { display:inline-block; width:200px; height:100px;}
+.GameInputSelection .navigate { display:inline-block; width:30px; background: rgba(158, 158, 158, 0.1); height: 60px;
+    padding-top: 30px; border-bottom: 3px solid rgba(0, 0, 0, 0.06);}
 
-.rightPanel {float:left; width:50%; height: 400px; overflow-y: auto;}
-.leftPanel {float:left; width:50%;}
+.intSelection {
+    width: 240px;
+    margin: auto;
+}
+.selectionItem { display: inline-block; padding: 10px 0px; background: whitesmoke; margin: 5px; width: 35px; border-bottom: 3px solid rgba(0, 0, 0, 0.06);}
+.selectionItem.selected { border: 3px solid #3f51b5;}
+.label { font-weight: bold; padding: 10px;}
 
-.colorSelection:hover {
-background-color: rgb(255, 169, 63);
-}
-.colorSelectionItem {
-                        width: 20px;
-                        height: 20px;
-                        display: inline-block;
-                        margin: 4px;
-                        border: 1px solid rgba(0, 0, 0, 0.1);
-                        border-radius: 24px;
-                    }
-.colorSelectionItem.selected {
-        border-radius: 0px;
-            width: 32px;
-}
-.colorSelectionItem:hover {
-        border-radius: 0px;
-}
+/** Profile menu **/
+.colorSelection:hover { background-color: rgb(255, 169, 63);}
+.colorSelectionItem { width: 20px; height: 20px; display: inline-block; margin: 4px; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 24px; }
+.colorSelectionItem.selected { border-radius: 0px; width: 32px;}
+.colorSelectionItem:hover { border-radius: 0px;}
 
-.colorSelection{
-    border-bottom: 3px solid rgba(0, 0, 0, 0.06);
-    background: whitesmoke;
-    width: 300px;
-    padding: 5px;
-    display: inline-block;
-        margin: 10px;
-}
+.colorSelection{ border-bottom: 3px solid rgba(0, 0, 0, 0.06); background: whitesmoke; width: 300px; padding: 5px; display: inline-block; margin: 10px;}
 
-#profile_username input:hover{
-background-color: rgb(255, 169, 63);
-color:black;
-}
-#profile_username input{
-        border: 0px;
-        border-bottom: 3px solid rgba(0, 0, 0, 0.06);
-        padding: 14px 20px;
-        outline: 0px;
-        margin: 10px;
-        width: 269px;
-        background: #3f51b5;
-        text-align: center;
-        color: white;
-        font-weight: bold;
-        font-family: monospace;
-}
+#profile_username input:hover{ background-color: rgb(255, 169, 63);color:black;}
+#profile_username input{ border: 0px; border-bottom: 3px solid rgba(0, 0, 0, 0.06); padding: 14px 20px; outline: 0px; margin: 10px; width: 269px; background: #3f51b5; text-align: center; color: white; font-weight: bold; font-family: monospace;}
+
+#gamewrapper { position: absolute;}

@@ -2,10 +2,10 @@ part of webgl_game;
 
 class GlModel_Formula{
 
-  static const String _ModelBody = "vehicle_body";
-  static const String _ModelStripe = "vehicle_stripe";
-  static const String _ModelWindows = "vehicle_windows";
-  static const String _ModelWheel = "vehicle_wheel";
+  static const String _ModelBody = "formula_body";
+  static const String _ModelStripe = "formula_stripe";
+  static const String _ModelWindows = "formula_windows";
+  static const String _ModelWheel = "formula_wheel";
 
   static const double sx = 50.0/1.0;
   static const double sy = 50.0/1.0;

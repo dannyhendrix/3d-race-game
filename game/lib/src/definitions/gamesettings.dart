@@ -2,6 +2,7 @@ part of game.definitions;
 
 enum ControlKeyType {Default, Alternative, UserDefined}
 enum GameDashboardTheme {Default, Red, Green, Blue}
+enum GameDisplayType {Webgl3d, Webgl2d}
 
 class GameSettings extends SettingsStoredInCookie
 {
@@ -73,13 +74,15 @@ class GameSettings extends SettingsStoredInCookie
 
   GameSetting<bool> debug = new GameSetting("debug", false);
 
-  GameSettingWithEnum<ControlKeyType> client_controlkeytype = new GameSettingWithEnum("client_controlkeytype", ControlKeyType.Default, ControlKeyType.values, "Controls keys");
+  GameSettingWithEnum<ControlKeyType> client_controlkeytype = new GameSettingWithEnum("client_controlkeytype", ControlKeyType.UserDefined, ControlKeyType.values, "Controls keys");
   GameSettingWithEnum<GameDashboardTheme> client_theme = new GameSettingWithEnum("client_theme", GameDashboardTheme.Default, GameDashboardTheme.values, "Theme");
 
   GameSetting<String> levels_location = new GameSetting("levels_location", null, "Location to levels");
   GameSetting<String> levels_definition_location = new GameSetting("levels_definition_location", null, "Location to levels file");
 
   GameSetting<bool> client_showStoreInCookie = new GameSetting("client_enablemouseaiming", true, "Enable mouse aiming");
+  GameSetting<bool> client_changeCSSWithThemeChange = new GameSetting("client_changeccswiththemechange", false, "Switch CSS theme when user changes colors");
+  GameSettingWithEnum<GameDisplayType> client_displayType = new GameSettingWithEnum("client_displaytype", GameDisplayType.Webgl3d, GameDisplayType.values, "Display type");
 
   // list of key ids to movement
   IntMapSettings<Control> client_keys = new IntMapSettings("client_keys", _defaultUserKeys, "Keys");
@@ -90,6 +93,7 @@ class GameSettings extends SettingsStoredInCookie
   GameSetting<int> user_races = new GameSetting("user_races", 0, "Races");
   GameSettingWithEnum<VehicleThemeColor> user_color1 = new GameSettingWithEnum("user_color1", VehicleThemeColor.Blue, VehicleThemeColor.values, "Theme color 1");
   GameSettingWithEnum<VehicleThemeColor> user_color2 = new GameSettingWithEnum("user_color2", VehicleThemeColor.Yellow, VehicleThemeColor.values, "Theme color 2");
+
 
   GameSettings([bool autoload = true])
   {
@@ -105,7 +109,7 @@ class GameSettings extends SettingsStoredInCookie
   List<GameSetting> getMenuSettings()
   {
     if(debug.v == true)
-      return [user_name, user_color1, user_color2, client_theme, storeInCookie, debug];
+      return [user_name, user_color1, user_color2, client_theme, client_changeCSSWithThemeChange, client_displayType, storeInCookie, debug];
     return [storeInCookie];
   }
 

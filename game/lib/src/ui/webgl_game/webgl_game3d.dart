@@ -172,11 +172,13 @@ class WebglGame3d extends WebglGame{
     for(GameObject o in game.gameobjects){
       if(o is Car)
       {
+        print("car model");
         Vehicle v = o;
         modelInstances.add(new GlModelInstanceFromModel(o, vehicleModel
             .getModelInstance(modelCollection, colorMappingGl[v.player.theme
             .color1], colorMappingGl[v.player.theme.color2], colorWindows)));
       }else if(o is FormulaCar){
+        print("formula model");
         Vehicle v = o;
         modelInstances.add(new GlModelInstanceFromModel(o, formulaModel
             .getModelInstance(modelCollection, colorMappingGl[v.player.theme

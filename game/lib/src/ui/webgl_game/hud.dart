@@ -12,6 +12,17 @@ Map<VehicleThemeColor, String> colorMappingCss = {
   VehicleThemeColor.Orange  : "#F80",
   VehicleThemeColor.Pink    : "#F4F",
 };
+Map<VehicleThemeColor, String> colorMappingText = {
+  VehicleThemeColor.Black   : "Black",
+  VehicleThemeColor.White   : "White",
+  VehicleThemeColor.Gray    : "Gray",
+  VehicleThemeColor.Red     : "Red",
+  VehicleThemeColor.Green   : "Green",
+  VehicleThemeColor.Blue    : "Blue",
+  VehicleThemeColor.Yellow  : "Yellow",
+  VehicleThemeColor.Orange  : "Orange",
+  VehicleThemeColor.Pink    : "Pink",
+};
 Map<VehicleThemeColor, GlColor> colorMappingGl = {
   VehicleThemeColor.Black : new GlColor(0.2,0.2,0.2),
   VehicleThemeColor.White : new GlColor(1.0,1.0,1.0),

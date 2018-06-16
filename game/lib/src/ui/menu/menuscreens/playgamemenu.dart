@@ -1,12 +1,11 @@
 part of game.menu;
 
-enum GameDisplayType {Webgl3d, Webgl2d}
 
 class GameInputMenuStatus extends GameMenuStatus{
   GameInput gameInput;
   OnGameFinished onFinished;
   GameDisplayType displayType;
-  GameInputMenuStatus(String title, this.gameInput, this.onFinished, [this.displayType = GameDisplayType.Webgl3d]) : super(title, GameMenuItem.Game, false);
+  GameInputMenuStatus(String title, this.gameInput, this.onFinished, [this.displayType = null]) : super(title, GameMenuItem.Game, false);
 }
 
 class PlayGameMenu extends GameMenuScreen{
@@ -39,7 +38,10 @@ class PlayGameMenu extends GameMenuScreen{
     super.show(status);
   }
 
-  void _startGame(GameInput gameSettings, OnGameFinished onFinished, [GameDisplayType displayType = GameDisplayType.Webgl3d]){
+  void _startGame(GameInput gameSettings, OnGameFinished onFinished, [GameDisplayType displayType = null]){
+    if(displayType == null){
+      displayType = menu.settings.client_displayType.v;
+    }
     WebglGame game = displayType == GameDisplayType.Webgl2d ? new WebglGame2d(menu.settings) : new WebglGame3d(menu.settings);
     Element element;
     game.onGameFinished = (result){
