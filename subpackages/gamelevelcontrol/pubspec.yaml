@@ -1,7 +1,0 @@
-name: gamelevelcontrol
-version: 0.0.1
-author: Danny Hendrix <DWM.Hendrix@gmail.com>
-description: Game levels controller.
-dependencies:
-  browser: any
-  test: any

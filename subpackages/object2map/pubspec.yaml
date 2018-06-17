@@ -1,6 +1,0 @@
-name: object2map
-version: 0.0.1
-author: Danny Hendrix <DWM.Hendrix@gmail.com>
-description: Convert object to map and back
-dependencies:
-  test: any
