@@ -55,7 +55,7 @@ class PlayerStats{
     el_position = new DivElement();
     el_position.className = "position";
     el_name.className = "playername";
-    el_name.text = player.name;
+    el_name.text = player.player.name;
     Element el_color = new DivElement();
     el_color.className = "color";
     Element el_color1 = new DivElement();

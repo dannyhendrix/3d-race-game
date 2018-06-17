@@ -40,11 +40,13 @@ class GameMenuController extends Menu<GameMenuStatus>
 
   GameBuilder gameBuilder;
   LevelManager levelManager;
+  AiPlayerProfileDatabase aiPlayerProfileDatabase;
 
   GameMenuController(this.settings) : super()
   {
     levelManager = new LevelManager();
-    gameBuilder = new GameBuilder(settings, levelManager);
+    aiPlayerProfileDatabase = new AiPlayerProfileDatabase();
+    gameBuilder = new GameBuilder(settings, levelManager, aiPlayerProfileDatabase);
     menus = {
       GameMenuItem.Main : new MainMenu(this),
       GameMenuItem.SingleGame : new SingleRaceMenu(this),
@@ -72,6 +74,10 @@ class GameMenuController extends Menu<GameMenuStatus>
       ell.append(menus[menuItem].element);
     }
     el.append(ell);
+
+    Element el_credits = new DivElement();
+    el_credits.text = "Created by Danny Hendrix";
+    el.append(el_credits);
     return el;
   }
 /*

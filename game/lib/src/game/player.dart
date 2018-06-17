@@ -6,9 +6,7 @@ class HumanPlayer extends Player{
   bool _isAccelarating = false;
   bool _isBreaking = false;
 
-  HumanPlayer(name, VehicleTheme theme){
-    this.theme = theme;
-    this.name = name;
+  HumanPlayer(GameSettingsPlayer player,VehicleTheme theme):super(player,theme){
   }
 
   void onControl(Control control, bool active){
@@ -50,9 +48,7 @@ class HumanPlayer extends Player{
   }
 }
 class AiPlayer extends Player{
-  AiPlayer(name, VehicleTheme theme){
-    this.theme = theme;
-    this.name = name;
+  AiPlayer(GameSettingsPlayer player,VehicleTheme theme):super(player,theme){
   }
   void update(){
     if(pathProgress.finished){
@@ -146,9 +142,9 @@ abstract class Player{
   Game _game;
   Vehicle vehicle;
   PathProgress pathProgress;
-  String name = "Player";
-  int playerId = 0;
-  VehicleTheme theme = new VehicleTheme.withDefaults();
+  GameSettingsPlayer player;
+  VehicleTheme theme;
+  Player(this.player, this.theme);
 
   bool get finished => pathProgress.finished;
 

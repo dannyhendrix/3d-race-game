@@ -69,4 +69,99 @@ body { width:800px; margin:0px auto; color:#222; font-family: Arial;}
 #profile_username input:hover{ background-color: rgb(255, 169, 63);color:black;}
 #profile_username input{ border: 0px; border-bottom: 3px solid rgba(0, 0, 0, 0.06); padding: 14px 20px; outline: 0px; margin: 10px; width: 269px; background: #3f51b5; text-align: center; color: white; font-weight: bold; font-family: monospace;}
 
-#gamewrapper { position: absolute;}
+#gamewrapper { position: relative;}
+
+.gameResult {
+    width: 500px;
+    margin: 0px auto;
+	border-collapse: collapse;
+}
+.gameResultRow{
+background: rgba(158, 158, 158, 0.1);
+padding:5px;
+margin: 10px 0px;
+     text-align: left;
+}
+.gameResultRow .name{
+width:200px;
+display:inline-block;
+padding: 5px;
+}
+.gameResultRow .position{
+width:20px;
+display:inline-block;
+     text-align: right;
+padding: 5px;
+}
+.gameResultRow .image{
+width:150px;
+display:inline-block;
+}
+
+.topplayers {
+    position: relative;
+    height: 300px;
+    width: 500px;
+}
+
+.topplayer {
+    width: 150px;
+    position: absolute;
+}
+
+
+.podium {
+    position: absolute;
+    width: 150px;
+    color: #00000069;
+    font-weight: bold;
+    padding-top: 20px;
+    border-top: 6px solid #00000024;
+}
+.podium1 {
+    bottom: 0px;
+    left: 175px;
+    height: 120px;
+    font-size: 60pt;
+	background:gold;
+}
+.podium2 {
+    bottom: 0px;
+    left: 0px;
+    height: 90px;
+    font-size: 40pt;
+	background:silver;
+}
+.podium3 {
+    bottom: 0px;
+    right: 0px;
+    height: 80px;
+    font-size: 30pt;
+	background:#dc9797;
+}
+
+.playerP1 {
+    bottom: 150px;
+    left: 175px;
+}
+.playerP2 {
+    bottom: 120px;
+    left: 0px;
+}
+
+.playerP3 {
+    right: 0px;
+    bottom: 110px;
+}
+.topplayer .name {
+       font-weight: bold;
+    font-size: 17px;
+    background: whitesmoke;
+    padding: 9px;
+    font-family: monospace;
+    color: #5a5a5a;
+}
+
+.topplayer.currentuser .name,.gameResultRow.currentuser {
+background:#3F51B5; color:white;
+}

@@ -6,8 +6,8 @@ class GameBuilder{
   AiPlayerProfileDatabase _aiplayers;
   Math.Random _random = new Math.Random();
 
-  GameBuilder(this._settings, this._levelManager){
-    _aiplayers = new AiPlayerProfileDatabase();
+  GameBuilder(this._settings, this._levelManager, this._aiplayers){
+
   }
 
   GameInput newRandomGame(){
@@ -47,7 +47,7 @@ class GameBuilder{
 
     for(PlayerProfile player in players){
       team = new GameSettingsTeam.withTheme(player.theme);
-      team.players.add(new GameSettingsPlayer.asAiPlayer(player.name,vehicle,trailer));
+      team.players.add(new GameSettingsPlayer.asAiPlayer(player.id,player.name,vehicle,trailer));
       settings.teams.add(team);
     }
 

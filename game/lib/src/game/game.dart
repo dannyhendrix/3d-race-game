@@ -29,10 +29,10 @@ class Game{
       Player player;
       var p = t.players[0];
       if(p.isHuman){
-        player = new HumanPlayer(p.name, t.vehicleTheme);
+        player = new HumanPlayer(p, t.vehicleTheme);
         humanPlayer = player;
       }else{
-        player = new AiPlayer(p.name, t.vehicleTheme);
+        player = new AiPlayer(p, t.vehicleTheme);
       }
       players.add(player);
 
@@ -104,9 +104,7 @@ class Game{
     result.playerResults = [];
     for(int i = 0; i < players.length; i++){
       Player p = players[i];
-      GamePlayerResult playerResult = new GamePlayerResult();
-      playerResult.name = p.name;
-      playerResult.playerId = p.playerId;
+      GamePlayerResult playerResult = new GamePlayerResult(p.player);
       playerResult.position = i;
       result.playerResults.add(playerResult);
     }

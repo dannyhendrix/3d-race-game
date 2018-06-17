@@ -8,9 +8,9 @@ class GameOutput{
 class GamePlayerResult{
   GameResultTime raceTime = new GameResultTime();
   int position = -1;
-  String name = "";
-  int playerId = 0;// allows to relate the player to the player in the gameInput
-  String toString() => "$position $name($playerId) $raceTime";
+  GameSettingsPlayer player;
+  GamePlayerResult(this.player);
+  String toString() => "$position ${player.name} $raceTime";
 }
 class GameResultTime{
   int hours = 0;

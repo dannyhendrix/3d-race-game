@@ -49,23 +49,31 @@ class MainMenu extends GameMenuScreen
     el_left.append(createOpenMenuButtonWithIcon(menu,"Single race","play_arrow",menu.MENU_SINGLERACE));
     //el_left.append(createOpenMenuButtonWithIcon(menu,"Story mode","table_chart",menu.MENU_MAIN));
     el_left.append(createOpenMenuButtonWithIcon(menu,"Profile","account_circle",menu.MENU_PROFILE));
-    /*
+  /*
     el_left.append(createMenuButtonWithIcon("Result","play_arrow",(Event e){
-      var a = new GameResult();
-      var p1 = new GamePlayerResult();
-      p1.name = "Player1";
+      var a = new GameOutput();
+      var p1 = new GamePlayerResult(new GameSettingsPlayer.asAiPlayer(3,"player1",VehicleType.Car));
       p1.position = 1;
       a.playerResults.add(p1);
-      var p2 = new GamePlayerResult();
-      p2.name = "Player2";
-      p2.position = 2;
-      a.playerResults.add(p2);
-      menu.showGameResultMenu(a);
+      p1 = new GamePlayerResult(new GameSettingsPlayer.asAiPlayer(2,"player2",VehicleType.Truck));
+      p1.position = 2;
+      a.playerResults.add(p1);
+      p1 = new GamePlayerResult(new GameSettingsPlayer.asHumanPlayer("playerUser",VehicleType.Formula));
+      p1.position = 3;
+      a.playerResults.add(p1);
+      p1 = new GamePlayerResult(new GameSettingsPlayer.asAiPlayer(4,"player3",VehicleType.Car));
+      p1.position = 4;
+      a.playerResults.add(p1);
+      p1 = new GamePlayerResult(new GameSettingsPlayer.asAiPlayer(6,"player5",VehicleType.Car));
+      p1.position = 5;
+      a.playerResults.add(p1);
+      menu.showMenu(new GameOutputMenuStatus("Race results", a));
     }));
-*/
-    if(menu.settings.debug.v) el_left.append(createOpenMenuButtonWithIcon(menu,"Settings","settings",menu.MENU_SETTINGS));
+    */
+
+    //if(menu.settings.debug.v) el_left.append(createOpenMenuButtonWithIcon(menu,"Settings","settings",menu.MENU_SETTINGS));
     el_left.append(createOpenMenuButtonWithIcon(menu,"Controls","videogame_asset",menu.MENU_CONTROLS));
-    el_left.append(createOpenMenuButtonWithIcon(menu,"Credits","info",menu.MENU_CREDITS));
+    //el_left.append(createOpenMenuButtonWithIcon(menu,"Credits","info",menu.MENU_CREDITS));
 
     for(GameMainMenuItem menuItem in _sideMenus.keys){
       _sideMenus[menuItem].init();

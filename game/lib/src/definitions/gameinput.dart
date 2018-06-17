@@ -34,14 +34,14 @@ class GameSettingsTeam{
 }
 class GameSettingsPlayer{
   String name = "Player";
-  int playerId = 0;
+  int playerId;
   bool isHuman = false;
   VehicleType vehicle = VehicleType.Car;
   TrailerType trailer = TrailerType.None;
 
   GameSettingsPlayer();
-  GameSettingsPlayer.asHumanPlayer(this.name,this.vehicle,[this.trailer = TrailerType.None]) : isHuman = true;
-  GameSettingsPlayer.asAiPlayer(this.name,this.vehicle,[this.trailer = TrailerType.None]) : isHuman = false;
+  GameSettingsPlayer.asHumanPlayer(this.name,this.vehicle,[this.trailer = TrailerType.None]) : isHuman = true, playerId = -1;
+  GameSettingsPlayer.asAiPlayer(this.playerId, this.name,this.vehicle,[this.trailer = TrailerType.None]) : isHuman = false;
 
   void validate(){
 
