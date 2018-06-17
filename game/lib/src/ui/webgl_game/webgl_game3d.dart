@@ -95,6 +95,10 @@ class WebglGame3d extends WebglGame{
   void pause([bool forceStart = null]){
     _gameloop.pause(forceStart);
   }
+  @override
+  void stop(){
+    _gameloop.stop();
+  }
 
   @override
   void start(){
@@ -203,17 +207,24 @@ class WebglGame3d extends WebglGame{
         modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,75.0,o.position.y, 0.0,-o.r,0.0, treeModel
             .getModelInstance(modelCollection)));
       }else if(o is CheckPoint){
-        var color = new GlColor(1.0,0.5,0.0);
-        var colorPoles = new GlColor(0.6,0.6,0.6);
-        List<Polygon> absoluteCollisionFields = o.getAbsoluteCollisionFields();
-        Point2d wallLeftPosition = absoluteCollisionFields[0].center;
-        Point2d wallRightPosition = absoluteCollisionFields[1].center;
-        modelInstances.add(new GlModelInstanceFromModelStatic(wallLeftPosition.x,75.0,wallLeftPosition.y, 0.0,-o.r,0.0, wallModel
-            .getModelInstance(modelCollection, o.wallW, 150.0, o.wallH,colorPoles)));
-        modelInstances.add(new GlModelInstanceFromModelStatic(wallRightPosition.x,75.0,wallRightPosition.y, 0.0,-o.r,0.0, wallModel
-            .getModelInstance(modelCollection, o.wallW, 150.0, o.wallH,colorPoles)));
-        modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,150.0-30.0,o.position.y, 0.0,-o.r,0.0, wallModel
-            .getModelInstance(modelCollection, o.w-o.wallW-o.wallW, 60.0, 4.0,color)));
+        CheckPoint c = o;
+        if(c.isGate)
+        {
+          var color = new GlColor(1.0, 0.5, 0.0);
+          var colorPoles = new GlColor(0.6, 0.6, 0.6);
+          List<Polygon> absoluteCollisionFields = o.getAbsoluteCollisionFields();
+          Point2d wallLeftPosition = absoluteCollisionFields[0].center;
+          Point2d wallRightPosition = absoluteCollisionFields[1].center;
+          modelInstances.add(new GlModelInstanceFromModelStatic(wallLeftPosition.x, 75.0, wallLeftPosition.y, 0.0, -o
+              .r, 0.0, wallModel
+              .getModelInstance(modelCollection, o.wallW, 150.0, o.wallH, colorPoles)));
+          modelInstances.add(new GlModelInstanceFromModelStatic(wallRightPosition.x, 75.0, wallRightPosition.y, 0.0, -o
+              .r, 0.0, wallModel
+              .getModelInstance(modelCollection, o.wallW, 150.0, o.wallH, colorPoles)));
+          modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 150.0 - 30.0, o.position.y, 0.0, -o
+              .r, 0.0, wallModel
+              .getModelInstance(modelCollection, o.w - o.wallW - o.wallW, 60.0, 4.0, color)));
+        }
       }else{
         double h = 80.0;
         GlModelBuffer cube = new GlCube.fromTopCenter(0.0,(h/2),0.0,o.w,h,o.h).createBuffers(layer);

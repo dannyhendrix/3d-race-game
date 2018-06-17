@@ -61,11 +61,11 @@ class Game{
       player.init(this,v, path);
     }
     _setStartingPositions(players, path);
-
+/*
     var ball = new Ball(this);
     _movableGameObjects.add(ball);
     gameobjects.add(ball);
-
+*/
   }
   void startSession(){
     countdown = new Countdown((){
@@ -137,12 +137,12 @@ class Game{
     //first checkpoint
     if(level.path.circular)
     {
-      gameobjects.add(new CheckPoint(this, path.checkpoints[0], _getCheckpointAngle(path.checkpoints[0], path.checkpoints.last, path.checkpoints[1])));
+      gameobjects.add(new CheckPoint(this, path.checkpoints[0], _getCheckpointAngle(path.checkpoints[0], path.checkpoints.last, path.checkpoints[1]),true));
       gameobjects.add(new CheckPoint(this, path.checkpoints.last, _getCheckpointAngle(path.checkpoints.last, path.checkpoints[path.checkpoints.length - 2], path.checkpoints[0])));
     }
     else{
-      gameobjects.add(new CheckPoint(this, path.checkpoints[0], _getCheckpointAngleToNext(path.checkpoints[0], path.checkpoints[1])));
-      gameobjects.add(new CheckPoint(this, path.checkpoints.last, _getCheckpointAngleToNext(path.checkpoints.last, path.checkpoints[0])));
+      gameobjects.add(new CheckPoint(this, path.checkpoints[0], _getCheckpointAngleToNext(path.checkpoints[0], path.checkpoints[1]), true));
+      gameobjects.add(new CheckPoint(this, path.checkpoints.last, _getCheckpointAngleToNext(path.checkpoints.last, path.checkpoints[0]), true));
 
     }
   }

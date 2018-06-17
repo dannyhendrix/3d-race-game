@@ -12,6 +12,7 @@ abstract class WebglGame{
   OnGameFinished onGameFinished;
   Element initAndCreateDom(GameInput input, GameSettings settings);
   void start();
+  void stop();
   void pause([bool forceStart = null]);
   bool onControl(Control control, bool active);
 
@@ -54,6 +55,9 @@ class WebglGame2d extends WebglGame{
 
   void pause([bool forceStart = null]){
     _gameloop.pause(forceStart);
+  }
+  void stop(){
+    _gameloop.stop();
   }
 
   void _loop(int now){

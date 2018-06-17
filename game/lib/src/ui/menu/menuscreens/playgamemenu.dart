@@ -5,7 +5,7 @@ class GameInputMenuStatus extends GameMenuStatus{
   GameInput gameInput;
   OnGameFinished onFinished;
   GameDisplayType displayType;
-  GameInputMenuStatus(String title, this.gameInput, this.onFinished, [this.displayType = null]) : super(title, GameMenuItem.Game, false);
+  GameInputMenuStatus(String title, this.gameInput, this.onFinished, [this.displayType = null]) : super(title, GameMenuItem.Game, true);
 }
 
 class PlayGameMenu extends GameMenuScreen{
@@ -13,6 +13,8 @@ class PlayGameMenu extends GameMenuScreen{
   PlayGameMenu(this.menu);
 
   Element gameContent;
+  Element el_game;
+  WebglGame game;
 
   Element setupFields()
   {
@@ -37,20 +39,29 @@ class PlayGameMenu extends GameMenuScreen{
     }
     super.show(status);
   }
+  void hide(){
+    if(game != null){
+      game.stop();
+      if(el_game !=null) el_game.remove();
+    }
+
+
+    super.hide();
+  }
 
   void _startGame(GameInput gameSettings, OnGameFinished onFinished, [GameDisplayType displayType = null]){
     if(displayType == null){
       displayType = menu.settings.client_displayType.v;
     }
-    WebglGame game = displayType == GameDisplayType.Webgl2d ? new WebglGame2d(menu.settings) : new WebglGame3d(menu.settings);
-    Element element;
+    game = displayType == GameDisplayType.Webgl2d ? new WebglGame2d(menu.settings) : new WebglGame3d(menu.settings);
+
     game.onGameFinished = (result){
-      element.remove();
+      el_game.remove();
       game = null;
       onFinished(result);
     };
-    element = game.initAndCreateDom(gameSettings, menu.settings);
-    gameContent.append(element);
+    el_game = game.initAndCreateDom(gameSettings, menu.settings);
+    gameContent.append(el_game);
     //element.append(createButton("Pause",(e)=>game.pause()));
     game.start();
   }
