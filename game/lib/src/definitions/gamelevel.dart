@@ -45,11 +45,15 @@ class GameLevelLoader{
     level.d = json["d"];
     level.path.circular = json["path"]["circular"];
     level.path.laps = json["path"]["laps"];
-    level.path.checkpoints = json["path"]["checkpoints"].map<GameLevelCheckPoint>((Map m)=>new GameLevelCheckPoint(m["x"],m["z"],m["radius"])).toList();
-    if(json.containsKey("walls")) level.walls = json["walls"].map<GameLevelWall>((Map m)=>new GameLevelWall(m["x"],m["z"],m["r"],m["w"],m["d"],m["h"])).toList();
-    if(json.containsKey("staticobjects")) level.staticobjects = json["staticobjects"].map<GameLevelStaticObject>((Map m)=>new GameLevelStaticObject(m["id"],m["x"],m["z"],m["r"])).toList();
+    level.path.checkpoints = json["path"]["checkpoints"].map<GameLevelCheckPoint>(_parseCheckpoint).toList();
+    if(json.containsKey("walls")) level.walls = json["walls"].map<GameLevelWall>(_parseWall).toList();
+    if(json.containsKey("staticobjects")) level.staticobjects = json["staticobjects"].map<GameLevelStaticObject>(_parseStaticObject).toList();
     return level;
   }
+
+  GameLevelCheckPoint _parseCheckpoint(dynamic m)=> new GameLevelCheckPoint(m["x"],m["z"],m["radius"]);
+  GameLevelWall _parseWall(dynamic m)=> new GameLevelWall(m["x"],m["z"],m["r"],m["w"],m["d"],m["h"]);
+  GameLevelStaticObject _parseStaticObject(dynamic m)=> new GameLevelStaticObject(m["id"],m["x"],m["z"],m["r"]);
 }
 class GameLevelSaver{
   Map levelToJson(GameLevel level){
