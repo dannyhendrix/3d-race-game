@@ -21,115 +21,49 @@ class LevelObjectWrapper<T extends LevelObject>{
     return el;
   }
 }
-/*
-class LevelObjectWrapperWalls extends LevelObjectWrapper<LevelObjectWall>{
-  void addNew(OnSelect onSelect, OnMove onMove, double x, double y){
-    var newObj = new LevelObjectWall(new GameLevelWall(x,y,0.0,20.0,20.0,20.0));
-    addLevelObject(newObj, onSelect, onMove);
-  }
-  void addToGameLevel(GameLevel level){
-    level.walls.clear();
-    for(var o in levelObjects){
-      level.walls.add(o.createGameObject());
-    }
-  }
-  void loadFromGameLevel(GameLevel level, OnSelect onSelect, OnMove onMove){
-    clearAll();
-    for(var o in level.walls){
-      addLevelObject(new LevelObjectWall(o), onSelect, onMove);
-    }
-  }
-}
-class LevelObjectWrapperStaticObjects extends LevelObjectWrapper<LevelObjectStaticObject>{
-  void addNew(OnSelect onSelect, OnMove onMove, double x, double y){
-    var newObj = new LevelObjectStaticObject(new GameLevelStaticObject(0,x,y,0.0));
-    addLevelObject(newObj, onSelect, onMove);
-  }
-  void addToGameLevel(GameLevel level){
-    level.staticobjects.clear();
-    for(var o in levelObjects){
-      level.staticobjects.add(o.createGameObject());
-    }
-  }
-  void loadFromGameLevel(GameLevel level, OnSelect onSelect, OnMove onMove){
-    clearAll();
-    for(var o in level.staticobjects){
-      addLevelObject(new LevelObjectStaticObject(o), onSelect, onMove);
-    }
-  }
-}
-class LevelObjectWrapperCheckpoints extends LevelObjectWrapper<LevelObjectCheckPoint>{
-  void addNew(OnSelect onSelect, OnMove onMove, double x, double y){
-    var newObj = new LevelObjectCheckPoint(new GameLevelCheckPoint(x,y,100.0));
-    addLevelObject(newObj, onSelect, onMove);
-  }
-  void addToGameLevel(GameLevel level){
-    level.path.checkpoints.clear();
-    for(var o in levelObjects){
-      level.path.checkpoints.add(o.createGameObject());
-    }
-  }
-  void loadFromGameLevel(GameLevel level, OnSelect onSelect, OnMove onMove){
-    clearAll();
-    for(var o in level.path.checkpoints){
-      addLevelObject(new LevelObjectCheckPoint(o), onSelect, onMove);
-    }
-  }
-}
-*/
-/*
-class InputWrapper{
-  Element el;
-  InputElement el_in;
-
-  Element createElement(String label, Function onChange){
-    el_in = createInput(onChange);
-    el = _wrapWithLabel(label, el_in);
-    return el;
-  }
-
-  Element _wrapWithLabel(String label, Element element){
-    DivElement el = new DivElement();
-    Element el_label = new SpanElement();
-    el_label.text = label;
-    el.append(el_label);
-    el.append(element);
-    return el;
-  }
-  InputElement createInput(Function onChange){
-    InputElement el = new InputElement();
-    el.type = "number";
-    el.onChange.listen(onChange);
-    return el;
-  }
-  void showHideElement(bool show){
-    el.style.display = show ? "block" : "none";
-  }
-}
-class InputSliderWrapper extends InputWrapper{
-  double min;
-  double max;
-  double step;
-  InputSliderWrapper(this.min, this.max, this.step);
-  InputElement createInput(Function onChange){
-    RangeInputElement el = new RangeInputElement();
-    el.onChange.listen(onChange);
-    el.min = min.toString();
-    el.max = max.toString();
-    el.step = step.toString();
-    return el;
-  }
-}
-*/
 class LevelObjectMenu{
   Element element;
+  Element el_menu;
+  Element el_buttonDelete;
+  LevelObject _currentLevelObject;
+  OnDelete onLevelObjectDelete;
+
   Element createElement(){
     Element el = new DivElement();
+    el_menu = new DivElement();
+    el_buttonDelete = createButtonText("Delete",(Event e){
+      if(_currentLevelObject == null) return;
+      if(onLevelObjectDelete != null){
+        onLevelObjectDelete(_currentLevelObject);
+      }
+      _currentLevelObject = null;
+      el_menu.nodes.clear();
+      showDelete(false);
+    });
     element = el;
+    el.append(el_menu);
+    el.append(el_buttonDelete);
+
+    showDelete(false);
     return el;
   }
   void onSelect(LevelObject o){
-    element.nodes.clear();
-    element.append(o.el_properties);
+    el_menu.nodes.clear();
+    el_menu.append(o.el_properties);
+    _currentLevelObject = o;
+    showDelete(true);
+  }
+
+  void showDelete(bool show){
+    el_buttonDelete.style.display = show ? "" : "none";
+  }
+
+  Element createButtonText(String text, Function onClick) {
+    DivElement btn = new DivElement();
+    btn.className = "button";
+    btn.onClick.listen((MouseEvent e){ e.preventDefault(); onClick(e); });
+    btn.onTouchStart.listen((TouchEvent e){ e.preventDefault(); onClick(e); });
+    btn.text = text;
+    return btn;
   }
 }

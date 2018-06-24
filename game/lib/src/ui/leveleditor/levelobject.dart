@@ -1,6 +1,7 @@
 part of game.leveleditor;
 
 typedef OnSelect(LevelObject o);
+typedef OnDelete(LevelObject o);
 typedef OnPropertyChanged(LevelObject o);
 /*
 class LevelObjectCheckPoint extends LevelObjectCircle{
@@ -262,6 +263,9 @@ class LevelObject{
     el_properties = el;
     return el;
   }
+  void onDeselect(){
+    element.classes.remove("selected");
+  }
 
   void _onMouseDown(MouseEvent e){
     e.preventDefault();
@@ -269,6 +273,7 @@ class LevelObject{
     _mouseY = e.page.y;
     _mouseDown = true;
     onSelect(this);
+    element.classes.add("selected");
   }
   void _onMouseUp(MouseEvent e){
     if(!_mouseDown) return;
