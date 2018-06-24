@@ -1,6 +1,6 @@
 html { background-color:white; }
 body { width:800px; margin:0px auto; color:#222; font-family: Arial;}
-textarea, input {outline:none;}
+* {outline:none;}
 
 #menu_bg { top:0px; height:100%; left:0px; width:100%; text-align:center;}
 #menu_wrapper { margin: 0px auto;}
@@ -8,23 +8,19 @@ textarea, input {outline:none;}
 #menu_wrapper .menu_button { cursor: pointer; margin: 10px 0px; background: rgba(158, 158, 158, 0.1); border-bottom: 3px solid rgba(0, 0, 0, 0.06); display:block; padding: 20px; text-align: center; font-weight: bold; text-decoration: none; }
 #menu_title { position:relative; font-family: monospace; background: #3F51B5; font-weight: bold; border-bottom: 3px solid rgba(0, 0, 0, 0.17); font-size: 12pt; padding: 9px; color: white;}
 
-#menu_close { position: absolute; right: 7px; top: 7px; width: 30px; height: 24px; border: 0px solid rgb(111, 111, 111); border-radius: 8px; background: none; outline: 0px; color: white; font-weight: bold; font-size: 15px; padding: 0px; }
+#menu_close { position: absolute; right: 7px; top: 7px; width: 30px; height: 24px; border: 0px solid rgb(111, 111, 111); border-radius: 8px; background: none; color: white; font-weight: bold; font-size: 15px; padding: 0px; }
 
-#menu_back { position: absolute; left: 7px; top: 7px; width: 30px; height: 24px; border: 0px solid rgb(111, 111, 111); border-radius: 8px; background: none; outline: 0px; color: white; font-weight: bold; font-size: 15px; padding: 0px; }
+#menu_back { position: absolute; left: 7px; top: 7px; width: 30px; height: 24px; border: 0px; background: none; color: white; font-weight: bold; font-size: 15px; padding: 0px; }
 
-#menu_wrapper .menu_button:hover { background-color: rgb(255, 169, 63);}
+#menu_wrapper .menu_button:hover { background-color: #3F51B5;}
 #menu_wrapper i.material-icons { float: left;}
 
 .rightPanel { display:inline-block; width:50%; height: 420px; overflow-y: auto;}
-.leftPanel { display:inline-block;  width:50%; height: 420px; overflow-y: auto;}
+.leftPanel { display:inline-block; width:50%; height: 420px; overflow-y: auto;}
 
 #menu_wrapper .button {cursor: pointer;}
 #menu_wrapper .button:hover{background-color: rgb(255, 169, 63);}
-a.button {    display: inline-block;
-              color: #444;
-              text-decoration: none;
-              padding: 10px;
-              background: rgba(158, 158, 158, 0.1); border-bottom: 3px solid rgba(0, 0, 0, 0.06); font-weight:bold;}
+a.button { display: inline-block; color: #444; text-decoration: none; padding: 10px; background: rgba(158, 158, 158, 0.1); border-bottom: 3px solid rgba(0, 0, 0, 0.06); font-weight:bold;}
 
 /** TopBar**/
 #logo{ font-family: fantasy; font-size: 30px; color: #ffed00; margin: 0px auto; width: 500px; text-align: center; text-shadow:0px 3px 0 rgba(0,0,0,0.6);}
@@ -33,7 +29,6 @@ a.button {    display: inline-block;
 
 /** Game **/
 .profilecolor{ display:inline-block; width:60px; height:30px; background-color:red; margin: 10px;}
-
 
 /** Controls menu **/
 #menu_wrapper #controls { padding: 22px 40px;}
@@ -55,13 +50,9 @@ a.button {    display: inline-block;
 /** SingleRace menu **/
 .GameInputSelection { display:inline-block; margin: auto;}
 .GameInputSelection .content { display:inline-block; width:200px; height:100px;}
-.GameInputSelection .navigate { display:inline-block; width:30px; background: rgba(158, 158, 158, 0.1); height: 60px;
-    padding-top: 30px; border-bottom: 3px solid rgba(0, 0, 0, 0.06);}
+.GameInputSelection .navigate { display:inline-block; width:30px; background: rgba(158, 158, 158, 0.1); height: 60px; padding-top: 30px; border-bottom: 3px solid rgba(0, 0, 0, 0.06);}
 
-.intSelection {
-    width: 240px;
-    margin: auto;
-}
+.intSelection { width: 240px; margin: auto; }
 .selectionItem { display: inline-block; padding: 10px 0px; background: whitesmoke; margin: 5px; width: 35px; border-bottom: 3px solid rgba(0, 0, 0, 0.06);}
 .selectionItem.selected { border: 3px solid #3f51b5;}
 .label { font-weight: bold; padding: 10px;}
@@ -70,110 +61,34 @@ a.button {    display: inline-block;
 .colorSelectionItem { width: 20px; height: 20px; display: inline-block; margin: 4px; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 24px; }
 .colorSelectionItem.selected { border-radius: 0px; width: 32px;}
 .colorSelectionItem:hover { border-radius: 0px;}
+.leveljson{ resize:none; width:120px; }
 
 .colorSelection{ width: 300px; padding: 5px; display: inline-block; margin: 10px;}
 
 #profile_username input:hover{ background-color: rgb(255, 169, 63);color:black;}
-#profile_username input{ border: 0px; border-bottom: 3px solid rgba(0, 0, 0, 0.06); padding: 14px 20px; outline: 0px; margin: 10px; width: 269px; background: #3f51b5; text-align: center; color: white; font-weight: bold; font-family: monospace;}
+#profile_username input{ border: 0px; border-bottom: 3px solid rgba(0, 0, 0, 0.06); padding: 14px 20px; margin: 10px; width: 269px; background: #3f51b5; text-align: center; color: white; font-weight: bold; font-family: monospace;}
 
 #gamewrapper { position: relative;}
 
-.gameResult {
-    width: 500px;
-    margin: 0px auto;
-	border-collapse: collapse;
-}
-.gameResultRow{
-background: rgba(158, 158, 158, 0.1);
-padding:5px;
-margin: 10px 0px;
-     text-align: left;
-}
-.gameResultRow .name{
-width:200px;
-display:inline-block;
-padding: 5px;
-}
-.gameResultRow .position{
-width:20px;
-display:inline-block;
-     text-align: right;
-padding: 5px;
-}
-.gameResultRow .image{
-width:150px;
-display:inline-block;
-}
+/** Game result (podium) **/
+.gameResult { width: 500px; margin: 0px auto; 	border-collapse: collapse; }
+.gameResultRow{ background: rgba(158, 158, 158, 0.1); padding:5px; margin: 10px 0px; text-align: left; }
+.gameResultRow .name{ width:200px; display:inline-block; padding: 5px; }
+.gameResultRow .position{ width:20px; display:inline-block; text-align: right; padding: 5px; }
+.gameResultRow .image{ width:150px; display:inline-block; }
 
-.topplayers {
-    position: relative;
-    height: 300px;
-    width: 500px;
-}
+.topplayers { position: relative; height: 300px; width: 500px; }
+.topplayer { width: 150px; position: absolute; }
+.podium { position: absolute; width: 150px; color: #00000069; font-weight: bold; padding-top: 20px; border-top: 6px solid #00000024; }
+.podium1 { bottom: 0px; left: 175px; height: 120px; font-size: 60pt; 	background:gold; }
+.podium2 { bottom: 0px; left: 0px; height: 90px; font-size: 40pt; 	background:silver; }
+.podium3 { bottom: 0px; right: 0px; height: 80px; font-size: 30pt; 	background:#dc9797; }
 
-.topplayer {
-    width: 150px;
-    position: absolute;
-}
+.playerP1 { bottom: 150px; left: 175px; }
+.playerP2 { bottom: 120px; left: 0px; }
 
+.playerP3 { right: 0px; bottom: 110px; }
+.topplayer .name { font-weight: bold; font-size: 17px; background: whitesmoke; padding: 9px; font-family: monospace; color: #5a5a5a; }
 
-.podium {
-    position: absolute;
-    width: 150px;
-    color: #00000069;
-    font-weight: bold;
-    padding-top: 20px;
-    border-top: 6px solid #00000024;
-}
-.podium1 {
-    bottom: 0px;
-    left: 175px;
-    height: 120px;
-    font-size: 60pt;
-	background:gold;
-}
-.podium2 {
-    bottom: 0px;
-    left: 0px;
-    height: 90px;
-    font-size: 40pt;
-	background:silver;
-}
-.podium3 {
-    bottom: 0px;
-    right: 0px;
-    height: 80px;
-    font-size: 30pt;
-	background:#dc9797;
-}
+.topplayer.currentuser .name,.gameResultRow.currentuser { background:#3F51B5; color:white; }
 
-.playerP1 {
-    bottom: 150px;
-    left: 175px;
-}
-.playerP2 {
-    bottom: 120px;
-    left: 0px;
-}
-
-.playerP3 {
-    right: 0px;
-    bottom: 110px;
-}
-.topplayer .name {
-       font-weight: bold;
-    font-size: 17px;
-    background: whitesmoke;
-    padding: 9px;
-    font-family: monospace;
-    color: #5a5a5a;
-}
-
-.topplayer.currentuser .name,.gameResultRow.currentuser {
-background:#3F51B5; color:white;
-}
-
-.leveljson{
-resize:none;
-width:120px;
-}
