@@ -7,12 +7,9 @@ class LevelObjectWrapper<T extends LevelObject>{
     el.nodes.clear();
     levelObjects = [];
   }
-  void addLevelObject(T o, OnSelect onSelect, OnMove onMove){
+  void addLevelObject(T o){
     levelObjects.add(o);
-    o.onMove = onMove;
-    o.onSelect = onSelect;
     el.append(o.createElement());
-    o.update();
   }
   void removeLevelObject(T o){
     levelObjects.remove(o);
@@ -23,10 +20,8 @@ class LevelObjectWrapper<T extends LevelObject>{
     el.className = "levelObjectWrapper";
     return el;
   }
-  void addToGameLevel(GameLevel level){}
-  void loadFromGameLevel(GameLevel level, OnSelect onSelect, OnMove onMove){}
-  void addNew(OnSelect onSelect, OnMove onMove, double x, double y){}
 }
+/*
 class LevelObjectWrapperWalls extends LevelObjectWrapper<LevelObjectWall>{
   void addNew(OnSelect onSelect, OnMove onMove, double x, double y){
     var newObj = new LevelObjectWall(new GameLevelWall(x,y,0.0,20.0,20.0,20.0));
@@ -81,7 +76,8 @@ class LevelObjectWrapperCheckpoints extends LevelObjectWrapper<LevelObjectCheckP
     }
   }
 }
-
+*/
+/*
 class InputWrapper{
   Element el;
   InputElement el_in;
@@ -124,68 +120,16 @@ class InputSliderWrapper extends InputWrapper{
     return el;
   }
 }
-
+*/
 class LevelObjectMenu{
-  InputWrapper el_x;
-  InputWrapper el_y;
-  InputWrapper el_r;
-  InputWrapper el_w;
-  InputWrapper el_h;
-  LevelObject _currentObj;
+  Element element;
   Element createElement(){
     Element el = new DivElement();
-    el_x = new InputWrapper();
-    el_y = new InputWrapper();
-    el_r = new InputSliderWrapper(0.0,2*3.14, 0.2);
-    el_w = new InputWrapper();
-    el_h = new InputWrapper();
-    el.append(el_x.createElement("x",_onInputChange));
-    el.append(el_y.createElement("y",_onInputChange));
-    el.append(el_w.createElement("w",_onInputChange));
-    el.append(el_h.createElement("h",_onInputChange));
-    el.append(el_r.createElement("r",_onInputChange));
-
+    element = el;
     return el;
   }
-
-  void _showLevelObject(LevelObject o){
-    el_x.showHideElement(o.canMoveX);
-    el_y.showHideElement(o.canMoveY);
-    el_r.showHideElement(o.canRotate);
-    el_w.showHideElement(o.canResizeW);
-    el_h.showHideElement(o.canResizeH);
-    el_x.el_in.value = o.x.toString();
-    el_y.el_in.value = o.y.toString();
-    el_r.el_in.value = o.r.toString();
-    el_w.el_in.value = o.w.toString();
-    el_h.el_in.value = o.h.toString();
-  }
-
-  void _onInputChange(Event e){
-    if(_currentObj == null) return;
-    _currentObj.x = double.parse(el_x.el_in.value);
-    _currentObj.y = double.parse(el_y.el_in.value);
-    _currentObj.r = double.parse(el_r.el_in.value);
-    _currentObj.w = double.parse(el_w.el_in.value);
-    _currentObj.h = double.parse(el_h.el_in.value);
-    _currentObj.update();
-  }
-
-  Element _wrapWithLabel(String label, Element element){
-    DivElement el = new DivElement();
-    Element el_label = new SpanElement();
-    el_label.text = label;
-    el.append(el_label);
-    el.append(element);
-    return el;
-  }
-
   void onSelect(LevelObject o){
-    _currentObj = o;
-    _showLevelObject(o);
-  }
-  void onMove(LevelObject o){
-    _currentObj = o;
-    _showLevelObject(o);
+    element.nodes.clear();
+    element.append(o.el_properties);
   }
 }

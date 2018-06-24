@@ -201,10 +201,10 @@ class WebglGame3d extends WebglGame{
         modelInstances.add(new GlModelInstanceFromModel(o, truckTrailerModel
             .getModelInstance(modelCollection, colorMappingGl[t.vehicle.player.theme.color1], colorMappingGl[t.vehicle.player.theme.color2], colorWindows)));
       }else if(o is Wall){
-        modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,75.0,o.position.y, 0.0,-o.r,0.0, wallModel
+        modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,0.0,o.position.y, 0.0,-o.r,0.0, wallModel
             .getModelInstance(modelCollection, o.w, 150.0, o.h)));
       }else if(o is Tree){
-        modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,75.0,o.position.y, 0.0,-o.r,0.0, treeModel
+        modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,0.0,o.position.y, 0.0,-o.r,0.0, treeModel
             .getModelInstance(modelCollection)));
       }else if(o is CheckPoint){
         CheckPoint c = o;
@@ -215,13 +215,13 @@ class WebglGame3d extends WebglGame{
           List<Polygon> absoluteCollisionFields = o.getAbsoluteCollisionFields();
           Point2d wallLeftPosition = absoluteCollisionFields[0].center;
           Point2d wallRightPosition = absoluteCollisionFields[1].center;
-          modelInstances.add(new GlModelInstanceFromModelStatic(wallLeftPosition.x, 75.0, wallLeftPosition.y, 0.0, -o
+          modelInstances.add(new GlModelInstanceFromModelStatic(wallLeftPosition.x, 0.0, wallLeftPosition.y, 0.0, -o
               .r, 0.0, wallModel
               .getModelInstance(modelCollection, o.wallW, 150.0, o.wallH, colorPoles)));
-          modelInstances.add(new GlModelInstanceFromModelStatic(wallRightPosition.x, 75.0, wallRightPosition.y, 0.0, -o
+          modelInstances.add(new GlModelInstanceFromModelStatic(wallRightPosition.x, 0.0, wallRightPosition.y, 0.0, -o
               .r, 0.0, wallModel
               .getModelInstance(modelCollection, o.wallW, 150.0, o.wallH, colorPoles)));
-          modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 150.0 - 30.0, o.position.y, 0.0, -o
+          modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 150.0-60.0, o.position.y, 0.0, -o
               .r, 0.0, wallModel
               .getModelInstance(modelCollection, o.w - o.wallW - o.wallW, 60.0, 4.0, color)));
         }

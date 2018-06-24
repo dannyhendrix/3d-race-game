@@ -17,10 +17,5 @@ dependencies:
     path: ../subpackages/preloader
   renderlayer:
     path: ../subpackages/renderlayer
-  object2map:
-    path: ../subpackages/object2map
   webgl:
     path: ../subpackages/webgl
-
-  gamelevelcontrol:
-    path: ../subpackages/gamelevelcontrol

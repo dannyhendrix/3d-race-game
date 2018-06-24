@@ -33,8 +33,8 @@ class GameLevelCheckPoint extends GameLevelElement{
   GameLevelCheckPoint([this.x=0.0,this.z=0.0, this.radius = 0.0]);
 }
 class GameLevelPath extends GameLevelElement{
-  bool circular = false;
-  int laps = -1;
+  bool circular = true;
+  int laps = 3;
   List<GameLevelCheckPoint> checkpoints = <GameLevelCheckPoint>[];
 }
 

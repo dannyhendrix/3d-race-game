@@ -2,6 +2,7 @@ import "dart:html";
 import "package:gameutils/math.dart";
 import "package:renderlayer/renderlayer.dart";
 import "package:micromachines/game.dart";
+import "package:micromachines/definitions.dart";
 import "dart:math" as Math;
 
 class CheckpointPoints{
@@ -15,15 +16,16 @@ void main(){
   RenderLayer layer = new RenderLayer.withSize(800,800);
   document.body.append(layer.canvas);
 
-  List<PathCheckPoint> path = [
-    new PathCheckPoint(700.0,500.0,50.0),
-    new PathCheckPoint(500.0,700.0,50.0),
-    new PathCheckPoint(200.0,600.0,50.0),
-    new PathCheckPoint(100.0,100.0,50.0),
-    new PathCheckPoint(300.0,300.0,50.0),
+  GameLevelPath path = new GameLevelPath();
+  path.checkpoints = [
+    new GameLevelCheckPoint(700.0,500.0,50.0),
+    new GameLevelCheckPoint(500.0,700.0,50.0),
+    new GameLevelCheckPoint(200.0,600.0,50.0),
+    new GameLevelCheckPoint(100.0,100.0,50.0),
+    new GameLevelCheckPoint(300.0,300.0,50.0),
   ];
   var roadToPolygon = new PathToPolygons();
-  var roadPolygons = roadToPolygon.createRoadPolygons(path, true);
+  var roadPolygons = roadToPolygon.createRoadPolygons(path);
   layer.ctx.strokeStyle = "#fff";
   layer.ctx.fillStyle = "#000";
 
@@ -32,11 +34,11 @@ void main(){
   layer.ctx.strokeStyle = "blue";
   layer.ctx.lineWidth = 50;
   layer.ctx.beginPath();
-  layer.ctx.moveTo(path[0].x,path[0].y);
-  for(int i = 1; i < path.length; i++){
-    layer.ctx.lineTo(path[i].x,path[i].y);
+  layer.ctx.moveTo(path.checkpoints[0].x,path.checkpoints[0].z);
+  for(int i = 1; i < path.checkpoints.length; i++){
+    layer.ctx.lineTo(path.checkpoints[i].x,path.checkpoints[i].z);
   }
-  layer.ctx.lineTo(path[0].x,path[0].y);
+  layer.ctx.lineTo(path.checkpoints[0].x,path.checkpoints[0].z);
   layer.ctx.stroke();
 
   layer.ctx.strokeStyle = "#fff";
@@ -47,10 +49,10 @@ void main(){
   //}
   List<CheckpointPoints> checkpointsPoints = [];
   //draw checkpoints
-  for(int i = 0; i < path.length; i++){
-    var P = path[i];
-    var Pnext = i < path.length-1 ? path[i+1] : path[0];
-    var Pprev = i > 0 ? path[i-1] : path[path.length-1];
+  for(int i = 0; i < path.checkpoints.length; i++){
+    var P = path.checkpoints[i];
+    var Pnext = i < path.checkpoints.length-1 ? path.checkpoints[i+1] : path.checkpoints[0];
+    var Pprev = i > 0 ? path.checkpoints[i-1] : path.checkpoints[path.checkpoints.length-1];
     drawCheckPoint(P, layer);
     /*
     wall.applyMatrix(new Matrix2d.translation(-pathCheckpoint.radius,0.0)),
@@ -84,15 +86,15 @@ void main(){
 */
 }
 
-double getCheckpointAngle(PathCheckPoint c,PathCheckPoint cPrev,PathCheckPoint cNext){
+double getCheckpointAngle(GameLevelCheckPoint c,GameLevelCheckPoint cPrev,GameLevelCheckPoint cNext){
   double angle = ((cPrev-c)+(c-cNext)).angle;
   angle += Math.pi/2;
   return angle;
 }
 
-void drawCheckPoint(PathCheckPoint point, RenderLayer layer){
+void drawCheckPoint(GameLevelCheckPoint point, RenderLayer layer){
   layer.ctx.beginPath();
-  layer.ctx.arc(point.x, point.y,point.radius,0,2*Math.pi);
+  layer.ctx.arc(point.x, point.z,point.radius,0,2*Math.pi);
   layer.ctx.stroke();
 }
 

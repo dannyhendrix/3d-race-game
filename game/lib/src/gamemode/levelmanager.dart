@@ -20,7 +20,7 @@ class LevelManager{
     {"x":440,"z":1150,"radius":120}
   ]}};
   Map levelJson3 = {"w":2400,"d":1280,"walls":[],"staticobjects":[],"path":{"circular":true,"laps":5,"checkpoints":[{"x":340,"z":1134,"radius":80},{"x":968,"z":1120,"radius":80},{"x":930,"z":700,"radius":80},{"x":1332,"z":652,"radius":80},{"x":1520,"z":906,"radius":80},{"x":1892,"z":1128,"radius":80},{"x":2260,"z":964,"radius":80},{"x":2030,"z":596,"radius":80},{"x":2292,"z":300,"radius":80},{"x":1850,"z":112,"radius":80},{"x":1616,"z":452,"radius":80},{"x":1282,"z":106,"radius":80},{"x":1278,"z":408,"radius":80},{"x":904,"z":374,"radius":80},{"x":808,"z":74,"radius":80},{"x":392,"z":78,"radius":80},{"x":80,"z":362,"radius":80},{"x":538,"z":630,"radius":80}]}};
-
+  Map levelJson4 ={"w":800,"d":500,"walls":[{"x":1666,"z":554,"r":-0.7,"w":227,"d":245,"h":100},{"x":540,"z":474,"r":-1.2,"w":227,"d":245,"h":100},{"x":658,"z":424,"r":-1.1,"w":227,"d":82,"h":100}],"staticobjects":[{"id":0,"x":1690,"z":756,"r":100},{"id":0,"x":1702,"z":812,"r":100},{"id":0,"x":1740,"z":718,"r":100},{"id":0,"x":2010,"z":762,"r":100},{"id":0,"x":1990,"z":822,"r":100},{"id":0,"x":2024,"z":800,"r":100},{"id":0,"x":1894,"z":252,"r":100},{"id":0,"x":1930,"z":256,"r":100},{"id":0,"x":1344,"z":274,"r":100},{"id":0,"x":1370,"z":324,"r":100},{"id":0,"x":1314,"z":716,"r":100},{"id":0,"x":1256,"z":738,"r":100},{"id":0,"x":1316,"z":748,"r":100},{"id":0,"x":1140,"z":444,"r":100},{"id":0,"x":1116,"z":524,"r":100}],"path":{"circular":true,"laps":3,"checkpoints":[{"x":588,"z":174,"radius":130},{"x":112,"z":206,"radius":100},{"x":496,"z":1194,"radius":100},{"x":1680,"z":244,"radius":100},{"x":2410,"z":988,"radius":100},{"x":2690,"z":448,"radius":100},{"x":2176,"z":48,"radius":100},{"x":1730,"z":1094,"radius":100},{"x":1088,"z":146,"radius":100}]}};
   GameLevelLoader _levelLoader = new GameLevelLoader();
   Map<int, GameLevel> loadedLevels = {};
 
@@ -28,6 +28,7 @@ class LevelManager{
     loadedLevels[0] = _levelLoader.loadLevelJson(leveljson);
     loadedLevels[1] = _levelLoader.loadLevelJson(levelJson2);
     loadedLevels[2] = _levelLoader.loadLevelJson(levelJson3);
+    loadedLevels[3] = _levelLoader.loadLevelJson(levelJson4);
   }
 
   GameLevel loadLevel(int id){

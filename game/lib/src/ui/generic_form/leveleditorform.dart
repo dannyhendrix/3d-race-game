@@ -1,4 +1,4 @@
-part of webgl_game;
+part of game.leveleditor;
 
 typedef OnValueChanged(Input input);
 typedef MapInput(Input input);

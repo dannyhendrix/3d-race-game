@@ -1,8 +1,8 @@
 part of game.leveleditor;
 
 typedef OnSelect(LevelObject o);
-typedef OnMove(LevelObject o);
-
+typedef OnPropertyChanged(LevelObject o);
+/*
 class LevelObjectCheckPoint extends LevelObjectCircle{
   LevelObjectCheckPoint(GameLevelCheckPoint value){
     x = value.x;
@@ -55,6 +55,241 @@ class LevelObjectCircle extends LevelObject{
     element.style.borderRadius = "${w}px";
   }
 }
+*/
+/*
+class LevelObjectXYWHR extends LevelObject
+{
+  InputFormDouble input_x = new InputFormDouble("x");
+  InputFormDouble input_y = new InputFormDouble("y");
+  InputFormDouble input_w = new InputFormDouble("w");
+  InputFormDouble input_h = new InputFormDouble("h");
+  InputFormDouble input_r = new InputFormDouble("r");
+
+  LevelObjectXYR()
+  {
+    properties = [input_x, input_y, input_w, input_h, input_r];
+  }
+
+  void onPropertyInputChange(InputForm form)
+  {
+    super.onPropertyInputChange(form);
+  }
+
+  void updateElement()
+  {
+    double hw = input_w.getValue() / 2;
+    double hh = input_h.getValue() / 2;
+    element.style.top = "${(input_y.getValue() - hh) * _scale}px";
+    element.style.left = "${(input_x.getValue() - hw) * _scale}px";
+    element.style.width = "${input_w.getValue() * _scale}px";
+    element.style.height = "${input_h.getValue() * _scale}px";
+    element.style.transform = "rotate(${input_r.getValue()}rad)";
+  }
+
+  void onElementMove(double xOffset, double yOffset)
+  {
+    input_x.setValue(input_x.getValue() + xOffset / _scale);
+    input_y.setValue(input_y.getValue() + yOffset / _scale);
+  }
+}
+*/
+class LevelObjectWall extends LevelObject{
+  GameLevelWall gameObject;
+  InputFormDouble input_x = new InputFormDouble("x");
+  InputFormDouble input_y = new InputFormDouble("y");
+  InputFormDouble input_w = new InputFormDouble("w");
+  InputFormDouble input_h = new InputFormDouble("h");
+  InputFormDouble input_r = new InputFormDouble("r");
+  LevelObjectWall(this.gameObject){
+    className = "wall";
+    properties = [input_x, input_y, input_w, input_h, input_r];
+    input_x.onValueChange = (double value) { gameObject.x = value; onPropertyInputChange(); };
+    input_y.onValueChange = (double value) { gameObject.z = value; onPropertyInputChange(); };
+    input_w.onValueChange = (double value) { gameObject.w = value; onPropertyInputChange(); };
+    input_h.onValueChange = (double value) { gameObject.d = value; onPropertyInputChange(); };
+    input_r.onValueChange = (double value) { gameObject.r = value; onPropertyInputChange(); };
+  }
+  void updateProperties(){
+    input_x.setValue(gameObject.x);
+    input_y.setValue(gameObject.z);
+    input_w.setValue(gameObject.w);
+    input_h.setValue(gameObject.d);
+    input_r.setValue(gameObject.r);
+  }
+  void updateElement(){
+    double hw = gameObject.w/2;
+    double hh = gameObject.d/2;
+    element.style.top = "${(gameObject.z-hh)*scale}px";
+    element.style.left = "${(gameObject.x-hw)*scale}px";
+    element.style.width = "${gameObject.w*scale}px";
+    element.style.height = "${gameObject.d*scale}px";
+    element.style.transform = "rotate(${gameObject.r}rad)";
+  }
+  void onElementMove(double xOffset, double yOffset){
+    gameObject.x += xOffset;
+    gameObject.z += yOffset;
+    onPropertyInputChange();
+  }
+}
+class LevelObjectStaticObject extends LevelObject{
+  GameLevelStaticObject gameObject;
+  InputFormDouble input_x = new InputFormDouble("x");
+  InputFormDouble input_y = new InputFormDouble("y");
+  InputFormDouble input_r = new InputFormDouble("r");
+  InputFormInt input_id = new InputFormInt("id");
+  LevelObjectStaticObject(this.gameObject){
+    className = "staticobject";
+    properties = [input_x, input_y, input_r,input_id];
+    input_x.onValueChange = (double value) { gameObject.x = value; onPropertyInputChange(); };
+    input_y.onValueChange = (double value) { gameObject.z = value; onPropertyInputChange(); };
+    input_r.onValueChange = (double value) { gameObject.r = value; onPropertyInputChange(); };
+    input_id.onValueChange = (int value) { gameObject.id = value; onPropertyInputChange(); };
+  }
+  void updateProperties(){
+    input_x.setValue(gameObject.x);
+    input_y.setValue(gameObject.z);
+    input_r.setValue(gameObject.r);
+    input_id.setValue(gameObject.id);
+  }
+  void updateElement(){
+    double w = 20.0;
+    double d = 20.0;
+    double hw = w/2;
+    double hh = d/2;
+    element.style.top = "${(gameObject.z-hh)*scale}px";
+    element.style.left = "${(gameObject.x-hw)*scale}px";
+    element.style.width = "${w*scale}px";
+    element.style.height = "${d*scale}px";
+    element.style.transform = "rotate(${gameObject.r}rad)";
+  }
+  void onElementMove(double xOffset, double yOffset){
+    gameObject.x += xOffset;
+    gameObject.z += yOffset;
+    onPropertyInputChange();
+  }
+}
+class LevelObjectCheckpoint extends LevelObject{
+  Element el_marker;
+  GameLevelCheckPoint gameObject;
+  InputFormDouble input_x = new InputFormDouble("x");
+  InputFormDouble input_y = new InputFormDouble("y");
+  InputFormDouble input_radius = new InputFormDouble("radius");
+  LevelObjectCheckpoint(this.gameObject){
+    className = "checkpoint";
+    properties = [input_x, input_y, input_radius];
+    input_x.onValueChange = (double value) { gameObject.x = value; onPropertyInputChange(); };
+    input_y.onValueChange = (double value) { gameObject.z = value; onPropertyInputChange(); };
+    input_radius.onValueChange = (double value) { gameObject.radius = value; onPropertyInputChange(); };
+  }
+  void updateProperties(){
+    input_x.setValue(gameObject.x);
+    input_y.setValue(gameObject.z);
+    input_radius.setValue(gameObject.radius);
+  }
+  void updateElement(){
+    double fullRadius = gameObject.radius*2;
+    element.style.top = "${(gameObject.z-gameObject.radius)*scale}px";
+    element.style.left = "${(gameObject.x-gameObject.radius)*scale}px";
+    element.style.width = "${fullRadius*scale}px";
+    element.style.height = "${fullRadius*scale}px";
+    element.style.borderRadius = "${fullRadius*scale}px";
+
+    el_marker.style.top = "${(gameObject.radius-20.0)*scale}px";
+    el_marker.style.left = "${(gameObject.radius-20.0)*scale}px";
+    el_marker.style.width = "${40.0*scale}px";
+    el_marker.style.height = "${40.0*scale}px";
+  }
+  void onElementMove(double xOffset, double yOffset){
+    gameObject.x += xOffset;
+    gameObject.z += yOffset;
+    onPropertyInputChange();
+  }
+  Element createElement(){
+    el_marker = new DivElement();
+    el_marker.className = "marker";
+    Element el = super.createElement();
+    el.append(el_marker);
+    return el;
+  }
+}
+class LevelObject{
+  Element element;
+  Element el_properties;
+  String className = "";
+  int _mouseX;
+  int _mouseY;
+  bool _mouseDown = false;
+  double scale = 0.5;
+  List<InputForm> properties = [];
+
+  OnPropertyChanged onPropertyChanged = _onPropertyChangedDefault;
+  OnSelect onSelect = _onSelectDefault;
+  static void _onPropertyChangedDefault(LevelObject o){}
+  static void _onSelectDefault(LevelObject o){}
+
+  void onPropertyInputChange(){
+    onPropertyChanged(this);
+    updateElement();
+    updateProperties();
+  }
+
+  void setScale(double value){
+    scale = value;
+    updateElement();
+  }
+
+  void updateProperties(){}
+  void updateElement(){}
+  void onElementMove(double xOffset, double yOffset){}
+
+  Element createElement(){
+    Element el = new DivElement();
+    el.className = "levelobj $className";
+    el.onMouseDown.listen(_onMouseDown);
+    document.onMouseUp.listen(_onMouseUp);
+    document.onMouseMove.listen(_onMouseMove);
+    element = el;
+    createPropertiesElement();
+    updateElement();
+    updateProperties();
+    return el;
+  }
+  Element createPropertiesElement(){
+    Element el = new DivElement();
+    for(InputForm form in properties){
+      el.append(form.createElement());
+    }
+    el_properties = el;
+    return el;
+  }
+
+  void _onMouseDown(MouseEvent e){
+    e.preventDefault();
+    _mouseX = e.page.x;
+    _mouseY = e.page.y;
+    _mouseDown = true;
+    onSelect(this);
+  }
+  void _onMouseUp(MouseEvent e){
+    if(!_mouseDown) return;
+    e.preventDefault();
+    _mouseX = e.page.x;
+    _mouseY = e.page.y;
+    _mouseDown = false;
+  }
+  void _onMouseMove(MouseEvent e){
+    if(!_mouseDown) return;
+    e.preventDefault();
+    int mx = e.page.x;
+    int my = e.page.y;
+    int difX = mx-_mouseX;
+    int difY = my-_mouseY;
+    onElementMove(difX/scale,difY/scale);
+    _mouseX = e.page.x;
+    _mouseY = e.page.y;
+  }
+}
+/*
 class LevelObject{
   double x = 0.0; double y = 0.0; double w = 10.0; double h = 10.0; double r = 0.0;
   bool canResizeW = true;
@@ -128,3 +363,4 @@ class LevelObject{
     onMove(this);
   }
 }
+*/

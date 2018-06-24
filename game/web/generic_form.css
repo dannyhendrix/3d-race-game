@@ -1,37 +1,32 @@
-.in{
-font-family:Arial;
-font-size:12px;
-}
-span.in {
-padding: 5px;
-}
-.in input {
-width: 30px;
+input {
+width: 80px;
 border: 1px solid #DDDDDD;
 border-radius: 5px;
 padding: 5px;
+outline:0px;
 }
-.in select {
+select {
 width: 90px;
 border: 1px solid #DDDDDD;
 border-radius: 5px;
 padding: 5px;
 }
-.stringIn input {
+input.stringIn {
 width: 90px;
 }
-.btn {
+.button {
 background: #f3f3f3;
 border: 1px solid #ddd;
 padding: 2px 4px;
 border-radius: 5px;
 margin: 3px;
 color: #333;
+display:inline-block;
 }
 .material-icons{
 font-size:18px;
 }
-.btn:hover {
+.button:hover {
 background: #FF9966;
 border-color: #A0715A;
 }

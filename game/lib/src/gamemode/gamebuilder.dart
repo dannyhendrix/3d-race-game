@@ -31,10 +31,10 @@ class GameBuilder{
     settings.level.path.laps = laps;
     return settings;
   }
-  GameInput newGameRandomPlayers(int numberOfPlayers, VehicleType vehicle, TrailerType trailer, int levelId, int laps){
+  GameInput newGameRandomPlayers(int numberOfPlayers, VehicleType vehicle, TrailerType trailer, GameLevel level, int laps){
     GameInput settings = _createSimpleGameSettings(_aiplayers.getRandom(numberOfPlayers), vehicle, trailer);
     //TODO: select random map
-    settings.level = _levelManager.loadedLevels[levelId];
+    settings.level = level;//_levelManager.loadedLevels[levelId];
     settings.level.path.laps = laps;
     return settings;
   }

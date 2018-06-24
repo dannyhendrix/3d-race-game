@@ -8,10 +8,12 @@ import "package:micromachines/gamemode.dart";
 enum ClickToAddOptions {None, CheckPoint, Tree, Wall}
 
 class LevelEditor{
+  TextAreaElement el_txt;
+  GameLevel gamelevel = new GameLevel();
   Preview preview = new Preview();
-  LevelObjectWrapperWalls walls = new LevelObjectWrapperWalls();
-  LevelObjectWrapperStaticObjects staticObjects = new LevelObjectWrapperStaticObjects();
-  LevelObjectWrapperCheckpoints checkPoints = new LevelObjectWrapperCheckpoints();
+  LevelObjectWrapper walls = new LevelObjectWrapper();
+  LevelObjectWrapper staticObjects = new LevelObjectWrapper();
+  LevelObjectWrapper checkPoints = new LevelObjectWrapper();
   List<LevelObjectWrapper> wrappers;
   LevelObjectMenu menu = new LevelObjectMenu();
   LevelManager levelManager = new LevelManager();
@@ -19,6 +21,7 @@ class LevelEditor{
   GameLevelSaver levelSaver = new GameLevelSaver();
 
   ClickToAddOptions _currentClickOption = ClickToAddOptions.None;
+  LevelObject _currentLevelObject = null;
   //TODO: connect scale to all levelObjects
   double _scale = 0.5;
 
@@ -49,18 +52,18 @@ class LevelEditor{
     LevelObjectWrapper wrapper;
     switch(_currentClickOption){
       case ClickToAddOptions.CheckPoint:
-        wrapper = checkPoints;
-        break;
+        _addNewCheckpoint(e.offset.x/_scale, e.offset.y/_scale);
+        return;
       case ClickToAddOptions.Tree:
-        wrapper = staticObjects;
-        break;
+        _addNewStaticObject(e.offset.x/_scale, e.offset.y/_scale);
+        return;
       case ClickToAddOptions.Wall:
-        wrapper = walls;
-        break;
+        _addNewWall(e.offset.x/_scale, e.offset.y/_scale);
+        return;
       default:
         return;
     }
-    wrapper.addNew(menu.onSelect,menu.onMove, e.offset.x/_scale, e.offset.y/_scale);
+    //wrapper.addNew(menu.onSelect,menu.onMove, e.offset.x/_scale, e.offset.y/_scale);
   }
   Element _createMenuProperties(){
     Element el = _createSection("Properties");
@@ -71,10 +74,86 @@ class LevelEditor{
   Element _createMenuCreate(){
     Element el_menu = _createSection("Add objects");
     el_menu.className = "menu";
-    el_menu.append(createButtonText("add checkpoint", (Event e){ checkPoints.addNew(menu.onSelect,menu.onMove, 10.0, 10.0); }));
-    el_menu.append(createButtonText("add wall", (Event e){ walls.addNew(menu.onSelect,menu.onMove, 10.0, 10.0); }));
-    el_menu.append(createButtonText("add staticObject", (Event e){ staticObjects.addNew(menu.onSelect,menu.onMove, 10.0, 10.0); }));
+
+    el_menu.append(createButtonText("New checkpoint", (Event e){
+      _addNewCheckpoint(10.0,10.0);
+    }));
+    el_menu.append(createButtonText("New wall", (Event e){
+      _addNewWall(10.0,10.0);
+    }));
+    el_menu.append(createButtonText("New tree", (Event e){
+      _addNewStaticObject(10.0,10.0);
+    }));
+
     return el_menu;
+  }
+  void _addNewWall(double x, double y){
+    GameLevelWall gameObject;
+    if(_currentLevelObject is LevelObjectWall)
+    {
+      LevelObjectWall sourceLevelObject = _currentLevelObject;
+      GameLevelWall source = sourceLevelObject.gameObject;
+      gameObject = new GameLevelWall(x, y, source.r, source.w, source.d, source.h);
+    }
+    else
+      gameObject = new GameLevelWall(x,y,0.0,100.0,50.0,100.0);
+    gamelevel.walls.add(gameObject);
+    _addWallToLevelObjects(gameObject);
+  }
+  void _addWallToLevelObjects(GameLevelWall gameObject){
+    LevelObjectWall levelObj = new LevelObjectWall(gameObject);
+    levelObj.onSelect = _onSelect;
+    levelObj.onPropertyChanged = _onProperyChange;
+    walls.addLevelObject(levelObj);
+    loadToTextArea();
+  }
+  void _addNewCheckpoint(double x, double y){
+    GameLevelCheckPoint gameObject;
+    if(_currentLevelObject is LevelObjectCheckpoint)
+    {
+      LevelObjectCheckpoint sourceLevelObject = _currentLevelObject;
+      GameLevelCheckPoint source = sourceLevelObject.gameObject;
+      gameObject = new GameLevelCheckPoint(x, y, source.radius);
+    }
+    else
+      gameObject = new GameLevelCheckPoint(x,y,100.0);
+    gamelevel.path.checkpoints.add(gameObject);
+    _addCheckpointToLevelObjects(gameObject);
+  }
+  void _addCheckpointToLevelObjects(GameLevelCheckPoint gameObject){
+    LevelObjectCheckpoint levelObj = new LevelObjectCheckpoint(gameObject);
+    levelObj.onSelect = _onSelect;
+    levelObj.onPropertyChanged = (o){_onProperyChange(o); preview.paintLevel(gamelevel);};
+    checkPoints.addLevelObject(levelObj);
+    preview.paintLevel(gamelevel);
+    loadToTextArea();
+  }
+  void _addNewStaticObject(double x, double y){
+    GameLevelStaticObject gameObject;
+    if(_currentLevelObject is GameLevelStaticObject)
+    {
+      LevelObjectStaticObject sourceLevelObject = _currentLevelObject;
+      GameLevelStaticObject source = sourceLevelObject.gameObject;
+      gameObject = new GameLevelStaticObject(source.id, x, y, source.r);
+    }
+    else
+      gameObject = new GameLevelStaticObject(0,x,y,100.0);
+    gamelevel.staticobjects.add(gameObject);
+    _addStaticObjectToLevelObjects(gameObject);
+  }
+  void _addStaticObjectToLevelObjects(GameLevelStaticObject gameObject){
+    LevelObjectStaticObject levelObj = new LevelObjectStaticObject(gameObject);
+    levelObj.onSelect = _onSelect;
+    levelObj.onPropertyChanged = _onProperyChange;
+    staticObjects.addLevelObject(levelObj);
+    loadToTextArea();
+  }
+  void _onSelect(LevelObject obj){
+    _currentLevelObject = obj;
+    menu.onSelect(obj);
+  }
+  void _onProperyChange(LevelObject obj){
+    loadToTextArea();
   }
   Element _createMenuClickAdd(){
     Element el_menu = _createSection("Click to add");
@@ -96,17 +175,20 @@ class LevelEditor{
   Element _createLoadSaveLevelElement(){
     Element el_wrap = _createSection("load/save");
 
-    var el_txt = new TextAreaElement();
+    el_txt = new TextAreaElement();
     el_wrap.append(el_txt);
     el_txt.className = "json";
+    el_txt.onChange.listen((Event e){
+      loadFromTestArea();
+    });
 
     el_wrap.append(createButton("file_download",(Event e){
-      el_txt.value = loadToTextArea();
+      loadToTextArea();
     }));
 
     el_wrap.append(createButton("file_upload",(Event e){
       GameLevelLoader levelLoader = new GameLevelLoader();
-      loadFromTestArea(el_txt.value);
+      loadFromTestArea();
     }));
     el_txt.value = jsonEncode(levelSaver.levelToJson(levelLoader.loadLevelJson(levelManager.leveljson)));
     return el_wrap;
@@ -120,16 +202,23 @@ class LevelEditor{
     return el_wrap;
   }
 
-  String loadToTextArea(){
-    var gamelevel = new GameLevel();
-    wrappers.forEach((o)=>o.addToGameLevel(gamelevel));
+  void loadToTextArea(){
     Map json = levelSaver.levelToJson(gamelevel);
-    return jsonEncode(json);
+    el_txt.value = jsonEncode(json);
   }
-  void loadFromTestArea(String levelTxt){
-    Map json = jsonDecode(levelTxt);
-    var gamelevel = levelLoader.loadLevelJson(json);
-    wrappers.forEach((o)=>o.loadFromGameLevel(gamelevel, menu.onSelect, menu.onMove));
+  void loadFromTestArea(){
+    Map json = jsonDecode(el_txt.value);
+    gamelevel = levelLoader.loadLevelJson(json);
+    wrappers.forEach((w) => w.clearAll());
+    for(GameLevelWall gameObject in gamelevel.walls){
+      _addWallToLevelObjects(gameObject);
+    }
+    for(GameLevelCheckPoint gameObject in gamelevel.path.checkpoints){
+      _addCheckpointToLevelObjects(gameObject);
+    }
+    for(GameLevelStaticObject gameObject in gamelevel.staticobjects){
+      _addStaticObjectToLevelObjects(gameObject);
+    }
     preview.paintLevel(gamelevel);
   }
 }
