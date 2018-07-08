@@ -9,7 +9,7 @@ button span { display: inline-block; height: 18px; vertical-align: bottom; paddi
 fieldset { border: 1px solid rgba(0, 0, 0, 0.3); padding: 5px 15px; }
 legend { padding: 7px; font-weight: bold; }
 form span.label { display: inline-block; width: 100px; text-align: left; }
-form button { width: 150px; }
+form button { width: 162px; }
 .label {display:block; font-weight:bold; padding: 5px;}
 
 .specialText, h1, legend {font-family: monospace;}

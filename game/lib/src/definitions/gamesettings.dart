@@ -77,13 +77,13 @@ class GameSettings extends SettingsStoredInCookie
   GameSettingWithEnum<ControlKeyType> client_controlkeytype = new GameSettingWithEnum("client_controlkeytype", ControlKeyType.UserDefined, ControlKeyType.values, "Controls keys");
   GameSettingWithEnum<GameDashboardTheme> client_theme = new GameSettingWithEnum("client_theme", GameDashboardTheme.Default, GameDashboardTheme.values, "Theme");
 
-  GameSetting<String> editor_location = new GameSetting("editor_location", "leveleditor2.html", "Location to leveleditor");
+  GameSetting<String> editor_location = new GameSetting("editor_location", "leveleditor.html", "Location to leveleditor");
   GameSetting<bool> levels_allowJsonInput = new GameSetting("levels_location", true, "Allow users to enter json level in level selection");
   GameSetting<String> levels_location = new GameSetting("levels_location", null, "Location to levels");
   GameSetting<String> levels_definition_location = new GameSetting("levels_definition_location", null, "Location to levels file");
 
   GameSetting<bool> client_showStoreInCookie = new GameSetting("client_enablemouseaiming", true, "Enable mouse aiming");
-  GameSetting<bool> client_changeCSSWithThemeChange = new GameSetting("client_changeccswiththemechange", false, "Switch CSS theme when user changes colors");
+  GameSetting<bool> client_changeCSSWithThemeChange = new GameSetting("client_changeccswiththemechange", true, "Match theme with user colors");
   GameSettingWithEnum<GameDisplayType> client_displayType = new GameSettingWithEnum("client_displaytype", GameDisplayType.Webgl3d, GameDisplayType.values, "Display type");
   // list of key ids to movement
   IntMapSettings<Control> client_keys = new IntMapSettings("client_keys", _defaultUserKeys, "Keys");
@@ -104,7 +104,7 @@ class GameSettings extends SettingsStoredInCookie
 
   List<GameSetting> getStoredSettingsKeys()
   {
-    return [user_name,user_wins,user_races,user_color1,user_color2,client_theme, client_changeCSSWithThemeChange, client_controlkeytype, debug];
+    return [user_name,user_wins,user_races,user_color1,user_color2,client_theme, client_controlkeytype, debug];
   }
 
   List<GameSetting> getMenuSettings()
