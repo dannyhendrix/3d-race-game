@@ -1,6 +1,7 @@
 html { font-family: Arial; font-size:0.8em; }
 * { outline:none; }
 h1 {padding:10px; margin:0px; text-align:center;}
+a {color:#333;}
 input { width: 150px; border: 1px solid rgba(0, 0, 0, 0.3); padding: 5px; outline:0px; }
 select { width: 162px; border: 1px solid rgba(0, 0, 0, 0.3); padding: 5px; }
 button {cursor: pointer; background: rgba(0, 0, 0, 0.06); border:0px; border-bottom: 2px solid rgba(0, 0, 0, 0.3); padding: 6px 10px; margin: 3px; display:inline-block; font-weight:bold; }
