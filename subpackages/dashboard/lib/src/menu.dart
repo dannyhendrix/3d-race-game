@@ -97,7 +97,7 @@ class Menu<H extends MenuStatus>
 
   Element createTitleElement(Element btn_back, Element btn_close)
   {
-    DivElement el = new DivElement();
+    Element el = new HeadingElement.h1();
     txt_title = new SpanElement();
     txt_title.text = "Menu";
     el.append(txt_title);

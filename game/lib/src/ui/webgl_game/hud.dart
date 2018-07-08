@@ -5,12 +5,12 @@ Map<VehicleThemeColor, String> colorMappingCss = {
   VehicleThemeColor.Black   : "#333",
   VehicleThemeColor.White   : "#FFF",
   VehicleThemeColor.Gray    : "#999",
-  VehicleThemeColor.Red     : "#F00",
-  VehicleThemeColor.Green   : "#0F0",
-  VehicleThemeColor.Blue    : "#00F",
-  VehicleThemeColor.Yellow  : "#FF0",
-  VehicleThemeColor.Orange  : "#F80",
-  VehicleThemeColor.Pink    : "#F4F",
+  VehicleThemeColor.Red     : "#F44336",
+  VehicleThemeColor.Green   : "#38d43c",
+  VehicleThemeColor.Blue    : "#3f51b5",
+  VehicleThemeColor.Yellow  : "#ffeb3b",
+  VehicleThemeColor.Orange  : "#ff9800",
+  VehicleThemeColor.Pink    : "#de41f9",
 };
 Map<VehicleThemeColor, String> colorMappingText = {
   VehicleThemeColor.Black   : "Black",

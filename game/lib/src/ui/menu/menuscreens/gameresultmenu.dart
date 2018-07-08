@@ -34,17 +34,18 @@ class GameResultMenu extends GameMenuScreen{
     PlayerProfile player = _getPlayerProfileFromId(playerSettings.playerId);
     DivElement el = new DivElement();
     el.className = "topplayer";
-    if(player.id == -1) el.className = "topplayer currentuser";
     ImageElement img = new ImageElement();
     img.src = _createPreviewFromModel(_getModelFromVehicleType(playerSettings.vehicle),colorMappingGl[player.theme.color1],colorMappingGl[player.theme.color2]);
     el.append(_createTableCellWrap(img,"image"));
-    el.append(_createTableCell(player.name,"name"));
+    String className = "name";
+    if(player.id == -1) className = "name highlight";
+    el.append(_createTableCell(player.name,className));
     return el;
   }
   Element _createTableRow(int position, String playerName, [bool isHuman = false]){
     DivElement el = new DivElement();
     el.className = "gameResultRow";
-    if(isHuman) el.className = "gameResultRow currentuser";;
+    if(isHuman) el.className = "gameResultRow highlight";
     el.append(_createTableCell(position.toString(),"position"));
     el.append(_createTableCell(playerName,"name"));
     el.append(_createTableCell("","image"));

@@ -104,7 +104,7 @@ class GameSettings extends SettingsStoredInCookie
 
   List<GameSetting> getStoredSettingsKeys()
   {
-    return [user_name,user_wins,user_races,user_color1,user_color2,client_theme, client_controlkeytype, debug];
+    return [user_name,user_wins,user_races,user_color1,user_color2,client_theme, client_changeCSSWithThemeChange, client_controlkeytype, debug];
   }
 
   List<GameSetting> getMenuSettings()

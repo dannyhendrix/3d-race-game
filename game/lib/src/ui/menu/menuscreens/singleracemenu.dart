@@ -5,8 +5,8 @@ class SingleRaceMenu extends GameMenuScreen{
   GameInputSelectionVehicle _vehicleSelection;
   GameInputSelectionTrailer _trailerSelection;
   GameInputSelectionLevel _levelSelection;
-  IntValueSelection _in_laps;
-  IntValueSelection _in_oponents;
+  InputFormRadio _in_laps;
+  InputFormRadio _in_oponents;
   TextAreaElement in_levelJson;
 
   SingleRaceMenu(this.menu){
@@ -29,11 +29,13 @@ class SingleRaceMenu extends GameMenuScreen{
     _trailerSelection = new GameInputSelectionTrailer();
     _levelSelection = new GameInputSelectionLevel(menu.levelManager);
 
-    _in_oponents = new IntValueSelection((int newValue){});
-    Element el_oponents = _in_oponents.setupFields(3,[0,1,2,3,4], "Oponents");
+    _in_oponents = new InputFormRadio("Oponents", [0,1,2,3,4]);
+    Element el_oponents = _in_oponents.createElement();
+    _in_oponents.setValue(3);
 
-    _in_laps = new IntValueSelection((int newValue){});
-    Element el_laps = _in_laps.setupFields(3,[1,2,3,5,10], "Laps");
+    _in_laps = new InputFormRadio("Laps",[1,2,3,5,10]);
+    Element el_laps = _in_laps.createElement();
+    _in_laps.setValue(2);
 
     el_left.append(_levelSelection.setupFieldsForLevels(_createLevelJsonInput(),menu.settings.levels_allowJsonInput.v));
 
@@ -74,7 +76,7 @@ class SingleRaceMenu extends GameMenuScreen{
   GameInput createGameInput(){
     var levelLoader = new GameLevelLoader();
     var level = (in_levelJson != null && in_levelJson.value.isNotEmpty) ? levelLoader.loadLevelJson(jsonDecode(in_levelJson.value)) : menu.levelManager.loadedLevels[_levelSelection.index];
-    return menu.gameBuilder.newGameRandomPlayers(_in_oponents.value,VehicleType.values[_vehicleSelection.index], TrailerType.values[_trailerSelection.index],level, _in_laps.value);
+    return menu.gameBuilder.newGameRandomPlayers(_in_oponents.getValue(),VehicleType.values[_vehicleSelection.index], TrailerType.values[_trailerSelection.index],level, _in_laps.getValue());
   }
 }
 
@@ -225,63 +227,8 @@ class GameInputSelection{
   }
   Element createButtonWithIcon(String icon, Function onClick)
   {
-    DivElement btn = new DivElement();
-    btn.className = "navigate button";
-    btn.onClick.listen((MouseEvent e){ e.preventDefault(); onClick(e); });
-    btn.onTouchStart.listen((TouchEvent e){ e.preventDefault(); onClick(e); });
-    btn.append(createIcon(icon));
+    Element btn = UIHelper.createButtonWithIcon(icon, onClick);
+    btn.className = "navigate";
     return btn;
-  }
-  Element createIcon(String icon)
-  {
-    Element iel = new Element.tag("i");
-    iel.className = "material-icons";
-    iel.text = icon.toLowerCase();
-    return iel;
-  }
-}
-
-typedef void OnIntValueChange(int newValue);
-class IntValueSelection{
-  int value = null;
-  Map<int, Element> _valueToElement;
-  OnIntValueChange onValueChange;
-
-  IntValueSelection(this.onValueChange);
-
-  Element setupFields(int initialValue, List<int> allowedValues, [String label = ""]){
-    Element el = new DivElement();
-    el.className = "intSelection";
-
-    if(label.isNotEmpty){
-      Element el_label = new DivElement();
-      el_label.className = "label";
-      el_label.text = label;
-      el.append(el_label);
-    }
-
-    _valueToElement = {};
-    for(int allowedValue in allowedValues){
-      Element el_item = _createOption(allowedValue);
-      _valueToElement[allowedValue] = el_item;
-      el.append(el_item);
-    }
-    setCurrent(initialValue);
-    return el;
-  }
-
-  void setCurrent(int newValue){
-    if(value != null) _valueToElement[value].classes.remove("selected");
-    value = newValue;
-    _valueToElement[value].classes.add("selected");
-    if(value != null) onValueChange(newValue);
-  }
-
-  Element _createOption(int optionValue){
-    Element el = new DivElement();
-    el.className = "selectionItem button";
-    el.text = optionValue.toString();
-    el.onClick.listen((Event e){setCurrent(optionValue);});
-    return el;
   }
 }

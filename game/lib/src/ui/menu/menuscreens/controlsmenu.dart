@@ -76,13 +76,19 @@ class ControlsMenu extends GameMenuScreen
       td.append(el);
       tr.append(td);
     };
+    var thWrapperAppend = (String className, Node el) {
+      Element td = new Element.th();
+      td.className = className;
+      td.append(el);
+      tr.append(td);
+    };
     var newTr = (){
       tr = new TableRowElement();
       ta.append(tr);
     };
     var addControl = (String description, Control key)
     {
-      tdWrapperAppend("controls_image",new Text(description));
+      thWrapperAppend("controls_label",new Text(description));
       tdWrapperAppend("controls_keys",createEditKeyElement(key, keyMapping, editable));
     };
     newTr();

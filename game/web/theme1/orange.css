@@ -1,0 +1,3 @@
+.highlight, .highlightOver:hover, h1 {background:#ff9800; color:#333;}
+.highlightText, legend {color:#ff9800;}
+.highlightBordered, .selected {border: 3px solid #ff9800;}

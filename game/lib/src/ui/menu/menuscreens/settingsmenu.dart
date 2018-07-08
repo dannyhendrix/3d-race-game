@@ -5,8 +5,6 @@ class SettingsMenu extends GameMenuScreen
   bool showStoreIncookie = true;
   GameMenuController menu;
 
-  Map<String, SettingInput> settingElementMapping = {};
-
   SettingsMenu(this.menu);
 
   Element setupFields()

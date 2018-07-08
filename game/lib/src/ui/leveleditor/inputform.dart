@@ -13,6 +13,7 @@ abstract class InputForm<T>{
     Element el_label = new SpanElement();
     el_label.className = "label";
     el_label.text = label;
+    el.append(el_label);
     return el;
   }
   void setValue(T value);
@@ -30,6 +31,12 @@ class InputFormInt extends InputForm<int>{
     el_in.onChange.listen((Event e){
       onValueChange(getValue());
     });
+
+    Element el_label = new SpanElement();
+    el_label.className = "label";
+    el_label.text = label;
+
+    el.append(el_label);
     el.append(el_in);
     return el;
   }
@@ -55,6 +62,12 @@ class InputFormDouble extends InputForm<double>{
     el_in.onChange.listen((Event e){
       onValueChange(getValue());
     });
+
+    Element el_label = new SpanElement();
+    el_label.className = "label";
+    el_label.text = label;
+
+    el.append(el_label);
     el.append(el_in);
     return el;
   }

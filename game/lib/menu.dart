@@ -11,6 +11,7 @@ import "package:gameutils/settings.dart";
 import "package:gameutils/math.dart";
 import "package:webgl/webgl.dart";
 import "package:renderlayer/renderlayer.dart";
+import "package:dashboard/uihelper.dart";
 
 import "webgl_game.dart";
 import "gamemode.dart";

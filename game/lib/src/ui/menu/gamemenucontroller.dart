@@ -120,10 +120,7 @@ class GameMenuController extends Menu<GameMenuStatus>
   {
     ButtonElement btn = super.createBackButton();
     btn.text = "";
-    Element iel = new Element.tag("i");
-    iel.className = "material-icons";
-    iel.text = "navigate_before";
-    btn.append(iel);
+    btn.append(UIHelper.createIcon("navigate_before"));
     return btn;
   }
 

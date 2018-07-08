@@ -2,7 +2,7 @@ part of game.menu;
 
 typedef T GetValueFromInput<T>();
 typedef void SetValueToInput<T>(T val);
-
+/*
 class SettingInput<T>
 {
   GetValueFromInput<T> getter;
@@ -10,146 +10,78 @@ class SettingInput<T>
   bool changed = false;
   SettingInput(this.getter, this.setter);
 }
-
+*/
 class SettingsMenuDebug extends GameMenuScreen
 {
   GameMenuController menu;
   bool showStoreIncookie = true;
 
-  Map<String, SettingInput> settingElementMapping = {};
+  Map<String, InputForm> settingElementMapping = {};
 
   SettingsMenuDebug(this.menu);
 
   Element setupFields()
   {
     Element el = super.setupFields();
+    Element form = UIHelper.createForm();
     for(GameSetting s in menu.settings.getMenuSettings())
-      el.append(createSettingElement(s));
-    el.append(createMenuButton("Reset cookie", (Event e){
+      form.append(createSettingElement(s));
+    form.append(UIHelper.createButtonWithText("Reset cookie", (Event e){
       menu.settings.emptyCookie();
     }));
+    el.append(form);
     return el;
   }
   
   Element createSettingElement(GameSetting s)
   {
-    DivElement el = new DivElement();
-    el.className = "setting";
-    Element el_title = new SpanElement();
-    el_title.className = "title";
-    el_title.text = s.description;
-    Element el_value = new SpanElement();
-    el_value.className = "value";
+
 
     if(s is GameSettingWithAllowedValues)
     {
-      SelectElement iel = new SelectElement();
-      for(var a in s.allowedValues)
-      {
-       OptionElement o = new OptionElement(data: a.toString());
-       iel.append(o);
-      }
-      settingElementMapping[s.k] = new SettingInput((){
-        return s.allowedValues[iel.selectedIndex];
-      }, (var v){
-        int index = 0;
-        for(var a in s.allowedValues)
-         iel.options[index++].selected = a == v;
-      });
-      iel.onChange.listen((Event e){
-        settingElementMapping[s.k].changed = true;
-      });
-      el_value.append(iel);
+      InputForm form = new InputFormOption(s.description,s.allowedValues);
+      settingElementMapping[s.k] = form;
+      return form.createElement();
     }
     else if(s is GameSettingWithEnum)
     {
-      SelectElement iel = new SelectElement();
-      for(var a in s.allowedValues)
-      {
-       OptionElement o = new OptionElement(data: s.convertTo(a));
-       iel.append(o);
-      }
-      settingElementMapping[s.k] = new SettingInput((){
-        return s.allowedValues[iel.selectedIndex];
-      }, (var v){
-        int index = 0;
-        for(var a in s.allowedValues)
-         iel.options[index++].selected = a == v;
-      });
-      iel.onChange.listen((Event e){
-        settingElementMapping[s.k].changed = true;
-      });
-      el_value.append(iel);
+      InputFormOption form = new InputFormOption(s.description,s.allowedValues);
+      form.objectToString = s.convertTo;
+      settingElementMapping[s.k] = form;
+      return form.createElement();
     }
     else if(s.v is int)
     {
-      InputElement iel = new InputElement(type: "number");
-      settingElementMapping[s.k] = new SettingInput<int>((){
-        return int.parse(iel.value);
-      },(int v){
-        iel.value = v.toString();
-      });
-      iel.onChange.listen((Event e){
-        settingElementMapping[s.k].changed = true;
-      });
-      el_value.append(iel);
+      InputForm form = new InputFormInt(s.description);
+      settingElementMapping[s.k] = form;
+      return form.createElement();
     }
     else if(s.v is double)
     {
-      InputElement iel = new InputElement(type: "number");
-      settingElementMapping[s.k] = new SettingInput<double>((){
-        return double.parse(iel.value);
-      },(double v){
-        iel.value = v.toString();
-      });
-      iel.onChange.listen((Event e){
-        settingElementMapping[s.k].changed = true;
-      });
-      el_value.append(iel);
+      InputForm form = new InputFormDouble(s.description);
+      settingElementMapping[s.k] = form;
+      return form.createElement();
     }
     else if(s.v is bool)
     {
-      CheckboxInputElement iel = new CheckboxInputElement();
-      settingElementMapping[s.k] = new SettingInput((){
-        return iel.checked;
-      },(var v){
-        iel.checked = s.v;
-      });
-      iel.onChange.listen((Event e){
-        settingElementMapping[s.k].changed = true;
-      });
-      el_value.append(iel);
+      InputForm form = new InputFormBool(s.description);
+      settingElementMapping[s.k] = form;
+      return form.createElement();
     }
     else
     {
-      InputElement iel = new InputElement(type: "text");
-      //iel.value = s.v.toString();
-      settingElementMapping[s.k] = new SettingInput((){
-        return iel.value;
-      },(var v){
-        iel.value = v.toString();
-      });
-      iel.onChange.listen((Event e){
-        settingElementMapping[s.k].changed = true;
-      });
-      el_value.append(iel);
+      InputForm form =  new InputFormString(s.description);
+      settingElementMapping[s.k] = form;
+      return form.createElement();
     }
-    
-    el.append(el_title);
-    el.append(el_value);
-    return el;
   }
   
   void storeSettings()
   {
     for(GameSetting s in menu.settings.getMenuSettings())
     {
-      SettingInput gs = settingElementMapping[s.k];
-      if(gs.changed)
-      {
-        s.v = gs.getter();
-        gs.changed = false;
-      }
+      var gs = settingElementMapping[s.k];
+      s.v = gs.getValue();
     }
     menu.settings.saveToCookie();
   }
@@ -157,7 +89,7 @@ class SettingsMenuDebug extends GameMenuScreen
   void loadSettings()
   {
     for(GameSetting s in menu.settings.getMenuSettings())
-      settingElementMapping[s.k].setter(s.v);
+      settingElementMapping[s.k].setValue(s.v);
   }
   
   void hide()
