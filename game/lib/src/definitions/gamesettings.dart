@@ -76,6 +76,7 @@ class GameSettings extends SettingsStoredInCookie
 
   GameSettingWithEnum<ControlKeyType> client_controlkeytype = new GameSettingWithEnum("client_controlkeytype", ControlKeyType.UserDefined, ControlKeyType.values, "Controls keys");
   GameSettingWithEnum<GameDashboardTheme> client_theme = new GameSettingWithEnum("client_theme", GameDashboardTheme.Default, GameDashboardTheme.values, "Theme");
+  GameSetting<bool> client_showUIControls = new GameSetting("client_showuicontrols", false, "Show control buttons");
 
   GameSetting<String> editor_location = new GameSetting("editor_location", "leveleditor.html", "Location to leveleditor");
   GameSetting<bool> levels_allowJsonInput = new GameSetting("levels_location", true, "Allow users to enter json level in level selection");
@@ -110,7 +111,7 @@ class GameSettings extends SettingsStoredInCookie
   List<GameSetting> getMenuSettings()
   {
     if(debug.v == true)
-      return [user_name, user_color1, user_color2, client_theme, client_changeCSSWithThemeChange, client_displayType, storeInCookie, debug];
+      return [user_name, user_color1, user_color2, client_theme, client_changeCSSWithThemeChange,client_showUIControls, client_displayType, storeInCookie, debug];
     return [storeInCookie];
   }
 

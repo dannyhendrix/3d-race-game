@@ -36,6 +36,33 @@ class WebglGame3d extends WebglGame{
     game = new Game(settings);
     _gameloop = new GameLoop(_loop);
   }
+  Element createControls(){
+    Element el = new DivElement();
+    el.id = "controlswrapper";
+
+    Element el_left = new DivElement();
+    el_left.className = "left";
+    Element el_right = new DivElement();
+    el_right.className = "right";
+
+    el.append(el_left);
+    el.append(el_right);
+
+    el_left.append(createControlButton("keyboard_arrow_left",Control.SteerLeft));
+    el_left.append(createControlButton("keyboard_arrow_right",Control.SteerRight));
+    el_right.append(createControlButton("keyboard_arrow_up",Control.Accelerate));
+    el_right.append(createControlButton("keyboard_arrow_down",Control.Brake));
+    return el;
+  }
+  Element createControlButton(String icon, Control control){
+    ButtonElement el = new ButtonElement();
+    el.append(UIHelper.createIcon(icon));
+    el.onMouseDown.listen((Event e){onControl(control, true);});
+    el.onTouchStart.listen((Event e){onControl(control, true);});
+    el.onMouseUp.listen((Event e){onControl(control, false);});
+    el.onTouchEnd.listen((Event e){onControl(control, false);});
+    return el;
+  }
   @override
   Element initAndCreateDom(GameInput input, GameSettings settings) {
     game.initSession(input);
@@ -80,6 +107,7 @@ class WebglGame3d extends WebglGame{
 
     InputController inputController = new InputController(settings);
     _registerControls(inputController);
+    if(settings.client_showUIControls.v) element.append(createControls());
     return element;
   }
 
