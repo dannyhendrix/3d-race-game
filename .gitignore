@@ -12,3 +12,4 @@ pubspec.lock
 
 pspbrwse.jbf
 *.apk
+game/web/*.dart.js
