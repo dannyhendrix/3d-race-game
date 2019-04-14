@@ -2,11 +2,15 @@ name: gameutils
 version: 0.0.1
 author: Danny Hendrix <DWM.Hendrix@gmail.com>
 description: A set of basic game utility classes.
+
+environment:
+  sdk: '>=2.1.0 <3.0.0'
+
+dev_dependencies:
+  build_runner: ^1.1.2
+  build_web_compilers: ^1.0.0
+  test: ^1.5.1
+
 dependencies:
-  browser: any
   renderlayer:
     path: ../renderlayer
-  test: any
-#dependencies:
-#  js: any
-#  unittest: any

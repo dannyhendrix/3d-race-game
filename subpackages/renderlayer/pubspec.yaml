@@ -2,9 +2,11 @@ name: renderlayer
 version: 0.0.1
 author: Danny Hendrix
 description: Makes it easier to work with the canvasElement/ctx (2d).
-dependencies:
-  browser: any
 
-#dependencies:
-#  js: any
-#  unittest: any
+environment:
+  sdk: '>=2.1.0 <3.0.0'
+
+dev_dependencies:
+  build_runner: ^1.1.2
+  build_web_compilers: ^1.0.0
+  test: ^1.5.1
