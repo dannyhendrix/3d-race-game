@@ -122,7 +122,7 @@ class Polygon{
 
     int edgeCountA = polygonA.edges.length;
     int edgeCountB = polygonB.edges.length;
-    double minIntervalDistance = double.MAX_FINITE;
+    double minIntervalDistance = double.maxFinite;
     Vector translationAxis = new Vector.empty();
     Vector edge;
 

@@ -25,8 +25,8 @@ class GlRenderLayer{
     program = new GlProgram(ctx);
     ctx.clearColor(0.0, 0.0, 0.0, 1.0);
     // by default backfacing triangles will be culled
-    if(!_enableCullFace) ctx.enable(CULL_FACE);
-    ctx.enable(DEPTH_TEST);
+    if(!_enableCullFace) ctx.enable(WebGL.CULL_FACE);
+    ctx.enable(WebGL.DEPTH_TEST);
   }
 
   void setClearColor(GlColor color){
@@ -37,18 +37,18 @@ class GlRenderLayer{
     _assignBufferToColor(model.color);
     _assignBufferToVertex(model.modelBuffer.vertexBuffer);
     _assignBufferToNormals(model.modelBuffer.normalsBuffer);
-    ctx.drawArrays(TRIANGLES, 0, model.modelBuffer.numberOfTriangles*3);
+    ctx.drawArrays(WebGL.TRIANGLES, 0, model.modelBuffer.numberOfTriangles*3);
   }
 
   void _assignBufferToVertex(Buffer buffer){
     ctx.enableVertexAttribArray(program.attr_Position);
-    ctx.bindBuffer(ARRAY_BUFFER, buffer);
-    ctx.vertexAttribPointer(program.attr_Position, 3, FLOAT, false, 0, 0);
+    ctx.bindBuffer(WebGL.ARRAY_BUFFER, buffer);
+    ctx.vertexAttribPointer(program.attr_Position, 3, WebGL.FLOAT, false, 0, 0);
   }
   void _assignBufferToNormals(Buffer buffer){
     ctx.enableVertexAttribArray(program.attr_Normal);
-    ctx.bindBuffer(ARRAY_BUFFER, buffer);
-    ctx.vertexAttribPointer(program.attr_Normal, 3, FLOAT, false, 0, 0);
+    ctx.bindBuffer(WebGL.ARRAY_BUFFER, buffer);
+    ctx.vertexAttribPointer(program.attr_Normal, 3, WebGL.FLOAT, false, 0, 0);
   }
   void _assignBufferToColor(GlColor color){
     ctx.uniform4fv(program.uni_Color, new Float32List.fromList([color.r,color.g,color.b,color.a]));
@@ -63,6 +63,6 @@ class GlRenderLayer{
   }
   void clearForNextFrame(){
     ctx.useProgram(program.program);
-    ctx.clear(COLOR_BUFFER_BIT | DEPTH_BUFFER_BIT);
+    ctx.clear(WebGL.COLOR_BUFFER_BIT | WebGL.DEPTH_BUFFER_BIT);
   }
 }

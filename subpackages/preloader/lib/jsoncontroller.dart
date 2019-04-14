@@ -47,7 +47,7 @@ class JsonController
     HttpRequest.getString(file).then((String jsonText)
     {
 	  log.info("Load: $accessor => $file");
-      json_objects[accessor] = JSON.decode(jsonText);//parse(jsonText);//json.parse(req.responseText);
+      json_objects[accessor] = new JsonDecoder().convert(jsonText);//parse(jsonText);//json.parse(req.responseText);
       callback(accessor, file);
     });
   }

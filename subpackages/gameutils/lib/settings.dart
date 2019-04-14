@@ -112,14 +112,14 @@ class SettingsStoredInCookie
       return;
     DateTime time = new DateTime.now();
     time.add(new Duration(days: 1000));
-    document.cookie = JSON.encoder.convert(_createStorageMap()) + ";expires="+time.toUtc().toString();
+    document.cookie = new JsonEncoder().convert(_createStorageMap()) + ";expires="+time.toUtc().toString();
   }
 
   void emptyCookie()
   {
     DateTime time = new DateTime.now();
     time.add(new Duration(days: 1000));
-    document.cookie = JSON.encoder.convert({}) + ";expires="+time.toUtc().toString();
+    document.cookie = new JsonEncoder().convert({}) + ";expires="+time.toUtc().toString();
   }
   
   void loadFromCookie([bool resetCookie = false])
@@ -129,7 +129,7 @@ class SettingsStoredInCookie
         return;
     }
     storeInCookie.v = true;
-    _loadStorageMap(JSON.decoder.convert(document.cookie));
+    _loadStorageMap(new JsonDecoder().convert(document.cookie));
     if(resetCookie)
       saveToCookie();
   }

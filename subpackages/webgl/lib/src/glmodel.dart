@@ -12,8 +12,8 @@ abstract class GlModel{
 
   Buffer loadInBuffer(List<double> data, GlRenderLayer layer){
     Buffer buffer = layer.ctx.createBuffer();
-    layer.ctx.bindBuffer(ARRAY_BUFFER, buffer);
-    layer.ctx.bufferData(ARRAY_BUFFER, new Float32List.fromList(data), STATIC_DRAW);
+    layer.ctx.bindBuffer(WebGL.ARRAY_BUFFER, buffer);
+    layer.ctx.bufferData(WebGL.ARRAY_BUFFER, new Float32List.fromList(data), WebGL.STATIC_DRAW);
     return buffer;
   }
 }

@@ -55,11 +55,11 @@ class GlProgram{
   Program program;
 
   GlProgram(RenderingContext ctx){
-    Shader fragShader = ctx.createShader(FRAGMENT_SHADER);
+    Shader fragShader = ctx.createShader(WebGL.FRAGMENT_SHADER);
     ctx.shaderSource(fragShader, fragmentShader);
     ctx.compileShader(fragShader);
 
-    Shader vertShader = ctx.createShader(VERTEX_SHADER);
+    Shader vertShader = ctx.createShader(WebGL.VERTEX_SHADER);
     ctx.shaderSource(vertShader, vertexShader);
     ctx.compileShader(vertShader);
 
@@ -68,7 +68,7 @@ class GlProgram{
     ctx.attachShader(program, fragShader);
     ctx.linkProgram(program);
 
-    if (!ctx.getProgramParameter(program, LINK_STATUS)) throw new Exception("Could not initialise shaders");
+    if (!ctx.getProgramParameter(program, WebGL.LINK_STATUS)) throw new Exception("Could not initialise shaders");
 
     attr_Position =  ctx.getAttribLocation(program, "a_position");
     attr_Normal =  ctx.getAttribLocation(program, "a_normal");
