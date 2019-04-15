@@ -57,7 +57,7 @@ class LevelPreview
     layer.ctx.beginPath();
     var first = polygon.points.first;
     layer.ctx.moveTo(first.x*scale+offsetX,first.y*scale+offsetY);
-    for(Point2d p in polygon.points){
+    for(Vector p in polygon.points){
       layer.ctx.lineTo(p.x*scale+offsetX,p.y*scale+offsetY);
     }
     layer.ctx.lineTo(first.x*scale+offsetX,first.y*scale+offsetY);

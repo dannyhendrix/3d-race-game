@@ -31,7 +31,7 @@ class PathProgress{
     }
   }
 }
-class PathCheckPoint extends Point2d{
+class PathCheckPoint extends Vector{
   double radius;
   PathCheckPoint([double x=0.0, double y=0.0, this.radius=0.0]) : super(x, y);
 
@@ -56,7 +56,7 @@ class Path{
     PathToPolygons pathToPolygons = new PathToPolygons();
     roadPolygons = pathToPolygons.createRoadPolygons(path);
   }
-  bool onRoad(Point2d p){
+  bool onRoad(Vector p){
     for(int i = 0; i< roadPolygons.length; i++){
       if(_inTriangle(p,roadPolygons[i])){
         return true;
@@ -64,7 +64,7 @@ class Path{
     }
     return false;
   }
-  bool _inTriangle(Point2d P, Polygon p){
+  bool _inTriangle(Vector P, Polygon p){
     var A = p.points[0];
     var B = p.points[1];
     var C = p.points[2];

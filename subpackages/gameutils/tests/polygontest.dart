@@ -2,7 +2,7 @@ library object2map.test;
 import "package:gameutils/math.dart";
 import "package:test/test.dart";
 import "dart:math" as Math;
-
+/*
 void main()
 {
   test("Edges", (){
@@ -120,4 +120,4 @@ void main()
     expect(res.intersect, equals(false));
     //expect(res.willIntersect, equals(true));
   });
-}
+}*/

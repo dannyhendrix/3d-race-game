@@ -58,15 +58,15 @@ void main()
 
   double rTrailer = 0.0;
 
-  Point2d vehicleSize = new Point2d(30.0,20.0);
-  Point2d trailerSize = new Point2d(30.0,20.0);
-  Point2d vehicleSnapPoint = new Point2d(-15.0,0.0);
-  Point2d trailerSnapPoint = new Point2d(15.0+13.0,0.0);
-  Point2d trailerWheelPoint = new Point2d(-10.0,0.0);
+  var vehicleSize = new Vector(30.0,20.0);
+  var trailerSize = new Vector(30.0,20.0);
+  var vehicleSnapPoint = new Vector(-15.0,0.0);
+  var trailerSnapPoint = new Vector(15.0+13.0,0.0);
+  var trailerWheelPoint = new Vector(-10.0,0.0);
 
 
-  Point2d p = new Point2d(300.0,300.0);
-  Point2d pTrailer = p-vehicleSnapPoint-trailerSnapPoint;
+  var p = new Vector(300.0,300.0);
+  var pTrailer = p-vehicleSnapPoint-trailerSnapPoint;
 
   GameLoop loop = new GameLoop((int frame){
     //Read values from html dom
@@ -102,16 +102,16 @@ void main()
     //Trailer
     //pTrailer = p+vehicleSnapPoint-trailerSnapPoint;
 
-    Matrix2d Mv = new Matrix2d.translationPoint(p);
+    Matrix2d Mv = new Matrix2d.translationVector(p);
     Mv = Mv.rotate(r);
-    Matrix2d Mt = new Matrix2d.translationPoint(pTrailer);
+    Matrix2d Mt = new Matrix2d.translationVector(pTrailer);
     Mt = Mt.rotate(rTrailer);
     var A = Mv.apply(vehicleSnapPoint);
     var B = Mt.apply(trailerWheelPoint);
     //var force = (new Matrix2d.rotation(rTrailer)).apply(new Point2d(15.0,0.0));
-    rTrailer = B.angleWith(A);
+    rTrailer = B.angleWithThis(A);
 
-    Matrix2d M = new Matrix2d.translationPoint(A);
+    Matrix2d M = new Matrix2d.translationVector(A);
     M = M.rotate(rTrailer);
     pTrailer = M.apply(-trailerSnapPoint);
 
@@ -135,7 +135,7 @@ void main()
   });
 
   document.body.append(createButton("Start/pause animation",(Event e){loop.pause();}));
-  document.body.append(createButton("Reset position",(Event e){p=new Point2d(300.0,300.0);}));
+  document.body.append(createButton("Reset position",(Event e){p=new Vector(300.0,300.0);}));
 
 
   var handleKey = (KeyboardEvent e)

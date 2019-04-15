@@ -1,95 +1,110 @@
 part of gameutils.math;
 
-class Matrix2d{
-  List<double> data;
-  double val(int row, int col) => data[row*3  + col];
-  Matrix2d() : data = new List<double>(9);
-  Matrix2d.fromList(this.data);
+class Matrix2d {
+  List<double> _data;
 
-  Matrix2d.identity() {
-    data = [
-      1.0, 0.0, 0.0,
-      0.0, 1.0, 0.0,
-      0.0, 0.0, 1.0,
-    ];
-  }
-  Matrix2d.translationPoint(Point2d p) : this.translation(p.x,p.y);
-  Matrix2d.translation(double tx, double ty) {
-    data = [
-      1.0,  0.0,  0.0,
-      0.0,  1.0,  0.0,
-      tx,   ty,   1.0,
-    ];
-  }
-  Matrix2d.rotation(double angleInRadians) {
-    double c = Math.cos(angleInRadians);
-    double s = Math.sin(angleInRadians);
-    data = [
-      c, s,  0.0,
-      -s, c,  0.0,
-      0.0, 0.0, 1.0,
-    ];
-  }
-  Matrix2d.scaling(double sx, double sy) {
-    data = [
-      sx, 0.0,   0.0,
-      0.0, sy,   0.0,
-      0.0,  0.0, 1.0,
-    ];
+  // constructors
+  Matrix2d._fromList(this._data);
+  Matrix2d.translation(double x, double y) : this._fromList(_translation(x, y));
+  Matrix2d.translationVector(Vector v) : this._fromList(_translation(v.x, v.y));
+  Matrix2d.scaling(double sx, double sy) : this._fromList(_scaling(sx, sy));
+  Matrix2d.rotation(double angleInRadians) : this._fromList(_rotation(angleInRadians));
+  Matrix2d() : _data = _identity();
+
+  // clone
+  Matrix2d clone() => new Matrix2d._fromList([
+        _data[0],
+        _data[1],
+        _data[2],
+        _data[3],
+        _data[4],
+        _data[5],
+      ]);
+
+  // reset
+  Matrix2d reset() {
+    _data[0] = 1.0;
+    _data[1] = 0;
+    _data[2] = 0;
+    _data[3] = 1.0;
+    _data[4] = 0;
+    _data[5] = 0;
+    return this;
   }
 
-  Matrix2d operator *(Matrix2d b) {
-    double a00 = val(0,0);
-    double a01 = val(0,1);
-    double a02 = val(0,2);
-    double a10 = val(1,0);
-    double a11 = val(1,1);
-    double a12 = val(1,2);
-    double a20 = val(2,0);
-    double a21 = val(2,1);
-    double a22 = val(2,2);
+  // string
+  String toString() => "|${_data[0]},${_data[1]}|\n|${_data[2]},${_data[3]}|\n|${_data[4]},${_data[5]}|\n";
 
-    double b00 = b.val(0, 0);
-    double b01 = b.val(0 ,1);
-    double b02 = b.val(0 ,2);
-    double b10 = b.val(1 ,0);
-    double b11 = b.val(1 ,1);
-    double b12 = b.val(1 ,2);
-    double b20 = b.val(2 ,0);
-    double b21 = b.val(2 ,1);
-    double b22 = b.val(2 ,2);
-    return new Matrix2d.fromList([
-      b00 * a00 + b01 * a10 + b02 * a20,
-      b00 * a01 + b01 * a11 + b02 * a21,
-      b00 * a02 + b01 * a12 + b02 * a22,
-      b10 * a00 + b11 * a10 + b12 * a20,
-      b10 * a01 + b11 * a11 + b12 * a21,
-      b10 * a02 + b11 * a12 + b12 * a22,
-      b20 * a00 + b21 * a10 + b22 * a20,
-      b20 * a01 + b21 * a11 + b22 * a21,
-      b20 * a02 + b21 * a12 + b22 * a22,
-    ]);
+  // multiply
+  Matrix2d operator *(Matrix2d b) => clone()._multiplyThis(b._data);
+
+  Matrix2d multiplyThis(Matrix2d b) => _multiplyThis(b._data);
+
+  // translate
+  Matrix2d translateThisVector(Vector p) => translateThis(p.x, p.y);
+
+  Matrix2d translateThis(double tx, double ty) => _multiplyThis(_translation(tx, ty));
+
+  Matrix2d translateVector(Vector p) => clone().translateThis(p.x, p.y);
+
+  Matrix2d translate(double tx, double ty) => clone().translateThis(tx, ty);
+
+  // rotate
+  Matrix2d rotateThis(double angleInRadians) => _multiplyThis(_rotation(angleInRadians));
+
+  Matrix2d rotate(double angleInRadians) => clone().rotateThis(angleInRadians);
+
+  // scale
+  Matrix2d scaleThis(double sx, double sy) => _multiplyThis(_scaling(sx, sy));
+
+  Matrix2d scale(double sx, double sy) => clone().scale(sx, sy);
+
+  // apply
+  Vector apply(Vector p) =>
+      new Vector(_data[0] * p.x + _data[2] * p.y + _data[4], _data[1] * p.x + _data[3] * p.y + _data[5]);
+
+  Vector applyToVector(Vector p) {
+    var x = _data[0] * p.x + _data[2] * p.y + _data[4];
+    var y = _data[1] * p.x + _data[3] * p.y + _data[5];
+    p.x = x;
+    p.y = y;
+    return p;
   }
 
-  Point2d apply(Point2d p){
-    return new Point2d(
-        data[0]*p.x + data[3]*p.y + data[6],
-        data[1]*p.x + data[4]*p.y + data[7]
-    );
+  static List<double> _identity() => [1.0, 0.0, 0.0, 1.0, 0.0, 0.0];
+
+  static List<double> _translation(double tx, double ty) => [1.0, 0.0, 0.0, 1.0, tx, ty];
+
+  static List<double> _rotation(double angleInRadians) {
+    var c = Math.cos(angleInRadians);
+    var s = Math.sin(angleInRadians);
+    return [c, s, -s, c, 0.0, 0.0];
   }
 
-  Matrix2d translatePoint(Point2d p) {
-    return this * new Matrix2d.translation(p.x, p.y);
-  }
-  Matrix2d translate(double tx, double ty) {
-    return this * new Matrix2d.translation(tx, ty);
-  }
+  static List<double> _scaling(double sx, double sy) => [sx, 0.0, 0.0, sy, 0.0, 0.0];
 
-  Matrix2d rotate(double angleInRadians) {
-    return this * new Matrix2d.rotation(angleInRadians);
-  }
+  Matrix2d _multiplyThis(List<double> b) {
+    double a00 = _data[0];
+    double a01 = _data[1];
+    double a10 = _data[2];
+    double a11 = _data[3];
+    double a20 = _data[4];
+    double a21 = _data[5];
 
-  Matrix2d scale(double sx, double sy) {
-    return this * new Matrix2d.scaling(sx, sy);
+    double b00 = b[0];
+    double b01 = b[1];
+    double b10 = b[2];
+    double b11 = b[3];
+    double b20 = b[4];
+    double b21 = b[5];
+
+    _data[0] = b00 * a00 + b01 * a10;
+    _data[1] = b00 * a01 + b01 * a11;
+    _data[2] = b10 * a00 + b11 * a10;
+    _data[3] = b10 * a01 + b11 * a11;
+    _data[4] = b20 * a00 + b21 * a10 + a20;
+    _data[5] = b20 * a01 + b21 * a11 + a21;
+
+    return this;
   }
 }

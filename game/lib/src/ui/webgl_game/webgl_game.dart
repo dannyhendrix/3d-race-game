@@ -102,7 +102,7 @@ class WebglGame2d extends WebglGame{
         _drawPolygon(absolutePolygons.first, layer, v.isCollided ? "red" : "green");
         for(var s in v.sensors){
           //print(s.collides);
-          _drawPolygon(s.polygon.applyMatrix(M), layer, s.collides ? "red" : "#ffffff", true);
+          _drawPolygon(s.polygon.applyMatrixToThis(M), layer, s.collides ? "red" : "#ffffff", true);
         }
       }else{
         for(Polygon p in absolutePolygons) _drawPolygon(p, layer, "blue");
@@ -136,7 +136,7 @@ class WebglGame2d extends WebglGame{
   void _drawPolygon(Polygon polygon, RenderLayer layer, String color, [bool stroke = false]){
     layer.ctx.beginPath();
     layer.ctx.moveTo(polygon.points.first.x,polygon.points.first.y);
-    for(Point2d p in polygon.points){
+    for(var p in polygon.points){
       layer.ctx.lineTo(p.x,p.y);
     }
     if(stroke)  {
@@ -151,7 +151,7 @@ class WebglGame2d extends WebglGame{
     layer.ctx.beginPath();
     var first = polygon.points.first;
     layer.ctx.moveTo(first.x,first.y);
-    for(Point2d p in polygon.points){
+    for(var p in polygon.points){
       layer.ctx.lineTo(p.x,p.y);
     }
     layer.ctx.lineTo(first.x,first.y);

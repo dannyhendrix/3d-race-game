@@ -48,7 +48,7 @@ void main()
 
   currentStandStillInput.setValue(vehicleSettings.getValue(VehicleSettingKeys.standstill_delay));
 
-  Point2d p = new Point2d(300.0,300.0);
+  var p = new Vector(300.0,300.0);
 
   GameLoop loop = new GameLoop((int frame){
     //Read values from html dom
@@ -95,7 +95,7 @@ void main()
   });
 
   document.body.append(createButton("Start/pause animation",(Event e){loop.pause();}));
-  document.body.append(createButton("Reset position",(Event e){p=new Point2d(300.0,300.0);}));
+  document.body.append(createButton("Reset position",(Event e){p=new Vector(300.0,300.0);}));
 
 
   var handleKey = (KeyboardEvent e)

@@ -4,7 +4,7 @@ class PathToPolygons
 {
   List<Polygon> createRoadPolygons(GameLevelPath path)
   {
-    List<Point2d> points = _pointsFromCheckPoints(path);
+    List<Vector> points = _pointsFromCheckPoints(path);
     List<Polygon> polygons = [];
     // 1 create square parts of the roads
     List<Polygon> roads = _createSquareRoadPolygons(path, points);
@@ -16,19 +16,19 @@ class PathToPolygons
     return polygons;
   }
 
-  List<Point2d> _pointsFromCheckPoints(GameLevelPath path){
-    List<Point2d> list = [];
+  List<Vector> _pointsFromCheckPoints(GameLevelPath path){
+    List<Vector> list = [];
     for(GameLevelCheckPoint p in path.checkpoints){
       list.add(_pointFromCheckpoint(p));
     }
     return list;
   }
 
-  Point2d _pointFromCheckpoint(GameLevelCheckPoint p){
-    return new Point2d(p.x, p.z);
+  Vector _pointFromCheckpoint(GameLevelCheckPoint p){
+    return new Vector(p.x, p.z);
   }
 
-  List<Polygon> _createSquareRoadPolygons(GameLevelPath path, List<Point2d> points)
+  List<Polygon> _createSquareRoadPolygons(GameLevelPath path, List<Vector> points)
   {
     List<Polygon> roads = [];
     for(int i = 1; i < points.length; i++)
@@ -43,19 +43,19 @@ class PathToPolygons
     return roads;
   }
 
-  Polygon _createSquareRoad(Point2d A, Point2d B, double radiusA, double radiusB)
+  Polygon _createSquareRoad(Vector A, Vector B, double radiusA, double radiusB)
   {
-    double distance = A.distanceTo(B);
-    Matrix2d M = (new Matrix2d.translationPoint(A)).rotate(A.angleWith(B));
+    double distance = A.distanceToThis(B);
+    Matrix2d M = (new Matrix2d.translationVector(A)).rotate(A.angleWithThis(B));
     return new Polygon([
-      M.apply(new Point2d(0.0, -radiusA)),
-      M.apply(new Point2d(distance, -radiusB)),
-      M.apply(new Point2d(distance, radiusB)),
-      M.apply(new Point2d(0.0, radiusA)),
+      M.apply(new Vector(0.0, -radiusA)),
+      M.apply(new Vector(distance, -radiusB)),
+      M.apply(new Vector(distance, radiusB)),
+      M.apply(new Vector(0.0, radiusA)),
     ]);
   }
 
-  List<Polygon> _createIntersections(List<Point2d> path, List<Polygon> roads, circular)
+  List<Polygon> _createIntersections(List<Vector> path, List<Polygon> roads, circular)
   {
     List<Polygon> intersections = [];
     for(int i = 1; i < path.length - 1; i++)
@@ -70,7 +70,7 @@ class PathToPolygons
     return intersections;
   }
 
-  Polygon _createIntersection(Point2d P, Polygon roadPrev, Polygon roadNext)
+  Polygon _createIntersection(Vector P, Polygon roadPrev, Polygon roadNext)
   {
     // Take both top lines of the roads. If they intersect, connect the bottom. Otherwise connect the top.
     if(_intersect(roadPrev.points[0], roadPrev.points[1], roadNext.points[0], roadNext.points[1]))
@@ -107,12 +107,12 @@ class PathToPolygons
     return polygons;
   }
 
-  bool _intersect(Point2d A, Point2d B, Point2d C, Point2d D)
+  bool _intersect(Vector A, Vector B, Vector C, Vector D)
   {
     return _ccw(A, C, D) != _ccw(B, C, D) && _ccw(A, B, C) != _ccw(A, B, D);
   }
 
-  bool _ccw(Point2d A, Point2d B, Point2d C)
+  bool _ccw(Vector A, Vector B, Vector C)
   {
     return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x);
   }

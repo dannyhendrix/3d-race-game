@@ -241,8 +241,8 @@ class WebglGame3d extends WebglGame{
           var color = new GlColor(1.0, 0.5, 0.0);
           var colorPoles = new GlColor(0.6, 0.6, 0.6);
           List<Polygon> absoluteCollisionFields = o.getAbsoluteCollisionFields();
-          Point2d wallLeftPosition = absoluteCollisionFields[0].center;
-          Point2d wallRightPosition = absoluteCollisionFields[1].center;
+          var wallLeftPosition = absoluteCollisionFields[0].center;
+          var wallRightPosition = absoluteCollisionFields[1].center;
           modelInstances.add(new GlModelInstanceFromModelStatic(wallLeftPosition.x, 0.0, wallLeftPosition.y, 0.0, -o
               .r, 0.0, wallModel
               .getModelInstance(modelCollection, o.wallW, 150.0, o.wallH, colorPoles)));
@@ -261,7 +261,7 @@ class WebglGame3d extends WebglGame{
     }
 
     //GlModel worldModel = new GlAreaModel([new GlRectangle.withWD(0.0,0.0,0.0,1500.0,800.0,false)]);
-    var triangles = game.path.roadPolygons.map((Polygon p)=>new GlTriangle(p.points.map((Point2d p)=>new GlPoint(p.x,0.0,p.y)).toList(growable: false))).toList(growable: false);
+    var triangles = game.path.roadPolygons.map((Polygon p)=>new GlTriangle(p.points.map((var p)=>new GlPoint(p.x,0.0,p.y)).toList(growable: false))).toList(growable: false);
     GlModel roadModel = new GlAreaModel(triangles);
     GlModelBuffer road = roadModel.createBuffers(layer);
     modelInstances.add(new GlModelInstanceCollection([new GlModelInstance(road, new GlColor(0.3,0.3,0.3))]));

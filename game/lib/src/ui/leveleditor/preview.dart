@@ -96,7 +96,7 @@ class Preview{
     ctx.beginPath();
     var first = polygon.points.first;
     ctx.moveTo(first.x*scale,first.y*scale);
-    for(Point2d p in polygon.points){
+    for(Vector p in polygon.points){
       ctx.lineTo(p.x*scale,p.y*scale);
     }
     ctx.lineTo(first.x*scale,first.y*scale);
