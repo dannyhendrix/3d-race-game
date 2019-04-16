@@ -1,11 +1,15 @@
 part of micromachines;
-
-class CheckPoint extends GameObject{
+//TODO: support gameobjects with multiple polygons
+class CheckPoint extends GameItemStatic{
   Game game;
   double wallW = 8.0;
   double wallH = 8.0;
   bool isGate;
 
+  CheckPoint(this.game,PathCheckPoint pathCheckpoint, double angle, [this.isGate = false]) : super(Polygon.createSquare(pathCheckpoint.x,pathCheckpoint.y, 8.0, 8.0, angle)){
+
+  }
+/*
   CheckPoint(this.game, PathCheckPoint pathCheckpoint, double angle, [this.isGate = false]){
     position = new Point2d(pathCheckpoint.x,pathCheckpoint.y);
     w = wallW+pathCheckpoint.radius*2;
@@ -29,5 +33,5 @@ class CheckPoint extends GameObject{
       ];
     }
     setAbsoluteCollisionFieldsCache();
-  }
+  }*/
 }

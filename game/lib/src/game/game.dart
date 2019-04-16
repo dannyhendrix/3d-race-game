@@ -3,12 +3,13 @@ part of micromachines;
 enum GameState {Initialized, Running, Countdown, Racing, Finished}
 
 class Game{
-  List<GameObject> gameobjects = [];
-  List<MoveableGameObject> _movableGameObjects = [];
+  List<GameItem> gameobjects = [];
+  List<GameItemMovable> _movableGameObjects = [];
   List<Player> players;
   HumanPlayer humanPlayer;
   String info = "";
   Path path;
+  CollisionController _collisionController = new CollisionController();
 
   GameState state = GameState.Countdown;
   Countdown countdown;
@@ -45,8 +46,9 @@ class Game{
         v = new Car(this,player);
       gameobjects.add(v);
       _movableGameObjects.add(v);
+      _collisionController.register(v);
 
-      if(p.trailer != TrailerType.None){
+      /*if(p.trailer != TrailerType.None){
         Trailer t;
         if(p.trailer == TrailerType.TruckTrailer)
           t = new TruckTrailer(v);
@@ -54,9 +56,9 @@ class Game{
           t = new Caravan(v);
         gameobjects.add(t);
         _movableGameObjects.add(t);
-      }else{
+      }else{*/
         new NullTrailer(v);
-      }
+      /*}*/
 
       player.init(this,v, path);
     }
@@ -78,12 +80,9 @@ class Game{
     if(!countdown.complete){
       countdown.tick();
     }
-
-    for(MoveableGameObject o in _movableGameObjects){
-      o.resetCache();
-    }
+    _collisionController.handleCollisions();
     for(Player p in players) p.update();
-    for(MoveableGameObject o in _movableGameObjects){
+    for(var o in _movableGameObjects){
       o.update();
     }
     players.sort((Player a, Player b){
@@ -112,11 +111,15 @@ class Game{
   }
 
   void _loadLevel(GameLevel level){
-    for(GameLevelWall wall in level.walls){
-      gameobjects.add(new Wall(wall.x, wall.z, wall.w, wall.d, wall.r));
+    for(GameLevelWall obj in level.walls){
+      var wall = new Wall(obj.x, obj.z, obj.w, obj.d, obj.r);
+      gameobjects.add(wall);
+      _collisionController.register(wall);
     }
     for(GameLevelStaticObject obj in level.staticobjects){
-      gameobjects.add(new Tree(obj.x, obj.z, obj.r));
+      var tree = new Tree(obj.x, obj.z, obj.r);
+      gameobjects.add(tree);
+      _collisionController.register(tree);
     }
     /*
     List<PathCheckPoint> checkpoints = [];
@@ -130,26 +133,35 @@ class Game{
 
     for(int i = 1; i < path.checkpoints.length-1; i++){
       PathCheckPoint c = path.checkpoints[i];
-      gameobjects.add(new CheckPoint(this,c,_getCheckpointAngle(c,path.checkpoints[i-1],path.checkpoints[i+1])));
+      var checkpoint = new CheckPoint(this,c,_getCheckpointAngle(c,path.checkpoints[i-1],path.checkpoints[i+1]));
+      gameobjects.add(checkpoint);
+      _collisionController.register(checkpoint);
     }
     //first checkpoint
     if(level.path.circular)
     {
-      gameobjects.add(new CheckPoint(this, path.checkpoints[0], _getCheckpointAngle(path.checkpoints[0], path.checkpoints.last, path.checkpoints[1]),true));
-      gameobjects.add(new CheckPoint(this, path.checkpoints.last, _getCheckpointAngle(path.checkpoints.last, path.checkpoints[path.checkpoints.length - 2], path.checkpoints[0])));
+      var checkpoint = new CheckPoint(this, path.checkpoints[0], _getCheckpointAngle(path.checkpoints[0], path.checkpoints.last, path.checkpoints[1]),true);
+      gameobjects.add(checkpoint);
+      _collisionController.register(checkpoint);
+      checkpoint = new CheckPoint(this, path.checkpoints.last, _getCheckpointAngle(path.checkpoints.last, path.checkpoints[path.checkpoints.length - 2], path.checkpoints[0]));
+      gameobjects.add(checkpoint);
+      _collisionController.register(checkpoint);
     }
     else{
-      gameobjects.add(new CheckPoint(this, path.checkpoints[0], _getCheckpointAngleToNext(path.checkpoints[0], path.checkpoints[1]), true));
-      gameobjects.add(new CheckPoint(this, path.checkpoints.last, _getCheckpointAngleToNext(path.checkpoints.last, path.checkpoints[0]), true));
-
+      var checkpoint = new CheckPoint(this, path.checkpoints[0], _getCheckpointAngleToNext(path.checkpoints[0], path.checkpoints[1]), true);
+      gameobjects.add(checkpoint);
+      _collisionController.register(checkpoint);
+      checkpoint = new CheckPoint(this, path.checkpoints.last, _getCheckpointAngleToNext(path.checkpoints.last, path.checkpoints[0]), true);
+      gameobjects.add(checkpoint);
+      _collisionController.register(checkpoint);
     }
   }
 
   double _getCheckpointAngleToNext(PathCheckPoint c,PathCheckPoint cNext){
-    return (cNext-c).angle;
+    return (cNext-c).angleThis();
   }
   double _getCheckpointAngle(PathCheckPoint c,PathCheckPoint cPrev,PathCheckPoint cNext){
-    double angle = ((cPrev-c)+(c-cNext)).angle;
+    double angle = ((cPrev-c)+(c-cNext)).angleThis();
     angle += Math.pi/2;
     return angle;
   }
@@ -162,15 +174,15 @@ class Game{
 
     for(Player p in players){
       Vehicle v = p.vehicle;
-      vehicleWidth = Math.max(vehicleWidth, v.h);
-      vehicleWidth = Math.max(vehicleWidth, v.trailer.h);
-      vehicleLength = Math.max(vehicleLength, v.w-v.trailerSnapPoint.x+v.trailer.vehicleSnapPoint.x+v.trailer.w/2);
+      vehicleWidth = Math.max(vehicleWidth, v.polygon.dimensions.y);
+      vehicleWidth = Math.max(vehicleWidth, v.trailer.polygon.dimensions.y);
+      vehicleLength = Math.max(vehicleLength, v.polygon.dimensions.x-v.trailerSnapPoint.x+v.trailer.vehicleSnapPoint.x+v.trailer.polygon.dimensions.x/2);
     }
 
-    Point2d start = path.point(0);
-    Point2d second = path.point(1);
-    Point2d last = path.point(path.length-1);
-    double angle = path.circular ? _getCheckpointAngle(start,second,last) : start.angleWith(second);
+    var start = path.point(0);
+    var second = path.point(1);
+    var last = path.point(path.length-1);
+    double angle = path.circular ? _getCheckpointAngle(start,second,last) : start.angleWithThis(second);
     List<StartingPosition> startingPositions = startingPositionsCreater.DetermineStartPositions(
         path.point(0),
         angle,
@@ -183,8 +195,8 @@ class Game{
     );
     int i = 0;
     for(Player player in players){
-      player.vehicle.position = startingPositions[i].point;
-      player.vehicle.r = startingPositions[i].r;
+      var rdif = startingPositions[i].r - player.vehicle.r;
+      player.vehicle.Teleport(startingPositions[i].point, rdif);
       player.vehicle.trailer.updateVehiclePosition();
       i++;
     }

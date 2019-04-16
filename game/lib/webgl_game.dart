@@ -12,6 +12,7 @@ import "package:webgl/webgl.dart";
 import 'game.dart';
 import 'input.dart';
 import 'definitions.dart';
+import 'gameitem.dart';
 
 part 'src/ui/webgl_game/glmodel_vehicle.dart';
 part 'src/ui/webgl_game/glmodel_caravan.dart';

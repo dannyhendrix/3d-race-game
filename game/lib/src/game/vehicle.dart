@@ -37,8 +37,8 @@ class VehicleSettings{
 class VehicleSensor{
   Polygon polygon;
   bool collides = false;
-  VehicleSensor.fromVector(Point2d origin, Vector v){
-    polygon = new Polygon([origin, origin + v],false);
+  VehicleSensor.fromVector(Vector origin, Vector v){
+    polygon = new Polygon([origin, origin + v]);
   }
 }
 class Truck extends Vehicle{
@@ -70,7 +70,7 @@ class FormulaCar extends Vehicle{
     vehicleSettings.setValue(VehicleSettingKeys.standstill_delay, 4);
   }
 }
-abstract class Vehicle extends MoveableGameObject{
+abstract class Vehicle extends GameItemMovable{
   Game game;
   Player player;
   bool _isBraking = false;
@@ -82,9 +82,7 @@ abstract class Vehicle extends MoveableGameObject{
   bool _isCollided = false;
   VehicleSettings vehicleSettings = new VehicleSettings();
   int theme = 0;
-  Point2d trailerSnapPoint;
-
-
+  Vector trailerSnapPoint;
   /**
    * There are 7 sensor on the car body: (facing upwards)
    *     1 2  3  4 5
@@ -125,27 +123,17 @@ abstract class Vehicle extends MoveableGameObject{
   bool sensorCollision = false;
   Trailer trailer;
 
-  Vehicle(this.game, this.player, double w, double h){
-    position = new Point2d(0.0, 50.0);
-    r = 0.0;
-    this.w = w;//50.0;
-    this.h = h;//30.0;
-    trailerSnapPoint = new Point2d(-w/2,0.0);
+  Vehicle(this.game, this.player, double w, double h):super(Polygon.createSquare(0.0, 0.0, w, h, 0.0)){
+    trailerSnapPoint = new Vector(-w/2,0.0);
     double hw = w/2;
     double hh= h/2;
-    relativeCollisionFields = [new Polygon([
-      new Point2d(-hw,-hh),
-      new Point2d(hw,-hh),
-      new Point2d(hw,hh),
-      new Point2d(-hw,hh),
-    ])];
-    sensorLeftFrontAngle = new VehicleSensor.fromVector(new Point2d(hw,-hh), new Vector.fromAngleRadians(-sensorFrontAngle, sensorLengthFrontSide));
-    sensorLeftFront = new VehicleSensor.fromVector(new Point2d(hw,-hh), new Vector(sensorLength, 0.0));
-    sensorFront = new VehicleSensor.fromVector(new Point2d(hw,0.0), new Vector(sensorLength, 0.0));
-    sensorRightFront = new VehicleSensor.fromVector(new Point2d(hw,hh), new Vector(sensorLength, 0.0));
-    sensorRightFrontAngle = new VehicleSensor.fromVector(new Point2d(hw,hh), new Vector.fromAngleRadians(sensorFrontAngle, sensorLengthFrontSide));
-    sensorLeft = new VehicleSensor.fromVector(new Point2d(0.0,-hh), new Vector(0.0, -sensorLengthSide));
-    sensorRight = new VehicleSensor.fromVector(new Point2d(0.0,hh), new Vector(0.0, sensorLengthSide));
+    sensorLeftFrontAngle = new VehicleSensor.fromVector(new Vector(hw,-hh), new Vector.fromAngleRadians(-sensorFrontAngle, sensorLengthFrontSide));
+    sensorLeftFront = new VehicleSensor.fromVector(new Vector(hw,-hh), new Vector(sensorLength, 0.0));
+    sensorFront = new VehicleSensor.fromVector(new Vector(hw,0.0), new Vector(sensorLength, 0.0));
+    sensorRightFront = new VehicleSensor.fromVector(new Vector(hw,hh), new Vector(sensorLength, 0.0));
+    sensorRightFrontAngle = new VehicleSensor.fromVector(new Vector(hw,hh), new Vector.fromAngleRadians(sensorFrontAngle, sensorLengthFrontSide));
+    sensorLeft = new VehicleSensor.fromVector(new Vector(0.0,-hh), new Vector(0.0, -sensorLengthSide));
+    sensorRight = new VehicleSensor.fromVector(new Vector(0.0,hh), new Vector(0.0, sensorLengthSide));
     sensors = [sensorLeftFrontAngle, sensorLeftFront, sensorFront, sensorRightFront, sensorRightFrontAngle, sensorLeft, sensorRight];
   }
   void setAccelarate(bool a){
@@ -161,6 +149,64 @@ abstract class Vehicle extends MoveableGameObject{
   bool get isCollided => _isCollided;
 
   void update(){
+    bool gameStateRacing = game.state == GameState.Racing;
+    //bool gameStateRacingOrCountDown = game.state == GameState.Racing || game.state == GameState.Countdown;
+    //Steering
+    var oldr = r;
+    if(gameStateRacing) r = _applySteering(r,vehicleSettings.getValue(VehicleSettingKeys.steering_speed), _isSteering);
+var newr = r;
+r=oldr;
+
+    //Apply Forces
+    bool wasStandingStill = _speed == 0;
+    _speed = _applyAccelerationAndBrake(_speed,
+        vehicleSettings.getValue(VehicleSettingKeys.acceleration),
+        vehicleSettings.getValue(VehicleSettingKeys.reverse_acceleration),
+        vehicleSettings.getValue(VehicleSettingKeys.brake_speed),
+        vehicleSettings.getValue(VehicleSettingKeys.acceleration_max),
+        vehicleSettings.getValue(VehicleSettingKeys.reverse_acceleration_max),
+        _currentStandStillDelay==0,  _isAccelerating && gameStateRacing, _isBraking && gameStateRacing);
+    _speed = _applyFriction(_speed,vehicleSettings.getValue(VehicleSettingKeys.friction));
+
+    // slower off road
+    // TODO: make this level dependant?
+    if(!player.pathProgress.path.onRoad(position)){
+      _speed *= 0.9;
+    }
+    _currentStandStillDelay = _updateStandStillDelay(_currentStandStillDelay,vehicleSettings.getValue(VehicleSettingKeys.standstill_delay), wasStandingStill, _speed==0);
+
+    //Velocity *= 0.6;
+    //Velocity += Vector.NewFromAngleRadians(R, Speed)*0.01;
+    var rdif = newr - oldr;
+    //position += vector;
+    //base.Step();
+
+    isMoving = true;
+    //VelocityRotation = rdif;
+    velocityRotation = rdif;
+
+    var _friction = 0.5;
+
+    velocity.addVectorToThis(collisionCorrection);
+    velocityRotation += collisionCorrectionRotation;
+
+    if (!hasCollided)
+    {
+      velocity.multiplyToThis(1 - _friction);
+      //VelocityRotation *= (1 - _friction);
+      velocity.addVectorToThis(new Vector.fromAngleRadians(r, _speed) * 0.5);
+    }
+
+    Teleport(velocity, velocityRotation);
+
+    ResetCollisions();
+
+
+
+
+
+
+   /*
     bool gameStateRacing = game.state == GameState.Racing;
     //bool gameStateRacingOrCountDown = game.state == GameState.Racing || game.state == GameState.Countdown;
     //Steering
@@ -183,10 +229,10 @@ abstract class Vehicle extends MoveableGameObject{
       _speed *= 0.9;
     }
     _currentStandStillDelay = _updateStandStillDelay(_currentStandStillDelay,vehicleSettings.getValue(VehicleSettingKeys.standstill_delay), wasStandingStill, _speed==0);
-
-    vector = new Vector.fromAngleRadians(r,_speed);
+*//*
+    velocity = new Vector.fromAngleRadians(r,_speed);
     //position += vector;
-    Point2d collisionCorrection = vector;
+    var collisionCorrection = vector;
     bool collide = false;
 
     sensorCollision = false;
@@ -236,18 +282,14 @@ abstract class Vehicle extends MoveableGameObject{
     }
     _isCollided = collide;
     position += vector + collisionCorrection;
+    */
   }
 
-  bool onCollision(GameObjectCollision o){
-    //if(_speed != 0) _speed = -(_speed/2);
-    /*
-    _speed = -_speed/2;
-
-    _acceleration = 0.0;
-    _braking = 0.0;
-    _steering = 0.0;
-    */
-    return false;
+  void applyMatrix(Matrix2d matrix){
+    super.applyMatrix(matrix);
+    for(var s in sensors){
+      s.polygon.applyMatrixToThis(matrix);
+    }
   }
 
   double _applyFriction(double V, double F){

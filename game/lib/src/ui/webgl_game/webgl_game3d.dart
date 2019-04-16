@@ -201,7 +201,7 @@ class WebglGame3d extends WebglGame{
     //createVehicleModel().modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
     GlColor colorWindows = new GlColor(0.2,0.2,0.2);
     //create all buffer
-    for(GameObject o in game.gameobjects){
+    for(var o in game.gameobjects){
       if(o is Car)
       {
         print("car model");
@@ -220,6 +220,7 @@ class WebglGame3d extends WebglGame{
         modelInstances.add(new GlModelInstanceFromModel(o, truckModel
             .getModelInstance(modelCollection, colorMappingGl[v.player.theme
             .color1], colorMappingGl[v.player.theme.color2], colorWindows)));
+        /*
       }else if(o is Caravan){
         Trailer t = o;
         modelInstances.add(new GlModelInstanceFromModel(o, caravanModel
@@ -228,6 +229,7 @@ class WebglGame3d extends WebglGame{
         Trailer t = o;
         modelInstances.add(new GlModelInstanceFromModel(o, truckTrailerModel
             .getModelInstance(modelCollection, colorMappingGl[t.vehicle.player.theme.color1], colorMappingGl[t.vehicle.player.theme.color2], colorWindows)));
+      */
       }else if(o is Wall){
         modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,0.0,o.position.y, 0.0,-o.r,0.0, wallModel
             .getModelInstance(modelCollection, o.w, 150.0, o.h)));
@@ -235,6 +237,7 @@ class WebglGame3d extends WebglGame{
         modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,0.0,o.position.y, 0.0,-o.r,0.0, treeModel
             .getModelInstance(modelCollection)));
       }else if(o is CheckPoint){
+        /*
         CheckPoint c = o;
         if(c.isGate)
         {
@@ -253,10 +256,11 @@ class WebglGame3d extends WebglGame{
               .r, 0.0, wallModel
               .getModelInstance(modelCollection, o.w - o.wallW - o.wallW, 60.0, 4.0, color)));
         }
+        *//*
       }else{
         double h = 80.0;
         GlModelBuffer cube = new GlCube.fromTopCenter(0.0,(h/2),0.0,o.w,h,o.h).createBuffers(layer);
-        modelInstances.add(new GlModelInstanceFromGameObject(o, new GlModelInstanceCollection([new GlModelInstance(cube, new GlColor(1.0,1.0,1.0))])));
+        modelInstances.add(new GlModelInstanceFromGameObject(o, new GlModelInstanceCollection([new GlModelInstance(cube, new GlColor(1.0,1.0,1.0))])));*/
       }
     }
 
@@ -285,7 +289,7 @@ class GlModelInstanceFromModelStatic extends GlModelInstanceCollection{
   }
 }
 class GlModelInstanceFromModel extends GlModelInstanceCollection{
-  GameObject gameObject;
+  GameItem gameObject;
   GlModelInstanceFromModel(this.gameObject, GlModelInstanceCollection model):super([]){
     this.modelInstances = model.modelInstances;
   }
@@ -296,7 +300,7 @@ class GlModelInstanceFromModel extends GlModelInstanceCollection{
   }
 }
 class GlModelInstanceFromGameObject extends GlModelInstanceCollection{
-  GameObject gameObject;
+  GameItem gameObject;
   GlModelInstanceFromGameObject(this.gameObject, GlModelInstanceCollection model):super(model.modelInstances);
   GlMatrix CreateTransformMatrix(){
     GlMatrix m = GlMatrix.translationMatrix(gameObject.position.x,0.0,gameObject.position.y);

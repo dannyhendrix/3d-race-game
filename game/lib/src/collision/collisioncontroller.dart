@@ -25,18 +25,18 @@ class CollisionController
       {
         var gameItem = _gameItemsMovable[j];
         // if both are not moving, skip checking
-        if (!gameItem.IsMoving && !gameItemMovable.IsMoving) continue;
+        if (!gameItem.isMoving && !gameItemMovable.isMoving) continue;
         if (!gameItemMovable.aabb.collidesWith(gameItem.aabb)) continue;
         var collision = _collistionDetection.polygonCollision(gameItemMovable.polygon, gameItem.polygon);
         if (collision == null) continue;
 
         _collisionHandling.handleCollision(gameItemMovable, gameItem, collision); // full bounce
-        gameItemMovable.OnCollision(gameItem);
-        gameItem.OnCollision(gameItemMovable);
+        gameItemMovable.onCollision(gameItem);
+        gameItem.onCollision(gameItemMovable);
       }
 
       // if the object is moving, check for collisions against all static items
-      if (gameItemMovable.IsMoving)
+      if (gameItemMovable.isMoving)
       {
         for (var gameItem in _gameItemsStatic)
         {
@@ -45,8 +45,8 @@ class CollisionController
           if (collision == null) continue;
 
           _collisionHandling.handleCollisionSingle(gameItemMovable, gameItem, collision); // no bounce
-          gameItemMovable.OnCollision(gameItem);
-          gameItem.OnCollision(gameItemMovable);
+          gameItemMovable.onCollision(gameItem);
+          gameItem.onCollision(gameItemMovable);
         }
       }
     }

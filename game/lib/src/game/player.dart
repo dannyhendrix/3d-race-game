@@ -38,11 +38,11 @@ class HumanPlayer extends Player{
   }
 
   void update(){
-    Point2d p =  pathProgress.current;
-    Point2d v =  vehicle.position;
+    var p =  pathProgress.current;
+    var v =  vehicle.position;
     Vector V =  new Vector(p.x-v.x,p.y-v.y);
     vehicle.info = "${pathProgress.finished}";
-    if(V.magnitude < pathProgress.current.radius){
+    if(V.magnitude() < pathProgress.current.radius){
       pathProgress.next();
     }
   }
@@ -57,10 +57,10 @@ class AiPlayer extends Player{
       return;
     }
     if(_game.state != GameState.Racing) return;
-    Point2d p =  pathProgress.current;
-    Point2d v =  vehicle.position;
+    var p =  pathProgress.current;
+    var v =  vehicle.position;
     Vector V =  new Vector(p.x-v.x,p.y-v.y);
-    if(V.magnitude < pathProgress.current.radius){
+    if(V.magnitude() < pathProgress.current.radius){
       pathProgress.next();
     }
     if(vehicle.sensorCollision){
@@ -71,8 +71,8 @@ class AiPlayer extends Player{
   }
 
   void controlToTarget(){
-    Point2d p =  pathProgress.current;
-    Point2d v =  vehicle.position;
+    var p =  pathProgress.current;
+    var v =  vehicle.position;
     vehicle.setSteer(steerToPoint(v,vehicle.r,p));
     vehicle.setAccelarate(true);
   }
@@ -104,12 +104,12 @@ class AiPlayer extends Player{
     return Steer.None;*/
   }
 
-  Steer steerToPoint(Point2d A, double RA, Point2d B){
+  Steer steerToPoint(Vector A, double RA, Vector B){
     var dist = B-A;
     var normT = new Vector(dist.x,dist.y);//.normalized;
     var normA = new Vector.fromAngleRadians(RA,1.0);
-    var ra = normA.angle;
-    var rt = normT.angle;
+    var ra = normA.angleThis();
+    var rt = normT.angleThis();
     if(ra == 0){
       if(rt>0) return Steer.Right;
       return Steer.Left;

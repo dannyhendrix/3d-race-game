@@ -5,47 +5,47 @@ class GameItemStatic extends GameItem {
 }
 
 class GameItemMovable extends GameItem {
-  bool HasCollided = false;
-  Vector CollisionCorrection = new Vector(0, 0);
-  double CollisionCorrectionRotation = 0;
-  double VelocityRotation = 0;
-  Vector Velocity = new Vector(0, 0);
-  double Mass = 0.0;
-  double RotationalMass = 0.0;
-  bool IsMoving = false;
+  bool hasCollided = false;
+  Vector collisionCorrection = new Vector(0, 0);
+  double collisionCorrectionRotation = 0;
+  double velocityRotation = 0;
+  Vector velocity = new Vector(0, 0);
+  double mass = 0.0;
+  double rotationalMass = 0.0;
+  bool isMoving = false;
 
   double _density = 1;
   double _friction = 0.001;
 
-  void Step() {
+  void update() {
     var TOLERANCE = 1e-4;
-    IsMoving = VelocityRotation.abs() >= TOLERANCE || Velocity.x.abs() >= TOLERANCE || Velocity.y.abs() >= TOLERANCE;
+    isMoving = velocityRotation.abs() >= TOLERANCE || velocity.x.abs() >= TOLERANCE || velocity.y.abs() >= TOLERANCE;
 
-    if (!IsMoving && !HasCollided) return;
+    if (!isMoving && !hasCollided) return;
 
-    if (HasCollided) {
-      Velocity.addVectorToThis(CollisionCorrection);
-      VelocityRotation += CollisionCorrectionRotation;
+    if (hasCollided) {
+      velocity.addVectorToThis(collisionCorrection);
+      velocityRotation += collisionCorrectionRotation;
     } else {
-      Velocity.multiplyToThis(1 - _friction);
-      VelocityRotation *= (1 - _friction);
+      velocity.multiplyToThis(1 - _friction);
+      velocityRotation *= (1 - _friction);
     }
-    Teleport(Velocity, VelocityRotation);
+    Teleport(velocity, velocityRotation);
 
     ResetCollisions();
   }
 
   void ResetCollisions() {
-    CollisionCorrectionRotation = 0;
-    CollisionCorrection.reset();
-    HasCollided = false;
+    collisionCorrectionRotation = 0;
+    collisionCorrection.reset();
+    hasCollided = false;
   }
 
   GameItemMovable(Polygon polygon) : super(polygon) {
     var width = polygon.dimensions.x;
     var height = polygon.dimensions.y;
-    Mass = width * width + height * height; //w * h * h / 1000;
-    RotationalMass = 4.0 /
+    mass = width * width + height * height; //w * h * h / 1000;
+    rotationalMass = 4.0 /
         3.0 *
         width *
         height *
@@ -55,31 +55,36 @@ class GameItemMovable extends GameItem {
 }
 
 class GameItem {
-  double Elasticy = 1.5;
+  double elasticy = 1.5;
   Polygon polygon;
   Aabb aabb = new Aabb();
+  double r = 0.0;
 
-  Vector get Position => polygon.center;
+  Vector get position => polygon.center;
 
   GameItem(this.polygon) {
     aabb.update(polygon);
   }
 
   void TelePort(double x, double y) {
-    polygon.applyMatrixToThis(new Matrix2d.translation(x - polygon.center.x, y - polygon.center.y));
-    aabb.update(polygon);
+    applyMatrix(new Matrix2d.translation(x - polygon.center.x, y - polygon.center.y));
   }
 
   void Teleport(Vector offset, double rotate) {
     var centerX = polygon.center.x;
     var centerY = polygon.center.y;
+    r += rotate;
     var m = new Matrix2d.translation(centerX, centerY)
         .rotateThis(rotate)
         .translateThis(-centerX, -centerY)
         .translateThisVector(offset);
-    polygon.applyMatrixToThis(m);
+    applyMatrix(m);
+  }
+
+  void applyMatrix(Matrix2d matrix){
+    polygon.applyMatrixToThis(matrix);
     aabb.update(polygon);
   }
 
-  void OnCollision(GameItem other) {}
+  void onCollision(GameItem other) {}
 }

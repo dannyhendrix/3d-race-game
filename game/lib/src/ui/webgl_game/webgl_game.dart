@@ -93,19 +93,20 @@ class WebglGame2d extends WebglGame{
     }
 
     //draw gameObjects
-    for(GameObject o in game.gameobjects){
-      Matrix2d M = o.getTransformation();
-      var absolutePolygons = o.getAbsoluteCollisionFields();
+    for(var o in game.gameobjects){
+      //Matrix2d M = o.getTransformation();
+      //var absolutePolygons = o.getAbsoluteCollisionFields();
       //draw gameObjects
       if(o is Vehicle){
         Vehicle v = o;
-        _drawPolygon(absolutePolygons.first, layer, v.isCollided ? "red" : "green");
+        _drawPolygon(v.polygon, layer, v.isCollided ? "red" : "green");
         for(var s in v.sensors){
           //print(s.collides);
-          _drawPolygon(s.polygon.applyMatrixToThis(M), layer, s.collides ? "red" : "#ffffff", true);
+          _drawPolygon(s.polygon, layer, s.collides ? "red" : "#ffffff", true);
         }
       }else{
-        for(Polygon p in absolutePolygons) _drawPolygon(p, layer, "blue");
+        //for(Polygon p in absolutePolygons) _drawPolygon(p, layer, "blue");
+        _drawPolygon(o.polygon, layer, "blue");
       }
 
       layer.ctx.beginPath();

@@ -45,6 +45,20 @@ class Polygon {
 
   List<Vector> points;
 
+  static Polygon createSquare(double nx, double ny, double nw, double nh, double nr){
+    double hw = nw/2;
+    double hh= nh/2;
+    var m = new Matrix2d()
+        .rotateThis(nr)
+        .translateThis(nx,ny);
+    return new Polygon([
+      new Vector(-hw,-hh),
+      new Vector(hw,-hh),
+      new Vector(hw,hh),
+      new Vector(-hw,hh),
+    ]).applyMatrixToThis(m);
+  }
+
   Polygon(this.points) {
     edges = _createEdges(points.length > 2);
     center = _createCenter();

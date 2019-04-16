@@ -2,10 +2,10 @@ library micromachines;
 import "package:gameutils/math.dart";
 import "dart:math" as Math;
 import "definitions.dart";
+import "gameitem.dart";
+import "collision.dart";
 
 part "src/game/game.dart";
-part "src/game/gameobject.dart";
-part "src/game/movablegameobject.dart";
 part "src/game/vehicle.dart";
 part "src/game/trailer.dart";
 part "src/game/player.dart";

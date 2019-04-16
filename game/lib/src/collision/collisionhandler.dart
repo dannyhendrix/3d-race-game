@@ -3,48 +3,48 @@ part of game.collision;
 class CollisionHandling {
   //private double _elasticy = 1.5;// elacity between 1 and 2. 2 is bounce
   void handleCollision(GameItemMovable a, GameItemMovable b, PolygonCollisionResult collision) {
-    var elasticy = a.Elasticy * 0.5 + b.Elasticy * 0.5;
+    var elasticy = a.elasticy * 0.5 + b.elasticy * 0.5;
     var centerToHitA = a.polygon.center - collision.hitLocation;
     var centerToHitB = b.polygon.center - collision.hitLocation;
     // vp -> velocity on impact (including rotation)
 
     var velocityOnImpact = centerToHitA.clone()
-        .crossProductToThis(a.VelocityRotation)
-        .addVectorToThis(a.Velocity)
-        .subtractToThis(b.Velocity)
-        .subtractToThis(centerToHitB.clone().crossProductToThis(b.VelocityRotation));
+        .crossProductToThis(a.velocityRotation)
+        .addVectorToThis(a.velocity)
+        .subtractToThis(b.velocity)
+        .subtractToThis(centerToHitB.clone().crossProductToThis(b.velocityRotation));
     var resultingForce =
         velocityOnImpact.dotProductThis(collision.translationVector); // negative val = moving towards each other
     if (resultingForce >= 0) {
       // do they move apart?
       return;
     }
-    var massImpactA = 1 / a.Mass;
-    var massImpactB = 1 / b.Mass;
+    var massImpactA = 1 / a.mass;
+    var massImpactB = 1 / b.mass;
 
     // normal impulse
     double normalImpulse = -elasticy *
         resultingForce /
         (massImpactA +
-            Math.pow(collision.translationVector.crossProductThis(centerToHitA), 2) / a.RotationalMass +
+            Math.pow(collision.translationVector.crossProductThis(centerToHitA), 2) / a.rotationalMass +
             massImpactB +
-            Math.pow(collision.translationVector.crossProductThis(centerToHitB), 2) / b.RotationalMass);
+            Math.pow(collision.translationVector.crossProductThis(centerToHitB), 2) / b.rotationalMass);
     var resultingImpulse = collision.translationVector * normalImpulse;
     //
 
-    a.CollisionCorrectionRotation += resultingImpulse.crossProductThis(centerToHitA) / a.RotationalMass;
-    b.CollisionCorrectionRotation -= resultingImpulse.crossProductThis(centerToHitB) / b.RotationalMass;
-    a.CollisionCorrection.addToThis(resultingImpulse.x * massImpactA, resultingImpulse.y * massImpactA);
-    b.CollisionCorrection.addToThis(-resultingImpulse.x * massImpactB, -resultingImpulse.y * massImpactB);
+    a.collisionCorrectionRotation += resultingImpulse.crossProductThis(centerToHitA) / a.rotationalMass;
+    b.collisionCorrectionRotation -= resultingImpulse.crossProductThis(centerToHitB) / b.rotationalMass;
+    a.collisionCorrection.addToThis(resultingImpulse.x * massImpactA, resultingImpulse.y * massImpactA);
+    b.collisionCorrection.addToThis(-resultingImpulse.x * massImpactB, -resultingImpulse.y * massImpactB);
 
-    a.HasCollided = true;
-    b.HasCollided = true;
+    a.hasCollided = true;
+    b.hasCollided = true;
   }
 
   void handleCollisionSingle(GameItemMovable a, GameItemStatic b, PolygonCollisionResult collision) {
-    var elasticy = a.Elasticy * 0.5 + b.Elasticy * 0.5;
+    var elasticy = a.elasticy * 0.5 + b.elasticy * 0.5;
     var centerToHitA = a.polygon.center - collision.hitLocation;
-    var velocityOnImpact = centerToHitA.clone().crossProductToThis(a.VelocityRotation).addVectorToThis(a.Velocity);
+    var velocityOnImpact = centerToHitA.clone().crossProductToThis(a.velocityRotation).addVectorToThis(a.velocity);
 
     var resultingForce =
         velocityOnImpact.dotProductThis(collision.translationVector); // negative val = moving towards each other
@@ -53,16 +53,16 @@ class CollisionHandling {
       return;
     }
 
-    var massImpactA = 1 / a.Mass;
+    var massImpactA = 1 / a.mass;
 
     // normal impulse
     var normalImpulse = -elasticy *
         resultingForce /
-        (massImpactA + Math.pow(collision.translationVector.crossProductThis(centerToHitA), 2) / a.RotationalMass);
+        (massImpactA + Math.pow(collision.translationVector.crossProductThis(centerToHitA), 2) / a.rotationalMass);
     var resultingImpulse = collision.translationVector * normalImpulse;
     //
-    a.CollisionCorrectionRotation += resultingImpulse.crossProductThis(centerToHitA) / a.RotationalMass;
-    a.CollisionCorrection.addToThis(resultingImpulse.x * massImpactA, resultingImpulse.y * massImpactA);
-    a.HasCollided = true;
+    a.collisionCorrectionRotation += resultingImpulse.crossProductThis(centerToHitA) / a.rotationalMass;
+    a.collisionCorrection.addToThis(resultingImpulse.x * massImpactA, resultingImpulse.y * massImpactA);
+    a.hasCollided = true;
   }
 }
