@@ -6,6 +6,7 @@ class PathToPolygons
   {
     List<Vector> points = _pointsFromCheckPoints(path);
     List<Polygon> polygons = [];
+    if(points.isEmpty) return polygons;
     // 1 create square parts of the roads
     List<Polygon> roads = _createSquareRoadPolygons(path, points);
     // 2 create triangle intersections between roads

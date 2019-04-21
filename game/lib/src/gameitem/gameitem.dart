@@ -55,6 +55,8 @@ class GameItemMovable extends GameItem {
 }
 
 class GameItem {
+  static int _idCounter = 0;
+  int id = _idCounter++;
   double elasticy = 1.5;
   Polygon polygon;
   Aabb aabb = new Aabb();

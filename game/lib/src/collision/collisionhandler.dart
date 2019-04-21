@@ -1,6 +1,10 @@
 part of game.collision;
 
-class CollisionHandling {
+abstract class CollisionHandling {
+  void handleCollision(GameItemMovable a, GameItemMovable b, PolygonCollisionResult collision);
+  void handleCollisionSingle(GameItemMovable a, GameItemStatic b, PolygonCollisionResult collision);
+}
+class CollisionHandlingPhysics implements CollisionHandling {
   //private double _elasticy = 1.5;// elacity between 1 and 2. 2 is bounce
   void handleCollision(GameItemMovable a, GameItemMovable b, PolygonCollisionResult collision) {
     var elasticy = a.elasticy * 0.5 + b.elasticy * 0.5;

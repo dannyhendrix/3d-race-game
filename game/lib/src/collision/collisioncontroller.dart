@@ -5,7 +5,9 @@ class CollisionController
   List<GameItemStatic> _gameItemsStatic = new List<GameItemStatic>();
   List<GameItemMovable> _gameItemsMovable = new List<GameItemMovable>();
   CollisionDetection _collistionDetection = new CollisionDetection();
-  CollisionHandling _collisionHandling = new CollisionHandling();
+  CollisionHandling _collisionHandling;
+
+  CollisionController(this._collisionHandling);
 
   void register(GameItem item)
   {

@@ -1,5 +1,21 @@
 part of micromachines;
 //TODO: support gameobjects with multiple polygons
+
+
+class CheckpointGameItem extends GameItemStatic{
+  /*CheckpointGameItem(double nx, double ny, double radius, double angle) : super(Polygon.createSquare(nx,ny,radius,20.0, angle))
+  {
+    r=angle;
+  }*/
+  int index;
+  double radius;
+  CheckpointGameItem(GameLevelCheckPoint checkpoint, double angle, this.index) : super(Polygon.createSquare(checkpoint.x,checkpoint.z,checkpoint.radius*2,20.0, angle))
+  {
+    r=angle;
+    radius = checkpoint.radius;
+  }
+}
+/*
 class CheckPoint extends GameItemStatic{
   Game game;
   double wallW = 8.0;
@@ -35,3 +51,4 @@ class CheckPoint extends GameItemStatic{
     setAbsoluteCollisionFieldsCache();
   }*/
 }
+*/

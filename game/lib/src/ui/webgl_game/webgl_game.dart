@@ -27,6 +27,8 @@ class WebglGame2d extends WebglGame{
   Game game;
   RenderLayer layer;
   GameLoop _gameloop;
+  int screenw = 1000;
+  int screenh = 800;
   WebglGame2d(GameSettings settings){
     game = new Game(settings);
     _gameloop = new GameLoop(_loop);
@@ -34,7 +36,7 @@ class WebglGame2d extends WebglGame{
 
   Element initAndCreateDom(GameInput input, GameSettings settings){
     game.initSession(input);
-    layer = new RenderLayer.withSize(1500,800);
+    layer = new RenderLayer.withSize(screenw,screenh);
     //document.body.append(layer.canvas);
     InputController inputController = new InputController(settings);
     _registerControls(inputController);
@@ -67,10 +69,10 @@ class WebglGame2d extends WebglGame{
     //draw road
     layer.ctx.fillStyle = "#111";
     layer.ctx.strokeStyle = "#111";
-    for(Polygon p in game.path.roadPolygons){
+    for(Polygon p in game.level.roadPolygons){
       _drawRoadPolygon(p, layer);
     }
-
+/*
     //draw path
     var startPoint = game.path.point(0);
     layer.ctx.beginPath();
@@ -85,13 +87,14 @@ class WebglGame2d extends WebglGame{
     layer.ctx.strokeStyle = '#555';
     layer.ctx.stroke();
 
+
     for(int i = 0; i < game.path.length; i++){
       var p =game.path.point(i);
       layer.ctx.beginPath();
       layer.ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.pi, false);
       layer.ctx.stroke();
     }
-
+*/
     //draw gameObjects
     for(var o in game.gameobjects){
       //Matrix2d M = o.getTransformation();
@@ -104,26 +107,33 @@ class WebglGame2d extends WebglGame{
           //print(s.collides);
           _drawPolygon(s.polygon, layer, s.collides ? "red" : "#ffffff", true);
         }
+      }else if(o is CheckpointGameItem){
+        var current = (game.humanPlayer.pathProgress as PathProgressCheckpoint).currentIndex;
+        var index = (o as CheckpointGameItem).index;
+        _drawPolygon(o.polygon, layer, index == current ? "yellow" : (  index == 0 ? "#fff" : "#999"));
       }else{
         //for(Polygon p in absolutePolygons) _drawPolygon(p, layer, "blue");
         _drawPolygon(o.polygon, layer, "blue");
       }
-
+/*
       layer.ctx.beginPath();
       layer.ctx.arc(o.position.x, o.position.y, 2, 0, 2 * Math.pi, false);
       layer.ctx.fillStyle = 'green';
-      layer.ctx.fill();
+      layer.ctx.fill();*/
     }
-
+/*
     //draw line from each player to his next target
     layer.ctx.strokeStyle = '#777';
     for(int i = 0; i < game.players.length; i++){
       var p =game.players[i];
       layer.ctx.beginPath();
       layer.ctx.moveTo(p.vehicle.position.x, p.vehicle.position.y);
-      layer.ctx.lineTo(p.pathProgress.current.x, p.pathProgress.current.y);
+      if(p.pathProgress is PathProgressCheckpoint){
+        PathProgressCheckpoint pathProgressCheckpoint = p.pathProgress;
+        layer.ctx.lineTo(pathProgressCheckpoint.current.x, pathProgressCheckpoint.current.y);
+      }
       layer.ctx.stroke();
-    }
+    }*/
 
     layer.ctx.font = "10px Arial";
     layer.ctx.fillText("Vehicle: ${game.players[0].vehicle.info}",10,10);
@@ -135,10 +145,15 @@ class WebglGame2d extends WebglGame{
   }
 
   void _drawPolygon(Polygon polygon, RenderLayer layer, String color, [bool stroke = false]){
+    var midx = screenw/2;
+    var midy = screenh/2;
+    var scale = 0.5;
+    var offsetx = game.humanPlayer.vehicle.position.x*scale - midx;
+    var offsety = game.humanPlayer.vehicle.position.y*scale - midy;
     layer.ctx.beginPath();
-    layer.ctx.moveTo(polygon.points.first.x,polygon.points.first.y);
+    layer.ctx.moveTo((polygon.points.first.x*scale-offsetx),(polygon.points.first.y*scale-offsety));
     for(var p in polygon.points){
-      layer.ctx.lineTo(p.x,p.y);
+      layer.ctx.lineTo((p.x*scale-offsetx),(p.y*scale-offsety));
     }
     if(stroke)  {
       layer.ctx.strokeStyle = color;
@@ -149,13 +164,18 @@ class WebglGame2d extends WebglGame{
     }
   }
   void _drawRoadPolygon(Polygon polygon,RenderLayer layer){
+    var midx = screenw/2;
+    var midy = screenh/2;
+    var scale = 0.5;
+    var offsetx = game.humanPlayer.vehicle.position.x*scale - midx;
+    var offsety = game.humanPlayer.vehicle.position.y*scale - midy;
     layer.ctx.beginPath();
     var first = polygon.points.first;
-    layer.ctx.moveTo(first.x,first.y);
+    layer.ctx.moveTo((first.x*scale-offsetx),(first.y*scale-offsety));
     for(var p in polygon.points){
-      layer.ctx.lineTo(p.x,p.y);
+      layer.ctx.lineTo((p.x*scale-offsetx),(p.y*scale-offsety));
     }
-    layer.ctx.lineTo(first.x,first.y);
+    layer.ctx.lineTo((first.x*scale-offsetx),(first.y*scale-offsety));
     layer.ctx.fill();
     layer.ctx.stroke();
   }

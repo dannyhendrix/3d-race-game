@@ -6,6 +6,8 @@ import "gameitem.dart";
 import "collision.dart";
 
 part "src/game/game.dart";
+part "src/game/gamemode.dart";
+part "src/game/level.dart";
 part "src/game/vehicle.dart";
 part "src/game/trailer.dart";
 part "src/game/player.dart";

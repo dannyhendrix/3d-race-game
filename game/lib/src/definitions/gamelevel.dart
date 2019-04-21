@@ -8,14 +8,20 @@ class GameLevelInvalidException implements Exception{
 
 abstract class GameLevelElement{
 }
+
+
+enum GameLevelType {Checkpoint, Score}
+
 class GameLevel extends GameLevelElement{
   int w = 800;
   int d = 500;
+  GameLevelType gameLevelType = GameLevelType.Checkpoint;
   GameLevelPath path = new GameLevelPath();
   List<GameLevelWall> walls = <GameLevelWall>[];
   List<GameLevelStaticObject> staticobjects = <GameLevelStaticObject>[];
 
-  void validate(){} // TODO: validate level
+  void validate(){
+  } // TODO: validate level
 }
 class GameLevelWall extends GameLevelElement{
   double x,z,r;
@@ -43,6 +49,7 @@ class GameLevelLoader{
     GameLevel level = new GameLevel();
     level.w = json["w"];
     level.d = json["d"];
+    if(json.containsKey("type")) level.gameLevelType = json["type"]=="score" ? GameLevelType.Score : GameLevelType.Checkpoint;
     level.path.circular = json["path"]["circular"];
     level.path.laps = json["path"]["laps"];
     level.path.checkpoints = json["path"]["checkpoints"].map<GameLevelCheckPoint>(_parseCheckpoint).toList();
@@ -60,9 +67,11 @@ class GameLevelSaver{
     return _parseLevel(level);
   }
   Map _parseLevel(GameLevel level){
+    var type = level.gameLevelType == GameLevelType.Score ? "score" : "checkpoint";
     return {
       "w":level.w,
       "d":level.d,
+      "type": type,
       "walls" : level.walls.map((GameLevelWall o) => _parseWall(o)).toList(),
       "staticobjects" : level.staticobjects.map((GameLevelStaticObject o) => _parseStaticObject(o)).toList(),
       "path" : _parsePath(level.path)

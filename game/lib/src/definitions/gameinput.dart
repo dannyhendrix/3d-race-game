@@ -15,6 +15,7 @@ class GameInput{
   void validate(){
     if(level == null) throw new GameSettingsInvalidException("Level is null");
     level.validate();
+    //TODO: check if teams > 1 (for debugging reasons, allow this for now)
     teams.forEach((p)=>p.validate());
   }
 }

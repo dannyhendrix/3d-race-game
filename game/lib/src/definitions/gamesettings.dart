@@ -85,7 +85,7 @@ class GameSettings extends SettingsStoredInCookie
 
   GameSetting<bool> client_showStoreInCookie = new GameSetting("client_enablemouseaiming", true, "Enable mouse aiming");
   GameSetting<bool> client_changeCSSWithThemeChange = new GameSetting("client_changeccswiththemechange", true, "Match theme with user colors");
-  GameSettingWithEnum<GameDisplayType> client_displayType = new GameSettingWithEnum("client_displaytype", GameDisplayType.Webgl3d, GameDisplayType.values, "Display type");
+  GameSettingWithEnum<GameDisplayType> client_displayType = new GameSettingWithEnum("client_displaytype", GameDisplayType.Webgl2d, GameDisplayType.values, "Display type");
   // list of key ids to movement
   IntMapSettings<Control> client_keys = new IntMapSettings("client_keys", _defaultUserKeys, "Keys");
 

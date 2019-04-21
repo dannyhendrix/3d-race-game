@@ -1,13 +1,58 @@
 part of micromachines;
 
 class HumanPlayer extends Player{
+
+  HumanPlayer(GameSettingsPlayer player,VehicleTheme theme):super(player,theme){
+  }
+
+  void update(){
+  }
+}
+class AiPlayer extends Player{
+  AiPlayer(GameSettingsPlayer player,VehicleTheme theme):super(player,theme){
+  }
+  void update(){
+    if(pathProgress.finished){
+      vehicle.setSteer(Steer.Left);
+      vehicle.setAccelarate(false);
+      return;
+    }
+    if(_game.state != GameState.Racing) return;
+
+    if(vehicle.sensorCollision){
+      controlAvoidance();
+    }else{
+      if(_game.gamelevelType == GameLevelType.Checkpoint)
+      controlToTarget(_game.level.checkPointLocation((pathProgress as PathProgressCheckpoint).currentIndex));
+    }
+  }
+}
+
+abstract class Player{
+  Game _game;
+  Vehicle vehicle;
+  PathProgress pathProgress;
+  GameSettingsPlayer player;
+  VehicleTheme theme;
+
   bool _isSteeringLeft = false;
   bool _isSteeringRight = false;
   bool _isAccelarating = false;
   bool _isBreaking = false;
 
-  HumanPlayer(GameSettingsPlayer player,VehicleTheme theme):super(player,theme){
+  Player(this.player, this.theme);
+
+  bool get finished => pathProgress.finished;
+
+  void init(Game game, Vehicle v, GameLevelPath path){
+    _game = game;
+    vehicle = v;
+    if(_game.gamelevelType == GameLevelType.Checkpoint)
+      pathProgress = new PathProgressCheckpoint(path.checkpoints.length, path.laps, path.circular);
+    else
+      pathProgress = new PathProgressScore();
   }
+  void update();
 
   void onControl(Control control, bool active){
     switch(control){
@@ -37,43 +82,8 @@ class HumanPlayer extends Player{
       vehicle.setSteer(Steer.None);
   }
 
-  void update(){
-    var p =  pathProgress.current;
-    var v =  vehicle.position;
-    Vector V =  new Vector(p.x-v.x,p.y-v.y);
-    vehicle.info = "${pathProgress.finished}";
-    if(V.magnitude() < pathProgress.current.radius){
-      pathProgress.next();
-    }
-  }
-}
-class AiPlayer extends Player{
-  AiPlayer(GameSettingsPlayer player,VehicleTheme theme):super(player,theme){
-  }
-  void update(){
-    if(pathProgress.finished){
-      vehicle.setSteer(Steer.Left);
-      vehicle.setAccelarate(false);
-      return;
-    }
-    if(_game.state != GameState.Racing) return;
-    var p =  pathProgress.current;
-    var v =  vehicle.position;
-    Vector V =  new Vector(p.x-v.x,p.y-v.y);
-    if(V.magnitude() < pathProgress.current.radius){
-      pathProgress.next();
-    }
-    if(vehicle.sensorCollision){
-      controlAvoidance();
-    }else{
-      controlToTarget();
-    }
-  }
-
-  void controlToTarget(){
-    var p =  pathProgress.current;
-    var v =  vehicle.position;
-    vehicle.setSteer(steerToPoint(v,vehicle.r,p));
+  void controlToTarget(Vector target){
+    vehicle.setSteer(steerToPoint(vehicle.position,vehicle.r,target));
     vehicle.setAccelarate(true);
   }
   void controlAvoidance(){
@@ -136,22 +146,4 @@ class AiPlayer extends Player{
     }
     return Steer.None;
   }
-}
-
-abstract class Player{
-  Game _game;
-  Vehicle vehicle;
-  PathProgress pathProgress;
-  GameSettingsPlayer player;
-  VehicleTheme theme;
-  Player(this.player, this.theme);
-
-  bool get finished => pathProgress.finished;
-
-  void init(Game game, Vehicle v, Path path){
-    _game = game;
-    vehicle = v;
-    pathProgress = new PathProgress(path);
-  }
-  void update();
 }

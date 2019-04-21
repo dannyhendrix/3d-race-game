@@ -162,6 +162,7 @@ class WebglGame3d extends WebglGame{
     //2 call draw method with buffer
     for(GlModelInstanceCollection m in modelInstances){
       GlMatrix objPerspective = worldViewProjectionMatrix.clone().multThis(m.CreateTransformMatrix());
+      if(m is GlModelInstanceFromCheckpoint) (m as GlModelInstanceFromCheckpoint).update();
       for(GlModelInstance mi in m.modelInstances){
         layer.setWorld(worldMatrix,objPerspective.clone().multThis(mi.CreateTransformMatrix()), new GlVector(-1.0,0.8,0.6),0.4);
         layer.drawModel(mi);
@@ -175,7 +176,8 @@ class WebglGame3d extends WebglGame{
       playerElements[p].element.style.top = "${y}px";
       y+=h;
     }
-    el_rounds.text = "${game.humanPlayer.pathProgress.round}";
+    //TODO: print current round
+    //el_rounds.text = "${game.humanPlayer.pathProgress.round}";
   }
 
   List<GlModelInstanceCollection> _createModels(){
@@ -236,27 +238,27 @@ class WebglGame3d extends WebglGame{
       }else if(o is Tree){
         modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,0.0,o.position.y, 0.0,-o.r,0.0, treeModel
             .getModelInstance(modelCollection)));
-      }else if(o is CheckPoint){
-        /*
-        CheckPoint c = o;
-        if(c.isGate)
+      }else if(o is CheckpointGameItem){
+
+        CheckpointGameItem c = o;
+        //if(c.isGate)
         {
-          var color = new GlColor(1.0, 0.5, 0.0);
+          var color = (c.index == (game.humanPlayer.pathProgress as PathProgressCheckpoint).currentIndex) ? new GlColor(1.0, 0.5, 0.0) : new GlColor(0.8, 0.8, 0.8);
           var colorPoles = new GlColor(0.6, 0.6, 0.6);
-          List<Polygon> absoluteCollisionFields = o.getAbsoluteCollisionFields();
-          var wallLeftPosition = absoluteCollisionFields[0].center;
-          var wallRightPosition = absoluteCollisionFields[1].center;
-          modelInstances.add(new GlModelInstanceFromModelStatic(wallLeftPosition.x, 0.0, wallLeftPosition.y, 0.0, -o
+          //List<Polygon> absoluteCollisionFields = o.getAbsoluteCollisionFields();
+          //var wallLeftPosition = absoluteCollisionFields[0].center;
+          //var wallRightPosition = absoluteCollisionFields[1].center;
+          /*modelInstances.add(new GlModelInstanceFromModelStatic(wallLeftPosition.x, 0.0, wallLeftPosition.y, 0.0, -o
               .r, 0.0, wallModel
               .getModelInstance(modelCollection, o.wallW, 150.0, o.wallH, colorPoles)));
           modelInstances.add(new GlModelInstanceFromModelStatic(wallRightPosition.x, 0.0, wallRightPosition.y, 0.0, -o
               .r, 0.0, wallModel
-              .getModelInstance(modelCollection, o.wallW, 150.0, o.wallH, colorPoles)));
-          modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 150.0-60.0, o.position.y, 0.0, -o
+              .getModelInstance(modelCollection, o.wallW, 150.0, o.wallH, colorPoles)));*/
+          modelInstances.add(new GlModelInstanceFromCheckpoint(game, c, o.position.x, 150.0-60.0, o.position.y, 0.0, -o
               .r, 0.0, wallModel
-              .getModelInstance(modelCollection, o.w - o.wallW - o.wallW, 60.0, 4.0, color)));
+              .getModelInstance(modelCollection, c.radius*2, 60.0, 4.0, color)));
         }
-        *//*
+        /*
       }else{
         double h = 80.0;
         GlModelBuffer cube = new GlCube.fromTopCenter(0.0,(h/2),0.0,o.w,h,o.h).createBuffers(layer);
@@ -265,14 +267,19 @@ class WebglGame3d extends WebglGame{
     }
 
     //GlModel worldModel = new GlAreaModel([new GlRectangle.withWD(0.0,0.0,0.0,1500.0,800.0,false)]);
-    var triangles = game.path.roadPolygons.map((Polygon p)=>new GlTriangle(p.points.map((var p)=>new GlPoint(p.x,0.0,p.y)).toList(growable: false))).toList(growable: false);
+    var triangles = game.level.roadPolygons.map((Polygon p)=>new GlTriangle(p.points.map((var p)=>new GlPoint(p.x,0.0,p.y)).toList(growable: false))).toList(growable: false);
     GlModel roadModel = new GlAreaModel(triangles);
     GlModelBuffer road = roadModel.createBuffers(layer);
     modelInstances.add(new GlModelInstanceCollection([new GlModelInstance(road, new GlColor(0.3,0.3,0.3))]));
 
     GlModelBuffer cube = new GlCube.fromTopCenter(0.0,0.0,0.0,30.0,30.0,30.0).createBuffers(layer);
-    modelInstances.add(new GlModelInstanceCheckpoint(game, new GlModelInstanceCollection([new GlModelInstance(cube, new GlColor(1.0,1.0,0.0))])));
-
+    if(game.gamelevelType == GameLevelType.Checkpoint)
+    {
+      /*
+      modelInstances.add(new GlModelInstanceCheckpoint(game.humanPlayer
+          .pathProgress as PathProgressCheckpoint, new GlModelInstanceCollection([
+        new GlModelInstance(cube, new GlColor(1.0, 1.0, 0.0))])));*/
+    }
     return modelInstances;
   }
 }
@@ -286,6 +293,21 @@ class GlModelInstanceFromModelStatic extends GlModelInstanceCollection{
   }
   GlMatrix CreateTransformMatrix(){
     return _transform;
+  }
+}
+class GlModelInstanceFromCheckpoint extends GlModelInstanceCollection{
+  GlMatrix _transform;
+  CheckpointGameItem _checkpoint;
+  Game _game;
+  GlModelInstanceFromCheckpoint(this._game, this._checkpoint, double x, double y, double z, double rx, double ry, double rz, GlModelInstanceCollection model):super([]){
+    this.modelInstances = model.modelInstances;
+    _transform = GlMatrix.translationMatrix(x,y,z).rotateXThis(rx).rotateYThis(ry).rotateZThis(rz);
+  }
+  GlMatrix CreateTransformMatrix(){
+    return _transform;
+  }
+  void update(){
+    modelInstances.first.color = (_checkpoint.index == (_game.humanPlayer.pathProgress as PathProgressCheckpoint).currentIndex) ? new GlColor(1.0, 0.5, 0.0) : new GlColor(0.8, 0.8, 0.8);
   }
 }
 class GlModelInstanceFromModel extends GlModelInstanceCollection{
@@ -308,14 +330,15 @@ class GlModelInstanceFromGameObject extends GlModelInstanceCollection{
     return m;
   }
 }
+/*
 class GlModelInstanceCheckpoint extends GlModelInstanceCollection{
-  Game game;
-  double get x => game.humanPlayer.pathProgress.current.x;
-  double get z => game.humanPlayer.pathProgress.current.y;
+  PathProgressCheckpoint pathProgress;
+  double get x => pathProgress.current.x;
+  double get z => pathProgress.current.y;
   double get ry => 0.0;
-  GlModelInstanceCheckpoint(this.game, GlModelInstanceCollection model):super(model.modelInstances);
+  GlModelInstanceCheckpoint(this.pathProgress, GlModelInstanceCollection model):super(model.modelInstances);
   GlMatrix CreateTransformMatrix(){
-    GlMatrix m = GlMatrix.translationMatrix(game.humanPlayer.pathProgress.current.x,0.0,game.humanPlayer.pathProgress.current.y);
+    GlMatrix m = GlMatrix.translationMatrix(pathProgress.current.x,0.0,pathProgress.current.y);
     return m;
   }
-}
+}*/

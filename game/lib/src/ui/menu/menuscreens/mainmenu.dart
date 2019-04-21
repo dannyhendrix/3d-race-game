@@ -71,6 +71,12 @@ class MainMenu extends GameMenuScreen
     }));
     */
 
+    if(menu.settings.debug.v) el_left.append(createMenuButtonWithIcon("Soccer","play_arrow",(Event e){
+      menu.showMenu(new GameInputMenuStatus("Soccer", menu.gameBuilder.newSoccerGame(), (GameOutput result){
+        menu.showMenu(new GameOutputMenuStatus("Game results", result));
+      }));
+    }));
+
     if(menu.settings.debug.v) el_left.append(createOpenMenuButtonWithIcon(menu,"Settings","settings",menu.MENU_SETTINGS));
     el_left.append(createOpenMenuButtonWithIcon(menu,"Controls","videogame_asset",menu.MENU_CONTROLS));
     //el_left.append(createOpenMenuButtonWithIcon(menu,"Credits","info",menu.MENU_CREDITS));

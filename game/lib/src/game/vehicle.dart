@@ -71,6 +71,7 @@ class FormulaCar extends Vehicle{
   }
 }
 abstract class Vehicle extends GameItemMovable{
+  static int BASEID = 0x10000;
   Game game;
   Player player;
   bool _isBraking = false;
@@ -124,6 +125,7 @@ abstract class Vehicle extends GameItemMovable{
   Trailer trailer;
 
   Vehicle(this.game, this.player, double w, double h):super(Polygon.createSquare(0.0, 0.0, w, h, 0.0)){
+    id += BASEID;
     trailerSnapPoint = new Vector(-w/2,0.0);
     double hw = w/2;
     double hh= h/2;
@@ -170,7 +172,7 @@ r=oldr;
 
     // slower off road
     // TODO: make this level dependant?
-    if(!player.pathProgress.path.onRoad(position)){
+    if(!game.level.onRoad(position)){
       _speed *= 0.9;
     }
     _currentStandStillDelay = _updateStandStillDelay(_currentStandStillDelay,vehicleSettings.getValue(VehicleSettingKeys.standstill_delay), wasStandingStill, _speed==0);

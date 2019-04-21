@@ -8,8 +8,9 @@ class Game{
   List<Player> players;
   HumanPlayer humanPlayer;
   String info = "";
-  Path path;
-  CollisionController _collisionController = new CollisionController();
+  GameLevelType gamelevelType;
+  GameLevelController level;
+  CollisionController _collisionController = new CollisionController(new GameMode());
 
   GameState state = GameState.Countdown;
   Countdown countdown;
@@ -22,6 +23,7 @@ class Game{
   void initSession(GameInput gameSettings){
     gameSettings.validate();
     // 1. load level
+    level = new GameLevelController(gameSettings.level.path);
     _loadLevel(gameSettings.level);
 
     // 2. load players
@@ -60,9 +62,10 @@ class Game{
         new NullTrailer(v);
       /*}*/
 
-      player.init(this,v, path);
+      player.init(this,v, gameSettings.level.path);
     }
-    _setStartingPositions(players, path);
+    if(gamelevelType == GameLevelType.Checkpoint)
+    _setStartingPositions(players, gameSettings.level.path);
 /*
     var ball = new Ball(this);
     _movableGameObjects.add(ball);
@@ -111,6 +114,7 @@ class Game{
   }
 
   void _loadLevel(GameLevel level){
+    gamelevelType = level.gameLevelType;
     for(GameLevelWall obj in level.walls){
       var wall = new Wall(obj.x, obj.z, obj.w, obj.d, obj.r);
       gameobjects.add(wall);
@@ -121,52 +125,17 @@ class Game{
       gameobjects.add(tree);
       _collisionController.register(tree);
     }
-    /*
-    List<PathCheckPoint> checkpoints = [];
 
-    for(int i = 0; i < level.path.checkpoints.length; i++){
-      GameLevelCheckPoint c = level.path.checkpoints[i];
-      checkpoints.add(new PathCheckPoint(c.x,c.z,c.radius));
-    }*/
-
-    path = new Path(level.path);
-
-    for(int i = 1; i < path.checkpoints.length-1; i++){
-      PathCheckPoint c = path.checkpoints[i];
-      var checkpoint = new CheckPoint(this,c,_getCheckpointAngle(c,path.checkpoints[i-1],path.checkpoints[i+1]));
-      gameobjects.add(checkpoint);
-      _collisionController.register(checkpoint);
-    }
-    //first checkpoint
-    if(level.path.circular)
-    {
-      var checkpoint = new CheckPoint(this, path.checkpoints[0], _getCheckpointAngle(path.checkpoints[0], path.checkpoints.last, path.checkpoints[1]),true);
-      gameobjects.add(checkpoint);
-      _collisionController.register(checkpoint);
-      checkpoint = new CheckPoint(this, path.checkpoints.last, _getCheckpointAngle(path.checkpoints.last, path.checkpoints[path.checkpoints.length - 2], path.checkpoints[0]));
-      gameobjects.add(checkpoint);
-      _collisionController.register(checkpoint);
-    }
-    else{
-      var checkpoint = new CheckPoint(this, path.checkpoints[0], _getCheckpointAngleToNext(path.checkpoints[0], path.checkpoints[1]), true);
-      gameobjects.add(checkpoint);
-      _collisionController.register(checkpoint);
-      checkpoint = new CheckPoint(this, path.checkpoints.last, _getCheckpointAngleToNext(path.checkpoints.last, path.checkpoints[0]), true);
-      gameobjects.add(checkpoint);
-      _collisionController.register(checkpoint);
+    if(level.gameLevelType == GameLevelType.Checkpoint){
+      for(var c in this.level.checkpoints){
+        gameobjects.add(c);
+        _collisionController.register(c);
+      }
     }
   }
 
-  double _getCheckpointAngleToNext(PathCheckPoint c,PathCheckPoint cNext){
-    return (cNext-c).angleThis();
-  }
-  double _getCheckpointAngle(PathCheckPoint c,PathCheckPoint cPrev,PathCheckPoint cNext){
-    double angle = ((cPrev-c)+(c-cNext)).angleThis();
-    angle += Math.pi/2;
-    return angle;
-  }
 
-  void _setStartingPositions(List<Player> players, Path path){
+  void _setStartingPositions(List<Player> players, GameLevelPath path){
     StartingPositions startingPositionsCreater = new StartingPositions();
 
     double vehicleLength = 0.0;
@@ -179,19 +148,15 @@ class Game{
       vehicleLength = Math.max(vehicleLength, v.polygon.dimensions.x-v.trailerSnapPoint.x+v.trailer.vehicleSnapPoint.x+v.trailer.polygon.dimensions.x/2);
     }
 
-    var start = path.point(0);
-    var second = path.point(1);
-    var last = path.point(path.length-1);
-    double angle = path.circular ? _getCheckpointAngle(start,second,last) : start.angleWithThis(second);
     List<StartingPosition> startingPositions = startingPositionsCreater.DetermineStartPositions(
-        path.point(0),
-        angle,
+        level.checkpoints[0].position,
+        level.checkpoints[0].r,
         players.length,
         vehicleLength,
         vehicleWidth,
         30.0,
         60.0,
-        path.point(0).radius*2
+        path.checkpoints[0].radius*2
     );
     int i = 0;
     for(Player player in players){

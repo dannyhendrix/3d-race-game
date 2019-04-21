@@ -49,8 +49,8 @@ class Polygon {
     double hw = nw/2;
     double hh= nh/2;
     var m = new Matrix2d()
-        .rotateThis(nr)
-        .translateThis(nx,ny);
+        .translateThis(nx,ny)
+        .rotateThis(nr);
     return new Polygon([
       new Vector(-hw,-hh),
       new Vector(hw,-hh),

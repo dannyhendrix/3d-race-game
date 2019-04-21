@@ -7,5 +7,6 @@ class Wall extends GameItemStatic{
   Wall(double nx, double ny, double nw, double nh, [double nr = 0.0]) : super(Polygon.createSquare(nx, ny, nw, nh, nr)){
     w = nw;
     h = nh;
+    r = nr;
   }
 }

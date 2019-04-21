@@ -17,10 +17,10 @@ class LevelPreview
     layer.clear();
 
     int borderOffset = 10;
-    double minX;
-    double minZ;
-    double maxX;
-    double maxZ;
+    double minX = 0.0;
+    double minZ = 0.0;
+    double maxX = 0.0;
+    double maxZ = 0.0;
     for(GameLevelCheckPoint c in level.path.checkpoints){
       double xMi = c.x - c.radius/2;
       double xMa = c.x + c.radius/2;

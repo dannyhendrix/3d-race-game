@@ -12,9 +12,9 @@ class StartingPositions{
 
     double x = -(vehicleW/2);//should be 0.0 but this is easier for visual
     int carsRem = totalCars;
-    double fixAngle = -Math.pi/2;
+    double fixAngle = Math.pi/2;
     //Matrix2d M = new Matrix2d.rotation(startAngle).translatePoint(start);
-    Matrix2d M = new Matrix2d.translationVector(start).rotate(startAngle).rotate(fixAngle);
+    Matrix2d M = new Matrix2d().translateThis(start.x, start.y).rotateThis(startAngle).rotateThis(fixAngle);
 
     while(carsRem > 0){
       int numberOfCarsPerRow = ((availableH+spaceBetweenVehicleH) / (vehicleH+spaceBetweenVehicleH)).floor();
