@@ -1,6 +1,22 @@
 part of micromachines;
 //TODO: support gameobjects with multiple polygons
 
+class CheckpointGatePost extends GameItemStatic{
+  CheckpointGatePost(CheckpointGameItem checkpoint, bool leftpost) : super(Polygon.createSquare(0.0,0.0,8.0,8.0, 0.0)){
+    var offsetx = checkpoint.radius;
+    if(leftpost) offsetx = -offsetx;
+    var offsety = 0.0;
+    var m = new Matrix2d()
+        .translateThisVector(checkpoint.position)
+        .rotateThis(checkpoint.r)
+        .translateThis(offsetx, offsety)
+        //.translateThis(-offsetx, -offsety)
+    ;
+        //.translateThisVector(checkpoint.position);
+    applyMatrix(m);
+    r = checkpoint.r;
+  }
+}
 
 class CheckpointGameItem extends GameItemStatic{
   /*CheckpointGameItem(double nx, double ny, double radius, double angle) : super(Polygon.createSquare(nx,ny,radius,20.0, angle))

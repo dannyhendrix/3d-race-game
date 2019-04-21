@@ -65,7 +65,7 @@ class Game{
       player.init(this,v, gameSettings.level.path);
     }
     if(gamelevelType == GameLevelType.Checkpoint)
-    _setStartingPositions(players, gameSettings.level.path);
+      _setStartingPositions(players, gameSettings.level.path);
 /*
     var ball = new Ball(this);
     _movableGameObjects.add(ball);
@@ -130,6 +130,12 @@ class Game{
       for(var c in this.level.checkpoints){
         gameobjects.add(c);
         _collisionController.register(c);
+        var leftpost = new CheckpointGatePost(c, true);
+        var rightpost = new CheckpointGatePost(c, false);
+        gameobjects.add(leftpost);
+        _collisionController.register(leftpost);
+        gameobjects.add(rightpost);
+        _collisionController.register(rightpost);
       }
     }
   }

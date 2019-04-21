@@ -238,6 +238,12 @@ class WebglGame3d extends WebglGame{
       }else if(o is Tree){
         modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,0.0,o.position.y, 0.0,-o.r,0.0, treeModel
             .getModelInstance(modelCollection)));
+      }else if(o is CheckpointGatePost){
+        var colorPoles = new GlColor(0.6, 0.6, 0.6);
+        modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 0.0, o.position.y, 0.0, -o
+            .r, 0.0, wallModel
+            .getModelInstance(modelCollection, 8.0, 150.0, 8.0, colorPoles)));
+
       }else if(o is CheckpointGameItem){
 
         CheckpointGameItem c = o;
