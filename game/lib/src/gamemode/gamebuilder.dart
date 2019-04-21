@@ -28,7 +28,7 @@ class GameBuilder{
 
     List<int> levelIds = _levelManager.loadedLevels.keys.toList();
 
-    GameInput settings = _createSimpleGameSettings(players, 2, VehicleType.Car, TrailerType.None);
+    GameInput settings = _createSimpleGameSettings(players, 2, VehicleType.Formula, TrailerType.None);
     settings.level = _levelManager.loadedLevels[4];
     return settings;
   }

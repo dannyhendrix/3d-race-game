@@ -115,15 +115,21 @@ class Game{
 
   void _loadLevel(GameLevel level){
     gamelevelType = level.gameLevelType;
-    for(GameLevelWall obj in level.walls){
+    for(var obj in level.walls){
       var wall = new Wall(obj.x, obj.z, obj.w, obj.d, obj.r);
       gameobjects.add(wall);
       _collisionController.register(wall);
     }
-    for(GameLevelStaticObject obj in level.staticobjects){
+    for(var obj in level.staticobjects){
       var tree = new Tree(obj.x, obj.z, obj.r);
       gameobjects.add(tree);
       _collisionController.register(tree);
+    }
+    for(var obj in level.balls){
+      var ball = new Ball(obj.x, obj.z, obj.r);
+      gameobjects.add(ball);
+      _collisionController.register(ball);
+      _movableGameObjects.add(ball);
     }
 
     if(level.gameLevelType == GameLevelType.Checkpoint){

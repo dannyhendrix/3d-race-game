@@ -18,6 +18,8 @@ class GameLevel extends GameLevelElement{
   GameLevelType gameLevelType = GameLevelType.Checkpoint;
   GameLevelPath path = new GameLevelPath();
   List<GameLevelWall> walls = <GameLevelWall>[];
+  List<GameLevelGoal> goals = <GameLevelGoal>[];
+  List<GameLevelBall> balls = <GameLevelBall>[];
   List<GameLevelStaticObject> staticobjects = <GameLevelStaticObject>[];
 
   void validate(){
@@ -27,6 +29,16 @@ class GameLevelWall extends GameLevelElement{
   double x,z,r;
   double w,d,h;
   GameLevelWall([this.x=0.0,this.z=0.0,this.r=0.0, this.w = 1.0,this.d = 1.0,this.h = 1.0]);
+}
+class GameLevelGoal extends GameLevelElement{
+  double x,z,r;
+  double w,d,h;
+  int team;
+  GameLevelGoal([this.x=0.0,this.z=0.0,this.r=0.0, this.w = 1.0,this.d = 1.0,this.h = 1.0, this.team=0]);
+}
+class GameLevelBall extends GameLevelElement{
+  double x,z,r;
+  GameLevelBall([this.x=0.0,this.z=0.0,this.r=0.0]);
 }
 class GameLevelStaticObject extends GameLevelElement{
   int id;
@@ -54,12 +66,16 @@ class GameLevelLoader{
     level.path.laps = json["path"]["laps"];
     level.path.checkpoints = json["path"]["checkpoints"].map<GameLevelCheckPoint>(_parseCheckpoint).toList();
     if(json.containsKey("walls")) level.walls = json["walls"].map<GameLevelWall>(_parseWall).toList();
+    if(json.containsKey("goals")) level.goals = json["goals"].map<GameLevelGoal>(_parseGoal).toList();
+    if(json.containsKey("balls")) level.balls = json["balls"].map<GameLevelBall>(_parseBall).toList();
     if(json.containsKey("staticobjects")) level.staticobjects = json["staticobjects"].map<GameLevelStaticObject>(_parseStaticObject).toList();
     return level;
   }
 
   GameLevelCheckPoint _parseCheckpoint(dynamic m)=> new GameLevelCheckPoint(m["x"],m["z"],m["radius"]);
   GameLevelWall _parseWall(dynamic m)=> new GameLevelWall(m["x"],m["z"],m["r"],m["w"],m["d"],m["h"]);
+  GameLevelGoal _parseGoal(dynamic m)=> new GameLevelGoal(m["x"],m["z"],m["r"],m["w"],m["d"],m["h"],m["team"]);
+  GameLevelBall _parseBall(dynamic m)=> new GameLevelBall(m["x"],m["z"],m["r"]);
   GameLevelStaticObject _parseStaticObject(dynamic m)=> new GameLevelStaticObject(m["id"],m["x"],m["z"],m["r"]);
 }
 class GameLevelSaver{
