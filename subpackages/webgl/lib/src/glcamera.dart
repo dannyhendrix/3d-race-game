@@ -31,6 +31,57 @@ class GlCameraDistanseToTarget extends GlCameraWithPerspective{
   }
 }
 
+
+abstract class GlCameraFollowTarget extends GlCameraWithPerspective
+{
+  void setCameraAngleAndOffset(GlVector targetPosition, double targetRotation);
+}
+
+class GlCameraFollowTargetBirdView extends GlCameraFollowTarget{
+  GlMatrix viewProjectionMatrix;
+  double _cameraOffset;
+  double _cameraOffsetRotation;
+
+  GlMatrix get cameraMatrix => viewProjectionMatrix;
+
+  GlCameraFollowTargetBirdView(this._cameraOffset, this._cameraOffsetRotation);
+
+  void setCameraAngleAndOffset(GlVector targetPosition, double targetRotation){
+    GlMatrix cameraMatrix = GlMatrix.identityMatrix();
+    cameraMatrix.translateThis(targetPosition.x, targetPosition.y, targetPosition.z);
+    // 1 rotate camera on 0,0
+    cameraMatrix.rotateXThis(-_cameraOffsetRotation);
+    // 2 move camera away from 0,0
+    cameraMatrix.translateThis(0.0,0.0,_cameraOffset);
+    // 3 make camera 0,0 and reverse the world
+    GlMatrix viewMatrix = cameraMatrix.clone().inverseThis();
+    viewProjectionMatrix = perspective.clone().multThis(viewMatrix);
+  }
+}
+
+class GlCameraFollowTargetClose extends GlCameraFollowTarget{
+  GlMatrix viewProjectionMatrix;
+  double _cameraOffset;
+  double _cameraOffsetRotation;
+
+  GlMatrix get cameraMatrix => viewProjectionMatrix;
+
+  GlCameraFollowTargetClose(this._cameraOffset, this._cameraOffsetRotation);
+
+  void setCameraAngleAndOffset(GlVector targetPosition, double targetRotation){
+    GlMatrix cameraMatrix = GlMatrix.identityMatrix();
+    cameraMatrix.translateThis(targetPosition.x, targetPosition.y, targetPosition.z);
+    // 1 rotate camera on 0,0
+    cameraMatrix.rotateYThis(-targetRotation-(Math.pi/2));
+    cameraMatrix.rotateXThis(-_cameraOffsetRotation);
+    // 2 move camera away from 0,0
+    cameraMatrix.translateThis(0.0,0.0,_cameraOffset);
+    // 3 make camera 0,0 and reverse the world
+    GlMatrix viewMatrix = cameraMatrix.clone().inverseThis();
+    viewProjectionMatrix = perspective.clone().multThis(viewMatrix);
+  }
+}
+
 class GlCameraPositionToTarget extends GlCameraWithPerspective{
   GlMatrix viewProjectionMatrix;
 

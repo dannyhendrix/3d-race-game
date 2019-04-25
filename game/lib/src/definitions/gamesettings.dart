@@ -3,6 +3,7 @@ part of game.definitions;
 enum ControlKeyType {Default, Alternative, UserDefined}
 enum GameDashboardTheme {Default, Red, Green, Blue}
 enum GameDisplayType {Webgl3d, Webgl2d}
+enum GameCameraType {BirdView, VehicleView}
 
 class GameSettings extends SettingsStoredInCookie
 {
@@ -85,7 +86,8 @@ class GameSettings extends SettingsStoredInCookie
 
   GameSetting<bool> client_showStoreInCookie = new GameSetting("client_enablemouseaiming", true, "Enable mouse aiming");
   GameSetting<bool> client_changeCSSWithThemeChange = new GameSetting("client_changeccswiththemechange", true, "Match theme with user colors");
-  GameSettingWithEnum<GameDisplayType> client_displayType = new GameSettingWithEnum("client_displaytype", GameDisplayType.Webgl2d, GameDisplayType.values, "Display type");
+  GameSettingWithEnum<GameDisplayType> client_displayType = new GameSettingWithEnum("client_displaytype", GameDisplayType.Webgl3d, GameDisplayType.values, "Display type");
+  GameSettingWithEnum<GameCameraType> client_cameraType = new GameSettingWithEnum("client_cameratype", GameCameraType.BirdView, GameCameraType.values, "Camera type");
   // list of key ids to movement
   IntMapSettings<Control> client_keys = new IntMapSettings("client_keys", _defaultUserKeys, "Keys");
 
@@ -105,13 +107,13 @@ class GameSettings extends SettingsStoredInCookie
 
   List<GameSetting> getStoredSettingsKeys()
   {
-    return [user_name,user_wins,user_races,user_color1,user_color2,client_theme, client_controlkeytype, debug];
+    return [user_name,user_wins,user_races,user_color1,user_color2,client_theme, client_controlkeytype,client_displayType,client_cameraType, debug];
   }
 
   List<GameSetting> getMenuSettings()
   {
     if(debug.v == true)
-      return [user_name, user_color1, user_color2, client_theme, client_changeCSSWithThemeChange,client_showUIControls, client_displayType, storeInCookie, debug];
+      return [user_name, user_color1, user_color2, client_theme, client_changeCSSWithThemeChange,client_showUIControls, client_displayType,client_cameraType, storeInCookie, debug];
     return [storeInCookie];
   }
 

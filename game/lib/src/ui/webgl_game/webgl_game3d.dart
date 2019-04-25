@@ -23,9 +23,7 @@ class WebglGame3d extends WebglGame{
 
   GlRenderLayer layer;
   List<GlModelInstanceCollection> modelInstances = [];
-  GlCameraDistanseToTarget camera;
-  double cameraZOffset = 1800.0;
-  double cameraZRotation = -1.0;
+  GlCameraFollowTarget camera;
   Map<Player,PlayerStats> playerElements;
 
   Element el_Fps;
@@ -94,7 +92,8 @@ class WebglGame3d extends WebglGame{
     layer.ctx.viewport(0, 0, layer.canvas.width, layer.canvas.height);
 
     //3 set view perspective
-    camera = new GlCameraDistanseToTarget();
+    if(settings.client_cameraType.v == GameCameraType.VehicleView) camera = new GlCameraFollowTargetClose(800.0,0.6);
+    else camera = new GlCameraFollowTargetBirdView(1800,1.0);
     camera.setPerspective(aspect:windowW / windowH, fieldOfViewRadians: 0.5, zFar: 4000.0);
 
     //create all models
@@ -153,7 +152,7 @@ class WebglGame3d extends WebglGame{
     }
 
     layer.clearForNextFrame();
-    camera.setCameraAngleAndOffset(new GlVector(game.humanPlayer.vehicle.position.x,0.0,game.humanPlayer.vehicle.position.y),rx:cameraZRotation,offsetZ:cameraZOffset);
+    camera.setCameraAngleAndOffset(new GlVector(game.humanPlayer.vehicle.position.x,0.0,game.humanPlayer.vehicle.position.y),game.humanPlayer.vehicle.r);
 
     GlMatrix viewProjectionMatrix = camera.cameraMatrix;//perspective*viewMatrix;
     GlMatrix worldMatrix = GlMatrix.rotationYMatrix(0.0);
