@@ -30,40 +30,41 @@ class Game{
     players = [];
     for(var t in gameSettings.teams){
       Player player;
-      var p = t.players[0];
-      if(p.isHuman){
-        player = new HumanPlayer(p, t.vehicleTheme);
-        humanPlayer = player;
-      }else{
-        player = new AiPlayer(p, t.vehicleTheme);
-      }
-      players.add(player);
+      for(var p in t.players){
+        if(p.isHuman){
+          player = new HumanPlayer(p, t.vehicleTheme);
+          humanPlayer = player;
+        }else{
+          player = new AiPlayer(p, t.vehicleTheme);
+        }
+        players.add(player);
 
-      Vehicle v;
-      if(p.vehicle == VehicleType.Truck)
-        v = new Truck(this,player);
-      else if(p.vehicle == VehicleType.Formula)
-        v = new FormulaCar(this,player);
-      else
-        v = new Car(this,player);
-      gameobjects.add(v);
-      _movableGameObjects.add(v);
-      _collisionController.register(v);
-
-      if(p.trailer != TrailerType.None){
-        Trailer t;
-        if(p.trailer == TrailerType.TruckTrailer)
-          t = new TruckTrailer(v);
+        Vehicle v;
+        if(p.vehicle == VehicleType.Truck)
+          v = new Truck(this,player);
+        else if(p.vehicle == VehicleType.Formula)
+          v = new FormulaCar(this,player);
         else
-          t = new Caravan(v);
-        gameobjects.add(t);
-        _movableGameObjects.add(t);
-        _collisionController.register(t);
-      }else{
-        new NullTrailer(v);
-      }
+          v = new Car(this,player);
+        gameobjects.add(v);
+        _movableGameObjects.add(v);
+        _collisionController.register(v);
 
-      player.init(this,v, gameSettings.level.path);
+        if(p.trailer != TrailerType.None){
+          Trailer t;
+          if(p.trailer == TrailerType.TruckTrailer)
+            t = new TruckTrailer(v);
+          else
+            t = new Caravan(v);
+          gameobjects.add(t);
+          _movableGameObjects.add(t);
+          _collisionController.register(t);
+        }else{
+          new NullTrailer(v);
+        }
+
+        player.init(this,v, gameSettings.level.path);
+      }
     }
     if(gamelevelType == GameLevelType.Checkpoint)
       _setStartingPositions(players, gameSettings.level.path);

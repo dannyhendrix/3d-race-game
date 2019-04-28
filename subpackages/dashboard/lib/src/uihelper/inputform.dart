@@ -242,11 +242,13 @@ class InputFormRadio<T> extends InputForm<T>{
 
   @override
   void setValue(T newValue) {
-    int index = options.indexOf(newValue);
+    setValueIndex(options.indexOf(newValue));
+  }
+
+  void setValueIndex(int index){
     if(index == -1) return;
     if(value != null) _valueToElement[value].classes.remove("selected");
     value = index;
-    print(index);
     _valueToElement[value].classes.add("selected");
   }
 }

@@ -23,7 +23,7 @@ class GameBuilder{
     settings.level.path.laps = 1;
     return settings;
   }
-  GameInput newSoccerGame(){
+  GameInput newRandomSoccerGame(){
     List<PlayerProfile> players = _aiplayers.getRandom(3);
 
     List<int> levelIds = _levelManager.loadedLevels.keys.toList();
@@ -32,17 +32,22 @@ class GameBuilder{
     settings.level = _levelManager.loadedLevels[4];
     return settings;
   }
+  GameInput newSoccerGame(int numberOfTeams, int playersPerTeam, VehicleType vehicle, TrailerType trailer, GameLevel level, int scorelimit){
+    GameInput settings = _createSimpleGameSettings(_aiplayers.getRandom((playersPerTeam*numberOfTeams)-1), numberOfTeams, vehicle, trailer);
+
+    settings.level = level;//_levelManager.loadedLevels[levelId];
+    //settings.level.path.laps = laps;
+    return settings;
+  }
 
   GameInput newGame(List<PlayerProfile> players, VehicleType vehicle, TrailerType trailer, int levelId, int laps){
     GameInput settings = _createSimpleGameSettings(players, -1, vehicle, trailer);
-    //TODO: select random map
     settings.level = _levelManager.loadedLevels[levelId];
     settings.level.path.laps = laps;
     return settings;
   }
   GameInput newGameRandomPlayers(int numberOfPlayers, VehicleType vehicle, TrailerType trailer, GameLevel level, int laps){
     GameInput settings = _createSimpleGameSettings(_aiplayers.getRandom(numberOfPlayers), -1, vehicle, trailer);
-    //TODO: select random map
     settings.level = level;//_levelManager.loadedLevels[levelId];
     settings.level.path.laps = laps;
     return settings;

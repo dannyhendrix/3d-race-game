@@ -1,15 +1,16 @@
 part of game.menu;
 
-class SingleRaceMenu extends GameMenuScreen{
+class SoccerGameMenu extends GameMenuScreen{
   GameMenuController menu;
   GameInputSelectionVehicle _vehicleSelection;
   GameInputSelectionTrailer _trailerSelection;
   GameInputSelectionLevel _levelSelection;
-  InputFormRadio _in_laps;
-  InputFormRadio _in_oponents;
+  InputFormRadio _in_scorelimit;
+  InputFormRadio _in_teams;
+  InputFormRadio _in_playersperteam;
   TextAreaElement in_levelJson;
 
-  SingleRaceMenu(this.menu){
+  SoccerGameMenu(this.menu){
   }
 
   Element setupFields()
@@ -24,29 +25,31 @@ class SingleRaceMenu extends GameMenuScreen{
     el.append(el_left);
     el.append(el_right);
 
-
     _vehicleSelection = new GameInputSelectionVehicle();
     _trailerSelection = new GameInputSelectionTrailer();
     _levelSelection = new GameInputSelectionLevel(menu.levelManager);
 
-    _in_oponents = new InputFormRadio("Oponents", [0,1,2,3,4]);
-    Element el_oponents = _in_oponents.createElement();
-    _in_oponents.setValue(3);
+    _in_teams = new InputFormRadio("Teams", [2,3,4,5,6]);
+    var el_teams = _in_teams.createElement();
+    _in_teams.setValueIndex(0);
+    _in_playersperteam = new InputFormRadio("Players per team", [1,2,3,4,10,20]);
+    var el_playersperteam = _in_playersperteam.createElement();
+    _in_playersperteam.setValueIndex(1);
 
-    _in_laps = new InputFormRadio("Laps",[1,2,3,5,10]);
-    Element el_laps = _in_laps.createElement();
-    _in_laps.setValue(2);
+    _in_scorelimit = new InputFormRadio("Score limit",[3,5,10]);
+    Element el_scoreLimit = _in_scorelimit.createElement();
+    _in_scorelimit.setValueIndex(1);
 
     el_left.append(_levelSelection.setupFieldsForLevels(_createLevelJsonInput(),menu.settings.levels_allowJsonInput.v));
-
-    el_left.append(el_laps);
+    el_left.append(el_scoreLimit);
 
     el_right.append(_vehicleSelection.setupFieldsForVehicles());
     el_right.append(_trailerSelection.setupFieldsForTrailers());
-    el_right.append(el_oponents);
+    el_right.append(el_teams);
+    el_right.append(el_playersperteam);
 
     el.append(createMenuButtonWithIcon("Start","play_arrow",(Event e){
-      menu.showMenu(new GameInputMenuStatus("Single race", createGameInput(), (GameOutput result){
+      menu.showMenu(new GameInputMenuStatus("Soccer", createGameInput(), (GameOutput result){
         menu.showMenu(new GameOutputMenuStatus("Race results", result));
       }));
     }));
@@ -76,6 +79,6 @@ class SingleRaceMenu extends GameMenuScreen{
   GameInput createGameInput(){
     var levelLoader = new GameLevelLoader();
     var level = (in_levelJson != null && in_levelJson.value.isNotEmpty) ? levelLoader.loadLevelJson(jsonDecode(in_levelJson.value)) : menu.levelManager.loadedLevels[_levelSelection.index];
-    return menu.gameBuilder.newGameRandomPlayers(_in_oponents.getValue(),VehicleType.values[_vehicleSelection.index], TrailerType.values[_trailerSelection.index],level, _in_laps.getValue());
+    return menu.gameBuilder.newSoccerGame(_in_teams.getValue(),_in_playersperteam.getValue(),VehicleType.values[_vehicleSelection.index], TrailerType.values[_trailerSelection.index],level, _in_scorelimit.getValue());
   }
 }

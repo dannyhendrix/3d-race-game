@@ -1,6 +1,6 @@
 part of game.menu;
 
-enum GameMenuItem {Main, SingleGame, Game, GameResult}
+enum GameMenuItem {Main, SingleGame, Soccer, Game, GameResult}
 enum GameMainMenuItem {Controls, Settings, Credits, Profile}
 
 class GameMenuStatus extends MenuStatus{
@@ -30,6 +30,7 @@ class GameMenuController extends Menu<GameMenuStatus>
   final MENU_SINGLERACE = new GameMenuStatus("Single race", GameMenuItem.SingleGame, true);
   final MENU_GAME = new GameMenuStatus("Game", GameMenuItem.Game, false);
   final MENU_GAMERESULT = new GameMenuStatus("Game result", GameMenuItem.GameResult, false);
+  final MENU_SOCCER = new GameMenuStatus("Soccer", GameMenuItem.Soccer, true);
 
   Element el_storeCookie;
   GameResultMenu menu_gameresult;
@@ -50,6 +51,7 @@ class GameMenuController extends Menu<GameMenuStatus>
     menus = {
       GameMenuItem.Main : new MainMenu(this),
       GameMenuItem.SingleGame : new SingleRaceMenu(this),
+      GameMenuItem.Soccer : new SoccerGameMenu(this),
       GameMenuItem.Game : new PlayGameMenu(this),
       GameMenuItem.GameResult : new GameResultMenu(this),
     };

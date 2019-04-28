@@ -47,6 +47,7 @@ class MainMenu extends GameMenuScreen
       }));
     }));
     el_left.append(createOpenMenuButtonWithIcon(menu,"Single race","play_arrow",menu.MENU_SINGLERACE));
+    if(menu.settings.debug.v) el_left.append(createOpenMenuButtonWithIcon(menu,"Soccer","play_arrow",menu.MENU_SOCCER));
     //el_left.append(createOpenMenuButtonWithIcon(menu,"Story mode","table_chart",menu.MENU_MAIN));
     el_left.append(createOpenMenuButtonWithIcon(menu,"Profile","account_circle",menu.MENU_PROFILE));
   /*
@@ -71,8 +72,8 @@ class MainMenu extends GameMenuScreen
     }));
     */
 
-    if(menu.settings.debug.v) el_left.append(createMenuButtonWithIcon("Soccer","play_arrow",(Event e){
-      menu.showMenu(new GameInputMenuStatus("Soccer", menu.gameBuilder.newSoccerGame(), (GameOutput result){
+    if(menu.settings.debug.v) el_left.append(createMenuButtonWithIcon("Soccer random","play_arrow",(Event e){
+      menu.showMenu(new GameInputMenuStatus("Soccer", menu.gameBuilder.newRandomSoccerGame(), (GameOutput result){
         menu.showMenu(new GameOutputMenuStatus("Game results", result));
       }));
     }));
