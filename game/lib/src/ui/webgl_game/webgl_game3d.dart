@@ -221,7 +221,7 @@ class WebglGame3d extends WebglGame{
         modelInstances.add(new GlModelInstanceFromModel(o, truckModel
             .getModelInstance(modelCollection, colorMappingGl[v.player.theme
             .color1], colorMappingGl[v.player.theme.color2], colorWindows)));
-        /*
+
       }else if(o is Caravan){
         Trailer t = o;
         modelInstances.add(new GlModelInstanceFromModel(o, caravanModel
@@ -230,7 +230,7 @@ class WebglGame3d extends WebglGame{
         Trailer t = o;
         modelInstances.add(new GlModelInstanceFromModel(o, truckTrailerModel
             .getModelInstance(modelCollection, colorMappingGl[t.vehicle.player.theme.color1], colorMappingGl[t.vehicle.player.theme.color2], colorWindows)));
-      */
+
       }else if(o is Wall){
         modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,0.0,o.position.y, 0.0,-o.r,0.0, wallModel
             .getModelInstance(modelCollection, o.w, 150.0, o.h)));

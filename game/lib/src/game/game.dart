@@ -50,7 +50,7 @@ class Game{
       _movableGameObjects.add(v);
       _collisionController.register(v);
 
-      /*if(p.trailer != TrailerType.None){
+      if(p.trailer != TrailerType.None){
         Trailer t;
         if(p.trailer == TrailerType.TruckTrailer)
           t = new TruckTrailer(v);
@@ -58,9 +58,10 @@ class Game{
           t = new Caravan(v);
         gameobjects.add(t);
         _movableGameObjects.add(t);
-      }else{*/
+        _collisionController.register(t);
+      }else{
         new NullTrailer(v);
-      /*}*/
+      }
 
       player.init(this,v, gameSettings.level.path);
     }
