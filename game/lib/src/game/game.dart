@@ -127,13 +127,14 @@ class Game{
       gameobjects.add(tree);
       _collisionController.register(tree);
     }
+    /*
     for(var obj in level.balls){
       var ball = new Ball(obj.x, obj.z, obj.r);
       gameobjects.add(ball);
       _collisionController.register(ball);
       _movableGameObjects.add(ball);
     }
-
+*/
     if(level.gameLevelType == GameLevelType.Checkpoint){
       for(var c in this.level.checkpoints){
         gameobjects.add(c);
