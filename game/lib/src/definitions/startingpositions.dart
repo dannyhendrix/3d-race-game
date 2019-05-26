@@ -38,7 +38,7 @@ class StartingPositions{
   }
   List<StartingPosition> DetermineStartPositions2(GameLevelCheckPoint start, double startAngle, int totalCars, double vehicleW, double vehicleH, double spaceBetweenVehicleW, double spaceBetweenVehicleH){
     List<StartingPosition> result = [];
-    var availableW = start.radius;
+    var availableW = start.radius*2;
     var availableHW = availableW/2;
     var vehicleHW = vehicleW/2;
 

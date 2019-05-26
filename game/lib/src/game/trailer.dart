@@ -55,7 +55,7 @@ class NullTrailer extends Trailer{
 }
 
 class Caravan extends SimpleTrailer{
-  Caravan(Vehicle vehicle) : super(vehicle, Polygon.createSquare(0.0, 0.0, 50.0, 30.0, 0.0)){
+  Caravan(Vehicle vehicle) : super(vehicle, Polygon.createSquare(0.0, 0.0, GameConstants.caravanSize.x, GameConstants.caravanSize.y, 0.0)){
     wheelPoint = new Vector(0.0,0.0);
     vehicleSnapPoint = new Vector(15.0+25.0,0.0);
     updateVehiclePosition();
@@ -63,7 +63,7 @@ class Caravan extends SimpleTrailer{
 }
 
 class TruckTrailer extends SimpleTrailer{
-  TruckTrailer(Vehicle vehicle) : super(vehicle, Polygon.createSquare(0.0, 0.0, 100.0, 40.0, 0.0)){
+  TruckTrailer(Vehicle vehicle) : super(vehicle, Polygon.createSquare(0.0, 0.0, GameConstants.truckTrailerSize.x, GameConstants.truckTrailerSize.y, 0.0)){
     this.vehicle = vehicle;
     wheelPoint = new Vector(-25.0,0.0);
     vehicleSnapPoint = new Vector(50.0-10.0,0.0);

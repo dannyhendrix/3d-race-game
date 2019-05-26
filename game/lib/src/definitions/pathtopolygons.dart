@@ -4,9 +4,9 @@ class PathToPolygons
 {
   List<Polygon> createRoadPolygons(GameLevelPath path)
   {
-    List<Vector> points = _pointsFromCheckPoints(path);
     List<Polygon> polygons = [];
-    if(points.isEmpty) return polygons;
+    if(path.checkpoints.length <= 1) return polygons;
+    List<Vector> points = _pointsFromCheckPoints(path);
     // 1 create square parts of the roads
     List<Polygon> roads = _createSquareRoadPolygons(path, points);
     // 2 create triangle intersections between roads

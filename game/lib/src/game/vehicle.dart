@@ -42,7 +42,7 @@ class VehicleSensor{
   }
 }
 class Truck extends Vehicle{
-  Truck(Game game, Player player) : super(game,player, 50.0, 40.0){
+  Truck(Game game, Player player) : super(game,player, GameConstants.truckSize){
     /*
     VehicleSettingKeys.acceleration.toString() :0.3,
     VehicleSettingKeys.acceleration_max.toString() : 5.0,
@@ -61,10 +61,10 @@ class Truck extends Vehicle{
   }
 }
 class Car extends Vehicle{
-  Car(Game game, Player player) : super(game,player, 50.0, 30.0);
+  Car(Game game, Player player) : super(game,player, GameConstants.carSize);
 }
 class FormulaCar extends Vehicle{
-  FormulaCar(Game game, Player player) : super(game,player, 50.0, 30.0){
+  FormulaCar(Game game, Player player) : super(game,player, GameConstants.formulaCarSize){
     vehicleSettings.setValue(VehicleSettingKeys.acceleration, 2.0);
     vehicleSettings.setValue(VehicleSettingKeys.acceleration_max, 7.0);
     vehicleSettings.setValue(VehicleSettingKeys.standstill_delay, 4);
@@ -124,11 +124,11 @@ abstract class Vehicle extends GameItemMovable{
   bool sensorCollision = false;
   Trailer trailer;
 
-  Vehicle(this.game, this.player, double w, double h):super(Polygon.createSquare(0.0, 0.0, w, h, 0.0)){
+  Vehicle(this.game, this.player, Vector size):super(Polygon.createSquare(0.0, 0.0, size.x, size.y, 0.0)){
     id += BASEID;
-    trailerSnapPoint = new Vector(-w/2,0.0);
-    double hw = w/2;
-    double hh= h/2;
+    trailerSnapPoint = new Vector(-size.x/2,0.0);
+    double hw = size.x/2;
+    double hh= size.y/2;
     sensorLeftFrontAngle = new VehicleSensor.fromVector(new Vector(hw,-hh), new Vector.fromAngleRadians(-sensorFrontAngle, sensorLengthFrontSide));
     sensorLeftFront = new VehicleSensor.fromVector(new Vector(hw,-hh), new Vector(sensorLength, 0.0));
     sensorFront = new VehicleSensor.fromVector(new Vector(hw,0.0), new Vector(sensorLength, 0.0));

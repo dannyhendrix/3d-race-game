@@ -99,10 +99,10 @@ class Preview{
 
         ctx.restore();
       }
-      var vehicleW = 10.0;
-      var vehicleH = 20.0;
+      var vehicleW = GameConstants.carSize.x;
+      var vehicleH = GameConstants.carSize.y;
       var startingPositions = new StartingPositions();
-      var positions = startingPositions.DetermineStartPositions2(path.checkpoints[0], angles[0], 8, vehicleW, vehicleH, 1.0, 1.0);
+      var positions = startingPositions.DetermineStartPositions2(path.checkpoints[0], angles[0], 8, vehicleW, vehicleH, GameConstants.startingPositionSpacing.x, GameConstants.startingPositionSpacing.y);
       var startingPositionsPreview = new StartingPositionsPreview();
       startingPositionsPreview.paintPositions(ctx, positions, vehicleW, vehicleH, scale);
     }

@@ -14,3 +14,4 @@ part "src/definitions/keycodetostring.dart";
 part "src/definitions/pathtopolygons.dart";
 part "src/definitions/startingpositions.dart";
 part "src/definitions/gamelevelextensions.dart";
+part "src/definitions/gameconstants.dart";

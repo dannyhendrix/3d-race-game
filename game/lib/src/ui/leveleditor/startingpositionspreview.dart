@@ -5,7 +5,8 @@ class StartingPositionsPreview{
     var vehicleHW = vehicleW~/2;
     var vehicleHH = vehicleH~/2;
 
-    ctx.fillStyle = "red";
+    ctx.fillStyle = "blue";
+    ctx.strokeStyle = "black";
     for(var p in positions){
       ctx.save();
       ctx.translate(p.point.x*scale, p.point.y*scale);
@@ -13,6 +14,9 @@ class StartingPositionsPreview{
       ctx.beginPath();
       ctx.rect(-vehicleHW*scale,-vehicleHH*scale, vehicleW*scale, vehicleH*scale);
       ctx.fill();
+      ctx.closePath();
+
+      ctx.beginPath();
       ctx.moveTo(-vehicleHW*scale,-vehicleHH*scale);
       ctx.lineTo(vehicleHW*scale,vehicleHH*scale);
       ctx.stroke();
