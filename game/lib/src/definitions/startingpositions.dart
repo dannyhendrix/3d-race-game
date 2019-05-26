@@ -36,14 +36,15 @@ class StartingPositions{
     }
     return result;
   }
-  List<StartingPosition> DetermineStartPositions2(Vector start, double startAngle, int totalCars, double vehicleW, double vehicleH, double spaceBetweenVehicleW, double spaceBetweenVehicleH, double availableW){
+  List<StartingPosition> DetermineStartPositions2(GameLevelCheckPoint start, double startAngle, int totalCars, double vehicleW, double vehicleH, double spaceBetweenVehicleW, double spaceBetweenVehicleH){
     List<StartingPosition> result = [];
+    var availableW = start.radius;
     var availableHW = availableW/2;
     var vehicleHW = vehicleW/2;
 
     double y = vehicleH/2;//move vehicle behind the starting line
     int carsRem = totalCars;
-    Matrix2d M = new Matrix2d().translateThis(start.x, start.y).rotateThis(startAngle);
+    Matrix2d M = new Matrix2d().translateThis(start.x, start.z).rotateThis(startAngle);
 
     int numberOfCarsPerRow = (availableW / (vehicleW+spaceBetweenVehicleW)).floor();
 

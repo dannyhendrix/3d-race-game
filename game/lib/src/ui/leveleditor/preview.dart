@@ -48,6 +48,8 @@ class Preview{
     }
 */
   }
+  void _drawStartingPositions(){
+  }
   void _drawRoad(GameLevelPath path, double scale){
     PathToPolygons pathToPolygons = new PathToPolygons();
     var roadPolygons = pathToPolygons.createRoadPolygons(path);
@@ -59,8 +61,10 @@ class Preview{
     }
   }
   void _drawPath(GameLevelPath path, double scale){
+    var angles = new GameLevelExtensions().getCheckpointAngles(path);
     if(path.checkpoints.length > 0)
     {
+      // 1 line path
       var startPoint = path.checkpoints[0];
       ctx.beginPath();
       ctx.moveTo(startPoint.x*scale, startPoint.z*scale);
@@ -76,13 +80,31 @@ class Preview{
       ctx.strokeStyle = '#555';
       ctx.stroke();
 
+      // 2 circles and angleline
       for (int i = 0; i < path.checkpoints.length; i++)
       {
         var p = path.checkpoints[i];
         ctx.beginPath();
         ctx.arc(p.x*scale, p.z*scale, p.radius*scale, 0, 2 * Math.pi, false);
         ctx.stroke();
+
+        ctx.save();
+        ctx.translate(p.x*scale, p.z*scale);
+        ctx.rotate(angles[i]);
+        ctx.beginPath();
+        ctx.moveTo(-p.radius*scale,0);
+        ctx.lineTo(p.radius*scale,0);
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.restore();
       }
+      var vehicleW = 10.0;
+      var vehicleH = 20.0;
+      var startingPositions = new StartingPositions();
+      var positions = startingPositions.DetermineStartPositions2(path.checkpoints[0], angles[0], 8, vehicleW, vehicleH, 1.0, 1.0);
+      var startingPositionsPreview = new StartingPositionsPreview();
+      startingPositionsPreview.paintPositions(ctx, positions, vehicleW, vehicleH, scale);
     }
   }
   void _drawSquare(double x, double z, double w, double d, double r, double scale){

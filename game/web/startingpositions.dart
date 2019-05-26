@@ -15,7 +15,7 @@ void main(){
   document.body.append(createSlider("vehicleH",1.0,60.0,1.0,preview.vehicleH,(String val){ preview.vehicleH = double.parse(val); preview.refresh();  }));
   document.body.append(createSlider("spaceBetweenVehicleW",0.0,10.0,1.0,preview.spaceBetweenVehicleW,(String val){ preview.spaceBetweenVehicleW = double.parse(val); preview.refresh();  }));
   document.body.append(createSlider("spaceBetweenVehicleH",0.0,10.0,1.0,preview.spaceBetweenVehicleH,(String val){ preview.spaceBetweenVehicleH = double.parse(val); preview.refresh();  }));
-  document.body.append(createSlider("availableH",1.0,180.0,1.0,preview.availableH,(String val){ preview.availableH = double.parse(val); preview.refresh();  }));
+  document.body.append(createSlider("radius",1.0,180.0,1.0,preview.start.radius,(String val){ preview.start.radius = double.parse(val); preview.refresh();  }));
   preview.refresh();
 }
 
@@ -31,15 +31,14 @@ class StartingPositionsPreview2{
   double vehicleH = 15.0;
   double spaceBetweenVehicleW = 1.0;
   double spaceBetweenVehicleH = 1.0;
-  double availableH = 100.0;
-  Vector start = new Vector(0.0,0.0);
+  GameLevelCheckPoint start = new GameLevelCheckPoint(0.0,0.0, 100.0);
 
   StartingPositionsPreview2(){
     layer = new RenderLayer.withSize(200,200);
   }
 
   void refresh(){
-    var positions = startingPositions.DetermineStartPositions2(start, startAngle, totalCars, vehicleW, vehicleH, spaceBetweenVehicleW, spaceBetweenVehicleH, availableH);
+    var positions = startingPositions.DetermineStartPositions2(start, startAngle, totalCars, vehicleW, vehicleH, spaceBetweenVehicleW, spaceBetweenVehicleH);
     layer.clear();
     paint(positions);
   }
@@ -47,7 +46,7 @@ class StartingPositionsPreview2{
   void paint(List<StartingPosition> positions){
     var centerX = layer.actualwidth ~/2;
     var centerY = layer.actualheight ~/2;
-    var radius = availableH~/2;
+    var radius = start.radius~/2;
 
     // move to canvas center
     layer.ctx.save();
@@ -71,7 +70,7 @@ class StartingPositionsPreview2{
     layer.ctx.restore();
 
     // starting positions
-    startingPositionsPreview.paintPositions(layer.ctx, positions, vehicleW, vehicleH);
+    startingPositionsPreview.paintPositions(layer.ctx, positions, vehicleW, vehicleH, 1.0);
 
     // restore canvas from center to 0,0
     layer.ctx.restore();

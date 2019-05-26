@@ -13,3 +13,4 @@ part "src/definitions/vehicletheme.dart";
 part "src/definitions/keycodetostring.dart";
 part "src/definitions/pathtopolygons.dart";
 part "src/definitions/startingpositions.dart";
+part "src/definitions/gamelevelextensions.dart";

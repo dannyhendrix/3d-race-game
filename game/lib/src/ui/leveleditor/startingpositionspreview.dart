@@ -1,23 +1,23 @@
 part of game.leveleditor;
 
 class StartingPositionsPreview{
-  void paintPositions(CanvasRenderingContext2D ctx, List<StartingPosition> positions, double vehicleW, double vehicleH){
+  void paintPositions(CanvasRenderingContext2D ctx, List<StartingPosition> positions, double vehicleW, double vehicleH, double scale){
     var vehicleHW = vehicleW~/2;
     var vehicleHH = vehicleH~/2;
 
     ctx.fillStyle = "red";
     for(var p in positions){
       ctx.save();
-      ctx.translate(p.point.x, p.point.y);
+      ctx.translate(p.point.x*scale, p.point.y*scale);
       ctx.rotate(p.r);
       ctx.beginPath();
-      ctx.rect(-vehicleHW,-vehicleHH, vehicleW, vehicleH);
+      ctx.rect(-vehicleHW*scale,-vehicleHH*scale, vehicleW*scale, vehicleH*scale);
       ctx.fill();
-      ctx.moveTo(-vehicleHW,-vehicleHH);
-      ctx.lineTo(vehicleHW,vehicleHH);
+      ctx.moveTo(-vehicleHW*scale,-vehicleHH*scale);
+      ctx.lineTo(vehicleHW*scale,vehicleHH*scale);
       ctx.stroke();
-      ctx.moveTo(vehicleHW,-vehicleHH);
-      ctx.lineTo(-vehicleHW,vehicleHH);
+      ctx.moveTo(vehicleHW*scale,-vehicleHH*scale);
+      ctx.lineTo(-vehicleHW*scale,vehicleHH*scale);
       ctx.stroke();
       ctx.closePath();
       ctx.restore();
