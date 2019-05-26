@@ -36,4 +36,31 @@ class StartingPositions{
     }
     return result;
   }
+  List<StartingPosition> DetermineStartPositions2(Vector start, double startAngle, int totalCars, double vehicleW, double vehicleH, double spaceBetweenVehicleW, double spaceBetweenVehicleH, double availableW){
+    List<StartingPosition> result = [];
+    var availableHW = availableW/2;
+    var vehicleHW = vehicleW/2;
+
+    double y = vehicleH/2;//move vehicle behind the starting line
+    int carsRem = totalCars;
+    Matrix2d M = new Matrix2d().translateThis(start.x, start.y).rotateThis(startAngle);
+
+    int numberOfCarsPerRow = (availableW / (vehicleW+spaceBetweenVehicleW)).floor();
+
+    while(carsRem > 0){
+      numberOfCarsPerRow = Math.min(numberOfCarsPerRow, carsRem);
+      double requiredW = numberOfCarsPerRow*(vehicleW+spaceBetweenVehicleW);
+      double startOffsetW = (availableW-requiredW+spaceBetweenVehicleW)/2;
+
+      double x = -availableHW+startOffsetW+vehicleHW;
+      for(int i = 0; i < numberOfCarsPerRow; i++){
+        var p = new Vector(x,y).applyMatrixToThis(M);
+        result.add(new StartingPosition(p, startAngle));
+        x += vehicleW+spaceBetweenVehicleW;
+      }
+      carsRem -= numberOfCarsPerRow;
+      y += vehicleH+spaceBetweenVehicleH;
+    }
+    return result;
+  }
 }
