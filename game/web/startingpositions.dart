@@ -1,11 +1,12 @@
 import "dart:html";
 import "dart:math" as Math;
 import 'package:gameutils/math.dart';
-import "package:micromachines/game.dart";
+import "package:micromachines/definitions.dart";
+import "package:micromachines/leveleditor.dart";
 import "package:renderlayer/renderlayer.dart";
 
 void main(){
-  var preview = new StartingPositionsPreview();
+  var preview = new StartingPositionsPreview2();
   document.body.append(preview.layer.canvas);
   document.body.append(createTitle("Starting position"));
   document.body.append(createSlider("startAngle",0.0,2*Math.pi,0.1,preview.startAngle,(String val){ preview.startAngle = double.parse(val); preview.refresh();  }));
@@ -18,8 +19,9 @@ void main(){
   preview.refresh();
 }
 
-class StartingPositionsPreview{
+class StartingPositionsPreview2{
   StartingPositions startingPositions = new StartingPositions();
+  StartingPositionsPreview startingPositionsPreview = new StartingPositionsPreview();
 
   RenderLayer layer;
 
@@ -32,7 +34,7 @@ class StartingPositionsPreview{
   double availableH = 100.0;
   Vector start = new Vector(0.0,0.0);
 
-  StartingPositionsPreview(){
+  StartingPositionsPreview2(){
     layer = new RenderLayer.withSize(200,200);
   }
 
@@ -46,8 +48,6 @@ class StartingPositionsPreview{
     var centerX = layer.actualwidth ~/2;
     var centerY = layer.actualheight ~/2;
     var radius = availableH~/2;
-    var vehicleHW = vehicleW~/2;
-    var vehicleHH = vehicleH~/2;
 
     // move to canvas center
     layer.ctx.save();
@@ -71,23 +71,7 @@ class StartingPositionsPreview{
     layer.ctx.restore();
 
     // starting positions
-    layer.ctx.fillStyle = "red";
-    for(var p in positions){
-      layer.ctx.save();
-      layer.ctx.translate(p.point.x, p.point.y);
-      layer.ctx.rotate(p.r);
-      layer.ctx.beginPath();
-      layer.ctx.rect(-vehicleHW,-vehicleHH, vehicleW, vehicleH);
-      layer.ctx.fill();
-      layer.ctx.moveTo(-vehicleHW,-vehicleHH);
-      layer.ctx.lineTo(vehicleHW,vehicleHH);
-      layer.ctx.stroke();
-      layer.ctx.moveTo(vehicleHW,-vehicleHH);
-      layer.ctx.lineTo(-vehicleHW,vehicleHH);
-      layer.ctx.stroke();
-      layer.ctx.closePath();
-      layer.ctx.restore();
-    }
+    startingPositionsPreview.paintPositions(layer.ctx, positions, vehicleW, vehicleH);
 
     // restore canvas from center to 0,0
     layer.ctx.restore();

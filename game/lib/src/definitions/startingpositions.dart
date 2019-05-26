@@ -1,4 +1,4 @@
-part of micromachines;
+part of game.definitions;
 
 class StartingPosition{
   Vector point;

@@ -21,6 +21,7 @@ class LevelEditor{
 
   LevelEditor(){
     wrappers = [checkPoints,walls,staticObjects];
+    gamelevel.path = new GameLevelPath();
   }
 
   Element createElement(){
