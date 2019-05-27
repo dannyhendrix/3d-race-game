@@ -12,12 +12,12 @@ class GameLevelExtensions{
   }
 
   double getCheckpointAngleCheckpoint(GameLevelCheckPoint c,GameLevelCheckPoint cPrev,GameLevelCheckPoint cNext){
-    double angle = new Vector(cPrev.x-cNext.x,cPrev.z-cNext.z).angleThis();
+    double angle = new Vector(cPrev.x-cNext.x,cPrev.y-cNext.y).angleThis();
     angle -= Math.pi/2;
     return angle;
   }
   double getCheckpointAngleToNextCheckpoint(GameLevelCheckPoint c,GameLevelCheckPoint cNext){
-    return new Vector(cNext.x-c.x,cNext.z-c.z).angleThis();
+    return new Vector(cNext.x-c.x,cNext.y-c.y).angleThis();
   }
 
   List<double> getCheckpointAngles(GameLevelPath path){

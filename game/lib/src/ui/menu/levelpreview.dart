@@ -24,8 +24,8 @@ class LevelPreview
     for(GameLevelCheckPoint c in level.path.checkpoints){
       double xMi = c.x - c.radius/2;
       double xMa = c.x + c.radius/2;
-      double yMi = c.z - c.radius/2;
-      double yMa = c.z + c.radius/2;
+      double yMi = c.y - c.radius/2;
+      double yMa = c.y + c.radius/2;
       if(minX == null || xMi < minX) minX = xMi;
       if(maxX == null || xMa > maxX) maxX = xMa;
       if(minZ == null || yMi < minZ) minZ = yMi;

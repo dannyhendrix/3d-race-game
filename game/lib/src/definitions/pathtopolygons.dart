@@ -26,7 +26,7 @@ class PathToPolygons
   }
 
   Vector _pointFromCheckpoint(GameLevelCheckPoint p){
-    return new Vector(p.x, p.z);
+    return new Vector(p.x, p.y);
   }
 
   List<Polygon> _createSquareRoadPolygons(GameLevelPath path, List<Vector> points)

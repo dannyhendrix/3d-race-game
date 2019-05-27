@@ -18,7 +18,7 @@ class Preview{
     double maxZ = 0.0;
     for(var c in path.checkpoints){
       var mx = c.x + c.radius/2;
-      var mz = c.z + c.radius/2;
+      var mz = c.y + c.radius/2;
       if(mx > maxX) maxX = mx;
       if(mz > maxZ) maxZ = mz;
     }
@@ -67,15 +67,15 @@ class Preview{
       // 1 line path
       var startPoint = path.checkpoints[0];
       ctx.beginPath();
-      ctx.moveTo(startPoint.x*scale, startPoint.z*scale);
+      ctx.moveTo(startPoint.x*scale, startPoint.y*scale);
       for (int i = 1; i < path.checkpoints.length; i++)
       {
         var p = path.checkpoints[i];
-        ctx.lineTo(p.x*scale, p.z*scale);
+        ctx.lineTo(p.x*scale, p.y*scale);
       }
       if (path.circular)
       {
-        ctx.lineTo(startPoint.x*scale, startPoint.z*scale);
+        ctx.lineTo(startPoint.x*scale, startPoint.y*scale);
       }
       ctx.strokeStyle = '#555';
       ctx.stroke();
@@ -85,11 +85,11 @@ class Preview{
       {
         var p = path.checkpoints[i];
         ctx.beginPath();
-        ctx.arc(p.x*scale, p.z*scale, p.radius*scale, 0, 2 * Math.pi, false);
+        ctx.arc(p.x*scale, p.y*scale, p.radius*scale, 0, 2 * Math.pi, false);
         ctx.stroke();
 
         ctx.save();
-        ctx.translate(p.x*scale, p.z*scale);
+        ctx.translate(p.x*scale, p.y*scale);
         ctx.rotate(angles[i]);
         ctx.beginPath();
         ctx.moveTo(-p.radius*scale,0);

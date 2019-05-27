@@ -44,7 +44,7 @@ class StartingPositions{
 
     double y = vehicleH/2;//move vehicle behind the starting line
     int carsRem = totalCars;
-    Matrix2d M = new Matrix2d().translateThis(start.x, start.z).rotateThis(startAngle);
+    Matrix2d M = new Matrix2d().translateThis(start.x, start.y).rotateThis(startAngle);
 
     int numberOfCarsPerRow = (availableW / (vehicleW+spaceBetweenVehicleW)).floor();
 

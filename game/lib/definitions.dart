@@ -15,3 +15,4 @@ part "src/definitions/pathtopolygons.dart";
 part "src/definitions/startingpositions.dart";
 part "src/definitions/gamelevelextensions.dart";
 part "src/definitions/gameconstants.dart";
+part "src/definitions/gamelevelupgrader.dart";

@@ -105,14 +105,14 @@ class LevelObjectWall extends LevelObject{
     className = "wall";
     properties = [input_x, input_y, input_w, input_h, input_r];
     input_x.onValueChange = (double value) { gameObject.x = value; onPropertyInputChange(); };
-    input_y.onValueChange = (double value) { gameObject.z = value; onPropertyInputChange(); };
+    input_y.onValueChange = (double value) { gameObject.y = value; onPropertyInputChange(); };
     input_w.onValueChange = (double value) { gameObject.w = value; onPropertyInputChange(); };
     input_h.onValueChange = (double value) { gameObject.d = value; onPropertyInputChange(); };
     input_r.onValueChange = (double value) { gameObject.r = value; onPropertyInputChange(); };
   }
   void updateProperties(){
     input_x.setValue(gameObject.x);
-    input_y.setValue(gameObject.z);
+    input_y.setValue(gameObject.y);
     input_w.setValue(gameObject.w);
     input_h.setValue(gameObject.d);
     input_r.setValue(gameObject.r);
@@ -120,7 +120,7 @@ class LevelObjectWall extends LevelObject{
   void updateElement(){
     double hw = gameObject.w/2;
     double hh = gameObject.d/2;
-    element.style.top = "${(gameObject.z-hh)*scale}px";
+    element.style.top = "${(gameObject.y-hh)*scale}px";
     element.style.left = "${(gameObject.x-hw)*scale}px";
     element.style.width = "${gameObject.w*scale}px";
     element.style.height = "${gameObject.d*scale}px";
@@ -128,7 +128,7 @@ class LevelObjectWall extends LevelObject{
   }
   void onElementMove(double xOffset, double yOffset){
     gameObject.x += xOffset;
-    gameObject.z += yOffset;
+    gameObject.y += yOffset;
     onPropertyInputChange();
   }
 }
@@ -142,13 +142,13 @@ class LevelObjectStaticObject extends LevelObject{
     className = "staticobject";
     properties = [input_x, input_y, input_r,input_id];
     input_x.onValueChange = (double value) { gameObject.x = value; onPropertyInputChange(); };
-    input_y.onValueChange = (double value) { gameObject.z = value; onPropertyInputChange(); };
+    input_y.onValueChange = (double value) { gameObject.y = value; onPropertyInputChange(); };
     input_r.onValueChange = (double value) { gameObject.r = value; onPropertyInputChange(); };
     input_id.onValueChange = (int value) { gameObject.id = value; onPropertyInputChange(); };
   }
   void updateProperties(){
     input_x.setValue(gameObject.x);
-    input_y.setValue(gameObject.z);
+    input_y.setValue(gameObject.y);
     input_r.setValue(gameObject.r);
     input_id.setValue(gameObject.id);
   }
@@ -157,7 +157,7 @@ class LevelObjectStaticObject extends LevelObject{
     double d = 20.0;
     double hw = w/2;
     double hh = d/2;
-    element.style.top = "${(gameObject.z-hh)*scale}px";
+    element.style.top = "${(gameObject.y-hh)*scale}px";
     element.style.left = "${(gameObject.x-hw)*scale}px";
     element.style.width = "${w*scale}px";
     element.style.height = "${d*scale}px";
@@ -165,7 +165,7 @@ class LevelObjectStaticObject extends LevelObject{
   }
   void onElementMove(double xOffset, double yOffset){
     gameObject.x += xOffset;
-    gameObject.z += yOffset;
+    gameObject.y += yOffset;
     onPropertyInputChange();
   }
 }
@@ -179,17 +179,17 @@ class LevelObjectCheckpoint extends LevelObject{
     className = "checkpoint";
     properties = [input_x, input_y, input_radius];
     input_x.onValueChange = (double value) { gameObject.x = value; onPropertyInputChange(); };
-    input_y.onValueChange = (double value) { gameObject.z = value; onPropertyInputChange(); };
+    input_y.onValueChange = (double value) { gameObject.y = value; onPropertyInputChange(); };
     input_radius.onValueChange = (double value) { gameObject.radius = value; onPropertyInputChange(); };
   }
   void updateProperties(){
     input_x.setValue(gameObject.x);
-    input_y.setValue(gameObject.z);
+    input_y.setValue(gameObject.y);
     input_radius.setValue(gameObject.radius);
   }
   void updateElement(){
     double fullRadius = gameObject.radius*2;
-    element.style.top = "${(gameObject.z-gameObject.radius)*scale}px";
+    element.style.top = "${(gameObject.y-gameObject.radius)*scale}px";
     element.style.left = "${(gameObject.x-gameObject.radius)*scale}px";
     element.style.width = "${fullRadius*scale}px";
     element.style.height = "${fullRadius*scale}px";
@@ -202,7 +202,7 @@ class LevelObjectCheckpoint extends LevelObject{
   }
   void onElementMove(double xOffset, double yOffset){
     gameObject.x += xOffset;
-    gameObject.z += yOffset;
+    gameObject.y += yOffset;
     onPropertyInputChange();
   }
   Element createElement(){

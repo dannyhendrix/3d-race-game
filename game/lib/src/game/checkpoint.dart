@@ -25,7 +25,7 @@ class CheckpointGameItem extends GameItemStatic{
   }*/
   int index;
   double radius;
-  CheckpointGameItem(GameLevelCheckPoint checkpoint, double angle, this.index) : super(Polygon.createSquare(checkpoint.x,checkpoint.z,checkpoint.radius*2,20.0, angle))
+  CheckpointGameItem(GameLevelCheckPoint checkpoint, double angle, this.index) : super(Polygon.createSquare(checkpoint.x,checkpoint.y,checkpoint.radius*2,20.0, angle))
   {
     r=angle;
     radius = checkpoint.radius;

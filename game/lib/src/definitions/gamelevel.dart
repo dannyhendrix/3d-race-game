@@ -16,14 +16,14 @@ enum GameLevelType {Checkpoint, Score}
 
 class GameLevel extends GameLevelElement{
   int w;
-  int d;
+  int h;
   GameLevelType gameLevelType;
   GameLevelPath path;
   GameLevelScore score;
   List<GameLevelWall> walls;
   List<GameLevelStaticObject> staticobjects;
 
-  GameLevel([this.w=800,this.d=500,this.gameLevelType=GameLevelType.Checkpoint,this.path=null, this.score=null,this.walls=null,this.staticobjects=null]){
+  GameLevel([this.w=800,this.h=500,this.gameLevelType=GameLevelType.Checkpoint,this.path=null, this.score=null,this.walls=null,this.staticobjects=null]){
     if(walls == null) walls = <GameLevelWall>[];
     if(staticobjects == null) staticobjects = <GameLevelStaticObject>[];
   }
@@ -72,34 +72,34 @@ class GameLevelScoreTeam extends GameLevelElement{
   }
 }
 class GameLevelStartArea extends GameLevelElement{
-  double x,z,r;
-  double w,d;
-  GameLevelStartArea([this.x=0.0,this.z=0.0,this.r=0.0, this.w = 10.0,this.d = 10.0]);
+  double x,y,r;
+  double w,h;
+  GameLevelStartArea([this.x=0.0,this.y=0.0,this.r=0.0, this.w = 10.0,this.h = 10.0]);
 }
 class GameLevelWall extends GameLevelElement{
-  double x,z,r;
+  double x,y,r;
   double w,d,h;
-  GameLevelWall([this.x=0.0,this.z=0.0,this.r=0.0, this.w = 1.0,this.d = 1.0,this.h = 1.0]);
+  GameLevelWall([this.x=0.0,this.y=0.0,this.r=0.0, this.w = 1.0,this.d = 1.0,this.h = 1.0]);
 }
 class GameLevelGoal extends GameLevelElement{
-  double x,z,r;
+  double x,y,r;
   double w,d,h;
   int team;
-  GameLevelGoal([this.x=0.0,this.z=0.0,this.r=0.0, this.w = 1.0,this.d = 1.0,this.h = 1.0, this.team=0]);
+  GameLevelGoal([this.x=0.0,this.y=0.0,this.r=0.0, this.w = 1.0,this.d = 1.0,this.h = 1.0, this.team=0]);
 }
 class GameLevelBall extends GameLevelElement{
-  double x,z,r;
-  GameLevelBall([this.x=0.0,this.z=0.0,this.r=0.0]);
+  double x,y,r;
+  GameLevelBall([this.x=0.0,this.y=0.0,this.r=0.0]);
 }
 class GameLevelStaticObject extends GameLevelElement{
   int id;
-  double x,z,r;
-  GameLevelStaticObject([this.id = 0, this.x=0.0,this.z=0.0,this.r=0.0]);
+  double x,y,r;
+  GameLevelStaticObject([this.id = 0, this.x=0.0,this.y=0.0,this.r=0.0]);
 }
 class GameLevelCheckPoint extends GameLevelElement{
-  double x,z;
+  double x,y;
   double radius;
-  GameLevelCheckPoint([this.x=0.0,this.z=0.0, this.radius = 0.0]);
+  GameLevelCheckPoint([this.x=0.0,this.y=0.0, this.radius = 0.0]);
 }
 class GameLevelPath extends GameLevelElement{
   bool circular;
@@ -127,7 +127,7 @@ class GameLevelLoader{
 
   GameLevel _parseLevel(dynamic m) => new GameLevel(
       _parse(m, "w", 0),
-      _parse(m, "d", 0),
+      _parse(m, "h", 0),
       _parse(m, "type", "checkpoint") == "checkpoint" ? GameLevelType.Checkpoint : GameLevelType.Score,
       _parseObject(m, "path", _parsePath, new GameLevelPath()),
       _parseObject(m, "score", _parseGameLevelScore, new GameLevelScore()),
@@ -139,7 +139,7 @@ class GameLevelLoader{
       _parseList(m, "checkpoints", _parseCheckpoint));
   GameLevelCheckPoint _parseCheckpoint(dynamic m)=> new GameLevelCheckPoint(
       _parse(m, "x", 0.0),
-      _parse(m, "z", 0.0),
+      _parse(m, "y", 0.0),
       _parse(m, "radius", 20.0));
   GameLevelScore _parseGameLevelScore(dynamic m)=> new GameLevelScore(
       _parseList(m, "teams", _parseGameLevelScoreTeam),
@@ -149,32 +149,32 @@ class GameLevelLoader{
       _parseList(m, "startingareas", _parseGameLevelStartArea));
   GameLevelStartArea _parseGameLevelStartArea(dynamic m)=> new GameLevelStartArea(
       _parse(m, "x", 0.0),
-      _parse(m, "z", 0.0),
+      _parse(m, "y", 0.0),
       _parse(m, "r", 0.0),
       _parse(m, "w", 0.0),
       _parse(m, "d", 0.0));
   GameLevelWall _parseWall(dynamic m)=> new GameLevelWall(
       _parse(m, "x", 0.0),
-      _parse(m, "z", 0.0),
+      _parse(m, "y", 0.0),
       _parse(m, "r", 0.0),
       _parse(m, "w", 0.0),
       _parse(m, "d", 0.0),
       _parse(m, "h", 0.0));
   GameLevelGoal _parseGoal(dynamic m)=> new GameLevelGoal(
       _parse(m, "x", 0.0),
-      _parse(m, "z", 0.0),
+      _parse(m, "y", 0.0),
       _parse(m, "r", 0.0),
       _parse(m, "w", 0.0),
       _parse(m, "d", 0.0),
       _parse(m, "h", 0.0));
   GameLevelBall _parseBall(dynamic m)=> new GameLevelBall(
       _parse(m, "x", 0.0),
-      _parse(m, "z", 0.0),
+      _parse(m, "y", 0.0),
       _parse(m, "r", 0.0));
   GameLevelStaticObject _parseStaticObject(dynamic m)=> new GameLevelStaticObject(
       _parse(m, "id", 0),
       _parse(m, "x", 0.0),
-      _parse(m, "z", 0.0),
+      _parse(m, "y", 0.0),
       _parse(m, "r", 0.0));
 }
 class GameLevelSaver{
@@ -185,7 +185,7 @@ class GameLevelSaver{
     var type = level.gameLevelType == GameLevelType.Score ? "score" : "checkpoint";
     return {
       "w":level.w,
-      "d":level.d,
+      "h":level.h,
       "type": type,
       "walls" : level.walls.map(_parseWall).toList(),
       "staticobjects" : level.staticobjects.map(_parseStaticObject).toList(),
@@ -201,7 +201,7 @@ class GameLevelSaver{
     };
   }
   Map _parseCheckPoint(GameLevelCheckPoint object){
-    return {"x":object.x,"z":object.z, "radius":object.radius};
+    return {"x":object.x,"y":object.y, "radius":object.radius};
   }
   Map _parseScore(GameLevelScore object){
     return object == null ? {} : {
@@ -217,31 +217,31 @@ class GameLevelSaver{
   }
   Map _parseStartArea(GameLevelStartArea object){
     return {
-      "x":object.x,"z":object.z, "r":object.r,
-      "w":object.w,"d":object.d
+      "x":object.x,"y":object.y, "r":object.r,
+      "w":object.w,"h":object.h
     };
   }
   Map _parseWall(GameLevelWall object){
     return {
-      "x":object.x,"z":object.z, "r":object.r,
-      "w":object.w,"d":object.d, "h":object.h
+      "x":object.x,"y":object.y, "r":object.r,
+      "w":object.w, "h":object.h,"d":object.d
     };
   }
   Map _parseGoal(GameLevelGoal object){
     return {
-      "x":object.x,"z":object.z, "r":object.r,
-      "w":object.w,"d":object.d, "h":object.h
+      "x":object.x,"y":object.y, "r":object.r,
+      "w":object.w, "h":object.h, "d":object.d
     };
   }
   Map _parseBall(GameLevelBall object){
     return {
-      "x":object.x,"z":object.z, "r":object.r
+      "x":object.x,"y":object.y, "r":object.r
     };
   }
   Map _parseStaticObject(GameLevelStaticObject object){
     return {
       "id":object.id,
-      "x":object.x,"z":object.z, "r":object.r,
+      "x":object.x,"y":object.y, "r":object.r,
     };
   }
 }

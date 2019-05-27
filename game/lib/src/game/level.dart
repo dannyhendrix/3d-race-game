@@ -10,7 +10,7 @@ class GameLevelController{
     checkpoints = [];
 
     var vectors = new List<Vector>();
-    for(var c in path.checkpoints) vectors.add(new Vector(c.x, c.z));
+    for(var c in path.checkpoints) vectors.add(new Vector(c.x, c.y));
 
     if(vectors.length == 0) return;
 
