@@ -55,12 +55,20 @@ class GameLevelUpgrader{
         for(var x in data["score"]["balls"])
           _rename(x, "z", "y");
       if(data["score"].containsKey("teams"))
-        for(var x in data["score"]["teams"])
+        for(var x in data["score"]["teams"]){
+          if(x.containsKey("startingpositions"))
+            for(var x in x["startingpositions"])
+              {
+                x.remove("w");
+                x.remove("h");
+                x["radius"] = 100.0;
+              }
           if(x.containsKey("goals"))
             for(var x in x["goals"]){
               _rename(x, "z", "y");
               _swap(x, "d", "h");
             }
+        }
     }
     if(data.containsKey("path")){
       if(data["path"].containsKey("checkpoints"))

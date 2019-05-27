@@ -73,19 +73,19 @@ class GameLevelScoreTeam extends GameLevelElement{
 }
 class GameLevelStartArea extends GameLevelElement{
   double x,y,r;
-  double w,h;
-  GameLevelStartArea([this.x=0.0,this.y=0.0,this.r=0.0, this.w = 10.0,this.h = 10.0]);
+  double radius;
+  GameLevelStartArea([this.x=0.0,this.y=0.0,this.r=0.0, this.radius = 0.0]);
 }
 class GameLevelWall extends GameLevelElement{
   double x,y,r;
-  double w,d,h;
-  GameLevelWall([this.x=0.0,this.y=0.0,this.r=0.0, this.w = 1.0,this.d = 1.0,this.h = 1.0]);
+  double w,h,d;
+  GameLevelWall([this.x=0.0,this.y=0.0,this.r=0.0, this.w = 1.0,this.h = 1.0,this.d = 1.0]);
 }
 class GameLevelGoal extends GameLevelElement{
   double x,y,r;
-  double w,d,h;
+  double w,h,d;
   int team;
-  GameLevelGoal([this.x=0.0,this.y=0.0,this.r=0.0, this.w = 1.0,this.d = 1.0,this.h = 1.0, this.team=0]);
+  GameLevelGoal([this.x=0.0,this.y=0.0,this.r=0.0, this.w = 1.0,this.h = 1.0,this.d = 1.0, this.team=0]);
 }
 class GameLevelBall extends GameLevelElement{
   double x,y,r;
@@ -151,22 +151,21 @@ class GameLevelLoader{
       _parse(m, "x", 0.0),
       _parse(m, "y", 0.0),
       _parse(m, "r", 0.0),
-      _parse(m, "w", 0.0),
-      _parse(m, "d", 0.0));
+      _parse(m, "radius", 0.0));
   GameLevelWall _parseWall(dynamic m)=> new GameLevelWall(
       _parse(m, "x", 0.0),
       _parse(m, "y", 0.0),
       _parse(m, "r", 0.0),
       _parse(m, "w", 0.0),
-      _parse(m, "d", 0.0),
-      _parse(m, "h", 0.0));
+      _parse(m, "h", 0.0),
+      _parse(m, "d", 0.0));
   GameLevelGoal _parseGoal(dynamic m)=> new GameLevelGoal(
       _parse(m, "x", 0.0),
       _parse(m, "y", 0.0),
       _parse(m, "r", 0.0),
       _parse(m, "w", 0.0),
-      _parse(m, "d", 0.0),
-      _parse(m, "h", 0.0));
+      _parse(m, "h", 0.0),
+      _parse(m, "d", 0.0));
   GameLevelBall _parseBall(dynamic m)=> new GameLevelBall(
       _parse(m, "x", 0.0),
       _parse(m, "y", 0.0),
@@ -218,7 +217,7 @@ class GameLevelSaver{
   Map _parseStartArea(GameLevelStartArea object){
     return {
       "x":object.x,"y":object.y, "r":object.r,
-      "w":object.w,"h":object.h
+      "radius":object.radius
     };
   }
   Map _parseWall(GameLevelWall object){
