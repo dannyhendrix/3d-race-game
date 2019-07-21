@@ -125,13 +125,13 @@ class LevelEditor{
     {
       LevelObjectCheckpoint sourceLevelObject = _currentLevelObject;
       GameLevelCheckPoint source = sourceLevelObject.gameObject;
-      gameObject = new GameLevelCheckPoint(x, y, source.radius);
+      gameObject = new GameLevelCheckPoint(x, y, source.width, source.angle, source.autoAngle, source.length);
       int index = gamelevel.path.checkpoints.indexOf(source);
       gamelevel.path.checkpoints.insert(index+1, gameObject);
     }
     else
     {
-      gameObject = new GameLevelCheckPoint(x, y, 100.0);
+      gameObject = new GameLevelCheckPoint(x, y, 100.0, 0.0, true, 100.0);
       gamelevel.path.checkpoints.add(gameObject);
     }
     _addCheckpointToLevelObjects(gameObject);

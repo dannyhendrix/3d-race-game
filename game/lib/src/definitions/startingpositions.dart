@@ -7,6 +7,9 @@ class StartingPosition{
 }
 
 class StartingPositions{
+  double spaceBetweenVehicleW = GameConstants.startingPositionSpacing.x;
+  double spaceBetweenVehicleH = GameConstants.startingPositionSpacing.y;
+
   List<StartingPosition> DetermineStartPositions(Vector start, double startAngle, int totalCars, double vehicleW, double vehicleH, double spaceBetweenVehicleW, double spaceBetweenVehicleH, double availableH){
     List<StartingPosition> result = [];
 
@@ -36,31 +39,42 @@ class StartingPositions{
     }
     return result;
   }
-  List<StartingPosition> DetermineStartPositions2(GameLevelCheckPoint start, double startAngle, int totalCars, double vehicleW, double vehicleH, double spaceBetweenVehicleW, double spaceBetweenVehicleH){
-    List<StartingPosition> result = [];
-    var availableW = start.radius*2;
-    var availableHW = availableW/2;
+  List<StartingPosition> determineStartPositions(double sx, double sy, double sr, double radius, double vehicleW, double vehicleH, int totalCars){
+    return transformAndRotatePositions(sx,sy,sr, determineStartLocations(radius, vehicleW,vehicleH,totalCars));
+  }
+
+  List<StartingPosition> transformAndRotatePositions(double sx, double sy, double sr, List<Vector> points){
+    sr +=  Math.pi/2;
+    Matrix2d M = new Matrix2d().translateThis(sx, sy).rotateThis(sr);
+    return points.map((x) => new StartingPosition(x.applyMatrixToThis(M),sr+Math.pi)).toList();
+  }
+
+  List<Vector> determineStartLocations(double radius, double vehicleW, double vehicleH, int totalCars){
+    List<Vector> result = [];
+    var availableH = radius*2;
+    var availableHH = availableH/2;
+    var vehicleHH = vehicleH/2;
     var vehicleHW = vehicleW/2;
+    var vehicleSpaceW = vehicleW+spaceBetweenVehicleW;
+    var vehicleSpaceH = vehicleH+spaceBetweenVehicleH;
 
-    double y = vehicleH/2;//move vehicle behind the starting line
+    double x = vehicleHW;//move vehicle behind the starting line
     int carsRem = totalCars;
-    Matrix2d M = new Matrix2d().translateThis(start.x, start.y).rotateThis(startAngle);
 
-    int numberOfCarsPerRow = (availableW / (vehicleW+spaceBetweenVehicleW)).floor();
+    int numberOfCarsPerRow = (availableH / vehicleSpaceH).floor();
 
     while(carsRem > 0){
       numberOfCarsPerRow = Math.min(numberOfCarsPerRow, carsRem);
-      double requiredW = numberOfCarsPerRow*(vehicleW+spaceBetweenVehicleW);
-      double startOffsetW = (availableW-requiredW+spaceBetweenVehicleW)/2;
+      double requiredH = numberOfCarsPerRow*vehicleSpaceH;
+      double startOffsetH = (availableH-requiredH+spaceBetweenVehicleH)/2;
 
-      double x = -availableHW+startOffsetW+vehicleHW;
+      double y = -availableHH+startOffsetH+vehicleHH;
       for(int i = 0; i < numberOfCarsPerRow; i++){
-        var p = new Vector(x,y).applyMatrixToThis(M);
-        result.add(new StartingPosition(p, startAngle));
-        x += vehicleW+spaceBetweenVehicleW;
+        result.add(new Vector(x,y));
+        y += vehicleSpaceH;
       }
       carsRem -= numberOfCarsPerRow;
-      y += vehicleH+spaceBetweenVehicleH;
+      x += vehicleSpaceW;
     }
     return result;
   }

@@ -98,8 +98,11 @@ class GameLevelStaticObject extends GameLevelElement{
 }
 class GameLevelCheckPoint extends GameLevelElement{
   double x,y;
-  double radius;
-  GameLevelCheckPoint([this.x=0.0,this.y=0.0, this.radius = 0.0]);
+  double width;
+  double length;
+  double angle;
+  bool autoAngle;
+  GameLevelCheckPoint([this.x=0.0,this.y=0.0, this.width = 0.0, this.angle = 0.0, this.autoAngle=true, this.length = 0.0]);
 }
 class GameLevelPath extends GameLevelElement{
   bool circular;
@@ -116,6 +119,8 @@ class GameLevelPath extends GameLevelElement{
 
 class GameLevelLoader{
   GameLevel loadLevelJson(Map json){
+    var upgrader = new GameLevelUpgrader();
+    json = upgrader.upgrade(json);
     var level = _parseLevel(json);
     level.validate();
     return level;
@@ -140,7 +145,11 @@ class GameLevelLoader{
   GameLevelCheckPoint _parseCheckpoint(dynamic m)=> new GameLevelCheckPoint(
       _parse(m, "x", 0.0),
       _parse(m, "y", 0.0),
-      _parse(m, "radius", 20.0));
+      _parse(m, "width", 20.0),
+      _parse(m, "angle", 0.0),
+      _parse(m, "autoAngle", true),
+      _parse(m, "length", 20.0)
+  );
   GameLevelScore _parseGameLevelScore(dynamic m)=> new GameLevelScore(
       _parseList(m, "teams", _parseGameLevelScoreTeam),
       _parseList(m, "balls", _parseBall));
@@ -200,7 +209,7 @@ class GameLevelSaver{
     };
   }
   Map _parseCheckPoint(GameLevelCheckPoint object){
-    return {"x":object.x,"y":object.y, "radius":object.radius};
+    return {"x":object.x,"y":object.y, "width":object.width,"angle":object.angle,"autoAngle":object.autoAngle,"length":object.length};
   }
   Map _parseScore(GameLevelScore object){
     return object == null ? {} : {

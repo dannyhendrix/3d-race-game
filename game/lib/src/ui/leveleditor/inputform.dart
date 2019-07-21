@@ -32,11 +32,6 @@ class InputFormInt extends InputForm<int>{
       onValueChange(getValue());
     });
 
-    Element el_label = new SpanElement();
-    el_label.className = "label";
-    el_label.text = label;
-
-    el.append(el_label);
     el.append(el_in);
     return el;
   }
@@ -63,11 +58,6 @@ class InputFormDouble extends InputForm<double>{
       onValueChange(getValue());
     });
 
-    Element el_label = new SpanElement();
-    el_label.className = "label";
-    el_label.text = label;
-
-    el.append(el_label);
     el.append(el_in);
     return el;
   }
@@ -78,5 +68,28 @@ class InputFormDouble extends InputForm<double>{
   @override
   double getValue() {
     return double.parse(el_in.value);
+  }
+}
+class InputFormBool extends InputForm<bool>{
+  CheckboxInputElement el_in;
+
+  InputFormBool(String label) : super(label);
+  Element createElement(){
+    Element el = super.createElement();
+    el_in = new CheckboxInputElement();
+    el_in.onChange.listen((Event e){
+      onValueChange(getValue());
+    });
+
+    el.append(el_in);
+    return el;
+  }
+  @override
+  void setValue(bool value) {
+    el_in.checked = value;
+  }
+  @override
+  bool getValue() {
+    return el_in.checked;
   }
 }

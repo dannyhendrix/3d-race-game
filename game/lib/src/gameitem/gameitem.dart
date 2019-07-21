@@ -76,10 +76,10 @@ class GameItem {
     var centerX = polygon.center.x;
     var centerY = polygon.center.y;
     r += rotate;
-    var m = new Matrix2d.translation(centerX, centerY)
+    var m = new Matrix2d().translateThisVector(offset).translateThis(centerX, centerY)
         .rotateThis(rotate)
         .translateThis(-centerX, -centerY)
-        .translateThisVector(offset);
+        ;
     applyMatrix(m);
   }
 

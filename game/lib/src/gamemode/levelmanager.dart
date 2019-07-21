@@ -66,12 +66,11 @@ class LevelManager{
   Map<int, GameLevel> loadedLevels = {};
 
   void preLoadLevels(){
-    var upgrader = new GameLevelUpgrader();
-    loadedLevels[0] = _levelLoader.loadLevelJson(upgrader.upgrade(leveljson));
-    loadedLevels[1] = _levelLoader.loadLevelJson(upgrader.upgrade(levelJson2));
-    loadedLevels[2] = _levelLoader.loadLevelJson(upgrader.upgrade(levelJson3));
-    loadedLevels[3] = _levelLoader.loadLevelJson(upgrader.upgrade(levelJson4));
-    loadedLevels[4] = _levelLoader.loadLevelJson(upgrader.upgrade(soccerJson1));
+    loadedLevels[0] = _levelLoader.loadLevelJson(leveljson);
+    loadedLevels[1] = _levelLoader.loadLevelJson(levelJson2);
+    loadedLevels[2] = _levelLoader.loadLevelJson(levelJson3);
+    loadedLevels[3] = _levelLoader.loadLevelJson(levelJson4);
+    loadedLevels[4] = _levelLoader.loadLevelJson(soccerJson1);
   }
 
   GameLevel loadLevel(int id){

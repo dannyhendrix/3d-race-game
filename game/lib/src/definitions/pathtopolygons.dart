@@ -36,11 +36,11 @@ class PathToPolygons
     {
       int a = i-1;
       int b = i;
-      roads.add(_createSquareRoad(points[a], points[b], path.checkpoints[a].radius, path.checkpoints[b].radius));
+      roads.add(_createSquareRoad(points[a], points[b], path.checkpoints[a].width, path.checkpoints[b].width));
     }
     int a = points.length - 1;
     int b = 0;
-    if(path.circular) roads.add(_createSquareRoad(points[a], points[b], path.checkpoints[a].radius, path.checkpoints[b].radius));
+    if(path.circular) roads.add(_createSquareRoad(points[a], points[b], path.checkpoints[a].width, path.checkpoints[b].width));
     return roads;
   }
 

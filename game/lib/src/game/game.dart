@@ -152,31 +152,34 @@ class Game{
 
   void _setStartingPositions(List<Player> players, GameLevelPath path){
     StartingPositions startingPositionsCreater = new StartingPositions();
-
+    var angles = new GameLevelExtensions().getCheckpointAngles(path);
     double vehicleLength = 0.0;
-    double vehicleWidth = 0.0;
+    double vehicleH = 0.0;
 
     for(Player p in players){
       Vehicle v = p.vehicle;
-      vehicleWidth = Math.max(vehicleWidth, v.polygon.dimensions.y);
-      vehicleWidth = Math.max(vehicleWidth, v.trailer.polygon.dimensions.y);
+      vehicleH = Math.max(vehicleH, v.polygon.dimensions.y);
+      vehicleH = Math.max(vehicleH, v.trailer.polygon.dimensions.y);
       vehicleLength = Math.max(vehicleLength, v.polygon.dimensions.x-v.trailerSnapPoint.x+v.trailer.vehicleSnapPoint.x+v.trailer.polygon.dimensions.x/2);
     }
 
-    List<StartingPosition> startingPositions = startingPositionsCreater.DetermineStartPositions(
-        level.checkpoints[0].position,
-        level.checkpoints[0].r,
-        players.length,
+    List<StartingPosition> startingPositions = startingPositionsCreater.determineStartPositions(
+        path.checkpoints[0].x,
+        path.checkpoints[0].y,
+        angles[0],
+        path.checkpoints[0].width,
         vehicleLength,
-        vehicleWidth,
-        30.0,
-        60.0,
-        path.checkpoints[0].radius*2
+        vehicleH,
+        players.length
     );
     int i = 0;
     for(Player player in players){
       var rdif = startingPositions[i].r - player.vehicle.r;
-      player.vehicle.Teleport(startingPositions[i].point, rdif);
+      var rpos = startingPositions[i].point - player.vehicle.position;
+      player.vehicle.Teleport(rpos,rdif);
+      //player.vehicle.Teleport(rpos,0.0);
+      //player.vehicle.Teleport(new Vector(0.0,0.0), rdif);
+      //player.vehicle.TelePort(startingPositions[i].point.x,startingPositions[i].point.y);
       player.vehicle.trailer.updateVehiclePosition();
       i++;
     }

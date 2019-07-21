@@ -15,7 +15,7 @@ void main(){
   document.body.append(createSlider("vehicleH",1.0,60.0,1.0,preview.vehicleH,(String val){ preview.vehicleH = double.parse(val); preview.refresh();  }));
   document.body.append(createSlider("spaceBetweenVehicleW",0.0,10.0,1.0,preview.spaceBetweenVehicleW,(String val){ preview.spaceBetweenVehicleW = double.parse(val); preview.refresh();  }));
   document.body.append(createSlider("spaceBetweenVehicleH",0.0,10.0,1.0,preview.spaceBetweenVehicleH,(String val){ preview.spaceBetweenVehicleH = double.parse(val); preview.refresh();  }));
-  document.body.append(createSlider("radius",1.0,180.0,1.0,preview.start.radius,(String val){ preview.start.radius = double.parse(val); preview.refresh();  }));
+  document.body.append(createSlider("radius",1.0,180.0,1.0,preview.start.width,(String val){ preview.start.width = double.parse(val); preview.refresh();  }));
   preview.refresh();
 }
 
@@ -38,7 +38,9 @@ class StartingPositionsPreview2{
   }
 
   void refresh(){
-    var positions = startingPositions.DetermineStartPositions2(start, startAngle, totalCars, vehicleW, vehicleH, spaceBetweenVehicleW, spaceBetweenVehicleH);
+    startingPositions.spaceBetweenVehicleW = spaceBetweenVehicleW;
+    startingPositions.spaceBetweenVehicleH = spaceBetweenVehicleH;
+    var positions = startingPositions.determineStartPositions(start.x, start.y, startAngle, start.width, vehicleW, vehicleH, totalCars);
     layer.clear();
     paint(positions);
   }
@@ -46,7 +48,7 @@ class StartingPositionsPreview2{
   void paint(List<StartingPosition> positions){
     var centerX = layer.actualwidth ~/2;
     var centerY = layer.actualheight ~/2;
-    var radius = start.radius~/2;
+    var radius = start.width;
 
     // move to canvas center
     layer.ctx.save();

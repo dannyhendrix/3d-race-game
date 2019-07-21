@@ -17,8 +17,8 @@ class Preview{
     double maxX = 0.0;
     double maxZ = 0.0;
     for(var c in path.checkpoints){
-      var mx = c.x + c.radius/2;
-      var mz = c.y + c.radius/2;
+      var mx = c.x + c.width/2;
+      var mz = c.y + c.width/2;
       if(mx > maxX) maxX = mx;
       if(mz > maxZ) maxZ = mz;
     }
@@ -85,15 +85,15 @@ class Preview{
       {
         var p = path.checkpoints[i];
         ctx.beginPath();
-        ctx.arc(p.x*scale, p.y*scale, p.radius*scale, 0, 2 * Math.pi, false);
+        ctx.arc(p.x*scale, p.y*scale, p.width*scale, 0, 2 * Math.pi, false);
         ctx.stroke();
 
         ctx.save();
         ctx.translate(p.x*scale, p.y*scale);
         ctx.rotate(angles[i]);
         ctx.beginPath();
-        ctx.moveTo(-p.radius*scale,0);
-        ctx.lineTo(p.radius*scale,0);
+        ctx.moveTo(-p.width*scale,0);
+        ctx.lineTo(p.width*scale,0);
         ctx.stroke();
         ctx.closePath();
 
@@ -102,7 +102,12 @@ class Preview{
       var vehicleW = GameConstants.carSize.x;
       var vehicleH = GameConstants.carSize.y;
       var startingPositions = new StartingPositions();
-      var positions = startingPositions.DetermineStartPositions2(path.checkpoints[0], angles[0], 8, vehicleW, vehicleH, GameConstants.startingPositionSpacing.x, GameConstants.startingPositionSpacing.y);
+      var positions = startingPositions.determineStartPositions(
+          path.checkpoints[0].x,
+          path.checkpoints[0].y,
+          angles[0],
+          path.checkpoints[0].width,
+          vehicleW, vehicleH, 8);
       var startingPositionsPreview = new StartingPositionsPreview();
       startingPositionsPreview.paintPositions(ctx, positions, vehicleW, vehicleH, scale);
     }

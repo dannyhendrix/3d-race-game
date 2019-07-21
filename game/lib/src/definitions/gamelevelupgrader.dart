@@ -4,7 +4,7 @@ typedef Map upgrader(Map data);
 
 class GameLevelUpgrader{
   int mainVersion = 1;
-  int subVersion = 0;
+  int subVersion = 1;
 
   List<List<upgrader>> _upgraders;
 
@@ -13,10 +13,10 @@ class GameLevelUpgrader{
       [// main 0
         _upgrade_0_0 //sub 0
       ],
-      /*[// main 1
+      [// main 1
         _upgrade_1_0, //sub 0
-        _upgrade_1_1 //sub 1
-      ]*/
+        //_upgrade_1_1 //sub 1
+      ]
     ];
   }
 
@@ -46,6 +46,16 @@ class GameLevelUpgrader{
     return data;
   }
 
+  Map _upgrade_1_0(Map data){
+    if(data.containsKey("path")){
+      if(data["path"].containsKey("checkpoints"))
+        for(var x in data["path"]["checkpoints"]) {
+          x["length"] = x["radius"];
+          _rename(x, "radius", "width");
+        }
+    }
+    return data;
+  }
   Map _upgrade_0_0(Map data){
     _rename(data, "d", "h");
     if(data.containsKey("walls")) for(var x in data["walls"]){ _rename(x, "z", "y"); _swap(x, "d", "h");}

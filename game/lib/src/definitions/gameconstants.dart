@@ -10,5 +10,5 @@ abstract class GameConstants{
   static Vector checkpointPostSize = new Vector(8.0,8.0);
   static Vector ballSize = new Vector(50.0,30.0);
 
-  static Vector startingPositionSpacing = new Vector(5.0,5.0);
+  static Vector startingPositionSpacing = new Vector(10.0,10.0);
 }
