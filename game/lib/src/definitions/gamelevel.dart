@@ -192,7 +192,7 @@ class GameLevelSaver{
   Map _parseLevel(GameLevel level){
     var type = level.gameLevelType == GameLevelType.Score ? "score" : "checkpoint";
     return {
-      "version": GameLevelUpgrader.currentVersion,
+      "version": "${GameConstants.levelMainVersion}.${GameConstants.levelSubVersion}",
       "w":level.w,
       "h":level.h,
       "type": type,

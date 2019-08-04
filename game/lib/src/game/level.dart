@@ -17,42 +17,9 @@ class GameLevelController{
 
     if(vectors.length == 0) return;
 
-    //first checkpoint
-    if(path.circular)
-    {
-      var checkpoint = new CheckpointGameItem(path.checkpoints[0], _getCheckpointAngle(vectors[0], vectors.last, vectors[1]),0);
-      checkpoints.add(checkpoint);
-
-      for(int i = 1; i < path.checkpoints.length-1; i++){
-        var checkpoint = new CheckpointGameItem( path.checkpoints[i],_getCheckpointAngle(vectors[0],vectors[i+1],vectors[i-1]),i);
-        checkpoints.add(checkpoint);
-      }
-
-      checkpoint = new CheckpointGameItem(path.checkpoints.last, _getCheckpointAngle(vectors.last, vectors[vectors.length - 2], vectors[0]),vectors.length-1);
-      checkpoints.add(checkpoint);
+    for(int i = 0; i < path.checkpoints.length-1; i++){
+      checkpoints.add(new CheckpointGameItem( path.checkpoints[i],i));
     }
-    else{
-      var checkpoint = new CheckpointGameItem(path.checkpoints[0], _getCheckpointAngleToNext(vectors[0], vectors[1]), 0);
-      checkpoints.add(checkpoint);
-
-      for(int i = 1; i < path.checkpoints.length-1; i++){
-        var checkpoint = new CheckpointGameItem(path.checkpoints[i],_getCheckpointAngle(vectors[0],vectors[i+1],vectors[i-1]),i);
-        checkpoints.add(checkpoint);
-      }
-
-      checkpoint = new CheckpointGameItem(path.checkpoints.last, _getCheckpointAngleToNext(vectors.last, vectors[0]),vectors.length-1);
-      checkpoints.add(checkpoint);
-    }
-  }
-
-  double _getCheckpointAngleToNext(Vector c,Vector cNext){
-    return (cNext-c).angleThis();
-  }
-
-  double _getCheckpointAngle(Vector c,Vector cPrev,Vector cNext){
-    double angle = ((cPrev-c)+(c-cNext)).angleThis();
-    angle += Math.pi/2;
-    return angle;
   }
 
   bool onRoad(Vector p){

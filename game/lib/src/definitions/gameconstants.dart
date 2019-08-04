@@ -1,6 +1,9 @@
 part of game.definitions;
 
 abstract class GameConstants{
+  static int levelMainVersion = 1;
+  static int levelSubVersion = 1;
+
   static Vector carSize = new Vector(50.0,30.0);
   static Vector truckSize = new Vector(50.0,40.0);
   static Vector formulaCarSize = new Vector(50.0,30.0);

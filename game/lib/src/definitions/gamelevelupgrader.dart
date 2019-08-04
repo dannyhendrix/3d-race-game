@@ -3,9 +3,6 @@ part of game.definitions;
 typedef Map upgrader(Map data);
 
 class GameLevelUpgrader{
-  static int mainVersion = 1;
-  static int subVersion = 1;
-  static String currentVersion = "${mainVersion}.${subVersion}";
 
   List<List<upgrader>> _upgraders;
 
@@ -22,6 +19,8 @@ class GameLevelUpgrader{
   }
 
   Map upgrade(Map data){
+    var mainVersion = GameConstants.levelMainVersion;
+    var subVersion = GameConstants.levelSubVersion;
     var versionSpl = data["version"].toString().split(".");
     var mainVersionIn = int.parse(versionSpl[0]);
     var subVersionIn = int.parse(versionSpl[1]);

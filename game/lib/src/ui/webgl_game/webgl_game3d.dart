@@ -261,7 +261,7 @@ class WebglGame3d extends WebglGame{
               .getModelInstance(modelCollection, o.wallW, 150.0, o.wallH, colorPoles)));*/
           modelInstances.add(new GlModelInstanceFromCheckpoint(game, c, o.position.x, 150.0-60.0, o.position.y, 0.0, -o
               .r, 0.0, wallModel
-              .getModelInstance(modelCollection, 4.0, 60.0,c.radius*2,  color)));
+              .getModelInstance(modelCollection, 4.0, 60.0,c.width,  color)));
         }
         /*
       }else{
