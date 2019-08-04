@@ -4,7 +4,7 @@ typedef void OnValueChange<T>(T value);
 
 abstract class InputForm<T>{
   String label;
-  OnValueChange<T> onValueChange;
+  OnValueChange<T> onValueChange = (x){};
 
   InputForm(this.label);
 
@@ -18,6 +18,32 @@ abstract class InputForm<T>{
   }
   void setValue(T value);
   T getValue();
+}
+class InputFormString extends InputForm<String>{
+  InputElement el_in;
+
+  InputFormString(String label) : super(label);
+  Element createElement(){
+    Element el = super.createElement();
+    el_in = new InputElement();
+    el_in.type = "text";
+    el_in.onChange.listen((Event e){
+      onValueChange(getValue());
+    });
+
+    el.append(el_in);
+    return el;
+  }
+
+  @override
+  void setValue(String value) {
+    el_in.value = value.toString();
+  }
+
+  @override
+  String getValue() {
+    return el_in.value;
+  }
 }
 
 class InputFormInt extends InputForm<int>{

@@ -21,7 +21,7 @@ void main(){
   document.body.append(createTitle("Output"));
   document.body.append(el_txt_out);
 
-  el_txt_in.value = jsonEncode(LevelManager.leveljson);//'{"version":"0.0","d":0.5}';
+  //el_txt_in.value = jsonEncode(LevelManager.leveljson);//'{"version":"0.0","d":0.5}';
 }
 Element createButton(String text, Function onClick){
   var element = new ButtonElement();

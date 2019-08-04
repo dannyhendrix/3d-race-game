@@ -97,15 +97,15 @@ class Preview{
       {
         var p = path[i];
         ctx.beginPath();
-        ctx.arc(p.x*scale, p.y*scale, p.width*scale, 0, 2 * Math.pi, false);
+        ctx.arc(p.x*scale, p.y*scale, p.width/2*scale, 0, 2 * Math.pi, false);
         ctx.stroke();
 
         ctx.save();
         ctx.translate(p.x*scale, p.y*scale);
         ctx.rotate(p.angle);
         ctx.beginPath();
-        ctx.moveTo(-p.width*scale,0);
-        ctx.lineTo(p.width*scale,0);
+        ctx.moveTo(-p.width/2*scale,0);
+        ctx.lineTo(p.width/2*scale,0);
         ctx.stroke();
         ctx.closePath();
 

@@ -3,7 +3,7 @@ part of micromachines;
 
 class CheckpointGatePost extends GameItemStatic{
   CheckpointGatePost(CheckpointGameItem checkpoint, bool leftpost) : super(Polygon.createSquare(0.0,0.0,8.0,8.0, 0.0)){
-    var offsetx = checkpoint.width;
+    var offsetx = checkpoint.width/2;
     if(leftpost) offsetx = -offsetx;
     var offsety = 0.0;
     var m = new Matrix2d()
@@ -11,15 +11,16 @@ class CheckpointGatePost extends GameItemStatic{
         .rotateThis(checkpoint.r+(Math.pi/2))
         .translateThis(offsetx, offsety);
     applyMatrix(m);
-    r = checkpoint.r+(Math.pi/2);
+    r = checkpoint.r;
   }
 }
 
 class CheckpointGameItem extends GameItemStatic{
   int index;
   double width;
-  CheckpointGameItem(GameLevelCheckPoint checkpoint, this.index) : super(Polygon.createSquare(checkpoint.x,checkpoint.y,checkpoint.width,20.0, checkpoint.angle))
+  CheckpointGameItem(GameLevelCheckPoint checkpoint, this.index) : super(Polygon.createSquare(checkpoint.x,checkpoint.y,20.0,checkpoint.width, checkpoint.angle))
   {
     width = checkpoint.width;
+    r = checkpoint.angle;
   }
 }

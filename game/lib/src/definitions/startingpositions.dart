@@ -20,9 +20,9 @@ class StartingPositions{
     return points.map((x) => new StartingPosition(x.applyMatrixToThis(M),sr+Math.pi)).toList();
   }
 
-  List<Vector> determineStartLocations(double radius, double vehicleW, double vehicleH, int totalCars){
+  List<Vector> determineStartLocations(double width, double vehicleW, double vehicleH, int totalCars){
     List<Vector> result = [];
-    var availableH = radius*2;
+    var availableH = width;
     var availableHH = availableH/2;
     var vehicleHH = vehicleH/2;
     var vehicleHW = vehicleW/2;

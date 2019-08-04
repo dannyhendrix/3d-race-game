@@ -37,6 +37,7 @@ class LevelEditor{
     el_right.append(_createMenuCreate());
     el_right.append(_createMenuProperties());
     el_right.append(_createMenuClickAdd());
+    el_right.append(_createMenuSaveLoad());
     el.append(el_right);
     el.append(_createLoadSaveLevelElement());
     return el;
@@ -186,6 +187,34 @@ class LevelEditor{
         _currentClickOption = option;
       });
     }
+    return el_menu;
+  }
+  Element _createMenuSaveLoad(){
+    Element el_menu = _createSection("Load/Save from file");
+    el_menu.className = "menu";
+
+    var set_in = new InputFormString("Set");
+    var level_in = new InputFormString("Level");
+    el_menu.append(set_in.createElement());
+    el_menu.append(level_in.createElement());
+    set_in.setValue("race");
+    level_in.setValue("level1");
+    el_menu.append(createButtonText("Load", (Event e){
+      var set = set_in.getValue();
+      var level = level_in.getValue();
+      var loader = new PreLoader(()=> loadFromJson(JsonController.getJson("level/$set/$level")));
+      loader.loadJson("levels/$set/$level.json","level/$set/$level");
+      loader.start();
+    }));
+    el_menu.append(createButtonText("Save", (Event e){
+      var json = levelSaver.levelToJson(gamelevel);
+      var data = jsonEncode(json);
+      HttpRequest.postFormData('http://localhost/0004-dart/MicroMachines/game/web/server/server.php', {"a":"save","set":set_in.getValue(),"level":level_in.getValue(),"data":data}
+      ).then((data) {
+        print("Saved ok");
+      });
+    }));
+
     return el_menu;
   }
 

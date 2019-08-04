@@ -115,10 +115,10 @@ class TrackToPolygons
     double distance = A.vector.distanceToThis(B.vector);
     Matrix2d M = (new Matrix2d.translationVector(A.vector)).rotate(A.vector.angleWithThis(B.vector));
     return new Polygon([
-      M.apply(new Vector(0.0, -A.width)),
-      M.apply(new Vector(distance, -B.width)),
-      M.apply(new Vector(distance, B.width)),
-      M.apply(new Vector(0.0, A.width)),
+      M.apply(new Vector(0.0, -A.width/2)),
+      M.apply(new Vector(distance, -B.width/2)),
+      M.apply(new Vector(distance, B.width/2)),
+      M.apply(new Vector(0.0, A.width/2)),
     ]);
   }
 

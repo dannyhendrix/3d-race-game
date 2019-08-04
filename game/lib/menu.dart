@@ -22,6 +22,7 @@ part "src/ui/menu/gamemenucontroller.dart";
 part "src/ui/menu/menuscreens/mainmenu.dart";
 part "src/ui/menu/menuscreens/creditsmenu.dart";
 part "src/ui/menu/menuscreens/gameresultmenu.dart";
+part "src/ui/menu/menuscreens/loadingmenu.dart";
 part "src/ui/menu/menuscreens/playgamemenu.dart";
 part "src/ui/menu/menuscreens/controlsmenu.dart";
 part "src/ui/menu/menuscreens/settingsmenu.dart";

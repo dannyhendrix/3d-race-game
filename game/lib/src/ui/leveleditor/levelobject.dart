@@ -218,15 +218,15 @@ class LevelObjectCheckpoint extends LevelObject{
     input_lengthAfter.setValue(gameObject.lengthAfter);
   }
   void updateElement(){
-    double fullRadius = gameObject.width*2;
-    element.style.top = "${(gameObject.y-gameObject.width)*scale}px";
-    element.style.left = "${(gameObject.x-gameObject.width)*scale}px";
+    double fullRadius = gameObject.width;
+    element.style.top = "${(gameObject.y-gameObject.width/2)*scale}px";
+    element.style.left = "${(gameObject.x-gameObject.width/2)*scale}px";
     element.style.width = "${fullRadius*scale}px";
     element.style.height = "${fullRadius*scale}px";
     element.style.borderRadius = "${fullRadius*scale}px";
 
-    el_marker.style.top = "${(gameObject.width-20.0)*scale}px";
-    el_marker.style.left = "${(gameObject.width-20.0)*scale}px";
+    el_marker.style.top = "${(gameObject.width/2-20.0)*scale}px";
+    el_marker.style.left = "${(gameObject.width/2-20.0)*scale}px";
     el_marker.style.width = "${40.0*scale}px";
     el_marker.style.height = "${40.0*scale}px";
   }

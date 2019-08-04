@@ -117,7 +117,14 @@ class GameLevelPath extends GameLevelElement{
   }
 }
 
-class GameLevelLoader{
+
+class JsonLoaderBase{
+  List<T> _parseList<T>(Map json, String name, T parse(Map map)) => json.containsKey(name) ? json[name].map<T>(parse).toList() : <T>[];
+  T _parseObject<T>(Map json, String name, T parse(Map map), [T defaultValue = null]) => json.containsKey(name) ? parse(json[name]) : defaultValue;
+  T _parse<T>(Map json, String name, T defaultValue) => json.containsKey(name) ? json[name] : defaultValue;
+}
+
+class GameLevelLoader extends JsonLoaderBase{
   GameLevel loadLevelJson(Map json){
     var upgrader = new GameLevelUpgrader();
     json = upgrader.upgrade(json);
@@ -125,10 +132,6 @@ class GameLevelLoader{
     level.validate();
     return level;
   }
-
-  List<T> _parseList<T>(Map json, String name, T parse(Map map)) => json.containsKey(name) ? json[name].map<T>(parse).toList() : <T>[];
-  T _parseObject<T>(Map json, String name, T parse(Map map), [T defaultValue = null]) => json.containsKey(name) ? parse(json[name]) : defaultValue;
-  T _parse<T>(Map json, String name, T defaultValue) => json.containsKey(name) ? json[name] : defaultValue;
 
   GameLevel _parseLevel(dynamic m) => new GameLevel(
       _parse(m, "w", 0),

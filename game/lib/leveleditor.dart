@@ -5,6 +5,7 @@ import "dart:convert";
 import "dart:math" as Math;
 
 import "package:gameutils/math.dart";
+import "package:preloader/preloader.dart";
 
 import "definitions.dart";
 

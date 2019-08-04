@@ -22,6 +22,10 @@ void main(){
   settings.levels_allowJsonInput.v = settings.debug.v;
   settings.client_showUIControls.v = isMobile();
   var menu = new GameMenuController(settings);
-  menu.init(true);
-  menu.showMenu(menu.MENU_MAIN);
+  menu.preLoad((){
+    menu.init(false);
+    menu.showMenu(menu.MENU_MAIN);
+    document.body.querySelector("#loading").remove();
+    document.body.append(menu.element);
+  });
 }

@@ -1,6 +1,6 @@
 part of game.menu;
 
-enum GameMenuItem {Main, SingleGame, Soccer, Game, GameResult}
+enum GameMenuItem {Main, SingleGame, Soccer, Game, GameResult, Loading}
 enum GameMainMenuItem {Controls, Settings, Credits, Profile}
 
 class GameMenuStatus extends MenuStatus{
@@ -20,6 +20,7 @@ class GameOutputMenuStatus extends GameMenuStatus{
 
 class GameMenuController extends Menu<GameMenuStatus>
 {
+  final MENU_LOADING = new GameMenuStatus("Loading", GameMenuItem.Loading,false);
   final MENU_MAIN = new GameMainMenuStatus("Main menu", GameMainMenuItem.Profile,false);
 
   final MENU_CONTROLS = new GameMainMenuStatus("Controls", GameMainMenuItem.Controls, true);
@@ -54,15 +55,17 @@ class GameMenuController extends Menu<GameMenuStatus>
       GameMenuItem.Soccer : new SoccerGameMenu(this),
       GameMenuItem.Game : new PlayGameMenu(this),
       GameMenuItem.GameResult : new GameResultMenu(this),
+      GameMenuItem.Loading : new LoadingMenu(this),
     };
+  }
+
+  void preLoad(Function onComplete){
+    levelManager.preLoadLevels(onComplete);
   }
 
   @override
   Element setupFields()
   {
-    //TODO: where to preload levels?
-    levelManager.preLoadLevels();
-
     Element el = new DivElement();
     el.id = "menu_bg";
     Element ell = new DivElement();
@@ -80,6 +83,7 @@ class GameMenuController extends Menu<GameMenuStatus>
     Element el_credits = new DivElement();
     el_credits.text = "Created by Danny Hendrix";
     el.append(el_credits);
+
     return el;
   }
 /*

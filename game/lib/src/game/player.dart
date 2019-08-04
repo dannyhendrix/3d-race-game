@@ -30,7 +30,7 @@ class AiPlayer extends Player{
     }else{
       if(_game.gamelevelType == GameLevelType.Checkpoint){
         var target = _game.level.trackPoint(trackProgress.currentIndex);
-        if(vehicle.position.distanceToThis(target.vector) < target.width)
+        if(vehicle.position.distanceToThis(target.vector) < target.width/2)
           trackProgress.next();
         controlToTarget(target.vector);
       }

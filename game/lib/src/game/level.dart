@@ -17,7 +17,7 @@ class GameLevelController{
 
     if(vectors.length == 0) return;
 
-    for(int i = 0; i < path.checkpoints.length-1; i++){
+    for(int i = 0; i < path.checkpoints.length; i++){
       checkpoints.add(new CheckpointGameItem( path.checkpoints[i],i));
     }
   }
