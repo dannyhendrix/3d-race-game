@@ -13,14 +13,17 @@ class Preview{
     return canvas;
   }
 
-  void _setWidthHeight(GameLevelPath path){
+  void _setWidthHeight(List<Polygon> polygons){
     double maxX = 0.0;
     double maxZ = 0.0;
-    for(var c in path.checkpoints){
-      var mx = c.x + c.width/2;
-      var mz = c.y + c.width/2;
+    for(var c in polygons){
+    for(var p in c.points)
+    {
+    var mx = p.x;
+      var mz = p.y;
       if(mx > maxX) maxX = mx;
       if(mz > maxZ) maxZ = mz;
+    }
     }
     canvas.width = (maxX*scale).ceil() + 100;
     canvas.height = (maxZ*scale).ceil() + 100;
@@ -28,12 +31,11 @@ class Preview{
 
   void paintLevel(GameLevel level){
     scale = 0.5;
-    _setWidthHeight(level.path);
 
     //draw road
     _drawRoad(level.path, scale);
     //draw path
-    _drawPath(level.path, scale);
+    _drawCheckPoints(level.path.checkpoints, scale);
 /*
     //draw walls
     ctx.fillStyle = "#222";
@@ -48,49 +50,59 @@ class Preview{
     }
 */
   }
-  void _drawStartingPositions(){
-  }
   void _drawRoad(GameLevelPath path, double scale){
-    PathToPolygons pathToPolygons = new PathToPolygons();
-    var roadPolygons = pathToPolygons.createRoadPolygons(path);
+    PathToTrack pathToTrack = new PathToTrack();
+    TrackToPolygons trackToPolygons = new TrackToPolygons();
+    var track = pathToTrack.createTrack(path);
+    var roadPolygons = trackToPolygons.createRoadPolygons(track, path.circular);
 
+
+    _setWidthHeight(roadPolygons);
     ctx.fillStyle = "#999";
     ctx.strokeStyle = "#999";
     for(Polygon p in roadPolygons){
       _drawRoadPolygon(p, scale);
     }
+
+    _drawPath(track, path.circular, scale);
   }
-  void _drawPath(GameLevelPath path, double scale){
-    var angles = new GameLevelExtensions().getCheckpointAngles(path);
-    if(path.checkpoints.length > 0)
+  void _drawPath(List<PathPoint> path, bool circular, double scale){
+    //var angles = new GameLevelExtensions().getCheckpointAngles(path);
+    if(path.length > 0)
     {
       // 1 line path
-      var startPoint = path.checkpoints[0];
+      var startPoint = path[0];
       ctx.beginPath();
-      ctx.moveTo(startPoint.x*scale, startPoint.y*scale);
-      for (int i = 1; i < path.checkpoints.length; i++)
+      ctx.moveTo(startPoint.vector.x*scale, startPoint.vector.y*scale);
+      for (int i = 1; i < path.length; i++)
       {
-        var p = path.checkpoints[i];
-        ctx.lineTo(p.x*scale, p.y*scale);
+        var p = path[i];
+        ctx.lineTo(p.vector.x*scale, p.vector.y*scale);
       }
-      if (path.circular)
+      if (circular)
       {
-        ctx.lineTo(startPoint.x*scale, startPoint.y*scale);
+        ctx.lineTo(startPoint.vector.x*scale, startPoint.vector.y*scale);
       }
       ctx.strokeStyle = '#555';
       ctx.stroke();
+    }
+  }
 
+  void _drawCheckPoints(List<GameLevelCheckPoint> path, double scale){
+    //var angles = new GameLevelExtensions().getCheckpointAngles(path);
+    if(path.length > 0)
+    {
       // 2 circles and angleline
-      for (int i = 0; i < path.checkpoints.length; i++)
+      for (int i = 0; i < path.length; i++)
       {
-        var p = path.checkpoints[i];
+        var p = path[i];
         ctx.beginPath();
         ctx.arc(p.x*scale, p.y*scale, p.width*scale, 0, 2 * Math.pi, false);
         ctx.stroke();
 
         ctx.save();
         ctx.translate(p.x*scale, p.y*scale);
-        ctx.rotate(angles[i]);
+        ctx.rotate(p.angle);
         ctx.beginPath();
         ctx.moveTo(-p.width*scale,0);
         ctx.lineTo(p.width*scale,0);
@@ -99,14 +111,16 @@ class Preview{
 
         ctx.restore();
       }
+
+      // 3 starting positions
       var vehicleW = GameConstants.carSize.x;
       var vehicleH = GameConstants.carSize.y;
       var startingPositions = new StartingPositions();
       var positions = startingPositions.determineStartPositions(
-          path.checkpoints[0].x,
-          path.checkpoints[0].y,
-          angles[0],
-          path.checkpoints[0].width,
+          path[0].x,
+          path[0].y,
+          path[0].angle,
+          path[0].width,
           vehicleW, vehicleH, 8);
       var startingPositionsPreview = new StartingPositionsPreview();
       startingPositionsPreview.paintPositions(ctx, positions, vehicleW, vehicleH, scale);

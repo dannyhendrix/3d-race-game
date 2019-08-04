@@ -9,7 +9,13 @@ class HumanPlayer extends Player{
   }
 }
 class AiPlayer extends Player{
+  TrackProgress trackProgress;
   AiPlayer(GameSettingsPlayer player,VehicleTheme theme):super(player,theme){
+  }
+  void init(Game game, Vehicle v, GameLevelPath path)
+  {
+    super.init(game, v, path);
+    trackProgress = new TrackProgress(game.level.trackLength());
   }
   void update(){
     if(pathProgress.finished){
@@ -22,8 +28,12 @@ class AiPlayer extends Player{
     if(vehicle.sensorCollision){
       controlAvoidance();
     }else{
-      if(_game.gamelevelType == GameLevelType.Checkpoint)
-      controlToTarget(_game.level.checkPointLocation((pathProgress as PathProgressCheckpoint).currentIndex));
+      if(_game.gamelevelType == GameLevelType.Checkpoint){
+        var target = _game.level.trackPoint(trackProgress.currentIndex);
+        if(vehicle.position.distanceToThis(target.vector) < target.width)
+          trackProgress.next();
+        controlToTarget(target.vector);
+      }
     }
   }
 }

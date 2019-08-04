@@ -50,7 +50,8 @@ class GameLevelUpgrader{
     if(data.containsKey("path")){
       if(data["path"].containsKey("checkpoints"))
         for(var x in data["path"]["checkpoints"]) {
-          x["length"] = x["radius"];
+          x["lengthBefore"] = x["radius"];
+          x["lengthAfter"] = x["radius"];
           _rename(x, "radius", "width");
         }
     }

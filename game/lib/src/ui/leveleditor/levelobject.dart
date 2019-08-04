@@ -176,25 +176,30 @@ class LevelObjectCheckpoint extends LevelObject{
   InputFormDouble input_y = new InputFormDouble("y");
   InputFormDouble input_width = new InputFormDouble("width");
   InputFormBool input_autoAngle = new InputFormBool("autoAngle");
-  InputFormDouble input_angle = new InputFormDouble("angle");
-  InputFormDouble input_length = new InputFormDouble("length");
+  InputFormDoubleSlider input_angle = new InputFormDoubleSlider("angle",0.0,Math.pi*2,32);
+  InputFormDouble input_lengthBefore = new InputFormDouble("lengthBefore");
+  InputFormDouble input_lengthAfter = new InputFormDouble("lengthAfter");
   LevelObjectCheckpoint(this.gameObject){
     className = "checkpoint";
-    properties = [input_x, input_y, input_width, input_autoAngle, input_angle, input_length];
+    properties = [input_x, input_y, input_width, input_autoAngle, input_angle, input_lengthBefore, input_lengthAfter];
     input_x.onValueChange = (double value) { gameObject.x = value; onPropertyInputChange(); };
     input_y.onValueChange = (double value) { gameObject.y = value; onPropertyInputChange(); };
     input_width.onValueChange = (double value) { gameObject.width = value; onPropertyInputChange(); };
-    input_autoAngle.onValueChange = (bool value) { gameObject.autoAngle = value; onPropertyInputChange(); };
+    input_autoAngle.onValueChange = (bool value) {
+
+    };
     input_angle.onValueChange = (double value) { gameObject.angle = value; onPropertyInputChange(); };
-    input_length.onValueChange = (double value) { gameObject.length = value; onPropertyInputChange(); };
+    input_lengthBefore.onValueChange = (double value) { gameObject.lengthBefore = value; onPropertyInputChange(); };
+    input_lengthAfter.onValueChange = (double value) { gameObject.lengthAfter = value; onPropertyInputChange(); };
   }
   void updateProperties(){
     input_x.setValue(gameObject.x);
     input_y.setValue(gameObject.y);
     input_width.setValue(gameObject.width);
-    input_autoAngle.setValue(gameObject.autoAngle);
+    input_autoAngle.setValue(false);
     input_angle.setValue(gameObject.angle);
-    input_length.setValue(gameObject.length);
+    input_lengthBefore.setValue(gameObject.lengthBefore);
+    input_lengthAfter.setValue(gameObject.lengthAfter);
   }
   void updateElement(){
     double fullRadius = gameObject.width*2;

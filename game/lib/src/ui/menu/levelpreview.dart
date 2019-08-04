@@ -43,8 +43,10 @@ class LevelPreview
     double offsetX = centerOffsetX - minX*scale;
     double offsetY = centerOffsetY - minZ*scale;
 
-    PathToPolygons pathToPolygons = new PathToPolygons();
-    List<Polygon> roadPolygons = pathToPolygons.createRoadPolygons(level.path);
+    var pathToTrack = new PathToTrack();
+    var trackToPolygons = new TrackToPolygons();
+    var track = pathToTrack.createTrack(level.path);
+    var roadPolygons = trackToPolygons.createRoadPolygons(track, level.path.circular);
 
     layer.ctx.strokeStyle = style;
     layer.ctx.fillStyle = style;

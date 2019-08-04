@@ -44,7 +44,7 @@ class StartingPositions{
   }
 
   List<StartingPosition> transformAndRotatePositions(double sx, double sy, double sr, List<Vector> points){
-    sr +=  Math.pi/2;
+    sr -=  Math.pi/2;
     Matrix2d M = new Matrix2d().translateThis(sx, sy).rotateThis(sr);
     return points.map((x) => new StartingPosition(x.applyMatrixToThis(M),sr+Math.pi)).toList();
   }

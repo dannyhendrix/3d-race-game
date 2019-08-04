@@ -152,7 +152,6 @@ class Game{
 
   void _setStartingPositions(List<Player> players, GameLevelPath path){
     StartingPositions startingPositionsCreater = new StartingPositions();
-    var angles = new GameLevelExtensions().getCheckpointAngles(path);
     double vehicleLength = 0.0;
     double vehicleH = 0.0;
 
@@ -166,7 +165,7 @@ class Game{
     List<StartingPosition> startingPositions = startingPositionsCreater.determineStartPositions(
         path.checkpoints[0].x,
         path.checkpoints[0].y,
-        angles[0],
+        path.checkpoints[0].angle,
         path.checkpoints[0].width,
         vehicleLength,
         vehicleH,

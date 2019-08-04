@@ -48,3 +48,16 @@ class PathProgressCheckpoint extends PathProgress{
     }
   }
 }
+
+class TrackProgress{
+  int _index = 0;
+  int _totalCheckpoints = 0;
+  TrackProgress(this._totalCheckpoints);
+  int get currentIndex => _index;
+  void next(){
+    _index++;
+    if(_index >= _totalCheckpoints){
+      _index = 0;
+    }
+  }
+}

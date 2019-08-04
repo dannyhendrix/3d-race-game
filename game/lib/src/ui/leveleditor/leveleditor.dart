@@ -125,13 +125,13 @@ class LevelEditor{
     {
       LevelObjectCheckpoint sourceLevelObject = _currentLevelObject;
       GameLevelCheckPoint source = sourceLevelObject.gameObject;
-      gameObject = new GameLevelCheckPoint(x, y, source.width, source.angle, source.autoAngle, source.length);
+      gameObject = new GameLevelCheckPoint(x, y, source.width, source.angle, source.lengthBefore, source.lengthAfter);
       int index = gamelevel.path.checkpoints.indexOf(source);
       gamelevel.path.checkpoints.insert(index+1, gameObject);
     }
     else
     {
-      gameObject = new GameLevelCheckPoint(x, y, 100.0, 0.0, true, 100.0);
+      gameObject = new GameLevelCheckPoint(x, y, 100.0, 0.0, 100.0, 100.0);
       gamelevel.path.checkpoints.add(gameObject);
     }
     _addCheckpointToLevelObjects(gameObject);
@@ -216,6 +216,10 @@ class LevelEditor{
   }
   void loadFromTestArea(){
     Map json = jsonDecode(el_txt.value);
+    loadFromJson(json);
+  }
+
+  void loadFromJson(Map json){
     gamelevel = levelLoader.loadLevelJson(json);
     wrappers.forEach((w) => w.clearAll());
     for(GameLevelWall gameObject in gamelevel.walls){

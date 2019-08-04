@@ -3,10 +3,13 @@ part of micromachines;
 class GameLevelController{
   List<Polygon> roadPolygons;
   List<CheckpointGameItem> checkpoints;
+  List<PathPoint> _path;
 
   GameLevelController(GameLevelPath path){
-    var pathToPolygons = new PathToPolygons();
-    roadPolygons = pathToPolygons.createRoadPolygons(path);
+    var pathToTrack = new PathToTrack();
+    var trackToPolygons = new TrackToPolygons();
+    _path = pathToTrack.createTrack(path);
+    roadPolygons = trackToPolygons.createRoadPolygons(_path, path.circular);
     checkpoints = [];
 
     var vectors = new List<Vector>();
@@ -71,7 +74,8 @@ class GameLevelController{
     return s > 0 && t > 0 && 1-s-t > 0;
   }
 
-  Vector checkPointLocation(int index){
-    return checkpoints[index].position;
+  PathPoint trackPoint(int index){
+    return _path[index];
   }
+  int trackLength() => _path.length;
 }
