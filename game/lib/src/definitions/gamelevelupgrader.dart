@@ -3,8 +3,9 @@ part of game.definitions;
 typedef Map upgrader(Map data);
 
 class GameLevelUpgrader{
-  int mainVersion = 1;
-  int subVersion = 1;
+  static int mainVersion = 1;
+  static int subVersion = 1;
+  static String currentVersion = "${mainVersion}.${subVersion}";
 
   List<List<upgrader>> _upgraders;
 

@@ -8,13 +8,13 @@ class CheckpointGatePost extends GameItemStatic{
     var offsety = 0.0;
     var m = new Matrix2d()
         .translateThisVector(checkpoint.position)
-        .rotateThis(checkpoint.r)
+        .rotateThis(checkpoint.r+(Math.pi/2))
         .translateThis(offsetx, offsety)
         //.translateThis(-offsetx, -offsety)
     ;
         //.translateThisVector(checkpoint.position);
     applyMatrix(m);
-    r = checkpoint.r;
+    r = checkpoint.r+(Math.pi/2);
   }
 }
 

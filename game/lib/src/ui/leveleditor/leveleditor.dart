@@ -113,7 +113,7 @@ class LevelEditor{
     _addWallToLevelObjects(gameObject);
   }
   void _addWallToLevelObjects(GameLevelWall gameObject){
-    LevelObjectWall levelObj = new LevelObjectWall(gameObject);
+    LevelObjectWall levelObj = new LevelObjectWall(this,gameObject);
     levelObj.onSelect = _onSelect;
     levelObj.onPropertyChanged = _onProperyChange;
     walls.addLevelObject(levelObj);
@@ -137,7 +137,7 @@ class LevelEditor{
     _addCheckpointToLevelObjects(gameObject);
   }
   void _addCheckpointToLevelObjects(GameLevelCheckPoint gameObject){
-    LevelObjectCheckpoint levelObj = new LevelObjectCheckpoint(gameObject);
+    LevelObjectCheckpoint levelObj = new LevelObjectCheckpoint(this,gameObject);
     levelObj.onSelect = _onSelect;
     levelObj.onPropertyChanged = (o){_onProperyChange(o); preview.paintLevel(gamelevel);};
     checkPoints.addLevelObject(levelObj);
@@ -158,7 +158,7 @@ class LevelEditor{
     _addStaticObjectToLevelObjects(gameObject);
   }
   void _addStaticObjectToLevelObjects(GameLevelStaticObject gameObject){
-    LevelObjectStaticObject levelObj = new LevelObjectStaticObject(gameObject);
+    LevelObjectStaticObject levelObj = new LevelObjectStaticObject(this,gameObject);
     levelObj.onSelect = _onSelect;
     levelObj.onPropertyChanged = _onProperyChange;
     staticObjects.addLevelObject(levelObj);

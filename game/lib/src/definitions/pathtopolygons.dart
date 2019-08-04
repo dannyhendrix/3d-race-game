@@ -24,7 +24,7 @@ class PathToTrack{
   List<PathPoint> _createRoadsFromCheckpoints(List<GameLevelCheckPoint> checkpoints){
     List<PathPoint> data = [];
     for(var checkpoint in checkpoints){
-      var angle = checkpoint.angle + Math.pi/2;
+      var angle = checkpoint.angle;
       var actual = new Vector(checkpoint.x, checkpoint.y);
       var newPointBefore = actual.clone().addVectorToThis(new Vector.fromAngleRadians(angle+Math.pi, checkpoint.lengthBefore));
       var newPointAfter = actual.clone().addVectorToThis(new Vector.fromAngleRadians(angle, checkpoint.lengthAfter));
