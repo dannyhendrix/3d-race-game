@@ -175,35 +175,15 @@ class LevelObjectCheckpoint extends LevelObject{
   InputFormDouble input_x = new InputFormDouble("x");
   InputFormDouble input_y = new InputFormDouble("y");
   InputFormDouble input_width = new InputFormDouble("width");
-  InputFormBool input_autoAngle = new InputFormBool("autoAngle");
   InputFormDoubleSlider input_angle = new InputFormDoubleSlider("angle",0.0,Math.pi*2,32);
   InputFormDouble input_lengthBefore = new InputFormDouble("lengthBefore");
   InputFormDouble input_lengthAfter = new InputFormDouble("lengthAfter");
   LevelObjectCheckpoint(LevelEditor editor, this.gameObject) : super(editor){
     className = "checkpoint";
-    properties = [input_x, input_y, input_width, input_autoAngle, input_angle, input_lengthBefore, input_lengthAfter];
+    properties = [input_x, input_y, input_width, input_angle, input_lengthBefore, input_lengthAfter];
     input_x.onValueChange = (double value) { gameObject.x = value; onPropertyInputChange(); };
     input_y.onValueChange = (double value) { gameObject.y = value; onPropertyInputChange(); };
     input_width.onValueChange = (double value) { gameObject.width = value; onPropertyInputChange(); };
-    input_autoAngle.onValueChange = (bool value) {
-      var checkpoints = editor.gamelevel.path.checkpoints;
-      var index = checkpoints.indexOf(gameObject);
-      GameLevelCheckPoint before, after;
-      if(index == 0){
-        before = checkpoints.last;
-        after = checkpoints[index+1];
-      }else if(index == checkpoints.length-1){
-        before = checkpoints[index-1];
-        after = checkpoints[0];
-      }else{
-        before = checkpoints[index-1];
-        after = checkpoints[index+1];
-      }
-      var vbefore = new Vector(before.x, before.y);
-      var vafter = new Vector(after.x, after.y);
-      gameObject.angle = vbefore.angleWithThis(vafter);
-      onPropertyInputChange();
-    };
     input_angle.onValueChange = (double value) { gameObject.angle = value; onPropertyInputChange(); };
     input_lengthBefore.onValueChange = (double value) { gameObject.lengthBefore = value; onPropertyInputChange(); };
     input_lengthAfter.onValueChange = (double value) { gameObject.lengthAfter = value; onPropertyInputChange(); };
@@ -212,7 +192,6 @@ class LevelObjectCheckpoint extends LevelObject{
     input_x.setValue(gameObject.x);
     input_y.setValue(gameObject.y);
     input_width.setValue(gameObject.width);
-    input_autoAngle.setValue(false);
     input_angle.setValue(gameObject.angle);
     input_lengthBefore.setValue(gameObject.lengthBefore);
     input_lengthAfter.setValue(gameObject.lengthAfter);
@@ -241,6 +220,32 @@ class LevelObjectCheckpoint extends LevelObject{
     Element el = super.createElement();
     el.append(el_marker);
     return el;
+  }
+  Element createPropertiesElement(){
+    var el = super.createPropertiesElement();
+    el.append(new UITextButton("AutoAngle",(e){
+      _autoAngle();
+    }).createElement());
+    return el;
+  }
+  void _autoAngle(){
+    var checkpoints = editor.gamelevel.path.checkpoints;
+    var index = checkpoints.indexOf(gameObject);
+    GameLevelCheckPoint before, after;
+    if(index == 0){
+      before = checkpoints.last;
+      after = checkpoints[index+1];
+    }else if(index == checkpoints.length-1){
+      before = checkpoints[index-1];
+      after = checkpoints[0];
+    }else{
+      before = checkpoints[index-1];
+      after = checkpoints[index+1];
+    }
+    var vbefore = new Vector(before.x, before.y);
+    var vafter = new Vector(after.x, after.y);
+    gameObject.angle = vbefore.angleWithThis(vafter);
+    onPropertyInputChange();
   }
 }
 class LevelObject{

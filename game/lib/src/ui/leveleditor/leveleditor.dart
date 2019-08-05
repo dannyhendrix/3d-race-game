@@ -39,7 +39,6 @@ class LevelEditor{
     el_right.append(_createMenuClickAdd());
     el_right.append(_createMenuSaveLoad());
     el.append(el_right);
-    el.append(_createLoadSaveLevelElement());
     return el;
   }
   void _onLevelMouseDown(MouseEvent e){
@@ -62,23 +61,25 @@ class LevelEditor{
     //wrapper.addNew(menu.onSelect,menu.onMove, e.offset.x/_scale, e.offset.y/_scale);
   }
   Element _createMenuProperties(){
-    Element el = _createSection("Properties");
+    var uimenu = new UIMenu("Properties");
+    var el = uimenu.createElement();
     el.className = "properties";
-    el.append(menu.createElement());
+    uimenu.append(menu.createElement());
     menu.onLevelObjectDelete = _deleteLevelObject;
     return el;
   }
   Element _createMenuCreate(){
-    Element el_menu = _createSection("Add objects");
+    var menu = new UIMenu("Add objects");
+    var el_menu = menu.createElement();
     el_menu.className = "menu";
 
-    el_menu.append(createButtonText("New checkpoint", (Event e){
+    menu.append(createButtonText("New checkpoint", (Event e){
       _addNewCheckpoint(10.0,10.0);
     }));
-    el_menu.append(createButtonText("New wall", (Event e){
+    menu.append(createButtonText("New wall", (Event e){
       _addNewWall(10.0,10.0);
     }));
-    el_menu.append(createButtonText("New tree", (Event e){
+    menu.append(createButtonText("New tree", (Event e){
       _addNewStaticObject(10.0,10.0);
     }));
 
@@ -174,15 +175,17 @@ class LevelEditor{
     loadToTextArea();
   }
   Element _createMenuClickAdd(){
-    Element el_menu = _createSection("Click to add");
-    el_menu.className = "menu";
+    var menu = new UIMenu("Add new");
+    var el_menu = menu.createElement();
     for(ClickToAddOptions option in ClickToAddOptions.values){
       RadioButtonInputElement el = new RadioButtonInputElement();
       el.name = "clickToAdd";
       el.checked = option == ClickToAddOptions.None;
-      el_menu.append(el);
-      el_menu.appendText(option.toString().split(".").last);
-      el_menu.append(new BRElement());
+      menu.append(el);
+      var el_txt = new SpanElement();
+      el_txt.text = option.toString().split(".").last;
+      menu.append(el_txt);
+      menu.append(new BRElement());
       el.onChange.listen((Event e){
         _currentClickOption = option;
       });
@@ -190,23 +193,33 @@ class LevelEditor{
     return el_menu;
   }
   Element _createMenuSaveLoad(){
-    Element el_menu = _createSection("Load/Save from file");
-    el_menu.className = "menu";
+    var menu = new UIMenu("Load/Save from file");
+    var el_menu = menu.createElement();
 
+    // text area
+    el_txt = new TextAreaElement();
+    menu.append(el_txt);
+    el_txt.className = "json";
+    el_txt.onChange.listen((Event e){
+      loadFromTestArea();
+    });
+    loadToTextArea();
+
+    // save/load
     var set_in = new InputFormString("Set");
     var level_in = new InputFormString("Level");
-    el_menu.append(set_in.createElement());
-    el_menu.append(level_in.createElement());
+    menu.append(set_in.createElement());
+    menu.append(level_in.createElement());
     set_in.setValue("race");
     level_in.setValue("level1");
-    el_menu.append(createButtonText("Load", (Event e){
+    menu.append(createButtonText("Load", (Event e){
       var set = set_in.getValue();
       var level = level_in.getValue();
       var loader = new PreLoader(()=> loadFromJson(JsonController.getJson("level/$set/$level")));
       loader.loadJson("levels/$set/$level.json","level/$set/$level");
       loader.start();
     }));
-    el_menu.append(createButtonText("Save", (Event e){
+    menu.append(createButtonText("Save", (Event e){
       var json = levelSaver.levelToJson(gamelevel);
       var data = jsonEncode(json);
       HttpRequest.postFormData('http://localhost/0004-dart/MicroMachines/game/web/server/server.php', {"a":"save","set":set_in.getValue(),"level":level_in.getValue(),"data":data}
@@ -216,27 +229,6 @@ class LevelEditor{
     }));
 
     return el_menu;
-  }
-
-  Element _createLoadSaveLevelElement(){
-    Element el_wrap = _createSection("load/save");
-
-    el_txt = new TextAreaElement();
-    el_wrap.append(el_txt);
-    el_txt.className = "json";
-    el_txt.onChange.listen((Event e){
-      loadFromTestArea();
-    });
-    loadToTextArea();
-    return el_wrap;
-  }
-
-  Element _createSection(String title){
-    Element el_wrap = new FieldSetElement();
-    Element el_legend = new LegendElement();
-    el_legend.text = title;
-    el_wrap.append(el_legend);
-    return el_wrap;
   }
 
   void loadToTextArea(){
@@ -288,5 +280,102 @@ class LevelEditor{
     btn.onTouchStart.listen((TouchEvent e){ e.preventDefault(); onClick(e); });
     btn.text = text;
     return btn;
+  }
+}
+
+class UIMenu{
+  String title;
+  Element el_content;
+
+  UIMenu(this.title){}
+  Element createElement(){
+    Element el_wrap = new FieldSetElement();
+    Element el_legend = new LegendElement();
+    el_content = new DivElement();
+    el_wrap.append(el_legend);
+    el_wrap.append(el_content);
+    el_legend.append(UIToggleIconButton("expand_less","expand_more",(toggled){
+      el_content.style.display = toggled ? "none" : "block";
+    }).createElement());
+    el_legend.appendText(title);
+    el_wrap.className = "menu";
+    return el_wrap;
+  }
+  void append(Node el){
+    el_content.append(el);
+  }
+}
+
+abstract class UIButton{
+  Element _createButton()
+  {
+    DivElement btn = new DivElement();
+    btn.className = "button";
+    btn.onClick.listen((MouseEvent e){ _onButtonClick(e); });
+    btn.onTouchStart.listen((TouchEvent e){ _onButtonClick(e); });
+    return btn;
+  }
+  Element _createIcon()
+  {
+    Element iel = new Element.tag("i");
+    iel.className = "material-icons";
+    return iel;
+  }
+  void _onButtonClick(Event e);
+}
+
+typedef void ToggleOnClick(bool isToggled);
+class UIToggleIconButton extends UIButton{
+  bool toggled = false;
+  String _icon_default;
+  String _icon_toggled;
+  Element _el_icon;
+  ToggleOnClick _onClick;
+  UIToggleIconButton(this._icon_default, this._icon_toggled, this._onClick);
+  void _toggle(){
+    toggled = !toggled;
+    _el_icon.text = toggled ? _icon_toggled : _icon_default;
+  }
+  Element createElement(){
+    _el_icon = _createIcon();
+    _el_icon.text = _icon_default;
+    var btn = _createButton();
+    btn.append(_el_icon);
+    return btn;
+  }
+  void _onButtonClick(Event e){
+    e.preventDefault(); _toggle(); _onClick(toggled);
+  }
+}
+class UIIconButton extends UIButton{
+  String _icon_default;
+  Function _onClick;
+  UIIconButton(this._icon_default, this._onClick);
+
+  Element createElement(){
+    var el_icon = _createIcon();
+    el_icon.text = _icon_default;
+    var btn = _createButton();
+    btn.append(el_icon);
+    return btn;
+  }
+  void _onButtonClick(Event e){
+    e.preventDefault();
+    _onClick(e);
+  }
+}
+class UITextButton extends UIButton{
+  String _text;
+  Function _onClick;
+  UITextButton(this._text, this._onClick);
+
+  Element createElement(){
+    var btn = _createButton();
+    btn.text = _text;
+    return btn;
+  }
+  void _onButtonClick(Event e){
+    e.preventDefault();
+    _onClick(e);
   }
 }
