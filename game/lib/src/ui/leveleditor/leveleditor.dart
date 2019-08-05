@@ -212,21 +212,21 @@ class LevelEditor{
     menu.append(level_in.createElement());
     set_in.setValue("race");
     level_in.setValue("level1");
-    menu.append(createButtonText("Load", (Event e){
+    menu.append(new UIIconButton("cloud_download", (Event e){
       var set = set_in.getValue();
       var level = level_in.getValue();
       var loader = new PreLoader(()=> loadFromJson(JsonController.getJson("level/$set/$level")));
       loader.loadJson("levels/$set/$level.json","level/$set/$level");
       loader.start();
-    }));
-    menu.append(createButtonText("Save", (Event e){
+    }).createElement());
+    menu.append(new UIIconButton("cloud_upload", (Event e){
       var json = levelSaver.levelToJson(gamelevel);
       var data = jsonEncode(json);
       HttpRequest.postFormData('http://localhost/0004-dart/MicroMachines/game/web/server/server.php', {"a":"save","set":set_in.getValue(),"level":level_in.getValue(),"data":data}
       ).then((data) {
         print("Saved ok");
       });
-    }));
+    }).createElement());
 
     return el_menu;
   }
@@ -356,6 +356,7 @@ class UIIconButton extends UIButton{
     var el_icon = _createIcon();
     el_icon.text = _icon_default;
     var btn = _createButton();
+    btn.classes.add("buttonIcon");
     btn.append(el_icon);
     return btn;
   }

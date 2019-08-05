@@ -31,7 +31,7 @@ class LevelObjectMenu{
   Element createElement(){
     Element el = new DivElement();
     el_menu = new DivElement();
-    el_buttonDelete = createButtonText("Delete",(Event e){
+    el_buttonDelete = new UIIconButton("delete",(Event e){
       if(_currentLevelObject == null) return;
       if(onLevelObjectDelete != null){
         onLevelObjectDelete(_currentLevelObject);
@@ -39,7 +39,7 @@ class LevelObjectMenu{
       _currentLevelObject = null;
       el_menu.nodes.clear();
       showDelete(false);
-    });
+    }).createElement();
     element = el;
     el.append(el_menu);
     el.append(el_buttonDelete);
