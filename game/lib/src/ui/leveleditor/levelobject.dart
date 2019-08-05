@@ -41,6 +41,25 @@ class LevelObjectWall extends LevelObject{
     gameObject.y += yOffset;
     onPropertyInputChange();
   }
+  Element createControlsElement(){
+    var el = super.createControlsElement();
+    var table = new UITable(6,4);
+    el.append(table.createElement());
+
+    var step = 10.0;
+    var stepAngle = Math.pi/16;
+    table.append(1,0,new UIIconButton("arrow_drop_up",(e){gameObject.y -= step; onPropertyInputChange();}).createElement());
+    table.append(1,2,new UIIconButton("arrow_drop_down",(e){gameObject.y += step; onPropertyInputChange();}).createElement());
+    table.append(0,1,new UIIconButton("arrow_left",(e){gameObject.x -= step; onPropertyInputChange();}).createElement());
+    table.append(2,1,new UIIconButton("arrow_right",(e){gameObject.x += step; onPropertyInputChange();}).createElement());
+    table.append(4,0,new UIIconButton("keyboard_arrow_up",(e){gameObject.h -= step; onPropertyInputChange();}).createElement());
+    table.append(4,2,new UIIconButton("keyboard_arrow_down",(e){gameObject.h += step; onPropertyInputChange();}).createElement());
+    table.append(3,1,new UIIconButton("keyboard_arrow_left",(e){gameObject.w -= step; onPropertyInputChange();}).createElement());
+    table.append(5,1,new UIIconButton("keyboard_arrow_right",(e){gameObject.w += step; onPropertyInputChange();}).createElement());
+    table.append(0,3,new UIIconButton("rotate_left",(e){gameObject.r -= stepAngle; onPropertyInputChange();}).createElement());
+    table.append(1,3,new UIIconButton("rotate_right",(e){gameObject.r += stepAngle; onPropertyInputChange();}).createElement());
+    return el;
+  }
 }
 class LevelObjectStaticObject extends LevelObject{
   GameLevelStaticObject gameObject;
@@ -77,6 +96,21 @@ class LevelObjectStaticObject extends LevelObject{
     gameObject.x += xOffset;
     gameObject.y += yOffset;
     onPropertyInputChange();
+  }
+  Element createControlsElement(){
+    var el = super.createControlsElement();
+    var table = new UITable(3,4);
+    el.append(table.createElement());
+
+    var step = 10.0;
+    var stepAngle = Math.pi/16;
+    table.append(1,0,new UIIconButton("arrow_drop_up",(e){gameObject.y -= step; onPropertyInputChange();}).createElement());
+    table.append(1,2,new UIIconButton("arrow_drop_down",(e){gameObject.y += step; onPropertyInputChange();}).createElement());
+    table.append(0,1,new UIIconButton("arrow_left",(e){gameObject.x -= step; onPropertyInputChange();}).createElement());
+    table.append(2,1,new UIIconButton("arrow_right",(e){gameObject.x += step; onPropertyInputChange();}).createElement());
+    table.append(0,3,new UIIconButton("rotate_left",(e){gameObject.r -= stepAngle; onPropertyInputChange();}).createElement());
+    table.append(1,3,new UIIconButton("rotate_right",(e){gameObject.r += stepAngle; onPropertyInputChange();}).createElement());
+    return el;
   }
 }
 class LevelObjectCheckpoint extends LevelObject{
@@ -130,28 +164,30 @@ class LevelObjectCheckpoint extends LevelObject{
     el.append(el_marker);
     return el;
   }
-  Element createPropertiesElement(){
-    var el = super.createPropertiesElement();
-    var table = new UITable(3,6);
+  Element createControlsElement(){
+    var el = super.createControlsElement();
+    var table = new UITable(6,4);
     el.append(table.createElement());
 
     var step = 10.0;
     var stepAngle = Math.pi/16;
-    table.append(0,1,new UIIconButton("arrow_drop_up",(e){gameObject.y -= step; onPropertyInputChange();}).createElement());
-    table.append(2,1,new UIIconButton("arrow_drop_down",(e){gameObject.y += step; onPropertyInputChange();}).createElement());
-    table.append(1,0,new UIIconButton("arrow_left",(e){gameObject.x -= step; onPropertyInputChange();}).createElement());
-    table.append(1,2,new UIIconButton("arrow_right",(e){gameObject.x += step; onPropertyInputChange();}).createElement());
-    table.append(0,3,new UIIconButton("expand_less",(e){gameObject.lengthBefore -= step; gameObject.lengthAfter -= step; onPropertyInputChange();}).createElement());
-    table.append(1,3,new UIIconButton("expand_more",(e){gameObject.lengthBefore += step; gameObject.lengthAfter += step; onPropertyInputChange();}).createElement());
-    table.append(0,4,new UIIconButton("unfold_less",(e){gameObject.width -= step; onPropertyInputChange();}).createElement());
-    table.append(1,4,new UIIconButton("unfold_more",(e){gameObject.width += step; onPropertyInputChange();}).createElement());
-    table.append(2,3,new UIIconButton("rotate_left",(e){gameObject.angle -= stepAngle; onPropertyInputChange();}).createElement());
-    table.append(2,4,new UIIconButton("rotate_right",(e){gameObject.angle += stepAngle; onPropertyInputChange();}).createElement());
-    table.append(2,5,new UIIconButton("rotate_90_degrees_ccw",(e){ _autoAngle();}).createElement());
+    table.append(1,0,new UIIconButton("arrow_drop_up",(e){gameObject.y -= step; onPropertyInputChange();}).createElement());
+    table.append(1,2,new UIIconButton("arrow_drop_down",(e){gameObject.y += step; onPropertyInputChange();}).createElement());
+    table.append(0,1,new UIIconButton("arrow_left",(e){gameObject.x -= step; onPropertyInputChange();}).createElement());
+    table.append(2,1,new UIIconButton("arrow_right",(e){gameObject.x += step; onPropertyInputChange();}).createElement());
+    table.append(3,0,new UIIconButton("expand_less",(e){gameObject.lengthBefore -= step; gameObject.lengthAfter -= step; onPropertyInputChange();}).createElement());
+    table.append(3,1,new UIIconButton("expand_more",(e){gameObject.lengthBefore += step; gameObject.lengthAfter += step; onPropertyInputChange();}).createElement());
+    table.append(4,0,new UIIconButton("unfold_less",(e){gameObject.width -= step; onPropertyInputChange();}).createElement());
+    table.append(4,1,new UIIconButton("unfold_more",(e){gameObject.width += step; onPropertyInputChange();}).createElement());
+    table.append(0,3,new UIIconButton("rotate_left",(e){gameObject.angle -= stepAngle; onPropertyInputChange();}).createElement());
+    table.append(1,3,new UIIconButton("rotate_right",(e){gameObject.angle += stepAngle; onPropertyInputChange();}).createElement());
+    table.append(2,3,new UIIconButton("rotate_90_degrees_ccw",(e){ autoAngle(); onPropertyInputChange();}).createElement());
     return el;
   }
-  void _autoAngle(){
+
+  void autoAngle(){
     var checkpoints = editor.gamelevel.path.checkpoints;
+    if(checkpoints.length < 3) return;
     var index = checkpoints.indexOf(gameObject);
     GameLevelCheckPoint before, after;
     if(index == 0){
@@ -167,13 +203,13 @@ class LevelObjectCheckpoint extends LevelObject{
     var vbefore = new Vector(before.x, before.y);
     var vafter = new Vector(after.x, after.y);
     gameObject.angle = vbefore.angleWithThis(vafter);
-    onPropertyInputChange();
   }
 }
 class LevelObject{
   LevelEditor editor;
   Element element;
   Element el_properties;
+  Element el_controls;
   String className = "";
   int _mouseX;
   int _mouseY;
@@ -211,6 +247,7 @@ class LevelObject{
     document.onMouseMove.listen(_onMouseMove);
     element = el;
     createPropertiesElement();
+    createControlsElement();
     updateElement();
     updateProperties();
     return el;
@@ -221,6 +258,11 @@ class LevelObject{
       el.append(form.createElement());
     }
     el_properties = el;
+    return el;
+  }
+  Element createControlsElement(){
+    Element el = new DivElement();
+    el_controls = el;
     return el;
   }
   void onDeselect(){
@@ -259,8 +301,8 @@ class UITable{
   int columns;
   int rows;
   List<List<Element>> _cells;
-  UITable(this.rows, this.columns);
-  void append(int row, int column, Node element){
+  UITable(this.columns, this.rows);
+  void append(int column, int row, Node element){
     _cells[row][column].append(element);
   }
   Element createElement(){

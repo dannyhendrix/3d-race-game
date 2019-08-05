@@ -22,6 +22,7 @@ class LevelEditor{
   LevelEditor(){
     wrappers = [checkPoints,walls,staticObjects];
     gamelevel.path = new GameLevelPath();
+    menu.onLevelObjectDelete = _deleteLevelObject;
   }
 
   Element createElement(){
@@ -35,6 +36,7 @@ class LevelEditor{
     Element el_right = new DivElement();
     el_right.className = "rightpanel";
     el_right.append(_createMenuCreate());
+    el_right.append(_createMenuControls());
     el_right.append(_createMenuProperties());
     el_right.append(_createMenuClickAdd());
     el_right.append(_createMenuSaveLoad());
@@ -62,10 +64,16 @@ class LevelEditor{
   }
   Element _createMenuProperties(){
     var uimenu = new UIMenu("Properties");
-    var el = uimenu.createElement();
+    var el = uimenu.createElement(false);
     el.className = "properties";
     uimenu.append(menu.createElement());
-    menu.onLevelObjectDelete = _deleteLevelObject;
+    return el;
+  }
+  Element _createMenuControls(){
+    var uimenu = new UIMenu("Controls");
+    var el = uimenu.createElement();
+    el.className = "controls";
+    uimenu.append(menu.createElementControls());
     return el;
   }
   Element _createMenuCreate(){
@@ -140,6 +148,7 @@ class LevelEditor{
   }
   void _addCheckpointToLevelObjects(GameLevelCheckPoint gameObject){
     LevelObjectCheckpoint levelObj = new LevelObjectCheckpoint(this,gameObject);
+    levelObj.autoAngle();
     levelObj.onSelect = _onSelect;
     levelObj.onPropertyChanged = (o){_onProperyChange(o); preview.paintLevel(gamelevel);};
     checkPoints.addLevelObject(levelObj);
@@ -288,17 +297,19 @@ class UIMenu{
   Element el_content;
 
   UIMenu(this.title){}
-  Element createElement(){
+  Element createElement([bool expand = true]){
     Element el_wrap = new FieldSetElement();
     Element el_legend = new LegendElement();
     el_content = new DivElement();
     el_wrap.append(el_legend);
     el_wrap.append(el_content);
-    el_legend.append(UIToggleIconButton("expand_less","expand_more",(toggled){
+    var btn = UIToggleIconButton("expand_less","expand_more",(toggled){
       el_content.style.display = toggled ? "none" : "block";
-    }).createElement());
+    });
+    el_legend.append(btn.createElement());
     el_legend.appendText(title);
     el_wrap.className = "menu";
+    btn.setToggled(!expand);
     return el_wrap;
   }
   void append(Node el){
@@ -311,8 +322,8 @@ abstract class UIButton{
   {
     DivElement btn = new DivElement();
     btn.className = "button";
-    btn.onClick.listen((MouseEvent e){ _onButtonClick(e); });
-    btn.onTouchStart.listen((TouchEvent e){ _onButtonClick(e); });
+    btn.onClick.listen((MouseEvent e){ _onButtonClick(e); return false; });
+    btn.onTouchStart.listen((TouchEvent e){ _onButtonClick(e); return false; });
     return btn;
   }
   Element _createIcon()
@@ -342,6 +353,11 @@ class UIToggleIconButton extends UIButton{
     var btn = _createButton();
     btn.append(_el_icon);
     return btn;
+  }
+  void setToggled(bool value){
+    if(toggled == value) return;
+    _toggle();
+    _onClick(toggled);
   }
   void _onButtonClick(Event e){
     e.preventDefault(); _toggle(); _onClick(toggled);
