@@ -13,7 +13,7 @@ void applyView(GlPreview preview, double rx, double ry, double rz){
 void main(){
   GlPreview preview;
   preview = new GlPreview(800.0,500.0,(GlModelCollection modelCollection){
-    var model = new GlModel_Formula();
+    var model = new GlModel_Pickup();
     model.loadModel(modelCollection);
     var instance = model
         .getModelInstance(modelCollection, new GlColor(0.0, 0.0, 1.0), new GlColor(1.0, 0.0, 0.0), new GlColor(0.0, 0.0, 0.3));

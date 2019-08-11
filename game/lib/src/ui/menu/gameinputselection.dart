@@ -5,6 +5,7 @@ class GameInputSelectionVehicle extends GameInputSelectionVehicleBase{
     _typeToPreview[VehicleType.Car.index] = _createPreviewFromModel(new GlModel_Vehicle());
     _typeToPreview[VehicleType.Truck.index] = _createPreviewFromModel(new GlModel_Truck());
     _typeToPreview[VehicleType.Formula.index] = _createPreviewFromModel(new GlModel_Formula());
+    _typeToPreview[VehicleType.Pickup.index] = _createPreviewFromModel(new GlModel_Pickup());
     return setupFieldsForVehiclesBase(VehicleType.values.length, "Vehicle");
   }
 }

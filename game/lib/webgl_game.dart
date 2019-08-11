@@ -15,6 +15,7 @@ import 'definitions.dart';
 import 'gameitem.dart';
 
 part 'src/ui/webgl_game/glmodel_vehicle.dart';
+part 'src/ui/webgl_game/glmodel_pickup.dart';
 part 'src/ui/webgl_game/glmodel_caravan.dart';
 part 'src/ui/webgl_game/glmodel_wall.dart';
 part 'src/ui/webgl_game/glmodel_truck.dart';

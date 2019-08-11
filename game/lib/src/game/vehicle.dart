@@ -70,6 +70,13 @@ class FormulaCar extends Vehicle{
     vehicleSettings.setValue(VehicleSettingKeys.standstill_delay, 4);
   }
 }
+class PickupCar extends Vehicle{
+  PickupCar(Game game, Player player) : super(game,player, GameConstants.pickupCarSize){
+    vehicleSettings.setValue(VehicleSettingKeys.acceleration, 1.0);
+    vehicleSettings.setValue(VehicleSettingKeys.acceleration_max, 4.0);
+    vehicleSettings.setValue(VehicleSettingKeys.standstill_delay, 6);
+  }
+}
 abstract class Vehicle extends GameItemMovable{
   static int BASEID = 0x10000;
   Game game;

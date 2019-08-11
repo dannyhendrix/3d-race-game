@@ -1,6 +1,6 @@
 part of game.definitions;
 
-enum VehicleType {Car, Truck, Formula, /*Pickup, Bus*/}
+enum VehicleType {Car, Truck, Formula, Pickup, /*Bus*/}
 // combinations should be blocked in UI
 enum TrailerType {None, Caravan, TruckTrailer}
 

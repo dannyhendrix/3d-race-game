@@ -125,6 +125,7 @@ class GameResultMenu extends GameMenuScreen{
       case VehicleType.Car: return new GlModel_Vehicle();
       case VehicleType.Formula: return new GlModel_Formula();
       case VehicleType.Truck: return new GlModel_Truck();
+      case VehicleType.Pickup: return new GlModel_Pickup();
     }
   }
 

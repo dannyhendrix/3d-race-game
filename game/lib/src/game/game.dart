@@ -40,12 +40,12 @@ class Game{
         players.add(player);
 
         Vehicle v;
-        if(p.vehicle == VehicleType.Truck)
-          v = new Truck(this,player);
-        else if(p.vehicle == VehicleType.Formula)
-          v = new FormulaCar(this,player);
-        else
-          v = new Car(this,player);
+        switch(p.vehicle){
+          case VehicleType.Truck: v = new Truck(this,player); break;
+          case VehicleType.Pickup: v = new PickupCar(this,player); break;
+          case VehicleType.Formula: v = new FormulaCar(this,player); break;
+          case VehicleType.Car: v = new Car(this,player); break;
+        }
         gameobjects.add(v);
         _movableGameObjects.add(v);
         _collisionController.register(v);
