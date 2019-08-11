@@ -81,15 +81,15 @@ class LevelEditor{
     var el_menu = menu.createElement();
     el_menu.className = "menu";
 
-    menu.append(createButtonText("New checkpoint", (Event e){
+    menu.append(new UITextButton("New checkpoint", (Event e){
       _addNewCheckpoint(10.0,10.0);
-    }));
-    menu.append(createButtonText("New wall", (Event e){
+    }).createElement());
+    menu.append(new UITextButton("New wall", (Event e){
       _addNewWall(10.0,10.0);
-    }));
-    menu.append(createButtonText("New tree", (Event e){
+    }).createElement());
+    menu.append(new UITextButton("New tree", (Event e){
       _addNewStaticObject(10.0,10.0);
-    }));
+    }).createElement());
 
     return el_menu;
   }
@@ -144,11 +144,11 @@ class LevelEditor{
       gameObject = new GameLevelCheckPoint(x, y, 100.0, 0.0, 100.0, 100.0);
       gamelevel.path.checkpoints.add(gameObject);
     }
-    _addCheckpointToLevelObjects(gameObject);
+    _addCheckpointToLevelObjects(gameObject, true);
   }
-  void _addCheckpointToLevelObjects(GameLevelCheckPoint gameObject){
+  void _addCheckpointToLevelObjects(GameLevelCheckPoint gameObject,[bool autoAngle = false]){
     LevelObjectCheckpoint levelObj = new LevelObjectCheckpoint(this,gameObject);
-    levelObj.autoAngle();
+    if(autoAngle)levelObj.autoAngle();
     levelObj.onSelect = _onSelect;
     levelObj.onPropertyChanged = (o){_onProperyChange(o); preview.paintLevel(gamelevel);};
     checkPoints.addLevelObject(levelObj);
@@ -262,137 +262,5 @@ class LevelEditor{
       _addStaticObjectToLevelObjects(gameObject);
     }
     preview.paintLevel(gamelevel);
-  }
-
-
-  Element createIcon(String icon)
-  {
-    Element iel = new Element.tag("i");
-    iel.className = "material-icons";
-    iel.text = icon.toLowerCase();
-    return iel;
-  }
-  Element createButton(String icon, Function onClick)
-  {
-    DivElement btn = new DivElement();
-    btn.className = "button";
-    btn.onClick.listen((MouseEvent e){ e.preventDefault(); onClick(e); });
-    btn.onTouchStart.listen((TouchEvent e){ e.preventDefault(); onClick(e); });
-    btn.append(createIcon(icon));
-    return btn;
-  }
-  Element createButtonText(String text, Function onClick)
-  {
-    DivElement btn = new DivElement();
-    btn.className = "button";
-    btn.onClick.listen((MouseEvent e){ e.preventDefault(); onClick(e); });
-    btn.onTouchStart.listen((TouchEvent e){ e.preventDefault(); onClick(e); });
-    btn.text = text;
-    return btn;
-  }
-}
-
-class UIMenu{
-  String title;
-  Element el_content;
-
-  UIMenu(this.title){}
-  Element createElement([bool expand = true]){
-    Element el_wrap = new FieldSetElement();
-    Element el_legend = new LegendElement();
-    el_content = new DivElement();
-    el_wrap.append(el_legend);
-    el_wrap.append(el_content);
-    var btn = UIToggleIconButton("expand_less","expand_more",(toggled){
-      el_content.style.display = toggled ? "none" : "block";
-    });
-    el_legend.append(btn.createElement());
-    el_legend.appendText(title);
-    el_wrap.className = "menu";
-    btn.setToggled(!expand);
-    return el_wrap;
-  }
-  void append(Node el){
-    el_content.append(el);
-  }
-}
-
-abstract class UIButton{
-  Element _createButton()
-  {
-    DivElement btn = new DivElement();
-    btn.className = "button";
-    btn.onClick.listen((MouseEvent e){ _onButtonClick(e); return false; });
-    btn.onTouchStart.listen((TouchEvent e){ _onButtonClick(e); return false; });
-    return btn;
-  }
-  Element _createIcon()
-  {
-    Element iel = new Element.tag("i");
-    iel.className = "material-icons";
-    return iel;
-  }
-  void _onButtonClick(Event e);
-}
-
-typedef void ToggleOnClick(bool isToggled);
-class UIToggleIconButton extends UIButton{
-  bool toggled = false;
-  String _icon_default;
-  String _icon_toggled;
-  Element _el_icon;
-  ToggleOnClick _onClick;
-  UIToggleIconButton(this._icon_default, this._icon_toggled, this._onClick);
-  void _toggle(){
-    toggled = !toggled;
-    _el_icon.text = toggled ? _icon_toggled : _icon_default;
-  }
-  Element createElement(){
-    _el_icon = _createIcon();
-    _el_icon.text = _icon_default;
-    var btn = _createButton();
-    btn.append(_el_icon);
-    return btn;
-  }
-  void setToggled(bool value){
-    if(toggled == value) return;
-    _toggle();
-    _onClick(toggled);
-  }
-  void _onButtonClick(Event e){
-    e.preventDefault(); _toggle(); _onClick(toggled);
-  }
-}
-class UIIconButton extends UIButton{
-  String _icon_default;
-  Function _onClick;
-  UIIconButton(this._icon_default, this._onClick);
-
-  Element createElement(){
-    var el_icon = _createIcon();
-    el_icon.text = _icon_default;
-    var btn = _createButton();
-    btn.classes.add("buttonIcon");
-    btn.append(el_icon);
-    return btn;
-  }
-  void _onButtonClick(Event e){
-    e.preventDefault();
-    _onClick(e);
-  }
-}
-class UITextButton extends UIButton{
-  String _text;
-  Function _onClick;
-  UITextButton(this._text, this._onClick);
-
-  Element createElement(){
-    var btn = _createButton();
-    btn.text = _text;
-    return btn;
-  }
-  void _onButtonClick(Event e){
-    e.preventDefault();
-    _onClick(e);
   }
 }
