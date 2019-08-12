@@ -6,7 +6,6 @@ class GlModel_TruckTrailer{
   static const String _ModelStripe = "trucktrailer_stripe";
   static const String _ModelWheel = "trucktrailer_wheel";
 
-
   // For now, use truck scale
   static const double sx = 50.0/1.0;
   static const double sy = 70.0/1.0;
@@ -16,32 +15,34 @@ class GlModel_TruckTrailer{
   GlColor color1 = new GlColor(1.0,1.0,1.0);
   GlColor color2 = new GlColor(0.5,0.5,0.5);
 
-  DoubleHelper h = new DoubleHelper(1.0,sy);
-  DoubleHelper hLoader = new DoubleHelper(0.3,sy);
+  DoubleHelper h = new DoubleHelper.scaled(sy,1.0);
+  DoubleHelper hLoader = new DoubleHelper.scaled(sy,0.3);
 
-  DoubleHelper d = new DoubleHelper(1.0,sz);
+  DoubleHelper d = new DoubleHelper.scaled(sz,1.0);
 
-  DoubleHelper dStripeRoofLeft = new DoubleHelper(0.3,sz);
-  DoubleHelper dStripeRoofMid = new DoubleHelper(0.4,sz);
-  DoubleHelper dStripeRoofRight = new DoubleHelper(0.3,sz);
+  DoubleHelper dStripeRoofLeft = new DoubleHelper.scaled(sz,0.3);
+  DoubleHelper dStripeRoofMid = new DoubleHelper.scaled(sz,0.4);
+  DoubleHelper dStripeRoofRight = new DoubleHelper.scaled(sz,0.3);
 
-  DoubleHelper w = new DoubleHelper(2.0,sx);
-  DoubleHelper wLoader = new DoubleHelper(0.5,sx);
+  DoubleHelper w = new DoubleHelper.scaled(sx,2.0);
+  DoubleHelper wLoader = new DoubleHelper.scaled(sx,0.5);
 
-  DoubleHelper wWheelOffsetRear = new DoubleHelper(0.3,sx);
-  DoubleHelper wWheelOffsetRear2 = new DoubleHelper(0.6,sx);
-  DoubleHelper dWheelOffsetIn = new DoubleHelper(0.1,sz);
-  DoubleHelper hWheelOffsetIn = new DoubleHelper(0.1,sy);
-  DoubleHelper wWheel = new DoubleHelper(0.2,sx);
-  DoubleHelper dWheel = new DoubleHelper(0.4,sz);
-  DoubleHelper hWheel = new DoubleHelper(0.2,sy);
+  DoubleHelper wWheelOffsetRear = new DoubleHelper.scaled(sx,0.3);
+  DoubleHelper wWheelOffsetRear2 = new DoubleHelper.scaled(sx,0.6);
+  DoubleHelper dWheelOffsetIn = new DoubleHelper.scaled(sz,0.05);
+  DoubleHelper hWheelOffsetIn = new DoubleHelper.scaled(sy,0.1);
+
+  DoubleHelper wWheel = new DoubleHelper(12.0);
+  DoubleHelper dWheel = new DoubleHelper(10.0);
+  DoubleHelper hWheel = new DoubleHelper(12.0);
 
   GlModelInstanceCollection getModelInstance(GlModelCollection collection, GlColor colorBase, GlColor colorStripe, GlColor colorWindow){
 
-    GlMatrix wheelPositionRight = GlMatrix.translationMatrix(-w.h+wWheelOffsetRear.v,hWheelOffsetIn.v,-d.h+dWheelOffsetIn.v);
-    GlMatrix wheelPositionRight2 = GlMatrix.translationMatrix(-w.h+wWheelOffsetRear2.v,hWheelOffsetIn.v,-d.h+dWheelOffsetIn.v);
-    GlMatrix wheelPositionLeft =  GlMatrix.translationMatrix(-w.h+wWheelOffsetRear.v,hWheelOffsetIn.v,d.h-dWheelOffsetIn.v).multThis(GlMatrix.rotationYMatrix(Math.pi));
-    GlMatrix wheelPositionLeft2 =  GlMatrix.translationMatrix(-w.h+wWheelOffsetRear2.v,hWheelOffsetIn.v,d.h-dWheelOffsetIn.v).multThis(GlMatrix.rotationYMatrix(Math.pi));
+    GlMatrix wheelPositionRight = GlMatrix.translationMatrix(-w.h+wWheelOffsetRear.v,hWheel.h+hWheelOffsetIn.v,-d.h+dWheelOffsetIn.v);
+    GlMatrix wheelPositionRight2 = GlMatrix.translationMatrix(-w.h+wWheelOffsetRear2.v,hWheel.h+hWheelOffsetIn.v,-d.h+dWheelOffsetIn.v);
+    GlMatrix wheelPositionLeft =  GlMatrix.translationMatrix(-w.h+wWheelOffsetRear.v,hWheel.h+hWheelOffsetIn.v,d.h-dWheelOffsetIn.v).multThis(GlMatrix.rotationYMatrix(Math.pi));
+    GlMatrix wheelPositionLeft2 =  GlMatrix.translationMatrix(-w.h+wWheelOffsetRear2.v,hWheel.h+hWheelOffsetIn.v,d.h-dWheelOffsetIn.v).multThis(GlMatrix.rotationYMatrix(Math.pi));
+    GlMatrix modelGroundOffset = GlMatrix.translationMatrix(0.0,hWheel.h,0.0);
 
     var colorWheel = new GlColor(0.2,0.2,0.2);
     return new GlModelInstanceCollection([
@@ -49,8 +50,8 @@ class GlModel_TruckTrailer{
       new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRight2),
       new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionLeft),
       new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionLeft2),
-      new GlModelInstance(collection.getModelBuffer(_ModelBody), colorBase),
-      new GlModelInstance(collection.getModelBuffer(_ModelStripe), colorStripe),
+      new GlModelInstance(collection.getModelBuffer(_ModelBody), colorBase, modelGroundOffset),
+      new GlModelInstance(collection.getModelBuffer(_ModelStripe), colorStripe, modelGroundOffset),
     ]);
   }
   GlModel loadModel(GlModelCollection collection){

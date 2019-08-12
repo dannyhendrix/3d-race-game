@@ -3,7 +3,8 @@ part of webgl_game;
 class DoubleHelper{
   double v;
   double h;
-  DoubleHelper(double v, double s) : v = v*s, h = v*s/2;
+  DoubleHelper(double v) : v = v, h = v/2;
+  DoubleHelper.scaled(double v, double s) : this(v*s);
 }
 
 class GlModel_Vehicle{
@@ -13,51 +14,53 @@ class GlModel_Vehicle{
   static const String _ModelWindows = "vehicle_windows";
   static const String _ModelWheel = "vehicle_wheel";
 
-  static const double sx = 50.0/1.0;
-  static const double sy = 50.0/1.0;
-  static const double sz = 30.0/1.0;
+  static const double sx = 50.0;
+  static const double sy = 50.0;
+  static const double sz = 30.0;
 
   GlColor colorWindows = new GlColor(0.2,0.2,0.2);
   GlColor color1 = new GlColor(1.0,1.0,1.0);
   GlColor color2 = new GlColor(0.5,0.5,0.5);
 
-  DoubleHelper h = new DoubleHelper(1.0,sy);
-  DoubleHelper hCarBottom = new DoubleHelper(0.5,sy);
-  DoubleHelper hWindow = new DoubleHelper(0.5,sy);
+  DoubleHelper h = new DoubleHelper.scaled(sy,1.0);
+  DoubleHelper hCarBottom = new DoubleHelper.scaled(sy,0.5);
+  DoubleHelper hWindow = new DoubleHelper.scaled(sy,0.5);
 
-  DoubleHelper d = new DoubleHelper(1.0,sz);
-  DoubleHelper dRoof = new DoubleHelper(0.8,sz);
-  DoubleHelper dWindow = new DoubleHelper(0.1,sz);
+  DoubleHelper d = new DoubleHelper.scaled(sz,1.0);
+  DoubleHelper dRoof = new DoubleHelper.scaled(sz,0.8);
+  DoubleHelper dWindow = new DoubleHelper.scaled(sz,0.1);
 
-  DoubleHelper dStripeLeft = new DoubleHelper(0.3,sz);
-  DoubleHelper dStripeMid = new DoubleHelper(0.4,sz);
-  DoubleHelper dStripeRight = new DoubleHelper(0.3,sz);
+  DoubleHelper dStripeLeft = new DoubleHelper.scaled(sz,0.3);
+  DoubleHelper dStripeMid = new DoubleHelper.scaled(sz,0.4);
+  DoubleHelper dStripeRight = new DoubleHelper.scaled(sz,0.3);
 
-  DoubleHelper dStripeRoofLeft = new DoubleHelper(0.2,sz);
-  DoubleHelper dStripeRoofMid = new DoubleHelper(0.4,sz);
-  DoubleHelper dStripeRoofRight = new DoubleHelper(0.2,sz);
+  DoubleHelper dStripeRoofLeft = new DoubleHelper.scaled(sz,0.2);
+  DoubleHelper dStripeRoofMid = new DoubleHelper.scaled(sz,0.4);
+  DoubleHelper dStripeRoofRight = new DoubleHelper.scaled(sz,0.2);
 
-  DoubleHelper w = new DoubleHelper(1.0,sx);
-  DoubleHelper wHood = new DoubleHelper(0.3,sx);
-  DoubleHelper wRoof = new DoubleHelper(0.3,sx);
-  DoubleHelper wRear = new DoubleHelper(0.2,sx);
-  DoubleHelper wWindowFront = new DoubleHelper(0.1,sx);
-  DoubleHelper wWindowRear = new DoubleHelper(0.1,sx);
+  DoubleHelper w = new DoubleHelper.scaled(sx,1.0);
+  DoubleHelper wHood = new DoubleHelper.scaled(sx,0.3);
+  DoubleHelper wRoof = new DoubleHelper.scaled(sx,0.3);
+  DoubleHelper wRear = new DoubleHelper.scaled(sx,0.2);
+  DoubleHelper wWindowFront = new DoubleHelper.scaled(sx,0.1);
+  DoubleHelper wWindowRear = new DoubleHelper.scaled(sx,0.1);
 
-  DoubleHelper wWheelOffsetRear = new DoubleHelper(0.2,sx);
-  DoubleHelper wWheelOffsetFront = new DoubleHelper(0.2,sx);
-  DoubleHelper dWheelOffsetIn = new DoubleHelper(0.1,sz);
-  DoubleHelper hWheelOffsetIn = new DoubleHelper(0.1,sy);
-  DoubleHelper wWheel = new DoubleHelper(0.2,sx);
-  DoubleHelper dWheel = new DoubleHelper(0.4,sz);
-  DoubleHelper hWheel = new DoubleHelper(0.3,sy);
+  DoubleHelper wWheelOffsetRear = new DoubleHelper.scaled(sx,0.2);
+  DoubleHelper wWheelOffsetFront = new DoubleHelper.scaled(sx,0.2);
+  DoubleHelper dWheelOffsetIn = new DoubleHelper.scaled(sz,0.05);
+  DoubleHelper hWheelOffsetIn = new DoubleHelper.scaled(sy,0.05);
+
+  DoubleHelper wWheel = new DoubleHelper(12.0);
+  DoubleHelper dWheel = new DoubleHelper(10.0);
+  DoubleHelper hWheel = new DoubleHelper(12.0);
 
   GlModelInstanceCollection getModelInstance(GlModelCollection collection, GlColor colorBase, GlColor colorStripe, GlColor colorWindow){
 
-    GlMatrix wheelPositionFrontRight = GlMatrix.translationMatrix(w.h-wWheelOffsetFront.v,hWheelOffsetIn.v,-d.h+dWheelOffsetIn.v);
-    GlMatrix wheelPositionRearRight = GlMatrix.translationMatrix(-w.h+wWheelOffsetRear.v,hWheelOffsetIn.v,-d.h+dWheelOffsetIn.v);
-    GlMatrix wheelPositionFrontLeft =  GlMatrix.translationMatrix(w.h-wWheelOffsetFront.v,hWheelOffsetIn.v,d.h-dWheelOffsetIn.v).multThis(GlMatrix.rotationYMatrix(Math.pi));
-    GlMatrix wheelPositionRearLeft = GlMatrix.translationMatrix(-w.h+wWheelOffsetRear.v,hWheelOffsetIn.v,d.h-dWheelOffsetIn.v).multThis(GlMatrix.rotationYMatrix(Math.pi));
+    GlMatrix wheelPositionFrontRight = GlMatrix.translationMatrix(w.h-wWheelOffsetFront.v,hWheel.h+hWheelOffsetIn.v,-d.h+dWheelOffsetIn.v);
+    GlMatrix wheelPositionRearRight = GlMatrix.translationMatrix(-w.h+wWheelOffsetRear.v,hWheel.h+hWheelOffsetIn.v,-d.h+dWheelOffsetIn.v);
+    GlMatrix wheelPositionFrontLeft =  GlMatrix.translationMatrix(w.h-wWheelOffsetFront.v,hWheel.h+hWheelOffsetIn.v,d.h-dWheelOffsetIn.v).multThis(GlMatrix.rotationYMatrix(Math.pi));
+    GlMatrix wheelPositionRearLeft = GlMatrix.translationMatrix(-w.h+wWheelOffsetRear.v,hWheel.h+hWheelOffsetIn.v,d.h-dWheelOffsetIn.v).multThis(GlMatrix.rotationYMatrix(Math.pi));
+    GlMatrix modelGroundOffset = GlMatrix.translationMatrix(0.0,hWheel.h,0.0);
 
     var colorWheel = new GlColor(0.2,0.2,0.2);
     return new GlModelInstanceCollection([
@@ -65,9 +68,9 @@ class GlModel_Vehicle{
       new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionFrontLeft),
       new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearRight),
       new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearLeft),
-      new GlModelInstance(collection.getModelBuffer(_ModelBody), colorBase),
-      new GlModelInstance(collection.getModelBuffer(_ModelStripe), colorStripe),
-      new GlModelInstance(collection.getModelBuffer(_ModelWindows), colorWindow),
+      new GlModelInstance(collection.getModelBuffer(_ModelBody), colorBase, modelGroundOffset),
+      new GlModelInstance(collection.getModelBuffer(_ModelStripe), colorStripe, modelGroundOffset),
+      new GlModelInstance(collection.getModelBuffer(_ModelWindows), colorWindow, modelGroundOffset),
     ]);
   }
   GlModel loadModel(GlModelCollection collection){

@@ -184,6 +184,7 @@ class WebglGame3d extends WebglGame{
     GlModelCollection modelCollection = new GlModelCollection(layer);
     GlModel_Vehicle vehicleModel = new GlModel_Vehicle();
     GlModel_Formula formulaModel = new GlModel_Formula();
+    GlModel_Pickup pickupModel = new GlModel_Pickup();
     GlModel_Truck truckModel = new GlModel_Truck();
     GlModel_TruckTrailer truckTrailerModel = new GlModel_TruckTrailer();
     GlModel_Caravan caravanModel = new GlModel_Caravan();
@@ -191,6 +192,7 @@ class WebglGame3d extends WebglGame{
     GlModel_Tree treeModel = new GlModel_Tree();
     vehicleModel.loadModel(modelCollection);
     formulaModel.loadModel(modelCollection);
+    pickupModel.loadModel(modelCollection);
     truckModel.loadModel(modelCollection);
     truckTrailerModel.loadModel(modelCollection);
     caravanModel.loadModel(modelCollection);
@@ -200,7 +202,8 @@ class WebglGame3d extends WebglGame{
     List<GlModelInstanceCollection> modelInstances = [];
 
     //createVehicleModel().modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
-    GlColor colorWindows = new GlColor(0.2,0.2,0.2);
+    //GlColor colorWindows = new GlColor(0.2,0.2,0.2);
+    GlColor colorWindows = new GlColor(0.7, 0.7, 0.9);
     //create all buffer
     for(var o in game.gameobjects){
       if(o is Car)
@@ -214,6 +217,12 @@ class WebglGame3d extends WebglGame{
         print("formula model");
         Vehicle v = o;
         modelInstances.add(new GlModelInstanceFromModel(o, formulaModel
+            .getModelInstance(modelCollection, colorMappingGl[v.player.theme
+            .color1], colorMappingGl[v.player.theme.color2], colorWindows)));
+      }else if(o is PickupCar){
+        print("pickup model");
+        Vehicle v = o;
+        modelInstances.add(new GlModelInstanceFromModel(o, pickupModel
             .getModelInstance(modelCollection, colorMappingGl[v.player.theme
             .color1], colorMappingGl[v.player.theme.color2], colorWindows)));
       }else if(o is Truck){

@@ -12,17 +12,17 @@ class GlModel_Tree{
   GlColor colorTrunk = new GlColor(1.0,0.7,0.6);
   GlColor colorLeaves = new GlColor(0.0,1.0,0.0);
 
-  DoubleHelper h = new DoubleHelper(1.0,scaleY);
-  DoubleHelper hLeaves = new DoubleHelper(0.7,scaleY);
-  DoubleHelper hTrunk = new DoubleHelper(0.3,scaleY);
+  DoubleHelper h = new DoubleHelper.scaled(scaleY,1.0);
+  DoubleHelper hLeaves = new DoubleHelper.scaled(scaleY,0.7);
+  DoubleHelper hTrunk = new DoubleHelper.scaled(scaleY,0.3);
 
-  //DoubleHelper d = new DoubleHelper(3.0,scaleZ);
-  DoubleHelper dLeaves = new DoubleHelper(4.0,scaleZ);
-  DoubleHelper dTrunk = new DoubleHelper(1.0,scaleZ);
+  //DoubleHelper d = new DoubleHelper.scaled(scaleZ,3.0);
+  DoubleHelper dLeaves = new DoubleHelper.scaled(scaleZ,4.0);
+  DoubleHelper dTrunk = new DoubleHelper.scaled(scaleZ,1.0);
 
-  //DoubleHelper w = new DoubleHelper(3.0,scaleZ);
-  DoubleHelper wLeaves = new DoubleHelper(4.0,scaleX);
-  DoubleHelper wTrunk = new DoubleHelper(1.0,scaleX);
+  //DoubleHelper w = new DoubleHelper.scaled(scaleZ,3.0);
+  DoubleHelper wLeaves = new DoubleHelper.scaled(scaleX,4.0);
+  DoubleHelper wTrunk = new DoubleHelper.scaled(scaleX,1.0);
 
   GlModelInstanceCollection getModelInstance(GlModelCollection collection){
     return new GlModelInstanceCollection([
