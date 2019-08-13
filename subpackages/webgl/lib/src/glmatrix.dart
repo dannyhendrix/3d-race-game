@@ -377,4 +377,13 @@ class GlMatrix{
     multThis(scalingMatrix(sx, sy, sz));
     return this;
   }
+  GlVector applyToVector(GlVector p) {
+    var x = buffer[0] * p.x + buffer[4] * p.y + buffer[8] * p.z + buffer[12];
+    var y = buffer[1] * p.x + buffer[5] * p.y + buffer[9] * p.z + buffer[13];
+    var z = buffer[2] * p.x + buffer[6] * p.y + buffer[10] * p.z + buffer[14];
+    p.x = x;
+    p.y = y;
+    p.z = z;
+    return p;
+  }
 }

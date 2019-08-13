@@ -9,9 +9,9 @@ class GlPreview
   double ox = 0.0,
       oy = 0.0,
       oz = 400.0;
-  double lx = 0.3,
-      ly = 0.7,
-      lz = 0.1;
+  double lx = 0.0,
+      ly = 0.5,
+      lz = -1.0;
   double lightImpact = 0.5;
 
   double windowW = 500.0;

@@ -42,6 +42,10 @@ void main(){
   document.body.append(createSlider("rotatex",0.0,2*Math.pi,0.1,preview.rx,(String val){ preview.rx = double.parse(val); preview.draw(); }));
   document.body.append(createSlider("rotatey",0.0,2*Math.pi,0.1,preview.ry,(String val){ preview.ry = double.parse(val); preview.draw(); }));
   document.body.append(createSlider("rotatez",0.0,2*Math.pi,0.1,preview.rz,(String val){ preview.rz = double.parse(val); preview.draw(); }));
+  document.body.append(createSlider("lightx",-1.0,1.0,0.1,preview.lx,(String val){ preview.lx = double.parse(val); preview.draw(); }));
+  document.body.append(createSlider("lighty",-1.0,1.0,0.1,preview.ly,(String val){ preview.ly = double.parse(val); preview.draw(); }));
+  document.body.append(createSlider("lightz",-1.0,1.0,0.1,preview.lz,(String val){ preview.lz = double.parse(val); preview.draw(); }));
+  document.body.append(createSlider("light",0.0,1.0,0.05,preview.lightImpact,(String val){ preview.lightImpact = double.parse(val); preview.draw(); }));
 
   document.body.append(createButton("Right side",(){ applyView(preview, 0.0,0.0,0.0); }));
   document.body.append(createButton("Left side",(){ applyView(preview, 0.0,Math.pi,0.0); }));

@@ -18,6 +18,7 @@ class GlProgram{
            vec3 normal = normalize(v_normal);
 
            float light = dot(normal, u_reverseLightDirection);
+           if(light > 1.0) light = 1.0;
            float lightFactor = (1.0-f_lightImpact)+(light*f_lightImpact);
 
            gl_FragColor = u_color;
@@ -42,7 +43,8 @@ class GlProgram{
           gl_Position = u_worldViewProjection * a_position;
 
           // orient the normals and pass to the fragment shader
-          v_normal = mat3(u_world) * a_normal;
+          v_normal = mat3(u_worldViewProjection) * a_normal;
+          //v_normal = a_normal;
         }
       ''';
   int attr_Position;

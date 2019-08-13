@@ -21,6 +21,10 @@ class WebglGame3d extends WebglGame{
   Game game;
   GameLoop _gameloop;
 
+  double lightx = 0.0;
+  double lighty = 0.5;
+  double lightz = -1.0;
+
   GlRenderLayer layer;
   List<GlModelInstanceCollection> modelInstances = [];
   GlCameraFollowTarget camera;
@@ -161,9 +165,10 @@ class WebglGame3d extends WebglGame{
     //2 call draw method with buffer
     for(GlModelInstanceCollection m in modelInstances){
       GlMatrix objPerspective = worldViewProjectionMatrix.clone().multThis(m.CreateTransformMatrix());
-      if(m is GlModelInstanceFromCheckpoint) (m as GlModelInstanceFromCheckpoint).update();
+      //if(m is GlModelInstanceFromCheckpoint) (m as GlModelInstanceFromCheckpoint).update();
       for(GlModelInstance mi in m.modelInstances){
-        layer.setWorld(worldMatrix,objPerspective.clone().multThis(mi.CreateTransformMatrix()), new GlVector(-1.0,0.8,0.6),0.4);
+        var mimatrix = objPerspective.clone().multThis(mi.CreateTransformMatrix());
+        layer.setWorld(worldMatrix,mimatrix, new GlVector(lightx, lighty,lightz),0.3);
         layer.drawModel(mi);
       }
     }
@@ -203,7 +208,7 @@ class WebglGame3d extends WebglGame{
 
     //createVehicleModel().modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
     //GlColor colorWindows = new GlColor(0.2,0.2,0.2);
-    GlColor colorWindows = new GlColor(0.7, 0.7, 0.9);
+    GlColor colorWindows = new GlColor(0.3, 0.3, 0.3);
     //create all buffer
     for(var o in game.gameobjects){
       if(o is Car)
@@ -257,8 +262,7 @@ class WebglGame3d extends WebglGame{
         CheckpointGameItem c = o;
         //if(c.isGate)
         {
-          var color = (c.index == (game.humanPlayer.pathProgress as PathProgressCheckpoint).currentIndex) ? new GlColor(1.0, 0.5, 0.0) : new GlColor(0.8, 0.8, 0.8);
-          var colorPoles = new GlColor(0.6, 0.6, 0.6);
+          var color = new GlColor(1.0, 0.5, 0.0);
           //List<Polygon> absoluteCollisionFields = o.getAbsoluteCollisionFields();
           //var wallLeftPosition = absoluteCollisionFields[0].center;
           //var wallRightPosition = absoluteCollisionFields[1].center;
@@ -320,16 +324,37 @@ class GlModelInstanceFromCheckpoint extends GlModelInstanceCollection{
   GlMatrix _transform;
   CheckpointGameItem _checkpoint;
   Game _game;
+  int checkpointTicker = 0;
   GlModelInstanceFromCheckpoint(this._game, this._checkpoint, double x, double y, double z, double rx, double ry, double rz, GlModelInstanceCollection model):super([]){
     this.modelInstances = model.modelInstances;
     _transform = GlMatrix.translationMatrix(x,y,z).rotateXThis(rx).rotateYThis(ry).rotateZThis(rz);
   }
   GlMatrix CreateTransformMatrix(){
-    return _transform;
+    var isCurrent = (_checkpoint.index == (_game.humanPlayer.pathProgress as PathProgressCheckpoint).currentIndex);
+    if(!isCurrent) return _transform;
+
+    checkpointTicker++;
+    //showBlank = (checkpointTicker < 20);
+    if(checkpointTicker == 40){
+      checkpointTicker = 0;
+    }
+
+    return _transform.clone().scaleThis(1.0+(checkpointTicker/10), 1.0, 1.0);
   }
+  /*
   void update(){
-    modelInstances.first.color = (_checkpoint.index == (_game.humanPlayer.pathProgress as PathProgressCheckpoint).currentIndex) ? new GlColor(1.0, 0.5, 0.0) : new GlColor(0.8, 0.8, 0.8);
+    var isCurrent = (_checkpoint.index == (_game.humanPlayer.pathProgress as PathProgressCheckpoint).currentIndex);
+    var showBlank = false;
+    if(isCurrent){
+      checkpointTicker++;
+      //showBlank = (checkpointTicker < 20);
+      if(checkpointTicker == 40){
+        checkpointTicker = 0;
+      }
+    }
+    modelInstances.first.color = !showBlank ? new GlColor(1.0, 0.5, 0.0) : new GlColor(0.8, 0.8, 0.8);
   }
+  */
 }
 class GlModelInstanceFromModel extends GlModelInstanceCollection{
   GameItem gameObject;

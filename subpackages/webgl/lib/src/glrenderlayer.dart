@@ -64,5 +64,6 @@ class GlRenderLayer{
   void clearForNextFrame(){
     ctx.useProgram(program.program);
     ctx.clear(WebGL.COLOR_BUFFER_BIT | WebGL.DEPTH_BUFFER_BIT);
+    //1.0,0.8,0.6
   }
 }

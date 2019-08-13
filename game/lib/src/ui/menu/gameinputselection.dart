@@ -55,9 +55,10 @@ class GameInputSelectionVehicleBase extends GameInputSelection
     preview.rx = 1.0;
     preview.ry = 2.6;
     preview.rz = 5.8;
-    preview.lx = 0.3;
-    preview.ly = 0.7;
-    preview.lz = 0.1;
+    preview.lx = 0.0;
+    preview.ly = 0.5;
+    preview.lz = -1.0;
+    preview.lightImpact = 0.3;
     preview.create();
     preview.draw();
     return preview.layer.canvas.toDataUrl("image/png");
