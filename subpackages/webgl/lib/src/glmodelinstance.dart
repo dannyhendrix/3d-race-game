@@ -3,8 +3,9 @@ part of webgl;
 class GlModelBuffer{
   Buffer vertexBuffer;
   Buffer normalsBuffer;
+  Buffer textureBuffer;
   int numberOfTriangles;
-  GlModelBuffer(this.vertexBuffer, this.normalsBuffer, this.numberOfTriangles);
+  GlModelBuffer(this.vertexBuffer, this.normalsBuffer, this.textureBuffer, this.numberOfTriangles);
 }
 class GlModelInstance{
   GlModelBuffer modelBuffer;

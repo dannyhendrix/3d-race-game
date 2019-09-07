@@ -56,22 +56,22 @@ class GlModel_Pickup{
 
     var colorWheel = new GlColor(0.2,0.2,0.2);
     return new GlModelInstanceCollection([
-      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionFrontRight),
+      /*new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionFrontRight),
       new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionFrontLeft),
       new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearRight),
-      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearLeft),
+      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearLeft),*/
       new GlModelInstance(collection.getModelBuffer(_ModelBody), colorBase, modelGroundOffset),
-      new GlModelInstance(collection.getModelBuffer(_ModelStripe), colorStripe, modelGroundOffset),
-      new GlModelInstance(collection.getModelBuffer(_ModelWindows), colorWindow, modelGroundOffset),
+      /*new GlModelInstance(collection.getModelBuffer(_ModelStripe), colorStripe, modelGroundOffset),
+      new GlModelInstance(collection.getModelBuffer(_ModelWindows), colorWindow, modelGroundOffset),*/
     ]);
   }
   GlModel loadModel(GlModelCollection collection){
     collection.loadModel(_ModelBody, new GlAreaModel([
-      //floor
+      /*//floor
       new GlRectangle.withWD(-w.h,0.0, -d.h, w.v, d.v, true),
       //hood
-      new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, d.h-dStripeRight.v, wHood.v, dStripeRight.v, false),
-      new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h, wHood.v, dStripeLeft.v, false),
+      new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, d.h-dStripeRight.v, wHood.v, dStripeRight.v, false, 0,d.v-dStripeRight.v,1/256,1/256),
+      new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h, wHood.v, dStripeLeft.v, false, 0,0,1/256,1/256),
       //rear top
       //new GlRectangle.withWD(-w.h,hCarBottom.v, d.h-dStripeRight.v, wRear.v, dStripeRight.v, false),
       //new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h, wRear.v, dStripeLeft.v, false),
@@ -82,21 +82,21 @@ class GlModel_Pickup{
       //front
       new GlRectangle.withHD(w.h,0.0, -d.h, hCarBottom.v, d.v, true),
       //rear
-      new GlRectangle.withHD(-w.h,0.0, -d.h, hCarBottom.v, d.v, false),
+      new GlRectangle.withHD(-w.h,0.0, -d.h, hCarBottom.v, d.v, false),*/
       //right side
       //bottom
-      new GlRectangle.withWH(-w.h,0.0, d.h, w.v, hCarBottom.v, true),
+      new GlRectangle.withWH(-w.h,0.0, d.h, w.v, hCarBottom.v, true,0,0),
       //left side
       //bottom
-      new GlRectangle.withWH(-w.h,0.0, -d.h, w.v, hCarBottom.v, false),
+      new GlRectangle.withWH(-w.h,0.0, -d.h, w.v, hCarBottom.v, false,0,0),
 
     ]));
 
     collection.loadModel(_ModelStripe, new GlAreaModel([
       //hood
-      new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h+dStripeLeft.v, wHood.v, dStripeMid.v, false),
+      new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h+dStripeLeft.v, wHood.v, dStripeMid.v, false, 0, dStripeRight.v),
       //rear top
-      //new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h+dStripeLeft.v, wRear.v, dStripeMid.v, false),
+      new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h+dStripeLeft.v, wRear.v, dStripeMid.v, false),
       //roof
       new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, -d.h+dWindow.v+dStripeRoofLeft.v, wRoof.v, dStripeRoofMid.v, false),
 
@@ -105,11 +105,11 @@ class GlModel_Pickup{
     collection.loadModel(_ModelWindows, new GlAreaModel([
       //WindowFront
       new GlTriangle([
-        new GlPoint(w.h-wHood.v, hCarBottom.v, d.h),
-        new GlPoint(w.h-wHood.v-wWindowFront.v, h.v, -d.h+dWindow.v),
-        new GlPoint(w.h-wHood.v-wWindowFront.v, h.v, d.h-dWindow.v),
+        new GlPoint(w.h-wHood.v, hCarBottom.v, d.h,0.0,1.0),
+        new GlPoint(w.h-wHood.v-wWindowFront.v, h.v, -d.h+dWindow.v,1.0,0.0),
+        new GlPoint(w.h-wHood.v-wWindowFront.v, h.v, d.h-dWindow.v,0.0,0.0),
       ]),
-      new GlTriangle([
+      /*new GlTriangle([
         new GlPoint(w.h-wHood.v,hCarBottom.v,d.h),
         new GlPoint(w.h-wHood.v,hCarBottom.v,-d.h),
         new GlPoint(w.h-wHood.v-wWindowFront.v, h.v, -d.h+dWindow.v),
@@ -146,7 +146,7 @@ class GlModel_Pickup{
         new GlPoint(-w.h+wRear.v,hCarBottom.v,-d.h),
         new GlPoint(w.h-wHood.v-wWindowFront.v,h.v,-d.h+dWindow.v),
         new GlPoint(w.h-wHood.v,hCarBottom.v,-d.h),
-      ]),
+      ]),*/
     ]));
     collection.loadModel(_ModelWheel, new GlCube.fromTopCenter(0.0,0.0,0.0,wWheel.v,hWheel.v,dWheel.v));
   }

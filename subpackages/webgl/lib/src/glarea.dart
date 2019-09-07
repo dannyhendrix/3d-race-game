@@ -2,9 +2,11 @@ part of webgl;
 
 class GlPoint extends GlModelPart{
   double x,y,z;
-  GlPoint([this.x = 0.0, this.y = 0.0, this.z=0.0]);
+  double tx, ty;
+  GlPoint([this.x = 0.0, this.y = 0.0, this.z=0.0, this.tx = 0.0, this.ty=0.0]);
   List<double> toDoubleVertex() => [x,y,z];
   List<double> toNormalsVertex() => [0.0,0.0,0.0];
+  List<double> toTextureVertex(double textureSize) => [tx/textureSize,ty/textureSize];
 }
 
 class GlTriangle extends GlModelPart{
@@ -62,6 +64,12 @@ class GlTriangle extends GlModelPart{
     ];
 
   }
+
+  List<double> toTextureVertex(double textureSize){
+    List<double> result = [];
+    for(GlPoint o in points)result.addAll(o.toTextureVertex(textureSize));
+    return result;
+  }
 }
 
 class GlArea extends GlModelPart{
@@ -78,11 +86,16 @@ class GlArea extends GlModelPart{
     for(GlTriangle o in triangles)result.addAll(o.toNormalsVertex());
     return result;
   }
+  List<double> toTextureVertex(double textureSize){
+    List<double> result = [];
+    for(GlTriangle o in triangles)result.addAll(o.toTextureVertex(textureSize));
+    return result;
+  }
   int getNumberOfTriangles() => triangles.length;
 }
 
 class GlRectangle extends GlArea{
-  GlRectangle.withWH(double x, double y, double z, double w, double h, [bool facingFront=true]){
+  GlRectangle.withWH(double x, double y, double z, double w, double h, [bool facingFront=true, double toffsetx=0.0, double toffsety=0.0]){
 
     /**
      * clockwise facing triangles (facing front)
@@ -95,81 +108,104 @@ class GlRectangle extends GlArea{
      *    /   \          |  /
      *    ---->          |/
      */
+    var tx1 = toffsetx;
+    var tx2 = (toffsetx+w);
+    var ty2 = toffsety;//y is reversed. in texture the top is 0
+    var ty1 = (toffsety+h);
 
     if(facingFront)
     {
       addTriangle(new GlTriangle([
-        new GlPoint(x, y, z),
-        new GlPoint(x + w, y, z),
-        new GlPoint(x, y + h, z)
+        new GlPoint(x, y, z, tx1, ty1),
+        new GlPoint(x + w, y, z, tx2, ty1),
+        new GlPoint(x, y + h, z, tx1, ty2)
       ]));
       addTriangle(new GlTriangle([
-        new GlPoint(x + w, y, z),
-        new GlPoint(x + w, y + h, z),
-        new GlPoint(x, y + h, z)
+        new GlPoint(x + w, y, z, tx2, ty1),
+        new GlPoint(x + w, y + h, z, tx2, ty2),
+        new GlPoint(x, y + h, z, tx1, ty2)
       ]));
     }else{
+      // reverse texture x
+      var t = ty1;
+      ty1 = ty2;
+      ty2 = t;
       addTriangle(new GlTriangle([
-        new GlPoint(x, y, z),
-        new GlPoint(x, y + h, z),
-        new GlPoint(x + w, y, z),
+        new GlPoint(x, y, z, tx1, ty1),
+        new GlPoint(x, y + h, z, tx1, ty2),
+        new GlPoint(x + w, y, z, tx2, ty1),
       ]));
       addTriangle(new GlTriangle([
-        new GlPoint(x + w, y, z),
-        new GlPoint(x, y + h, z),
-        new GlPoint(x + w, y + h, z),
+        new GlPoint(x + w, y, z, tx2, ty1),
+        new GlPoint(x, y + h, z, tx1, ty2),
+        new GlPoint(x + w, y + h, z, tx2, ty2),
       ]));
     }
   }
-  GlRectangle.withWD(double x, double y, double z, double w, double d, [bool facingFront=true]){
+  GlRectangle.withWD(double x, double y, double z, double w, double d, [bool facingFront=true, double toffsetx=0.0, double toffsety=0.0]){
+    var tx2 = toffsetx;
+    var tx1 = (toffsetx+w);
+    var ty1 = toffsety;
+    var ty2 = (toffsety+d);
     if(facingFront)
     {
       addTriangle(new GlTriangle([
-        new GlPoint(x, y, z),
-        new GlPoint(x + w, y, z),
-        new GlPoint(x, y, z+d)
+        new GlPoint(x, y, z, tx1, ty1),
+        new GlPoint(x + w, y, z, tx2, ty1),
+        new GlPoint(x, y, z+d, tx1, ty2)
       ]));
       addTriangle(new GlTriangle([
-        new GlPoint(x + w, y, z),
-        new GlPoint(x + w, y, z+d),
-        new GlPoint(x, y, z+d)
+        new GlPoint(x + w, y, z, tx2, ty1),
+        new GlPoint(x + w, y, z+d, tx2, ty2),
+        new GlPoint(x, y, z+d, tx1, ty2)
       ]));
     }else{
+      var t = ty1;
+      ty1 = ty2;
+      ty2 = t;
       addTriangle(new GlTriangle([
-        new GlPoint(x, y, z),
-        new GlPoint(x, y, z+d),
-        new GlPoint(x + w, y, z),
+        new GlPoint(x, y, z, tx1,ty1),
+        new GlPoint(x, y, z+d,tx1,ty2),
+        new GlPoint(x + w, y, z,tx2,ty1),
       ]));
       addTriangle(new GlTriangle([
-        new GlPoint(x + w, y, z),
-        new GlPoint(x, y, z+d),
-        new GlPoint(x + w, y, z+d),
+        new GlPoint(x + w, y, z, tx2,ty1),
+        new GlPoint(x, y, z+d, tx1,ty2),
+        new GlPoint(x + w, y, z+d, tx2,ty2),
       ]));
     }
   }
-  GlRectangle.withHD(double x, double y, double z, double h, double d, [bool facingFront=true]){
+  GlRectangle.withHD(double x, double y, double z, double h, double d, [bool facingFront=true, double toffsetx=0.0, double toffsety=0.0]){
+    var tx2 = toffsetx;
+    var tx1 = (toffsetx+d);
+    var ty2 = toffsety;
+    var ty1 = (toffsety+h);
     if(facingFront)
     {
       addTriangle(new GlTriangle([
-        new GlPoint(x, y, z),
-        new GlPoint(x, y+h, z),
-        new GlPoint(x, y, z+d)
+        new GlPoint(x, y, z, tx1, ty1),
+        new GlPoint(x, y+h, z, tx1, ty2),
+        new GlPoint(x, y, z+d, tx2, ty1)
       ]));
       addTriangle(new GlTriangle([
-        new GlPoint(x, y+h, z),
-        new GlPoint(x, y+h, z+d),
-        new GlPoint(x, y, z+d)
+        new GlPoint(x, y+h, z, tx1, ty2),
+        new GlPoint(x, y+h, z+d, tx2, ty2),
+        new GlPoint(x, y, z+d, tx2, ty1)
       ]));
     }else{
+      // reverse texture x
+      var t = ty1;
+      ty1 = ty2;
+      ty2 = t;
       addTriangle(new GlTriangle([
-        new GlPoint(x, y, z),
-        new GlPoint(x, y, z+d),
-        new GlPoint(x, y+h, z),
+        new GlPoint(x, y, z, tx1, ty1),
+        new GlPoint(x, y, z+d, tx2, ty1),
+        new GlPoint(x, y+h, z, tx1, ty2),
       ]));
       addTriangle(new GlTriangle([
-        new GlPoint(x, y+h, z),
-        new GlPoint(x, y, z+d),
-        new GlPoint(x, y+h, z+d),
+        new GlPoint(x, y+h, z, tx1, ty2),
+        new GlPoint(x, y, z+d, tx2, ty1),
+        new GlPoint(x, y+h, z+d, tx2, ty2),
       ]));
     }
   }

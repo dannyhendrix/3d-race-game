@@ -13,7 +13,7 @@ void applyView(GlPreview preview, double rx, double ry, double rz){
 void main(){
   GlPreview preview;
   preview = new GlPreview(800.0,500.0,(GlModelCollection modelCollection){
-    var model = new GlModel_Pickup();
+    var model = new GlModel_Vehicle();
     model.loadModel(modelCollection);
     var instance = model
         .getModelInstance(modelCollection, new GlColor(0.0, 0.0, 1.0), new GlColor(1.0, 0.0, 0.0), new GlColor(0.0, 0.0, 0.3));
@@ -23,11 +23,11 @@ void main(){
   });
   preview.background = new GlColor(.8,.8,.8);
   preview.ox = 0.0;
-  preview.oy = 16.0;
+  preview.oy = 0.0;
   preview.oz = 240.0;
-  preview.rx = 1.0;
-  preview.ry = 2.6;
-  preview.rz = 5.8;
+  preview.rx = 0.0;
+  preview.ry = 0.0;
+  preview.rz = 0.0;
   preview.lx = 0.3;
   preview.ly = 0.7;
   preview.lz = 0.1;
@@ -42,11 +42,11 @@ void main(){
   document.body.append(createSlider("rotatex",0.0,2*Math.pi,0.1,preview.rx,(String val){ preview.rx = double.parse(val); preview.draw(); }));
   document.body.append(createSlider("rotatey",0.0,2*Math.pi,0.1,preview.ry,(String val){ preview.ry = double.parse(val); preview.draw(); }));
   document.body.append(createSlider("rotatez",0.0,2*Math.pi,0.1,preview.rz,(String val){ preview.rz = double.parse(val); preview.draw(); }));
-  document.body.append(createSlider("lightx",-1.0,1.0,0.1,preview.lx,(String val){ preview.lx = double.parse(val); preview.draw(); }));
+  /*document.body.append(createSlider("lightx",-1.0,1.0,0.1,preview.lx,(String val){ preview.lx = double.parse(val); preview.draw(); }));
   document.body.append(createSlider("lighty",-1.0,1.0,0.1,preview.ly,(String val){ preview.ly = double.parse(val); preview.draw(); }));
   document.body.append(createSlider("lightz",-1.0,1.0,0.1,preview.lz,(String val){ preview.lz = double.parse(val); preview.draw(); }));
   document.body.append(createSlider("light",0.0,1.0,0.05,preview.lightImpact,(String val){ preview.lightImpact = double.parse(val); preview.draw(); }));
-
+*/
   document.body.append(createButton("Right side",(){ applyView(preview, 0.0,0.0,0.0); }));
   document.body.append(createButton("Left side",(){ applyView(preview, 0.0,Math.pi,0.0); }));
   document.body.append(createButton("Front side",(){ applyView(preview, 0.0,Math.pi*0.5,0.0); }));

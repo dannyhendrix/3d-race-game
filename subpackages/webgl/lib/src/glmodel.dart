@@ -5,6 +5,7 @@ abstract class GlModelPart{
   List<double> toDoubleVertex();
   int getNumberOfTriangles() => 0;
   List<double> toNormalsVertex();
+  List<double> toTextureVertex(double textureSize);
 }
 
 abstract class GlModel{
@@ -21,26 +22,30 @@ abstract class GlModel{
 class GlJsonModel extends GlModel{
   List<double> model;
   List<double> normals;
+  List<double> texture;
   int numberOfTriangles;
   GlJsonModel(Map json){
     model = json["model"];
     normals = json["normals"];
+    texture = json["texture"];
     numberOfTriangles = model.length~/9;
   }
   GlModelBuffer createBuffers(GlRenderLayer layer){
     Buffer vertexBuffer = loadInBuffer(model,layer);
     Buffer normalsBuffer = loadInBuffer(normals,layer);
-    return new GlModelBuffer(vertexBuffer, normalsBuffer, numberOfTriangles);
+    Buffer textureBuffer = loadInBuffer(texture,layer);
+    return new GlModelBuffer(vertexBuffer, normalsBuffer, textureBuffer, numberOfTriangles);
   }
 }
 
 class GlAreaModel extends GlModel{
   List<GlModelPart> areas;
   GlAreaModel([List<GlModelPart> areas]): areas = areas ?? [];
-  GlModelBuffer createBuffers(GlRenderLayer layer){
+  GlModelBuffer createBuffers(GlRenderLayer layer, [double textureSize = 256]){
     Buffer vertexBuffer = loadInBuffer(_toDoubleVertex(),layer);
     Buffer normalsBuffer = loadInBuffer(_toNormalsVertex(), layer);
-    return new GlModelBuffer(vertexBuffer, normalsBuffer, _getNumberOfTriangles());
+    Buffer textureBuffer = loadInBuffer(_toTextureVertex(textureSize), layer);
+    return new GlModelBuffer(vertexBuffer, normalsBuffer, textureBuffer, _getNumberOfTriangles());
   }
   void addArea(GlModelPart area) => areas.add(area);
 
@@ -57,6 +62,11 @@ class GlAreaModel extends GlModel{
   List<double> _toNormalsVertex(){
     List<double> result = [];
     for(GlModelPart area in areas) result.addAll(area.toNormalsVertex());
+    return result;
+  }
+  List<double> _toTextureVertex(double textureSize){
+    List<double> result = [];
+    for(GlModelPart area in areas) result.addAll(area.toTextureVertex(textureSize));
     return result;
   }
 }
