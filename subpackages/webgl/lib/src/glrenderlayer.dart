@@ -14,7 +14,6 @@ class GlProgramManager{
       _programs[GlProgramType.Texture] = colorsProgram;
     }
     ctx.useProgram(_programs[_current].program);
-    print("Texture: $enableTextures");
   }
   GlProgram selectProgram(RenderingContext ctx, GlProgramType program){
     if(_current != program){
