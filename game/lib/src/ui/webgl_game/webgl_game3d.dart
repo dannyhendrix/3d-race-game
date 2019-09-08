@@ -20,6 +20,7 @@ abstract class WebglGame{
 class WebglGame3d extends WebglGame{
   Game game;
   GameLoop _gameloop;
+  bool _enableTextures = true;
 
   double lightx = 0.0;
   double lighty = 0.5;
@@ -34,7 +35,7 @@ class WebglGame3d extends WebglGame{
   Element el_rounds;
   Element el_countdown;
 
-  WebglGame3d(GameSettings settings){
+  WebglGame3d(GameSettings settings, [this._enableTextures = true]){
     game = new Game(settings);
     _gameloop = new GameLoop(_loop);
   }
@@ -70,7 +71,7 @@ class WebglGame3d extends WebglGame{
     game.initSession(input);
     double windowW = 800.0;
     double windowH = 500.0;
-    layer = new GlRenderLayer.withSize(windowW.toInt(),windowH.toInt());
+    layer = new GlRenderLayer.withSize(windowW.toInt(),windowH.toInt(),false, _enableTextures);
     el_Fps = new DivElement();
     el_rounds = new DivElement();
     el_rounds.className = "rounds";

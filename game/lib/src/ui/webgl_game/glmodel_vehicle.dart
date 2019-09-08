@@ -63,14 +63,14 @@ class GlModel_Vehicle{
     GlMatrix modelGroundOffset = GlMatrix.translationMatrix(0.0,hWheel.h,0.0);
 
     var colorWheel = new GlColor(0.2,0.2,0.2);
-    return new GlModelInstanceCollection([/*
+    return new GlModelInstanceCollection([
       new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionFrontRight),
       new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionFrontLeft),
       new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearRight),
-      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearLeft),*/
-      new GlModelInstance(collection.getModelBuffer(_ModelBody), colorBase, modelGroundOffset),
+      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearLeft),
+      new GlModelInstance(collection.getModelBuffer(_ModelBody), colorBase, modelGroundOffset, "car"),
       /*new GlModelInstance(collection.getModelBuffer(_ModelStripe), colorStripe, modelGroundOffset),*/
-      new GlModelInstance(collection.getModelBuffer(_ModelWindows), colorWindow, modelGroundOffset),
+      new GlModelInstance(collection.getModelBuffer(_ModelWindows), colorWindow, modelGroundOffset, "car"),
     ]);
   }
   GlModel loadModel(GlModelCollection collection){

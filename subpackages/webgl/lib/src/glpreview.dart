@@ -26,7 +26,7 @@ class GlPreview
   GlPreview(this.windowW, this.windowH, this.createModels);
 
   void create(){
-    layer = new GlRenderLayer.withSize(windowW.toInt(),windowH.toInt(), false);
+    layer = new GlRenderLayer.withSize(windowW.toInt(),windowH.toInt(), false, false);
 
     // Tell WebGL how to convert from clip space to pixels
     layer.ctx.viewport(0, 0, layer.canvas.width, layer.canvas.height);

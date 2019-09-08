@@ -1,8 +1,19 @@
 part of webgl;
 
-class GlProgram{
+abstract class GlProgram{
+  Program program;
+  void setPosition(RenderingContext ctx, Buffer buffer){  }
+  void setNormals(RenderingContext ctx, Buffer buffer){  }
+  void setTextureCoordinates(RenderingContext ctx, Buffer buffer){  }
+  void setColor(RenderingContext ctx, GlColor color){}
+  void setReverseLigtDirection(RenderingContext ctx, Float32List lightSource){}
+  void setWorld(RenderingContext ctx, Float32List buffer){ }
+  void setWorldViewProjection(RenderingContext ctx, Float32List buffer){ }
+  void setLightImpact(RenderingContext ctx, double lightImpact){ }
+}
+class GlProgramTextures extends GlProgram{
 
-  static String fragmentShader = '''
+  static String _fragmentShader = '''
           precision mediump float;
 
         // Passed in from the vertex shader.
@@ -25,7 +36,6 @@ class GlProgram{
            if(light > 1.0) light = 1.0;
            float lightFactor = (1.0-f_lightImpact)+(light*f_lightImpact);
 
-           //gl_FragColor = u_color;
            gl_FragColor = texture2D(u_texture, v_texcoord);
 
            // Lets multiply just the color portion (not the alpha)
@@ -34,7 +44,7 @@ class GlProgram{
            gl_FragColor.rgb *= lightFactor;
         }
         ''';
-  static String vertexShader =  '''
+  static String _vertexShader =  '''
         attribute vec4 a_position;
         attribute vec3 a_normal;
         attribute vec2 a_texcoord;
@@ -57,23 +67,22 @@ class GlProgram{
         }
       ''';
 
-  int attr_Position;
-  int attr_Normal;
-  UniformLocation uni_world;
-  UniformLocation uni_worldViewProjection;
-  UniformLocation uni_Color;
-  UniformLocation uni_lightImpact;
-  UniformLocation uni_reverseLightDirection;
-  Program program;
-  int attr_TexCoord;
+  int _attr_Position;
+  int _attr_Normal;
+  UniformLocation _uni_world;
+  UniformLocation _uni_worldViewProjection;
+  UniformLocation _uni_Color;
+  UniformLocation _uni_lightImpact;
+  UniformLocation _uni_reverseLightDirection;
+  int _attr_TexCoord;
 
-  GlProgram(RenderingContext ctx){
+  GlProgramTextures(RenderingContext ctx){
     Shader fragShader = ctx.createShader(WebGL.FRAGMENT_SHADER);
-    ctx.shaderSource(fragShader, fragmentShader);
+    ctx.shaderSource(fragShader, _fragmentShader);
     ctx.compileShader(fragShader);
 
     Shader vertShader = ctx.createShader(WebGL.VERTEX_SHADER);
-    ctx.shaderSource(vertShader, vertexShader);
+    ctx.shaderSource(vertShader, _vertexShader);
     ctx.compileShader(vertShader);
 
     program = ctx.createProgram();
@@ -83,17 +92,48 @@ class GlProgram{
 
     if (!ctx.getProgramParameter(program, WebGL.LINK_STATUS)) throw new Exception("Could not initialise shaders");
 
-    attr_Position =  ctx.getAttribLocation(program, "a_position");
-    attr_Normal =  ctx.getAttribLocation(program, "a_normal");
-    attr_TexCoord =  ctx.getAttribLocation(program, "a_texcoord");
-    uni_world = ctx.getUniformLocation(program, "u_world");
-    uni_worldViewProjection = ctx.getUniformLocation(program, "u_worldViewProjection");
-    uni_Color = ctx.getUniformLocation(program, "u_color");
-    uni_reverseLightDirection = ctx.getUniformLocation(program, "u_reverseLightDirection");
-    uni_lightImpact = ctx.getUniformLocation(program, "f_lightImpact");
+    _attr_Position =  ctx.getAttribLocation(program, "a_position");
+    _attr_Normal =  ctx.getAttribLocation(program, "a_normal");
+    _attr_TexCoord =  ctx.getAttribLocation(program, "a_texcoord");
+    _uni_world = ctx.getUniformLocation(program, "u_world");
+    _uni_worldViewProjection = ctx.getUniformLocation(program, "u_worldViewProjection");
+    _uni_Color = ctx.getUniformLocation(program, "u_color");
+    _uni_reverseLightDirection = ctx.getUniformLocation(program, "u_reverseLightDirection");
+    _uni_lightImpact = ctx.getUniformLocation(program, "f_lightImpact");
+  }
+
+  void setPosition(RenderingContext ctx, Buffer buffer){
+    ctx.enableVertexAttribArray(_attr_Position);
+    ctx.bindBuffer(WebGL.ARRAY_BUFFER, buffer);
+    ctx.vertexAttribPointer(_attr_Position, 3, WebGL.FLOAT, false, 0, 0);
+  }
+  void setNormals(RenderingContext ctx, Buffer buffer){
+    ctx.enableVertexAttribArray(_attr_Normal);
+    ctx.bindBuffer(WebGL.ARRAY_BUFFER, buffer);
+    ctx.vertexAttribPointer(_attr_Normal, 3, WebGL.FLOAT, false, 0, 0);
+  }
+  void setTextureCoordinates(RenderingContext ctx, Buffer buffer){
+    ctx.enableVertexAttribArray(_attr_TexCoord);
+    ctx.bindBuffer(WebGL.ARRAY_BUFFER, buffer);
+    ctx.vertexAttribPointer(_attr_TexCoord, 2, WebGL.FLOAT, false, 0, 0);
+  }
+  void setColor(RenderingContext ctx, GlColor color){
+    ctx.uniform4fv(_uni_Color, new Float32List.fromList([color.r,color.g,color.b,color.a]));
+  }
+  void setReverseLigtDirection(RenderingContext ctx, Float32List lightSource){
+    ctx.uniform3fv(_uni_reverseLightDirection, lightSource);
+  }
+  void setWorld(RenderingContext ctx, Float32List buffer){
+    ctx.uniformMatrix4fv(_uni_world, false, buffer);
+  }
+  void setWorldViewProjection(RenderingContext ctx, Float32List buffer){
+    ctx.uniformMatrix4fv(_uni_worldViewProjection, false, buffer);
+  }
+  void setLightImpact(RenderingContext ctx, double lightImpact){
+    ctx.uniform1f(_uni_lightImpact, lightImpact);
   }
 }
-/*
+
 class GlProgramSolidColors extends GlProgram{
   static String fragmentShader = '''
           precision mediump float;
@@ -126,7 +166,6 @@ class GlProgramSolidColors extends GlProgram{
   static String vertexShader =  '''
         attribute vec4 a_position;
         attribute vec3 a_normal;
-        attribute vec2 a_texcoord;
 
         uniform mat4 u_worldViewProjection;
         uniform mat4 u_world;
@@ -142,6 +181,15 @@ class GlProgramSolidColors extends GlProgram{
         }
       ''';
 
+  int _attr_Position;
+  int _attr_Normal;
+  UniformLocation _uni_world;
+  UniformLocation _uni_worldViewProjection;
+  UniformLocation _uni_Color;
+  UniformLocation _uni_lightImpact;
+  UniformLocation _uni_reverseLightDirection;
+  int _attr_TexCoord;
+
   GlProgramSolidColors(RenderingContext ctx){
     Shader fragShader = ctx.createShader(WebGL.FRAGMENT_SHADER);
     ctx.shaderSource(fragShader, fragmentShader);
@@ -156,17 +204,40 @@ class GlProgramSolidColors extends GlProgram{
     ctx.attachShader(program, fragShader);
     ctx.linkProgram(program);
 
-    attr_Position =  ctx.getAttribLocation(program, "a_position");
-    attr_Normal =  ctx.getAttribLocation(program, "a_normal");
-    uni_world = ctx.getUniformLocation(program, "u_world");
-    uni_worldViewProjection = ctx.getUniformLocation(program, "u_worldViewProjection");
-    uni_Color = ctx.getUniformLocation(program, "u_color");
-    uni_reverseLightDirection = ctx.getUniformLocation(program, "u_reverseLightDirection");
-    uni_lightImpact = ctx.getUniformLocation(program, "f_lightImpact");
+    _attr_Position =  ctx.getAttribLocation(program, "a_position");
+    _attr_Normal =  ctx.getAttribLocation(program, "a_normal");
+    _uni_world = ctx.getUniformLocation(program, "u_world");
+    _uni_worldViewProjection = ctx.getUniformLocation(program, "u_worldViewProjection");
+    _uni_Color = ctx.getUniformLocation(program, "u_color");
+    _uni_reverseLightDirection = ctx.getUniformLocation(program, "u_reverseLightDirection");
+    _uni_lightImpact = ctx.getUniformLocation(program, "f_lightImpact");
+  }
+
+  void setPosition(RenderingContext ctx, Buffer buffer){
+    ctx.enableVertexAttribArray(_attr_Position);
+    ctx.bindBuffer(WebGL.ARRAY_BUFFER, buffer);
+    ctx.vertexAttribPointer(_attr_Position, 3, WebGL.FLOAT, false, 0, 0);
+  }
+  void setNormals(RenderingContext ctx, Buffer buffer){
+    ctx.enableVertexAttribArray(_attr_Normal);
+    ctx.bindBuffer(WebGL.ARRAY_BUFFER, buffer);
+    ctx.vertexAttribPointer(_attr_Normal, 3, WebGL.FLOAT, false, 0, 0);
+  }
+  void setTextureCoordinates(RenderingContext ctx, Buffer buffer){
+  }
+  void setColor(RenderingContext ctx, GlColor color){
+    ctx.uniform4fv(_uni_Color, new Float32List.fromList([color.r,color.g,color.b,color.a]));
+  }
+  void setReverseLigtDirection(RenderingContext ctx, Float32List lightSource){
+    ctx.uniform3fv(_uni_reverseLightDirection, lightSource);
+  }
+  void setWorld(RenderingContext ctx, Float32List buffer){
+    ctx.uniformMatrix4fv(_uni_world, false, buffer);
+  }
+  void setWorldViewProjection(RenderingContext ctx, Float32List buffer){
+    ctx.uniformMatrix4fv(_uni_worldViewProjection, false, buffer);
+  }
+  void setLightImpact(RenderingContext ctx, double lightImpact){
+    ctx.uniform1f(_uni_lightImpact, lightImpact);
   }
 }
-
-class GlProgramTextures extends GlProgram{
-
-
-}*/

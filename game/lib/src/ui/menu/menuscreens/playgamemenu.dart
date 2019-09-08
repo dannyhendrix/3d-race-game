@@ -53,7 +53,8 @@ class PlayGameMenu extends GameMenuScreen{
     if(displayType == null){
       displayType = menu.settings.client_displayType.v;
     }
-    game = displayType == GameDisplayType.Webgl2d ? new WebglGame2d(menu.settings) : new WebglGame3d(menu.settings);
+    var enableTextures = menu.settings.client_renderType.v == GameRenderType.Textures;
+    game = displayType == GameDisplayType.Webgl2d ? new WebglGame2d(menu.settings) : new WebglGame3d(menu.settings, enableTextures);
 
     game.onGameFinished = (result){
       el_game.remove();

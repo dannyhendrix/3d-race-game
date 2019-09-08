@@ -11,8 +11,9 @@ class GlModelInstance{
   GlModelBuffer modelBuffer;
   GlColor color;
   GlMatrix _transformMatrix;
+  String texture;
   GlMatrix CreateTransformMatrix() => _transformMatrix;
-  GlModelInstance(this.modelBuffer, this.color, [this._transformMatrix]){
+  GlModelInstance(this.modelBuffer, this.color, [this._transformMatrix, this.texture]){
     if(_transformMatrix == null){
       _transformMatrix = GlMatrix.identityMatrix();
     }
