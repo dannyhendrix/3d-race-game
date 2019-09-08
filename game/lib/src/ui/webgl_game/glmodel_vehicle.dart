@@ -69,7 +69,7 @@ class GlModel_Vehicle{
       new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearRight),
       new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearLeft),
       new GlModelInstance(collection.getModelBuffer(_ModelBody), colorBase, modelGroundOffset, "car"),
-      /*new GlModelInstance(collection.getModelBuffer(_ModelStripe), colorStripe, modelGroundOffset),*/
+      new GlModelInstance(collection.getModelBuffer(_ModelStripe), colorStripe, modelGroundOffset, "car"),
       new GlModelInstance(collection.getModelBuffer(_ModelWindows), colorWindow, modelGroundOffset, "car"),
     ]);
   }
@@ -78,17 +78,14 @@ class GlModel_Vehicle{
       //floor
       new GlRectangle.withWD(-w.h,0.0, -d.h, w.v, d.v, true,0,51),
       //hood
-      //new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, d.h-dStripeRight.v, wHood.v, dStripeRight.v, false),
-      //new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h, wHood.v, dStripeLeft.v, false),
-      new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h, wHood.v, d.v, false,85,51),
+      new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h, wHood.v, dStripeLeft.v, false,85,51),
+      new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, d.h-dStripeRight.v, wHood.v, dStripeRight.v, false,85,51+dStripeLeft.v+dStripeMid.v),
       //rear top
-      //new GlRectangle.withWD(-w.h,hCarBottom.v, d.h-dStripeRight.v, wRear.v, dStripeRight.v, false),
-      //new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h, wRear.v, dStripeLeft.v, false),
-      new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h, wRear.v, d.v, false,50,51),
+      new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h, wRear.v, dStripeLeft.v, false,50,51),
+      new GlRectangle.withWD(-w.h,hCarBottom.v, d.h-dStripeRight.v, wRear.v, dStripeRight.v, false,50,51+dStripeLeft.v+dStripeMid.v),
       //roof
-      //new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, d.h-dWindow.v-dStripeRoofRight.v, wRoof.v, dStripeRoofRight.v, false),
-      //new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, -d.h+dWindow.v, wRoof.v, dStripeRoofLeft.v, false),
-      new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, -d.h+dWindow.v, wRoof.v, dRoof.v, false,65,54),
+      new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, -d.h+dWindow.v, wRoof.v, dStripeRoofRight.v, false,65,54),
+      new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, d.h-dWindow.v-dStripeRoofRight.v, wRoof.v, dStripeRoofLeft.v, false,65,54+dStripeRoofLeft.v+dStripeRoofMid.v),
       //front
       new GlRectangle.withHD(w.h,0.0, -d.h, hCarBottom.v, d.v, true,0,107),
       //rear
@@ -104,11 +101,11 @@ class GlModel_Vehicle{
 
     collection.loadModel(_ModelStripe, new GlAreaModel([
       //hood
-      new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h+dStripeLeft.v, wHood.v, dStripeMid.v, false),
+      new GlRectangle.withWD(w.h-wHood.v,hCarBottom.v, -d.h+dStripeLeft.v, wHood.v, dStripeMid.v, false,85,51+dStripeLeft.v),
       //rear top
-      new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h+dStripeLeft.v, wRear.v, dStripeMid.v, false),
+      new GlRectangle.withWD(-w.h,hCarBottom.v, -d.h+dStripeLeft.v, wRear.v, dStripeMid.v, false,50,51+dStripeLeft.v),
       //roof
-      new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, -d.h+dWindow.v+dStripeRoofLeft.v, wRoof.v, dStripeRoofMid.v, false),
+      new GlRectangle.withWD(-w.h+wRear.v+wWindowRear.v,h.v, -d.h+dWindow.v+dStripeRoofLeft.v, wRoof.v, dStripeRoofMid.v, false,65,54+dStripeRoofLeft.v),
 
     ]));
 

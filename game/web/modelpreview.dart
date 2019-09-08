@@ -20,12 +20,12 @@ void main(){
     var xyzMark = createXYZMark(preview.layer);
     return [xyzMark, instance];
 
-  });
+  }, true);
   preview.background = new GlColor(.8,.8,.8);
   preview.ox = 0.0;
   preview.oy = 0.0;
   preview.oz = 240.0;
-  preview.rx = 0.0;
+  preview.rx = 5.3;
   preview.ry = 0.0;
   preview.rz = 0.0;
   preview.lx = 0.3;

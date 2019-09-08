@@ -16,6 +16,7 @@ class GlPreview
 
   double windowW = 500.0;
   double windowH = 400.0;
+  bool _enableTextures = false;
 
   GlRenderLayer layer;
   List<GlModelInstanceCollection> modelInstances = [];
@@ -23,10 +24,10 @@ class GlPreview
   GlPreviewCreateModels createModels;
   GlColor background = new GlColor(1.0,1.0,1.0);
 
-  GlPreview(this.windowW, this.windowH, this.createModels);
+  GlPreview(this.windowW, this.windowH, this.createModels, [this._enableTextures = false]);
 
   void create(){
-    layer = new GlRenderLayer.withSize(windowW.toInt(),windowH.toInt(), false, false);
+    layer = new GlRenderLayer.withSize(windowW.toInt(),windowH.toInt(), false, _enableTextures);
 
     // Tell WebGL how to convert from clip space to pixels
     layer.ctx.viewport(0, 0, layer.canvas.width, layer.canvas.height);

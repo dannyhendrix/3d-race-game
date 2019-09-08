@@ -143,12 +143,15 @@ class GlRectangle extends GlArea{
     }
   }
   GlRectangle.withWD(double x, double y, double z, double w, double d, [bool facingFront=true, double toffsetx=0.0, double toffsety=0.0]){
-    var tx2 = toffsetx;
-    var tx1 = (toffsetx+w);
+    var tx1 = toffsetx;
+    var tx2 = (toffsetx+w);
     var ty1 = toffsety;
     var ty2 = (toffsety+d);
     if(facingFront)
     {
+      var t = tx1;
+      tx1 = tx2;
+      tx2 = t;
       addTriangle(new GlTriangle([
         new GlPoint(x, y, z, tx1, ty1),
         new GlPoint(x + w, y, z, tx2, ty1),
@@ -160,9 +163,6 @@ class GlRectangle extends GlArea{
         new GlPoint(x, y, z+d, tx1, ty2)
       ]));
     }else{
-      var t = ty1;
-      ty1 = ty2;
-      ty2 = t;
       addTriangle(new GlTriangle([
         new GlPoint(x, y, z, tx1,ty1),
         new GlPoint(x, y, z+d,tx1,ty2),
