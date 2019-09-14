@@ -38,7 +38,7 @@ class GlPreview
     camera.setPerspective(aspect : windowW / windowH);
 
     //4 create models
-    GlModelCollection modelCollection = new GlModelCollection(layer);
+    GlModelCollection modelCollection = new GlModelCollectionBuffer(layer);
     modelInstances = createModels(modelCollection);
   }
 

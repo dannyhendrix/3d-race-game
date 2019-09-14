@@ -4,6 +4,7 @@ import "dart:html";
 import "dart:math" as Math;
 
 import "package:renderlayer/renderlayer.dart";
+import "package:preloader/preloader.dart";
 import "package:gameutils/gameloop.dart";
 import "package:gameutils/math.dart";
 import "package:dashboard/uihelper.dart";

@@ -8,6 +8,11 @@ class LevelManager{
   void preLoadLevels(Function onComplete){
     var loader = new PreLoader(()=>_onLevelsListLoaded(onComplete));
     loader.loadJson("levels/levels.json","levels");
+    //TODO: refactor
+    loader.loadImage("textures/texture_car.png","texture_vehicle");
+    loader.loadImage("textures/texture_tree.png","texture_tree");
+    loader.loadImage("textures/texture_road.png","texture_road");
+    loader.loadImage("textures/texture_wall.png","texture_wall");
     loader.start();
   }
   void _onLevelsListLoaded(Function onComplete){

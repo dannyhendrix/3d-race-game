@@ -51,22 +51,22 @@ class GlAreaModel extends GlModel{
 
   int _getNumberOfTriangles(){
     int total = 0;
-    for(GlModelPart area in areas) total += area.getNumberOfTriangles();
+    for(var area in areas) total += area.getNumberOfTriangles();
     return total;
   }
   List<double> _toDoubleVertex(){
     List<double> result = [];
-    for(GlModelPart area in areas) result.addAll(area.toDoubleVertex());
+    for(var area in areas) result.addAll(area.toDoubleVertex());
     return result;
   }
   List<double> _toNormalsVertex(){
     List<double> result = [];
-    for(GlModelPart area in areas) result.addAll(area.toNormalsVertex());
+    for(var area in areas) result.addAll(area.toNormalsVertex());
     return result;
   }
   List<double> _toTextureVertex(double textureSize){
     List<double> result = [];
-    for(GlModelPart area in areas) result.addAll(area.toTextureVertex(textureSize));
+    for(var area in areas) result.addAll(area.toTextureVertex(textureSize));
     return result;
   }
 }

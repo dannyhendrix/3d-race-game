@@ -78,6 +78,12 @@ class WebglGame3d extends WebglGame{
     el_countdown = new DivElement();
     el_countdown.className = "countdown";
 
+    //set textures
+    layer.setTexture("car", ImageController.getImage("texture_vehicle"));
+    layer.setTexture("tree", ImageController.getImage("texture_tree"));
+    layer.setTexture("road", ImageController.getImage("texture_road"));
+    layer.setTexture("wall", ImageController.getImage("texture_wall"));
+
     //create UI
     Element el_hud = new DivElement();
     el_hud.className = "hud";
@@ -187,7 +193,7 @@ class WebglGame3d extends WebglGame{
 
   List<GlModelInstanceCollection> _createModels(){
     //TODO: why load all the models? (why load truck if we only have cars?)
-    GlModelCollection modelCollection = new GlModelCollection(layer);
+    GlModelCollection modelCollection = new GlModelCollectionBuffer(layer);
     GlModel_Vehicle vehicleModel = new GlModel_Vehicle();
     GlModel_Formula formulaModel = new GlModel_Formula();
     GlModel_Pickup pickupModel = new GlModel_Pickup();
@@ -293,10 +299,10 @@ class WebglGame3d extends WebglGame{
     }
 
     //GlModel worldModel = new GlAreaModel([new GlRectangle.withWD(0.0,0.0,0.0,1500.0,800.0,false)]);
-    var triangles = game.level.roadPolygons.map((Polygon p)=>new GlTriangle(p.points.map((var p)=>new GlPoint(p.x,0.0,p.y)).toList(growable: false))).toList(growable: false);
+    var triangles = game.level.roadPolygons.map((Polygon p)=>new GlTriangle(p.points.map((var p)=>new GlPoint(p.x,0.0,p.y,p.x,-p.y)).toList(growable: false))).toList(growable: false);
     GlModel roadModel = new GlAreaModel(triangles);
     GlModelBuffer road = roadModel.createBuffers(layer);
-    modelInstances.add(new GlModelInstanceCollection([new GlModelInstance(road, new GlColor(0.3,0.3,0.3))]));
+    modelInstances.add(new GlModelInstanceCollection([new GlModelInstance(road, new GlColor(0.3,0.3,0.3),null,"road")]));
 
     GlModelBuffer cube = new GlCube.fromTopCenter(0.0,0.0,0.0,30.0,30.0,30.0).createBuffers(layer);
     if(game.gamelevelType == GameLevelType.Checkpoint)

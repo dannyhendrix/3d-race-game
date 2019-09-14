@@ -10,7 +10,7 @@ class GlModel_Wall{
 
     color ??= new GlColor(1.0,1.0,1.0);
     return new GlModelInstanceCollection([
-      new GlModelInstance(collection.getModelBuffer(_Model), color, transform),
+      new GlModelInstance(collection.getModelBuffer(_Model), color, transform/*, "wall"*/),
     ]);
   }
   GlModel loadModel(GlModelCollection collection){
@@ -22,12 +22,12 @@ class GlModel_Wall{
     double d = 1.0;
     double hd = w/2;
     collection.loadModel(_Model, new GlAreaModel([
-      new GlRectangle.withWH(-hw,  0.0,  hd,  w,h, true),
-      new GlRectangle.withWH(-hw,  0.0,  hd-d,w,h, false),
-      new GlRectangle.withHD(-hw,  0.0,  hd-d,h,d, false),
-      new GlRectangle.withHD(-hw+w,0.0,  hd-d,h,d, true),
-      new GlRectangle.withWD(-hw,  h,    hd-d,w,d, false),
-      new GlRectangle.withWD(-hw,  0.0,  hd-d,w,d, true)
+      new GlRectangle.withWH(-hw,  0.0,  hd,  w,h, true,0,0),
+      new GlRectangle.withWH(-hw,  0.0,  hd-d,w,h, false,0,0),
+      new GlRectangle.withHD(-hw,  0.0,  hd-d,h,d, false,0,0),
+      new GlRectangle.withHD(-hw+w,0.0,  hd-d,h,d, true,0,0),
+      new GlRectangle.withWD(-hw,  h,    hd-d,w,d, false,0,0),
+      new GlRectangle.withWD(-hw,  0.0,  hd-d,w,d, true,0,0)
     ]));
 
   }

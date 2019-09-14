@@ -29,6 +29,7 @@ class GlRenderLayer{
   RenderingContext ctx;
   bool _enableCullFace = false;
   GlProgramManager _programManager;
+  Map<String, Texture> _textures = {};
   double x = 0.0, y =0.0, z =0.0;
   double rx = 0.0, ry =0.0, rz =0.0;
 
@@ -42,6 +43,22 @@ class GlRenderLayer{
     _init(enableTextures);
   }
 
+  void setTexture(String id, dynamic image){
+    var texture = ctx.createTexture();
+    ctx.bindTexture(WebGL.TEXTURE_2D, texture);
+
+    //ctx.texParameteri(WebGL.TEXTURE_2D, WebGL.TEXTURE_WRAP_S, WebGL.CLAMP_TO_EDGE);
+    //ctx.texParameteri(WebGL.TEXTURE_2D, WebGL.TEXTURE_WRAP_T, WebGL.CLAMP_TO_EDGE);
+    ctx.texParameteri(WebGL.TEXTURE_2D, WebGL.TEXTURE_MIN_FILTER, WebGL.NEAREST);
+    ctx.texParameteri(WebGL.TEXTURE_2D, WebGL.TEXTURE_MAG_FILTER, WebGL.NEAREST);
+    ctx.texParameteri(WebGL.TEXTURE_2D, WebGL.TEXTURE_WRAP_S, WebGL.REPEAT);
+    ctx.texParameteri(WebGL.TEXTURE_2D, WebGL.TEXTURE_WRAP_T, WebGL.REPEAT);
+
+    ctx.texImage2D(WebGL.TEXTURE_2D, 0, WebGL.RGBA, WebGL.RGBA,WebGL.UNSIGNED_BYTE, image);
+    ctx.generateMipmap(WebGL.TEXTURE_2D);
+    _textures[id] = texture;
+  }
+
   void _init(bool enableTextures){
     ctx = canvas.getContext3d();
     if (ctx == null)
@@ -52,27 +69,6 @@ class GlRenderLayer{
     ctx.enable(WebGL.DEPTH_TEST);
     _programManager = new GlProgramManager();
     _programManager.init(ctx, enableTextures);
-    if(enableTextures) createTexture();
-
-  }
-
-  void createTexture(){
-    var texture = ctx.createTexture();
-    ctx.bindTexture(WebGL.TEXTURE_2D, texture);
-    // Fill the texture with a 1x1 blue pixel.
-    ctx.texImage2D(WebGL.TEXTURE_2D, 0, WebGL.RGBA, 1, 1, 0, WebGL.RGBA, WebGL.UNSIGNED_BYTE, new Uint8List.fromList([0, 0, 255, 255]));
-    ctx.texParameteri(WebGL.TEXTURE_2D, WebGL.TEXTURE_WRAP_S, WebGL.CLAMP_TO_EDGE);
-    ctx.texParameteri(WebGL.TEXTURE_2D, WebGL.TEXTURE_WRAP_T, WebGL.CLAMP_TO_EDGE);
-    ctx.texParameteri(WebGL.TEXTURE_2D, WebGL.TEXTURE_MIN_FILTER, WebGL.NEAREST);
-    ctx.texParameteri(WebGL.TEXTURE_2D, WebGL.TEXTURE_MAG_FILTER, WebGL.NEAREST);
-    var image = new ImageElement();
-    image.src = "textures/texture_car.png";
-    image.onLoad.listen((e) {
-      // Now that the image has loaded make copy it to the texture.
-      ctx.bindTexture(WebGL.TEXTURE_2D, texture);
-      ctx.texImage2D(WebGL.TEXTURE_2D, 0, WebGL.RGBA, WebGL.RGBA,WebGL.UNSIGNED_BYTE, image);
-      ctx.generateMipmap(WebGL.TEXTURE_2D);
-    });
   }
 
   void setClearColor(GlColor color){
@@ -85,6 +81,10 @@ class GlRenderLayer{
     program.setPosition(ctx,model.modelBuffer.vertexBuffer);
     program.setNormals(ctx,model.modelBuffer.normalsBuffer);
     program.setTextureCoordinates(ctx,model.modelBuffer.textureBuffer);
+    program.setTextureScale(ctx, new Float32List.fromList([1.0,1.0]));
+    if( model.texture != null){
+      ctx.bindTexture(WebGL.TEXTURE_2D, _textures[model.texture]);
+    }
     ctx.drawArrays(WebGL.TRIANGLES, 0, model.modelBuffer.numberOfTriangles*3);
   }
 

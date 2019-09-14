@@ -26,8 +26,8 @@ class GlModel_Tree{
 
   GlModelInstanceCollection getModelInstance(GlModelCollection collection){
     return new GlModelInstanceCollection([
-      new GlModelInstance(collection.getModelBuffer(_ModelLeaves), colorLeaves),
-      new GlModelInstance(collection.getModelBuffer(_ModelTrunk), colorTrunk),
+      new GlModelInstance(collection.getModelBuffer(_ModelLeaves), colorLeaves, null, "tree"),
+      new GlModelInstance(collection.getModelBuffer(_ModelTrunk), colorTrunk, null, "tree"),
     ]);
   }
   GlModel loadModel(GlModelCollection collection){
@@ -35,41 +35,41 @@ class GlModel_Tree{
     collection.loadModel(_ModelTrunk, new GlAreaModel([
       // top
       //new GlRectangle.withWD(-wTrunk.h, hTrunk.v, -dTrunk.h, wTrunk.v, dTrunk.v, false),
-      new GlRectangle.withWD(-wTrunk.h,0.0, -dTrunk.h, wTrunk.v, dTrunk.v, true),
+      new GlRectangle.withWD(-wTrunk.h,0.0, -dTrunk.h, wTrunk.v, dTrunk.v, true, 100,64),
       //front
-      new GlRectangle.withWH(-wTrunk.h,0.0, -dTrunk.h, wTrunk.v, hTrunk.v, false),
+      new GlRectangle.withWH(-wTrunk.h,0.0, -dTrunk.h, wTrunk.v, hTrunk.v, false, 100,0),
       //back
-      new GlRectangle.withWH(-wTrunk.h,0.0, dTrunk.h, wTrunk.v, hTrunk.v, true),
+      new GlRectangle.withWH(-wTrunk.h,0.0, dTrunk.h, wTrunk.v, hTrunk.v, true, 100,0),
       //left
-      new GlRectangle.withHD(-wTrunk.h,0.0, -dTrunk.h, hTrunk.v, dTrunk.v, false),
-      new GlRectangle.withHD(wTrunk.h,0.0, -dTrunk.h, hTrunk.v, dTrunk.v, true),
+      new GlRectangle.withHD(-wTrunk.h,0.0, -dTrunk.h, hTrunk.v, dTrunk.v, false, 100,0),
+      new GlRectangle.withHD(wTrunk.h,0.0, -dTrunk.h, hTrunk.v, dTrunk.v, true, 100,0),
     ]));
 
     collection.loadModel(_ModelLeaves, new GlAreaModel([
 
       //bottom square
       //4 triangle to top
-      new GlRectangle.withWD(-wLeaves.h, hTrunk.v, -dLeaves.h, wLeaves.v, dLeaves.v, true),
+      new GlRectangle.withWD(-wLeaves.h, hTrunk.v, -dLeaves.h, wLeaves.v, dLeaves.v, true, 0,150),
 
       new GlTriangle([
-        new GlPoint(-wLeaves.h, hTrunk.v, -dLeaves.h),
-        new GlPoint(0.0, h.v, 0.0),
-        new GlPoint(wLeaves.h, hTrunk.v, -dLeaves.h),
+        new GlPoint(-wLeaves.h, hTrunk.v, -dLeaves.h,0,146),
+        new GlPoint(0.0, h.v, 0.0,40,0),
+        new GlPoint(wLeaves.h, hTrunk.v, -dLeaves.h,80,146),
       ]),
       new GlTriangle([
-        new GlPoint(-wLeaves.h, hTrunk.v, dLeaves.h),
-        new GlPoint(wLeaves.h, hTrunk.v, dLeaves.h),
-        new GlPoint(0.0, h.v, 0.0),
+        new GlPoint(-wLeaves.h, hTrunk.v, dLeaves.h,0,146),
+        new GlPoint(wLeaves.h, hTrunk.v, dLeaves.h,80,146),
+        new GlPoint(0.0, h.v, 0.0,40,0),
       ]),
       new GlTriangle([
-        new GlPoint(wLeaves.h, hTrunk.v, -dLeaves.h),
-        new GlPoint(0.0, h.v, 0.0),
-        new GlPoint(wLeaves.h, hTrunk.v, dLeaves.h),
+        new GlPoint(wLeaves.h, hTrunk.v, -dLeaves.h,0,146),
+        new GlPoint(0.0, h.v, 0.0,40,0),
+        new GlPoint(wLeaves.h, hTrunk.v, dLeaves.h,80,146),
       ]),
       new GlTriangle([
-        new GlPoint(-wLeaves.h, hTrunk.v, -dLeaves.h),
-        new GlPoint(-wLeaves.h, hTrunk.v, dLeaves.h),
-        new GlPoint(0.0, h.v, 0.0),
+        new GlPoint(-wLeaves.h, hTrunk.v, -dLeaves.h,0,146),
+        new GlPoint(-wLeaves.h, hTrunk.v, dLeaves.h,80,146),
+        new GlPoint(0.0, h.v, 0.0,40,0),
       ]),
     ]));
   }

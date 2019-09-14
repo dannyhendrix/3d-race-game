@@ -10,6 +10,7 @@ abstract class GlProgram{
   void setWorld(RenderingContext ctx, Float32List buffer){ }
   void setWorldViewProjection(RenderingContext ctx, Float32List buffer){ }
   void setLightImpact(RenderingContext ctx, double lightImpact){ }
+  void setTextureScale(RenderingContext ctx, Float32List textureScale){  }
 }
 class GlProgramTextures extends GlProgram{
 
@@ -51,6 +52,7 @@ class GlProgramTextures extends GlProgram{
 
         uniform mat4 u_worldViewProjection;
         uniform mat4 u_world;
+        uniform vec2 u_textureScale;
         varying vec3 v_normal;
         varying vec2 v_texcoord;
 
@@ -74,6 +76,7 @@ class GlProgramTextures extends GlProgram{
   UniformLocation _uni_Color;
   UniformLocation _uni_lightImpact;
   UniformLocation _uni_reverseLightDirection;
+  UniformLocation _uni_texture;
   int _attr_TexCoord;
 
   GlProgramTextures(RenderingContext ctx){
@@ -100,6 +103,7 @@ class GlProgramTextures extends GlProgram{
     _uni_Color = ctx.getUniformLocation(program, "u_color");
     _uni_reverseLightDirection = ctx.getUniformLocation(program, "u_reverseLightDirection");
     _uni_lightImpact = ctx.getUniformLocation(program, "f_lightImpact");
+    _uni_texture = ctx.getUniformLocation(program, "u_textureScale");
   }
 
   void setPosition(RenderingContext ctx, Buffer buffer){
@@ -131,6 +135,9 @@ class GlProgramTextures extends GlProgram{
   }
   void setLightImpact(RenderingContext ctx, double lightImpact){
     ctx.uniform1f(_uni_lightImpact, lightImpact);
+  }
+  void setTextureScale(RenderingContext ctx, Float32List textureScale){
+    ctx.uniform3fv(_uni_texture, textureScale);
   }
 }
 
