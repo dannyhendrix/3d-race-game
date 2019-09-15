@@ -82,7 +82,8 @@ class WebglGame3d extends WebglGame{
     layer.setTexture("car", ImageController.getImage("texture_vehicle"));
     layer.setTexture("tree", ImageController.getImage("texture_tree"));
     layer.setTexture("road", ImageController.getImage("texture_road"));
-    layer.setTexture("wall", ImageController.getImage("texture_wall"));
+    layer.setTexture("wall", ImageController.getImage("texture_wall"),true);
+    layer.setTexture("caravan", ImageController.getImage("texture_caravan"));
 
     //create UI
     Element el_hud = new DivElement();
@@ -104,7 +105,7 @@ class WebglGame3d extends WebglGame{
 
     //3 set view perspective
     if(settings.client_cameraType.v == GameCameraType.VehicleView) camera = new GlCameraFollowTargetClose(800.0,0.6);
-    else camera = new GlCameraFollowTargetBirdView(1800,1.0);
+    else camera = new GlCameraFollowTargetBirdView(1000,1.0);
     camera.setPerspective(aspect:windowW / windowH, fieldOfViewRadians: 0.5, zFar: 4000.0);
 
     //create all models

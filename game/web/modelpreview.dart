@@ -12,8 +12,8 @@ void applyView(GlPreview preview, double rx, double ry, double rz){
 }
 void main(){
   var collection = GlModelCollectionModels();
-  //var model = new GlModel_Vehicle();
-  var model = new GlModel_Wall();
+  var model = new GlModel_Caravan();
+  //var model = new GlModel_Wall();
   model.loadModel(collection);
 
   var renderTexture = RenderTexture();
@@ -26,8 +26,8 @@ void main(){
   GlPreview preview;
   preview = new GlPreview(800.0,500.0,(GlModelCollection modelCollection){
     model.loadModel(modelCollection);
-    //var instance = model.getModelInstance(modelCollection, new GlColor(0.0, 0.0, 1.0), new GlColor(1.0, 0.0, 0.0), new GlColor(0.0, 0.0, 0.3));
-    var instance = model.getModelInstance(modelCollection,20.0,40.0,20.0);
+    var instance = model.getModelInstance(modelCollection, new GlColor(0.0, 0.0, 1.0), new GlColor(1.0, 0.0, 0.0), new GlColor(0.0, 0.0, 0.3));
+    //var instance = model.getModelInstance(modelCollection,20.0,40.0,20.0);
     var xyzMark = createXYZMark(preview.layer);
     return [xyzMark, instance];
 
@@ -45,7 +45,16 @@ void main(){
   preview.ly = 0.7;
   preview.lz = 0.1;
   preview.create();
-  preview.layer.setTexture("wall", renderTexture.layer.canvas);
+  //preview.layer.setTexture("caravan", renderTexture.layer.canvas);
+
+
+  var image = new ImageElement();
+  image.src = "textures/texture_caravan.png";
+  preview.layer.setTexture("caravan", image);
+  image.onLoad.listen((event){
+    preview.layer.setTexture("caravan", image);
+  });
+
   preview.draw();
 
   document.body.append(preview.layer.canvas);

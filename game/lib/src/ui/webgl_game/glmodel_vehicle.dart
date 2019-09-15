@@ -64,10 +64,10 @@ class GlModel_Vehicle{
 
     var colorWheel = new GlColor(0.2,0.2,0.2);
     return new GlModelInstanceCollection([
-      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionFrontRight),
-      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionFrontLeft),
-      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearRight),
-      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearLeft),
+      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionFrontRight, "car"),
+      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionFrontLeft, "car"),
+      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearRight, "car"),
+      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearLeft, "car"),
       new GlModelInstance(collection.getModelBuffer(_ModelBody), colorBase, modelGroundOffset, "car"),
       new GlModelInstance(collection.getModelBuffer(_ModelStripe), colorStripe, modelGroundOffset, "car"),
       new GlModelInstance(collection.getModelBuffer(_ModelWindows), colorWindow, modelGroundOffset, "car"),
@@ -155,6 +155,6 @@ class GlModel_Vehicle{
         new GlPoint(w.h-wHood.v,hCarBottom.v,-d.h,84,25),
       ]),
     ]));
-    collection.loadModel(_ModelWheel, new GlCube.fromTopCenter(0.0,0.0,0.0,wWheel.v,hWheel.v,dWheel.v));
+    collection.loadModel(_ModelWheel, new GlCube.fromTopCenter(0.0,0.0,0.0,wWheel.v,hWheel.v,dWheel.v, 0, 150));
   }
 }

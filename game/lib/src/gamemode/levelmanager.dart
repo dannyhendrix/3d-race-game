@@ -13,6 +13,7 @@ class LevelManager{
     loader.loadImage("textures/texture_tree.png","texture_tree");
     loader.loadImage("textures/texture_road.png","texture_road");
     loader.loadImage("textures/texture_wall.png","texture_wall");
+    loader.loadImage("textures/texture_caravan.png","texture_caravan");
     loader.start();
   }
   void _onLevelsListLoaded(Function onComplete){

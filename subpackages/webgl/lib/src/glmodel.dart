@@ -72,16 +72,17 @@ class GlAreaModel extends GlModel{
 }
 
 class GlCube extends GlAreaModel{
-  GlCube.fromTopCenter(double x, double y, double z, double w, double h, double d){
+  GlCube.fromTopCenter(double x, double y, double z, double w, double h, double d, [double tx = 0,double ty = 0]){
     double hw = w/2;
     double hh = h/2;
     double hd = d/2;
-    addArea(new GlRectangle.withWH(x-hw,  y-hh,  z+hd,  w,h, true));
-    addArea(new GlRectangle.withWH(x-hw,  y-hh,  z+hd-d,w,h, false));
-    addArea(new GlRectangle.withHD(x-hw,  y-hh,  z+hd-d,h,d, false));
-    addArea(new GlRectangle.withHD(x-hw+w,y-hh,  z+hd-d,h,d, true));
-    addArea(new GlRectangle.withWD(x-hw,  y-hh+h,z+hd-d,w,d, false));
-    addArea(new GlRectangle.withWD(x-hw,  y-hh,  z+hd-d,w,d, true));
+    double o = 4.0;
+    addArea(new GlRectangle.withWH(x-hw,  y-hh,  z+hd,  w,h, true, tx+w+o, ty+o+d));//back
+    addArea(new GlRectangle.withWH(x-hw,  y-hh,  z+hd-d,w,h, false, tx, ty+o+d));//front
+    addArea(new GlRectangle.withHD(x-hw,  y-hh,  z+hd-d,h,d, false, tx, ty+o+d+o+h));//left
+    addArea(new GlRectangle.withHD(x-hw+w,y-hh,  z+hd-d,h,d, true, tx+d+o, ty+o+d+o+h));//right
+    addArea(new GlRectangle.withWD(x-hw,  y-hh+h,z+hd-d,w,d, false, tx, ty));//top
+    addArea(new GlRectangle.withWD(x-hw,  y-hh,  z+hd-d,w,d, true, tx+w+o, ty));//bottom
   }
   GlCube.fromTopLeft(double x, double y, double z, double w, double h, double d){
     addArea(new GlRectangle.withWH(x,y,z,w,h, true));
