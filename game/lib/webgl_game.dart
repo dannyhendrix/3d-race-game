@@ -27,5 +27,7 @@ part 'src/ui/webgl_game/hud.dart';
 part 'src/ui/webgl_game/webgl_game.dart';
 part 'src/ui/webgl_game/webgl_game3d.dart';
 
+part 'src/ui/webgl_game/textures/texture_vehicle.dart';
+
 //part "src/ui/generic_form/cloneobject.dart";
 //part "src/ui/generic_form/leveleditorform.dart";

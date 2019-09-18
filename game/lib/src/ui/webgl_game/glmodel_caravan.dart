@@ -80,8 +80,8 @@ class GlModel_Caravan{
         new GlPoint(w.h,hBar.v,0.0),
       ]),
       //roof
-      new GlRectangle.withWD(-w.h+wWindowRear.v,h.v, d.h-dWindow.v-dStripeRoofRight.v, wRoof.v, dStripeRoofRight.v, false,to+d.v+to+w.v,0),
-      new GlRectangle.withWD(-w.h+wWindowRear.v,h.v, -d.h+dWindow.v, wRoof.v, dStripeRoofLeft.v, false,to+d.v+to+w.v,dStripeRoofRight.v+dStripeRoofMid.v),
+      new GlRectangle.withWD(-w.h+wWindowRear.v,h.v, d.h-dWindow.v-dStripeRoofRight.v, wRoof.v, dStripeRoofRight.v, false,to+d.v+to+w.v,dStripeRoofRight.v+dStripeRoofMid.v),
+      new GlRectangle.withWD(-w.h+wWindowRear.v,h.v, -d.h+dWindow.v, wRoof.v, dStripeRoofLeft.v, false,to+d.v+to+w.v,0),
       //front
       new GlRectangle.withHD(w.h,0.0, -d.h, hCarBottom.v, d.v, true,0,0),
       //rear

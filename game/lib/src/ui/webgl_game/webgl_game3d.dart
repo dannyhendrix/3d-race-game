@@ -85,6 +85,12 @@ class WebglGame3d extends WebglGame{
     layer.setTexture("wall", ImageController.getImage("texture_wall"),true);
     layer.setTexture("caravan", ImageController.getImage("texture_caravan"));
 
+    for(var player in game.players){
+      if(player.vehicle is Car){
+        layer.setTexture("car${player.player.playerId}", new TextureVehicle(colorMappingGl[player.theme.color1], colorMappingGl[player.theme.color2],"texture_vehicle").layer.canvas);
+      }
+    }
+
     //create UI
     Element el_hud = new DivElement();
     el_hud.className = "hud";
@@ -225,7 +231,7 @@ class WebglGame3d extends WebglGame{
         Vehicle v = o;
         modelInstances.add(new GlModelInstanceFromModel(o, vehicleModel
             .getModelInstance(modelCollection, colorMappingGl[v.player.theme
-            .color1], colorMappingGl[v.player.theme.color2], colorWindows)));
+            .color1], colorMappingGl[v.player.theme.color2], colorWindows, "car${v.player.player.playerId}")));
       }else if(o is FormulaCar){
         print("formula model");
         Vehicle v = o;

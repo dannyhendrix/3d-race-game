@@ -54,7 +54,7 @@ class GlModel_Vehicle{
   DoubleHelper dWheel = new DoubleHelper(10.0);
   DoubleHelper hWheel = new DoubleHelper(12.0);
 
-  GlModelInstanceCollection getModelInstance(GlModelCollection collection, GlColor colorBase, GlColor colorStripe, GlColor colorWindow){
+  GlModelInstanceCollection getModelInstance(GlModelCollection collection, GlColor colorBase, GlColor colorStripe, GlColor colorWindow, [String texture="car"]){
 
     GlMatrix wheelPositionFrontRight = GlMatrix.translationMatrix(w.h-wWheelOffsetFront.v,hWheel.h+hWheelOffsetIn.v,-d.h+dWheelOffsetIn.v);
     GlMatrix wheelPositionRearRight = GlMatrix.translationMatrix(-w.h+wWheelOffsetRear.v,hWheel.h+hWheelOffsetIn.v,-d.h+dWheelOffsetIn.v);
@@ -64,13 +64,13 @@ class GlModel_Vehicle{
 
     var colorWheel = new GlColor(0.2,0.2,0.2);
     return new GlModelInstanceCollection([
-      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionFrontRight, "car"),
-      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionFrontLeft, "car"),
-      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearRight, "car"),
-      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearLeft, "car"),
-      new GlModelInstance(collection.getModelBuffer(_ModelBody), colorBase, modelGroundOffset, "car"),
-      new GlModelInstance(collection.getModelBuffer(_ModelStripe), colorStripe, modelGroundOffset, "car"),
-      new GlModelInstance(collection.getModelBuffer(_ModelWindows), colorWindow, modelGroundOffset, "car"),
+      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionFrontRight, texture),
+      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionFrontLeft, texture),
+      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearRight, texture),
+      new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearLeft, texture),
+      new GlModelInstance(collection.getModelBuffer(_ModelBody), colorBase, modelGroundOffset, texture),
+      new GlModelInstance(collection.getModelBuffer(_ModelStripe), colorStripe, modelGroundOffset, texture),
+      new GlModelInstance(collection.getModelBuffer(_ModelWindows), colorWindow, modelGroundOffset,texture),
     ]);
   }
   GlModel loadModel(GlModelCollection collection){
