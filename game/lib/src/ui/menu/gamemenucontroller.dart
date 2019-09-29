@@ -41,12 +41,12 @@ class GameMenuController extends Menu<GameMenuStatus>
   MenuScreen _currentMenu = null;
 
   GameBuilder gameBuilder;
-  LevelManager levelManager;
+  ResourceManager resourceManager = new ResourceManager();
+  LevelManager levelManager = new LevelManager();
   AiPlayerProfileDatabase aiPlayerProfileDatabase;
 
   GameMenuController(this.settings) : super()
   {
-    levelManager = new LevelManager();
     aiPlayerProfileDatabase = new AiPlayerProfileDatabase();
     gameBuilder = new GameBuilder(settings, levelManager, aiPlayerProfileDatabase);
     menus = {
@@ -60,7 +60,15 @@ class GameMenuController extends Menu<GameMenuStatus>
   }
 
   void preLoad(Function onComplete){
-    levelManager.preLoadLevels(onComplete);
+    resourceManager.loadResources(GameConstants.resources, (){
+      _loadLevelsInLevelManager(levelManager);
+      onComplete();
+    });
+  }
+  void _loadLevelsInLevelManager(LevelManager levelManager){
+    for(var key in resourceManager.getLevelKeys()){
+      levelManager.loadLevel(key, resourceManager.getLevel(key));
+    }
   }
 
   @override

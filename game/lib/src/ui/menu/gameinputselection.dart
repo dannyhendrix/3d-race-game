@@ -17,7 +17,7 @@ class GameInputSelectionTrailer extends GameInputSelectionVehicleBase{
     return setupFieldsForVehiclesBase(TrailerType.values.length, "Trailer");
   }
 }
-class GameInputSelectionVehicleBase extends GameInputSelection
+class GameInputSelectionVehicleBase extends GameInputSelectionInt
 {
   Map<int, String> _typeToPreview = {};
   ImageElement img_preview;
@@ -64,8 +64,9 @@ class GameInputSelectionVehicleBase extends GameInputSelection
     return preview.layer.canvas.toDataUrl("image/png");
   }
 }
-class GameInputSelectionLevel extends GameInputSelection{
+class GameInputSelectionLevel extends GameInputSelection<String>{
   Map<int, String> _typeToPreview = {};
+  Map<int, String> _indexToLevelKey = {};
   ImageElement img_preview;
   LevelManager _levelManager;
   Element el_customLevel;
@@ -73,10 +74,13 @@ class GameInputSelectionLevel extends GameInputSelection{
   GameInputSelectionLevel(this._levelManager);
 
   Element setupFieldsForLevels(Element customLevelElement, bool enableCustomLevels){
-    Element el = setupFields(_levelManager.loadedLevels.length+(enableCustomLevels?1:0), "Track");
+    var levelKeys = _levelManager.getLevelKeys();
+    Element el = setupFields(levelKeys.length+(enableCustomLevels?1:0), "Track");
     int i = 0;
-    for(GameLevel level in _levelManager.loadedLevels.values){
-      _typeToPreview[i++] = _createPreviewFromModel(level);
+    for(var level in levelKeys){
+      _typeToPreview[i] = _createPreviewFromModel(_levelManager.getLevel(level));
+      _indexToLevelKey[i] = level;
+      i++;
     }
     img_preview = new ImageElement();
     el_customLevel = customLevelElement;
@@ -105,8 +109,15 @@ class GameInputSelectionLevel extends GameInputSelection{
     preview.draw(level, "#666");
     return preview.layer.canvas.toDataUrl("image/png");
   }
+
+  getSelectedValue() => _indexToLevelKey[index];
 }
-class GameInputSelection{
+
+abstract class GameInputSelectionInt extends GameInputSelection<int>{
+  getSelectedValue() => index;
+}
+
+abstract class GameInputSelection<T>{
   Element _btn_next;
   Element _btn_prev;
   Element el_content;
@@ -153,4 +164,5 @@ class GameInputSelection{
     btn.className = "navigate";
     return btn;
   }
+  T getSelectedValue();
 }

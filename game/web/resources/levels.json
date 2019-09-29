@@ -1,0 +1,29 @@
+{"version":"0.0",
+  "sets":[
+    {
+      "name":"levels",
+      "type": "level",
+      "sets":[
+        {
+          "name":"race",
+          "resources": [
+            {"name":"level1"},
+            {"name":"level2"},
+            {"name":"level3"},
+            {"name":"level4"}
+          ]
+        },{
+          "name":"soccer",
+          "resources": [
+            {"name":"soccer1"}
+          ]
+        },{
+          "name":"f1",
+          "resources": [
+            {"name":"monza"}
+          ]
+        }
+      ]
+    }
+  ]
+}

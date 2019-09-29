@@ -119,9 +119,9 @@ class GameLevelPath extends GameLevelElement{
 
 
 class JsonLoaderBase{
-  List<T> _parseList<T>(Map json, String name, T parse(Map map)) => json.containsKey(name) ? json[name].map<T>(parse).toList() : <T>[];
-  T _parseObject<T>(Map json, String name, T parse(Map map), [T defaultValue = null]) => json.containsKey(name) ? parse(json[name]) : defaultValue;
-  T _parse<T>(Map json, String name, T defaultValue) => json.containsKey(name) ? json[name] : defaultValue;
+  List<T> parseList<T>(Map json, String name, T parse(Map map)) => json.containsKey(name) ? json[name].map<T>(parse).toList() : <T>[];
+  T parseObject<T>(Map json, String name, T parse(Map map), [T defaultValue = null]) => json.containsKey(name) ? parse(json[name]) : defaultValue;
+  T parse<T>(Map json, String name, T defaultValue) => json.containsKey(name) ? json[name] : defaultValue;
 }
 
 class GameLevelLoader extends JsonLoaderBase{
@@ -134,59 +134,59 @@ class GameLevelLoader extends JsonLoaderBase{
   }
 
   GameLevel _parseLevel(dynamic m) => new GameLevel(
-      _parse(m, "w", 0),
-      _parse(m, "h", 0),
-      _parse(m, "type", "checkpoint") == "checkpoint" ? GameLevelType.Checkpoint : GameLevelType.Score,
-      _parseObject(m, "path", _parsePath, new GameLevelPath()),
-      _parseObject(m, "score", _parseGameLevelScore, new GameLevelScore()),
-      _parseList(m, "walls",_parseWall),
-      _parseList(m, "staticobjects",_parseStaticObject));
+      parse(m, "w", 0),
+      parse(m, "h", 0),
+      parse(m, "type", "checkpoint") == "checkpoint" ? GameLevelType.Checkpoint : GameLevelType.Score,
+      parseObject(m, "path", _parsePath, new GameLevelPath()),
+      parseObject(m, "score", _parseGameLevelScore, new GameLevelScore()),
+      parseList(m, "walls",_parseWall),
+      parseList(m, "staticobjects",_parseStaticObject));
   GameLevelPath _parsePath(dynamic m) => new GameLevelPath(
-      _parse(m, "circular", false),
-      _parse(m, "laps", 3),
-      _parseList(m, "checkpoints", _parseCheckpoint));
+      parse(m, "circular", false),
+      parse(m, "laps", 3),
+      parseList(m, "checkpoints", _parseCheckpoint));
   GameLevelCheckPoint _parseCheckpoint(dynamic m)=> new GameLevelCheckPoint(
-      _parse(m, "x", 0.0),
-      _parse(m, "y", 0.0),
-      _parse(m, "width", 20.0),
-      _parse(m, "angle", 0.0),
-      _parse(m, "lengthBefore", 20.0),
-      _parse(m, "lengthAfter", 20.0)
+      parse(m, "x", 0.0),
+      parse(m, "y", 0.0),
+      parse(m, "width", 20.0),
+      parse(m, "angle", 0.0),
+      parse(m, "lengthBefore", 20.0),
+      parse(m, "lengthAfter", 20.0)
   );
   GameLevelScore _parseGameLevelScore(dynamic m)=> new GameLevelScore(
-      _parseList(m, "teams", _parseGameLevelScoreTeam),
-      _parseList(m, "balls", _parseBall));
+      parseList(m, "teams", _parseGameLevelScoreTeam),
+      parseList(m, "balls", _parseBall));
   GameLevelScoreTeam _parseGameLevelScoreTeam(dynamic m)=> new GameLevelScoreTeam(
-      _parseList(m, "goals", _parseGoal),
-      _parseList(m, "startingareas", _parseGameLevelStartArea));
+      parseList(m, "goals", _parseGoal),
+      parseList(m, "startingareas", _parseGameLevelStartArea));
   GameLevelStartArea _parseGameLevelStartArea(dynamic m)=> new GameLevelStartArea(
-      _parse(m, "x", 0.0),
-      _parse(m, "y", 0.0),
-      _parse(m, "r", 0.0),
-      _parse(m, "radius", 0.0));
+      parse(m, "x", 0.0),
+      parse(m, "y", 0.0),
+      parse(m, "r", 0.0),
+      parse(m, "radius", 0.0));
   GameLevelWall _parseWall(dynamic m)=> new GameLevelWall(
-      _parse(m, "x", 0.0),
-      _parse(m, "y", 0.0),
-      _parse(m, "r", 0.0),
-      _parse(m, "w", 0.0),
-      _parse(m, "h", 0.0),
-      _parse(m, "d", 0.0));
+      parse(m, "x", 0.0),
+      parse(m, "y", 0.0),
+      parse(m, "r", 0.0),
+      parse(m, "w", 0.0),
+      parse(m, "h", 0.0),
+      parse(m, "d", 0.0));
   GameLevelGoal _parseGoal(dynamic m)=> new GameLevelGoal(
-      _parse(m, "x", 0.0),
-      _parse(m, "y", 0.0),
-      _parse(m, "r", 0.0),
-      _parse(m, "w", 0.0),
-      _parse(m, "h", 0.0),
-      _parse(m, "d", 0.0));
+      parse(m, "x", 0.0),
+      parse(m, "y", 0.0),
+      parse(m, "r", 0.0),
+      parse(m, "w", 0.0),
+      parse(m, "h", 0.0),
+      parse(m, "d", 0.0));
   GameLevelBall _parseBall(dynamic m)=> new GameLevelBall(
-      _parse(m, "x", 0.0),
-      _parse(m, "y", 0.0),
-      _parse(m, "r", 0.0));
+      parse(m, "x", 0.0),
+      parse(m, "y", 0.0),
+      parse(m, "r", 0.0));
   GameLevelStaticObject _parseStaticObject(dynamic m)=> new GameLevelStaticObject(
-      _parse(m, "id", 0),
-      _parse(m, "x", 0.0),
-      _parse(m, "y", 0.0),
-      _parse(m, "r", 0.0));
+      parse(m, "id", 0),
+      parse(m, "x", 0.0),
+      parse(m, "y", 0.0),
+      parse(m, "r", 0.0));
 }
 class GameLevelSaver{
   Map levelToJson(GameLevel level){

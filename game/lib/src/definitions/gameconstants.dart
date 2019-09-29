@@ -15,4 +15,5 @@ abstract class GameConstants{
   static Vector ballSize = new Vector(50.0,30.0);
 
   static Vector startingPositionSpacing = new Vector(10.0,10.0);
+  static List<String> resources = ["resources/resources.json", "resources/levels.json"];
 }

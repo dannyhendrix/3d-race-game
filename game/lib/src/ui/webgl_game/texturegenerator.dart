@@ -1,9 +1,24 @@
 part of webgl_game;
 
-class Texture{
-  RenderLayer layer;
+class TextureGenerator{
+  ResourceManager _resourceManager;
+  TextureGenerator(this._resourceManager);
 
-  void _replaceColors(List<List<int>> oldColors, List<List<int>> newColors) {
+  RenderLayer CreateTexture(GlColor color1, GlColor color2, [String texture = "texture_vehicle"]){
+    var layer = new RenderLayer.withSize(256,256);
+    layer.drawImage(_resourceManager.getTexture(texture), 0, 0);
+    var newColors = _constructReplaceColors(_getColorInts(color1),_getColorInts(color2));
+    var oldColors = _constructReplaceColors([90,240,0,255],[240,0,180,255]);
+    _replaceColors(layer,oldColors, newColors);
+    return layer;
+  }
+
+  List<List<int>> _constructReplaceColors(List<int> newColor1Ints, List<int> newColor2Ints){
+    return [newColor1Ints, _getColorIntsDark(newColor1Ints, 20),_getColorIntsDark(newColor1Ints, 40),
+    newColor2Ints, _getColorIntsDark(newColor2Ints, 20),_getColorIntsDark(newColor2Ints, 40)];
+  }
+
+  void _replaceColors(RenderLayer layer,List<List<int>> oldColors, List<List<int>> newColors) {
     var imgdata = layer.ctx.getImageData(0, 0, layer.actualwidth, layer.actualheight);
     List<int> newColor;
     List<int> color;
@@ -33,18 +48,5 @@ class Texture{
   }
   int _applyDarkness(int value, int darkness){
     return Math.max(value-darkness, 0);
-  }
-}
-class TextureVehicle extends Texture{
-  TextureVehicle(GlColor color1, GlColor color2, [String texture = "texture_car"]){
-    layer = new RenderLayer.withSize(256,256);
-    layer.drawImage(ImageController.getImage(texture), 0, 0);
-    var newColors = _constructReplaceColors(_getColorInts(color1),_getColorInts(color2));
-    var oldColors = _constructReplaceColors([90,240,0,255],[240,0,180,255]);
-    _replaceColors(oldColors, newColors);
-  }
-  List<List<int>> _constructReplaceColors(List<int> newColor1Ints, List<int> newColor2Ints){
-    return [newColor1Ints, _getColorIntsDark(newColor1Ints, 20),_getColorIntsDark(newColor1Ints, 40),
-    newColor2Ints, _getColorIntsDark(newColor2Ints, 20),_getColorIntsDark(newColor2Ints, 40)];
   }
 }

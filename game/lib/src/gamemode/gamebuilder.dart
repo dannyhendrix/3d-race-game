@@ -15,21 +15,17 @@ class GameBuilder{
     VehicleType vehicle = VehicleType.values[_random.nextInt(VehicleType.values.length)];
     TrailerType trailer = TrailerType.values[_random.nextInt(TrailerType.values.length)];
 
-    List<int> levelIds = _levelManager.loadedLevels.keys.toList();
-    int randomLevelId = levelIds[_random.nextInt(levelIds.length)];
-
     GameInput settings = _createSimpleGameSettings(players, -1, vehicle, trailer);
-    settings.level = _levelManager.loadedLevels[randomLevelId];
+    settings.level = _levelManager.getRandomLevel();
     settings.level.path.laps = 1;
     return settings;
   }
   GameInput newRandomSoccerGame(){
     List<PlayerProfile> players = _aiplayers.getRandom(3);
 
-    List<int> levelIds = _levelManager.loadedLevels.keys.toList();
-
     GameInput settings = _createSimpleGameSettings(players, 2, VehicleType.Formula, TrailerType.None);
-    settings.level = _levelManager.loadedLevels[4];
+    //TODO: select soccer level
+    settings.level = _levelManager.getRandomLevel();
     return settings;
   }
   GameInput newSoccerGame(int numberOfTeams, int playersPerTeam, VehicleType vehicle, TrailerType trailer, GameLevel level, int scorelimit){
@@ -40,9 +36,9 @@ class GameBuilder{
     return settings;
   }
 
-  GameInput newGame(List<PlayerProfile> players, VehicleType vehicle, TrailerType trailer, int levelId, int laps){
+  GameInput newGame(List<PlayerProfile> players, VehicleType vehicle, TrailerType trailer, String levelId, int laps){
     GameInput settings = _createSimpleGameSettings(players, -1, vehicle, trailer);
-    settings.level = _levelManager.loadedLevels[levelId];
+    settings.level = _levelManager.getLevel(levelId);
     settings.level.path.laps = laps;
     return settings;
   }

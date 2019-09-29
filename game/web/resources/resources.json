@@ -1,0 +1,16 @@
+{"version":"0.0",
+  "sets":[
+    {
+      "name":"textures",
+      "type": "texture",
+      "resources": [
+        {"name":"texture_vehicle"},
+        {"name":"texture_vehicle1"},
+        {"name":"texture_road"},
+        {"name":"texture_caravan"},
+        {"name":"texture_tree"},
+        {"name":"texture_wall"}
+      ]
+    }
+  ]
+}

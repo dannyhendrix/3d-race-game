@@ -75,7 +75,7 @@ class SingleRaceMenu extends GameMenuScreen{
 
   GameInput createGameInput(){
     var levelLoader = new GameLevelLoader();
-    var level = (in_levelJson != null && in_levelJson.value.isNotEmpty) ? levelLoader.loadLevelJson(jsonDecode(in_levelJson.value)) : menu.levelManager.loadedLevels[_levelSelection.index];
+    var level = (in_levelJson != null && in_levelJson.value.isNotEmpty) ? levelLoader.loadLevelJson(jsonDecode(in_levelJson.value)) : menu.levelManager.getLevel(_levelSelection.getSelectedValue());
     return menu.gameBuilder.newGameRandomPlayers(_in_oponents.getValue(),VehicleType.values[_vehicleSelection.index], TrailerType.values[_trailerSelection.index],level, _in_laps.getValue());
   }
 }

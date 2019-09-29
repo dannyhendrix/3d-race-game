@@ -78,7 +78,7 @@ class SoccerGameMenu extends GameMenuScreen{
 
   GameInput createGameInput(){
     var levelLoader = new GameLevelLoader();
-    var level = (in_levelJson != null && in_levelJson.value.isNotEmpty) ? levelLoader.loadLevelJson(jsonDecode(in_levelJson.value)) : menu.levelManager.loadedLevels[_levelSelection.index];
+    var level = (in_levelJson != null && in_levelJson.value.isNotEmpty) ? levelLoader.loadLevelJson(jsonDecode(in_levelJson.value)) : menu.levelManager.getLevel(_levelSelection.getSelectedValue());
     return menu.gameBuilder.newSoccerGame(_in_teams.getValue(),_in_playersperteam.getValue(),VehicleType.values[_vehicleSelection.index], TrailerType.values[_trailerSelection.index],level, _in_scorelimit.getValue());
   }
 }

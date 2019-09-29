@@ -4,7 +4,6 @@ import "dart:html";
 import "dart:math" as Math;
 
 import "package:renderlayer/renderlayer.dart";
-import "package:preloader/preloader.dart";
 import "package:gameutils/gameloop.dart";
 import "package:gameutils/math.dart";
 import "package:dashboard/uihelper.dart";
@@ -14,6 +13,7 @@ import 'game.dart';
 import 'input.dart';
 import 'definitions.dart';
 import 'gameitem.dart';
+import 'resources.dart';
 
 part 'src/ui/webgl_game/glmodel_vehicle.dart';
 part 'src/ui/webgl_game/glmodel_pickup.dart';
@@ -27,7 +27,4 @@ part 'src/ui/webgl_game/hud.dart';
 part 'src/ui/webgl_game/webgl_game.dart';
 part 'src/ui/webgl_game/webgl_game3d.dart';
 
-part 'src/ui/webgl_game/textures/texture_vehicle.dart';
-
-//part "src/ui/generic_form/cloneobject.dart";
-//part "src/ui/generic_form/leveleditorform.dart";
+part 'src/ui/webgl_game/texturegenerator.dart';

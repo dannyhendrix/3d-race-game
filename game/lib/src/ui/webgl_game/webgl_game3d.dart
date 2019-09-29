@@ -21,6 +21,8 @@ class WebglGame3d extends WebglGame{
   Game game;
   GameLoop _gameloop;
   bool _enableTextures = true;
+  ResourceManager _resourceManager;
+  TextureGenerator textureGenerator;
 
   double lightx = 0.0;
   double lighty = 0.5;
@@ -35,9 +37,10 @@ class WebglGame3d extends WebglGame{
   Element el_rounds;
   Element el_countdown;
 
-  WebglGame3d(GameSettings settings, [this._enableTextures = true]){
+  WebglGame3d(GameSettings settings, this._resourceManager, [this._enableTextures = true]){
     game = new Game(settings);
     _gameloop = new GameLoop(_loop);
+    textureGenerator = new TextureGenerator(_resourceManager);
   }
   Element createControls(){
     Element el = new DivElement();
@@ -79,15 +82,15 @@ class WebglGame3d extends WebglGame{
     el_countdown.className = "countdown";
 
     //set textures
-    layer.setTexture("car", ImageController.getImage("texture_vehicle"));
-    layer.setTexture("tree", ImageController.getImage("texture_tree"));
-    layer.setTexture("road", ImageController.getImage("texture_road"));
-    layer.setTexture("wall", ImageController.getImage("texture_wall"),true);
-    layer.setTexture("caravan", ImageController.getImage("texture_caravan"));
+    layer.setTexture("car", _resourceManager.getTexture("textures/texture_vehicle"));
+    layer.setTexture("tree", _resourceManager.getTexture("textures/texture_tree"));
+    layer.setTexture("road", _resourceManager.getTexture("textures/texture_road"));
+    layer.setTexture("wall", _resourceManager.getTexture("textures/texture_wall"),true);
+    layer.setTexture("caravan", _resourceManager.getTexture("textures/texture_caravan"));
 
     for(var player in game.players){
       if(player.vehicle is Car){
-        layer.setTexture("car${player.player.playerId}", new TextureVehicle(colorMappingGl[player.theme.color1], colorMappingGl[player.theme.color2],"texture_vehicle").layer.canvas);
+        layer.setTexture("car${player.player.playerId}", textureGenerator.CreateTexture(colorMappingGl[player.theme.color1], colorMappingGl[player.theme.color2],"textures/texture_vehicle1").canvas);
       }
     }
 

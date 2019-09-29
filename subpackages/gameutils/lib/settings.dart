@@ -105,7 +105,7 @@ class IntMapSettings<T> extends GameSetting<Map<int,T>> implements GameSettingWi
 class SettingsStoredInCookie
 {
   bool loadedFromCookie = false;
-	GameSetting<bool> storeInCookie = new GameSetting("storeInCookie", false, "Store cookie");
+	GameSetting<bool> storeInCookie = new GameSetting("storeInCookie", true, "Store cookie");
 	void saveToCookie()
   {
     if(!storeInCookie.v)

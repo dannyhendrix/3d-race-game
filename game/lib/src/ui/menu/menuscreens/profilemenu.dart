@@ -3,8 +3,11 @@ part of game.menu;
 typedef void OnColorChange(VehicleThemeColor newColor);
 
 class ProfileMenu extends GameMenuScreen{
+  TextureGenerator _textureGenerator;
   GameMenuController menu;
-  ProfileMenu(this.menu);
+  ProfileMenu(this.menu){
+    _textureGenerator = new TextureGenerator(menu.resourceManager);
+  }
 
   ImageElement _el_vehiclePreview;
 
@@ -66,17 +69,17 @@ class ProfileMenu extends GameMenuScreen{
   }
 
   String _createPreviewFromModel(dynamic model, GlColor c1, GlColor c2){
-    GlPreview preview = new GlPreview(150.0,100.0,(GlModelCollection modelCollection){
+    GlPreview preview = new GlPreview(200.0,150.0,(GlModelCollection modelCollection){
       model.loadModel(modelCollection);
       var instance = model
-          .getModelInstance(modelCollection, c1, c2, new GlColor(0.7, 0.7, 0.9));
+          .getModelInstance(modelCollection, c1, c2, new GlColor(0.7, 0.7, 0.9),"car");
 
       return [instance];
 
-    });
+    },true);
     preview.ox = 0.0;
     preview.oy = 26.0;
-    preview.oz = 240.0;
+    preview.oz = 200.0;
     preview.rx = 1.0;
     preview.ry = 2.6;
     preview.rz = 5.8;
@@ -84,7 +87,9 @@ class ProfileMenu extends GameMenuScreen{
     preview.ly = 0.5;
     preview.lz = -1.0;
     preview.lightImpact = 0.3;
+
     preview.create();
+    preview.layer.setTexture("car", _textureGenerator.CreateTexture(c1, c2,"textures/texture_vehicle1").canvas);
     preview.draw();
     return preview.layer.canvas.toDataUrl("image/png");
   }

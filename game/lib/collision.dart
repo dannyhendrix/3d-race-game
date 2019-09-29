@@ -1,7 +1,6 @@
 library game.collision;
 
 import "package:gameutils/math.dart";
-import 'package:micromachines/game.dart';
 import "dart:math" as Math;
 
 import "gameitem.dart";

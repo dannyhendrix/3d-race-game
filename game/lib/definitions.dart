@@ -6,7 +6,6 @@ import "package:gameutils/math.dart";
 
 part "src/definitions/gamelevel/gamelevelupgrader.dart";
 part "src/definitions/gamelevel/gamelevel.dart";
-part "src/definitions/gamelevellist/gamelevellist.dart";
 
 part "src/definitions/gamecontrols.dart";
 part "src/definitions/gameinput.dart";

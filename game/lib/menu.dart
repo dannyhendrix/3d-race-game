@@ -16,6 +16,7 @@ import "package:dashboard/uihelper.dart";
 import "webgl_game.dart";
 import "gamemode.dart";
 import "definitions.dart";
+import "resources.dart";
 
 part "src/ui/menu/gamemenuscreen.dart";
 part "src/ui/menu/gamemenucontroller.dart";

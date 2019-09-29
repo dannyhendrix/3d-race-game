@@ -85,7 +85,7 @@ class GameSettings extends SettingsStoredInCookie
   GameSetting<String> levels_location = new GameSetting("levels_location", null, "Location to levels");
   GameSetting<String> levels_definition_location = new GameSetting("levels_definition_location", null, "Location to levels file");
 
-  GameSetting<bool> client_showStoreInCookie = new GameSetting("client_enablemouseaiming", true, "Enable mouse aiming");
+  GameSetting<bool> client_showStoreInCookie = new GameSetting("client_showStoreInCookie", true, "Show cookie message");
   GameSetting<bool> client_changeCSSWithThemeChange = new GameSetting("client_changeccswiththemechange", true, "Match theme with user colors");
   GameSettingWithEnum<GameDisplayType> client_displayType = new GameSettingWithEnum("client_displaytype", GameDisplayType.Webgl3d, GameDisplayType.values, "Display type");
   GameSettingWithEnum<GameRenderType> client_renderType = new GameSettingWithEnum("client_rendertype", GameRenderType.Colors, GameRenderType.values, "Render type");
@@ -99,6 +99,7 @@ class GameSettings extends SettingsStoredInCookie
   GameSetting<int> user_races = new GameSetting("user_races", 0, "Races");
   GameSettingWithEnum<VehicleThemeColor> user_color1 = new GameSettingWithEnum("user_color1", VehicleThemeColor.Blue, VehicleThemeColor.values, "Theme color 1");
   GameSettingWithEnum<VehicleThemeColor> user_color2 = new GameSettingWithEnum("user_color2", VehicleThemeColor.Yellow, VehicleThemeColor.values, "Theme color 2");
+  GameSetting<int> user_texture = new GameSetting("user_texture", 0, "Theme texture");
 
 
   GameSettings([bool autoload = true])
@@ -109,13 +110,13 @@ class GameSettings extends SettingsStoredInCookie
 
   List<GameSetting> getStoredSettingsKeys()
   {
-    return [user_name,user_wins,user_races,user_color1,user_color2,client_theme, client_controlkeytype,client_displayType,client_renderType,client_cameraType, debug];
+    return [user_name,user_wins,user_races,user_color1,user_color2,user_texture,client_theme, client_controlkeytype,client_displayType,client_renderType,client_cameraType, debug];
   }
 
   List<GameSetting> getMenuSettings()
   {
     if(debug.v == true)
-      return [user_name, user_color1, user_color2, client_theme, client_changeCSSWithThemeChange,client_showUIControls, client_displayType,client_renderType,client_cameraType, storeInCookie, debug];
+      return [user_name, user_color1, user_color2,user_texture, client_theme, client_changeCSSWithThemeChange,client_showUIControls, client_displayType,client_renderType,client_cameraType, storeInCookie, debug];
     return [storeInCookie];
   }
 
