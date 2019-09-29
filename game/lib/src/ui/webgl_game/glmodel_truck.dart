@@ -61,12 +61,13 @@ class GlModel_Truck{
       new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionFrontLeft),
       new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearRight),
       new GlModelInstance(collection.getModelBuffer(_ModelWheel), colorWheel, wheelPositionRearLeft),
-      new GlModelInstance(collection.getModelBuffer(_ModelBody), colorBase, modelGroundOffset),
+      new GlModelInstance(collection.getModelBuffer(_ModelBody), colorBase, modelGroundOffset, "truck"),
       new GlModelInstance(collection.getModelBuffer(_ModelStripe), colorStripe, modelGroundOffset),
       new GlModelInstance(collection.getModelBuffer(_ModelWindows), colorWindow, modelGroundOffset),
     ]);
   }
   GlModel loadModel(GlModelCollection collection){
+    var to = 4.0;
     collection.loadModel(_ModelBody, new GlAreaModel([
       //floor
       new GlRectangle.withWD(-w.h,0.0, -d.h, w.v, d.v, true),
@@ -76,7 +77,7 @@ class GlModel_Truck{
       new GlRectangle.withWD(w.h-wCabin.v,h.v, d.h-dWindow.v-dStripeRoofRight.v, wRoof.v, dStripeRoofRight.v, false),
       new GlRectangle.withWD(w.h-wCabin.v,h.v, -d.h+dWindow.v, wRoof.v, dStripeRoofLeft.v, false),
       //front
-      new GlRectangle.withHD(w.h,0.0, -d.h, hCabin.v, d.v, true),
+      new GlRectangle.withHD(w.h,0.0, -d.h, hCabin.v, d.v, true,0,0),
       //rear
       new GlRectangle.withHD(-w.h,0.0, -d.h, hLoader.v, d.v, false),
       //TopCabinRear
@@ -94,12 +95,12 @@ class GlModel_Truck{
       new GlRectangle.withHD(-w.h+wLoader.v,hLoader.v, -d.h, hCabin.v-hLoader.v, d.v, false),
       //right side
       //bottom
-      new GlRectangle.withWH(-w.h,0.0, d.h, w.v, hLoader.v, true),
-      new GlRectangle.withWH(-w.h + wLoader.v,hLoader.v, d.h, wCabin.v, hCabin.v - hLoader.v, true),
+      new GlRectangle.withWH(-w.h,0.0, d.h, w.v, hLoader.v, true,to+d.v,hCabin.v - hLoader.v),
+      new GlRectangle.withWH(-w.h + wLoader.v,hLoader.v, d.h, wCabin.v, hCabin.v - hLoader.v, true,to+d.v+wLoader.v,0),
       //left side
       //bottom
-      new GlRectangle.withWH(-w.h,0.0, -d.h, w.v, hLoader.v, false),
-      new GlRectangle.withWH(-w.h + wLoader.v,hLoader.v, -d.h, wCabin.v, hCabin.v - hLoader.v, false),
+      new GlRectangle.withWH(-w.h,0.0, -d.h, w.v, hLoader.v, false,to+d.v,to+h.v),
+      new GlRectangle.withWH(-w.h + wLoader.v,hLoader.v, -d.h, wCabin.v, hCabin.v - hLoader.v, false,to+d.v+wLoader.v,to+h.v),
     ]));
 
     collection.loadModel(_ModelStripe, new GlAreaModel([

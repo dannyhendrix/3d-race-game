@@ -12,7 +12,7 @@ void applyView(GlPreview preview, double rx, double ry, double rz){
 }
 void main(){
   var collection = GlModelCollectionModels();
-  var model = new GlModel_Caravan();
+  var model = new GlModel_Truck();
   //var model = new GlModel_Wall();
   model.loadModel(collection);
 
@@ -45,16 +45,16 @@ void main(){
   preview.ly = 0.7;
   preview.lz = 0.1;
   preview.create();
-  //preview.layer.setTexture("caravan", renderTexture.layer.canvas);
+  preview.layer.setTexture("truck", renderTexture.layer.canvas);
 
-
+/*
   var image = new ImageElement();
   image.src = "textures/texture_caravan.png";
   preview.layer.setTexture("caravan", image);
   image.onLoad.listen((event){
     preview.layer.setTexture("caravan", image);
   });
-
+*/
   preview.draw();
 
   document.body.append(preview.layer.canvas);

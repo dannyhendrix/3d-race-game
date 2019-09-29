@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name = "viewport" content = "initial-scale = 1.0, maximum-scale = 1.0, user-scalable = no, width = device-width">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+    body,html{
+        font-family:Arial;
+        font-size:12px;
+    }
+.preview {
+float: left;
+}
+.preview canvas {
+background: #eee;
+}
+.json {
+width: 100%;
+height: 10em;
+}
+.levelWrapper {
+    right: 300px;
+    left:0px;
+    top:0px;
+    bottom:0px;
+    position: absolute;
+    overflow: scroll;
+    background: #000;
+}
+.levelobj{position:absolute; top:0px; left:0px; background:red; width:100px; height:100px;}
+.checkpoint {
+    background: none;
+}
+.wall {
+    background: #fff;
+}
+.staticobject {
+    background: green;
+}
+
+.rightpanel{
+position:absolute;
+width:300px;
+height:100%;
+top:0px;
+right:0px;
+}
+.marker {
+    background: yellow;
+    width: 20px;
+    height: 20px;
+    margin: 0px auto;
+    position:absolute;
+}
+
+.selected { background: #ff000042; }
+
+.button {
+    display: inline-block;
+    padding: 8px;
+    background: #eee;
+    cursor: pointer;
+    margin: 2px;
+    font-weight: bold;
+    user-select: none;
+}
+
+input {
+    border: 1px solid #ccc;
+    margin: 5px;
+    padding: 5px;
+    outline: none;
+    width: 100px;
+}
+
+span.label {
+    display: inline-block;
+    width: 100px;
+}
+
+legend {
+    font-weight: bold;
+    padding: 5px;
+    background: #fff;
+    border-bottom: none;
+    min-width: 150px;
+}
+
+fieldset {
+    border: 0px;
+    background: #fff;
+    margin: 10px;
+}
+
+body {
+    background: #eee;
+}
+
+.button:hover {
+    background: #FF5722;
+}
+
+input:active, input:focus {
+    border-color: #FF5722;
+}
+
+textarea {
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+textarea:focus {
+    border-color: #FF5722;
+}
+.buttonIcon{
+    padding: 0px;
+}
+
+legend .button {
+    padding: 0px;
+    background: none;
+    margin: 0px 5px;
+}
+span.column {
+    display: inline-block;
+}
+    </style>
+</head>
+<body>
+<script defer src="modeleditor.dart.js"></script>
+</body>
+</html>

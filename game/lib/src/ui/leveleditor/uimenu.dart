@@ -24,3 +24,14 @@ class UIMenu{
     el_content.append(el);
   }
 }
+class UIColumn{
+  Element el_content;
+  Element createElement(){
+    el_content = new SpanElement();
+    el_content.className = "column";
+    return el_content;
+  }
+  void append(Node el){
+    el_content.append(el);
+  }
+}

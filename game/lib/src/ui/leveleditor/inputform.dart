@@ -69,6 +69,7 @@ class InputFormInt extends InputForm<int>{
 
   @override
   int getValue() {
+    if(el_in.value.isEmpty) return 0;
     return int.parse(el_in.value);
   }
 }
@@ -109,7 +110,10 @@ class InputFormDoubleSlider extends InputForm<double>{
     el_in.max = max.toString();
     if(steps > 0)
       el_in.step = ((max-min)/steps).toString();
-    el_in.onChange.listen((Event e){
+    /*el_in.onChange.listen((Event e){
+      onValueChange(getValue());
+    });*/
+    el_in.onMouseMove.listen((Event e){
       onValueChange(getValue());
     });
 
