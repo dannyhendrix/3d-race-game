@@ -2,7 +2,10 @@ part of game.menu;
 
 class GameResultMenu extends GameMenuScreen{
   GameMenuController menu;
-  GameResultMenu(this.menu);
+  TextureGenerator _textureGenerator;
+  GameResultMenu(this.menu){
+    _textureGenerator = new TextureGenerator(menu.resourceManager);
+  }
 
   Element gameResultContent;
 
@@ -137,7 +140,7 @@ class GameResultMenu extends GameMenuScreen{
 
       return [instance];
 
-    });
+    },menu.settings.client_renderType.v == GameRenderType.Textures);
     preview.ox = 0.0;
     preview.oy = 26.0;
     preview.oz = 240.0;
@@ -148,6 +151,7 @@ class GameResultMenu extends GameMenuScreen{
     preview.ly = 0.7;
     preview.lz = 0.1;
     preview.create();
+    preview.layer.setTexture("car", _textureGenerator.CreateTexture(c1, c2,"textures/texture_vehicle1").canvas);
     preview.draw();
     return preview.layer.canvas.toDataUrl("image/png");
   }

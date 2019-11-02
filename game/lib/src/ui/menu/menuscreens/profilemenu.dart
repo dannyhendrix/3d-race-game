@@ -76,7 +76,7 @@ class ProfileMenu extends GameMenuScreen{
 
       return [instance];
 
-    },true);
+    },menu.settings.client_renderType.v == GameRenderType.Textures);
     preview.ox = 0.0;
     preview.oy = 26.0;
     preview.oz = 200.0;
