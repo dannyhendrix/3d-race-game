@@ -198,7 +198,9 @@ class WebglGame3d extends WebglGame{
       y+=h;
     }
     //TODO: print current round
-    //el_rounds.text = "${game.humanPlayer.pathProgress.round}";
+    var progress = game.humanPlayer.pathProgress;
+    if(progress is PathProgressCheckpoint)
+      el_rounds.text = "${progress.round}";
   }
 
   List<GlModelInstanceCollection> _createModels(){
