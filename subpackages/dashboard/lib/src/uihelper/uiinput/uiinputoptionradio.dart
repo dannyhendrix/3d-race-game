@@ -20,7 +20,7 @@ class UiInputOptionRadio<T> extends UiInput<T>{
   }
 
   UiElement _createOption(T optionValue){
-    var el = UITextButton(objectToString(optionValue), (){
+    var el = UiButtonText(objectToString(optionValue), (){
       setValue(optionValue);
       if(onValueChange != null)onValueChange(getValue());
     });

@@ -72,13 +72,13 @@ class LevelEditor{
     var menu = new UIMenu("Add objects");
     menu.addStyle("menu");
 
-    menu.append(new UITextButton("New checkpoint", (){
+    menu.append(new UiButtonText("New checkpoint", (){
       _addNewCheckpoint(10.0,10.0);
     }));
-    menu.append(new UITextButton("New wall", (){
+    menu.append(new UiButtonText("New wall", (){
       _addNewWall(10.0,10.0);
     }));
-    menu.append(new UITextButton("New tree", (){
+    menu.append(new UiButtonText("New tree", (){
       _addNewStaticObject(10.0,10.0);
     }));
 
@@ -210,14 +210,14 @@ class LevelEditor{
     menu.append(level_in);
     set_in.setValue("race");
     level_in.setValue("level1");
-    menu.append(new UIIconButton("cloud_download", (){
+    menu.append(new UiButtonIcon("cloud_download", (){
       var set = set_in.getValue();
       var level = level_in.getValue();
       var loader = new PreLoader(()=> loadFromJson(JsonController.getJson("level/$set/$level")));
       loader.loadJson("levels/$set/$level.json","level/$set/$level");
       loader.start();
     }));
-    menu.append(new UIIconButton("cloud_upload", (){
+    menu.append(new UiButtonIcon("cloud_upload", (){
       var json = levelSaver.levelToJson(gamelevel);
       var data = jsonEncode(json);
       HttpRequest.postFormData('http://localhost/0004-dart/MicroMachines/game/web/server/server.php', {"a":"save","set":set_in.getValue(),"level":level_in.getValue(),"data":data}

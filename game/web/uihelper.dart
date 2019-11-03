@@ -17,9 +17,9 @@ void main(){
   form.append(UiInputOption("Select something",["Chinees","Friet","Pannekoek"])..setValue("Friet"));
   form.append(UiInputOptionRadio("Select integer",[1,2,3,4,5])..setValue(2));
   panel.append(UiIcon("settings"));
-  panel.append(UITextButton("Settings",(){}));
-  panel.append(UIIconButton("settings",(){}));
-  panel.append(UiIconTextButton("Settings", "settings",(){}));
+  panel.append(UiButtonText("Settings",(){}));
+  panel.append(UiButtonIcon("settings",(){}));
+  panel.append(UiButtonIconText("Settings", "settings",(){}));
 
   //document.body.append(UIHelper.createTitle("Main menu"));
   document.body.append(panelForm.element);

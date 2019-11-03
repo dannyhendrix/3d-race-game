@@ -4,12 +4,12 @@ class GameMenuScreen extends MenuScreen<GameMenuStatus>
 {
   bool showStoreIncookie = false;
 
-  UIButton createMenuButtonWithIcon(String label, String icon, [Function onClick])
+  UiButton createMenuButtonWithIcon(String label, String icon, [Function onClick])
   {
-    return UiIconTextButton(label, icon, onClick).addStyle("menu_button");
+    return UiButtonIconText(label, icon, onClick).addStyle("menu_button");
   }
 
-  UIButton createOpenMenuButtonWithIcon(Menu menu, String label, String icon, MenuStatus status)
+  UiButton createOpenMenuButtonWithIcon(Menu menu, String label, String icon, MenuStatus status)
   {
     return createMenuButtonWithIcon(label,icon,()
     {

@@ -48,16 +48,16 @@ class LevelObjectWall extends LevelObject{
 
     var step = 10.0;
     var stepAngle = Math.pi/16;
-    table.append(1,0,new UIIconButton("arrow_drop_up",(){gameObject.y -= step; onPropertyInputChange();}));
-    table.append(1,2,new UIIconButton("arrow_drop_down",(){gameObject.y += step; onPropertyInputChange();}));
-    table.append(0,1,new UIIconButton("arrow_left",(){gameObject.x -= step; onPropertyInputChange();}));
-    table.append(2,1,new UIIconButton("arrow_right",(){gameObject.x += step; onPropertyInputChange();}));
-    table.append(4,0,new UIIconButton("keyboard_arrow_up",(){gameObject.h -= step; onPropertyInputChange();}));
-    table.append(4,2,new UIIconButton("keyboard_arrow_down",(){gameObject.h += step; onPropertyInputChange();}));
-    table.append(3,1,new UIIconButton("keyboard_arrow_left",(){gameObject.w -= step; onPropertyInputChange();}));
-    table.append(5,1,new UIIconButton("keyboard_arrow_right",(){gameObject.w += step; onPropertyInputChange();}));
-    table.append(0,3,new UIIconButton("rotate_left",(){gameObject.r -= stepAngle; onPropertyInputChange();}));
-    table.append(1,3,new UIIconButton("rotate_right",(){gameObject.r += stepAngle; onPropertyInputChange();}));
+    table.append(1,0,new UiButtonIcon("arrow_drop_up",(){gameObject.y -= step; onPropertyInputChange();}));
+    table.append(1,2,new UiButtonIcon("arrow_drop_down",(){gameObject.y += step; onPropertyInputChange();}));
+    table.append(0,1,new UiButtonIcon("arrow_left",(){gameObject.x -= step; onPropertyInputChange();}));
+    table.append(2,1,new UiButtonIcon("arrow_right",(){gameObject.x += step; onPropertyInputChange();}));
+    table.append(4,0,new UiButtonIcon("keyboard_arrow_up",(){gameObject.h -= step; onPropertyInputChange();}));
+    table.append(4,2,new UiButtonIcon("keyboard_arrow_down",(){gameObject.h += step; onPropertyInputChange();}));
+    table.append(3,1,new UiButtonIcon("keyboard_arrow_left",(){gameObject.w -= step; onPropertyInputChange();}));
+    table.append(5,1,new UiButtonIcon("keyboard_arrow_right",(){gameObject.w += step; onPropertyInputChange();}));
+    table.append(0,3,new UiButtonIcon("rotate_left",(){gameObject.r -= stepAngle; onPropertyInputChange();}));
+    table.append(1,3,new UiButtonIcon("rotate_right",(){gameObject.r += stepAngle; onPropertyInputChange();}));
     return el;
   }
 }
@@ -104,12 +104,12 @@ class LevelObjectStaticObject extends LevelObject{
 
     var step = 10.0;
     var stepAngle = Math.pi/16;
-    table.append(1,0,new UIIconButton("arrow_drop_up",(){gameObject.y -= step; onPropertyInputChange();}));
-    table.append(1,2,new UIIconButton("arrow_drop_down",(){gameObject.y += step; onPropertyInputChange();}));
-    table.append(0,1,new UIIconButton("arrow_left",(){gameObject.x -= step; onPropertyInputChange();}));
-    table.append(2,1,new UIIconButton("arrow_right",(){gameObject.x += step; onPropertyInputChange();}));
-    table.append(0,3,new UIIconButton("rotate_left",(){gameObject.r -= stepAngle; onPropertyInputChange();}));
-    table.append(1,3,new UIIconButton("rotate_right",(){gameObject.r += stepAngle; onPropertyInputChange();}));
+    table.append(1,0,new UiButtonIcon("arrow_drop_up",(){gameObject.y -= step; onPropertyInputChange();}));
+    table.append(1,2,new UiButtonIcon("arrow_drop_down",(){gameObject.y += step; onPropertyInputChange();}));
+    table.append(0,1,new UiButtonIcon("arrow_left",(){gameObject.x -= step; onPropertyInputChange();}));
+    table.append(2,1,new UiButtonIcon("arrow_right",(){gameObject.x += step; onPropertyInputChange();}));
+    table.append(0,3,new UiButtonIcon("rotate_left",(){gameObject.r -= stepAngle; onPropertyInputChange();}));
+    table.append(1,3,new UiButtonIcon("rotate_right",(){gameObject.r += stepAngle; onPropertyInputChange();}));
     return el;
   }
 }
@@ -171,17 +171,17 @@ class LevelObjectCheckpoint extends LevelObject{
 
     var step = 10.0;
     var stepAngle = Math.pi/16;
-    table.append(1,0,new UIIconButton("arrow_drop_up",(){gameObject.y -= step; onPropertyInputChange();}));
-    table.append(1,2,new UIIconButton("arrow_drop_down",(){gameObject.y += step; onPropertyInputChange();}));
-    table.append(0,1,new UIIconButton("arrow_left",(){gameObject.x -= step; onPropertyInputChange();}));
-    table.append(2,1,new UIIconButton("arrow_right",(){gameObject.x += step; onPropertyInputChange();}));
-    table.append(3,0,new UIIconButton("expand_less",(){gameObject.lengthBefore -= step; gameObject.lengthAfter -= step; onPropertyInputChange();}));
-    table.append(3,1,new UIIconButton("expand_more",(){gameObject.lengthBefore += step; gameObject.lengthAfter += step; onPropertyInputChange();}));
-    table.append(4,0,new UIIconButton("unfold_less",(){gameObject.width -= step; onPropertyInputChange();}));
-    table.append(4,1,new UIIconButton("unfold_more",(){gameObject.width += step; onPropertyInputChange();}));
-    table.append(0,3,new UIIconButton("rotate_left",(){gameObject.angle -= stepAngle; onPropertyInputChange();}));
-    table.append(1,3,new UIIconButton("rotate_right",(){gameObject.angle += stepAngle; onPropertyInputChange();}));
-    table.append(2,3,new UIIconButton("rotate_90_degrees_ccw",(){ autoAngle(); onPropertyInputChange();}));
+    table.append(1,0,new UiButtonIcon("arrow_drop_up",(){gameObject.y -= step; onPropertyInputChange();}));
+    table.append(1,2,new UiButtonIcon("arrow_drop_down",(){gameObject.y += step; onPropertyInputChange();}));
+    table.append(0,1,new UiButtonIcon("arrow_left",(){gameObject.x -= step; onPropertyInputChange();}));
+    table.append(2,1,new UiButtonIcon("arrow_right",(){gameObject.x += step; onPropertyInputChange();}));
+    table.append(3,0,new UiButtonIcon("expand_less",(){gameObject.lengthBefore -= step; gameObject.lengthAfter -= step; onPropertyInputChange();}));
+    table.append(3,1,new UiButtonIcon("expand_more",(){gameObject.lengthBefore += step; gameObject.lengthAfter += step; onPropertyInputChange();}));
+    table.append(4,0,new UiButtonIcon("unfold_less",(){gameObject.width -= step; onPropertyInputChange();}));
+    table.append(4,1,new UiButtonIcon("unfold_more",(){gameObject.width += step; onPropertyInputChange();}));
+    table.append(0,3,new UiButtonIcon("rotate_left",(){gameObject.angle -= stepAngle; onPropertyInputChange();}));
+    table.append(1,3,new UiButtonIcon("rotate_right",(){gameObject.angle += stepAngle; onPropertyInputChange();}));
+    table.append(2,3,new UiButtonIcon("rotate_90_degrees_ccw",(){ autoAngle(); onPropertyInputChange();}));
     return el;
   }
 

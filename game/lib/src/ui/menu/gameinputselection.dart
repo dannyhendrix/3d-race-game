@@ -135,13 +135,13 @@ abstract class GameInputSelection<T>{
       element.append(el_label);
     }
 
-    _btn_prev = new UIIconButton("navigate_before", (){
+    _btn_prev = new UiButtonIcon("navigate_before", (){
       int oldIndex = index--;
       if(index < 0)
         index = optionsLength-1;
       onIndexChanged(oldIndex, index);
     }).addStyle("navigate");
-    _btn_next = new UIIconButton("navigate_next", (){
+    _btn_next = new UiButtonIcon("navigate_next", (){
       int oldIndex = index++;
       if(index >= optionsLength)
         index = 0;

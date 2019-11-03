@@ -25,14 +25,14 @@ class LevelObjectMenu{
   Element element;
   Element el_menu;
   Element el_controls;
-  UIButton el_buttonDelete;
+  UiButton el_buttonDelete;
   LevelObject _currentLevelObject;
   OnDelete onLevelObjectDelete;
 
   UiElement createElementControls(){
     Element el = new DivElement();
     el_controls = new DivElement();
-    el_buttonDelete = new UIIconButton("delete",(){
+    el_buttonDelete = new UiButtonIcon("delete",(){
       if(_currentLevelObject == null) return;
       if(onLevelObjectDelete != null){
         onLevelObjectDelete(_currentLevelObject);

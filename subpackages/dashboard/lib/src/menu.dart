@@ -38,8 +38,8 @@ class Menu<H extends MenuStatus>
 
   //menu element
   Element element;
-  UIButton btn_back;
-  UIButton btn_close;
+  UiButton btn_back;
+  UiButton btn_close;
   //txt_title is the element with text==title
   Element txt_title;
 
@@ -69,9 +69,9 @@ class Menu<H extends MenuStatus>
     return new DivElement();
   }
 
-  UIButton createBackButton()
+  UiButton createBackButton()
   {
-    var ret = new UIIconButton("navigate_before",()
+    var ret = new UiButtonIcon("navigate_before",()
     {
       if(_backqueue.isNotEmpty)
         showMenu(_backqueue.removeLast(), false);
@@ -82,10 +82,9 @@ class Menu<H extends MenuStatus>
     return ret;
   }
 
-  UIButton createCloseButton()
+  UiButton createCloseButton()
   {
-    print("Create close");
-    var ret = new UIIconButton("close",()
+    var ret = new UiButtonIcon("close",()
     {
       hideMenu();
     });
@@ -116,7 +115,6 @@ class Menu<H extends MenuStatus>
     btn_back.display(status.showBack && _backqueue.isNotEmpty);
     btn_close.display(status.showClose);
     btn_close.element.style.display = "none";
-    print("closebutton: ${status.showClose} ${btn_close.element.style.display}");
   }
 
   void hideMenu(){

@@ -1,19 +1,19 @@
 part of uihelper;
 
 class UiInputBoolIcon extends UiInput<bool>{
-  UIIconButton el_checked;
-  UIIconButton el_unchecked;
+  UiButtonIcon el_checked;
+  UiButtonIcon el_unchecked;
   bool checked = false;
 
   UiInputBoolIcon(String label) : super(label);
   Element createElement(){
     Element el = super._createElement();
-    el_checked = UIIconButton("check_box", (){
+    el_checked = UiButtonIcon("check_box", (){
       checked = false;
       _setValueInElement(checked);
       if(onValueChange != null)onValueChange(getValue());
     });
-    el_unchecked = UIIconButton("check_box_outline_blank", (){
+    el_unchecked = UiButtonIcon("check_box_outline_blank", (){
       checked = true;
       _setValueInElement(checked);
       if(onValueChange != null)onValueChange(getValue());

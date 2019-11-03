@@ -11,7 +11,7 @@ class UIMenu extends UiElement{
     el_content = new DivElement();
     el_wrap.append(el_legend);
     el_wrap.append(el_content);
-    var btn = UIToggleIconButton("expand_less","expand_more",(toggled){
+    var btn = UiButtonToggleIcon("expand_less","expand_more",(toggled){
       el_content.style.display = toggled ? "none" : "block";
     });
     el_legend.append(btn.element);

@@ -61,7 +61,7 @@ class WebglGame3d extends WebglGame{
     return el;
   }
   UiElement createControlButton(String icon, Control control){
-    var el = new UIIconButton(icon, (){});
+    var el = new UiButtonIcon(icon, (){});
     el.element.onMouseDown.listen((Event e){onControl(control, true);});
     el.element.onTouchStart.listen((Event e){onControl(control, true);});
     el.element.onMouseUp.listen((Event e){onControl(control, false);});
