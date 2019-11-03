@@ -1,5 +1,5 @@
 part of uihelper;
-
+/*
 class UIHelper{
 
   static Element createIcon(String icon){
@@ -86,3 +86,4 @@ class UIHelper{
     return el;
   }
 }
+*/

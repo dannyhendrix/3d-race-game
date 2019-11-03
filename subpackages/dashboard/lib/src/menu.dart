@@ -38,13 +38,15 @@ class Menu<H extends MenuStatus>
 
   //menu element
   Element element;
-  Element btn_back;
-  Element btn_close;
+  UIButton btn_back;
+  UIButton btn_close;
   //txt_title is the element with text==title
   Element txt_title;
 
   void init([bool appendToBody = true])
   {
+    btn_back = createBackButton();
+    btn_close = createCloseButton();
     element = setupFields();
     element.style.display = "none";
     if(appendToBody)
@@ -58,7 +60,7 @@ class Menu<H extends MenuStatus>
     Element ell = createContent();
     ell.id = "menu_wrapper";
 
-    ell.append(createTitleElement(createBackButton(),createCloseButton()));
+    ell.append(createTitleElement(btn_back,btn_close));
     el.append(ell);
     return el;
   }
@@ -67,42 +69,38 @@ class Menu<H extends MenuStatus>
     return new DivElement();
   }
 
-  Element createBackButton()
+  UIButton createBackButton()
   {
-    ButtonElement ret = new ButtonElement();
-    ret.id = "menu_back";
-    ret.onClick.listen((Event e)
+    var ret = new UIIconButton("navigate_before",()
     {
       if(_backqueue.isNotEmpty)
         showMenu(_backqueue.removeLast(), false);
       else
         hideMenu();
     });
-
-    btn_back = ret;
+    ret.element.id = "menu_back";
     return ret;
   }
 
-  Element createCloseButton()
+  UIButton createCloseButton()
   {
-    ButtonElement ret = new ButtonElement();
-    ret.id = "menu_close";
-    ret.onClick.listen((Event e)
+    print("Create close");
+    var ret = new UIIconButton("close",()
     {
       hideMenu();
     });
-    btn_close = ret;
+    ret.element.id = "menu_close";
     return ret;
   }
 
-  Element createTitleElement(Element btn_back, Element btn_close)
+  Element createTitleElement(UiElement btn_back, UiElement btn_close)
   {
     Element el = new HeadingElement.h1();
     txt_title = new SpanElement();
     txt_title.text = "Menu";
     el.append(txt_title);
-    el.append(btn_back);
-    el.append(btn_close);
+    el.append(btn_back.element);
+    el.append(btn_close.element);
     el.id = "menu_title";
     return el;
   }
@@ -115,8 +113,10 @@ class Menu<H extends MenuStatus>
     _currentStatus = status;
 
     txt_title.text = status.title;
-    btn_back.style.display = (status.showBack && _backqueue.isNotEmpty) ? "block" : "none";
-    btn_close.style.display = status.showClose ? "block" : "none";
+    btn_back.display(status.showBack && _backqueue.isNotEmpty);
+    btn_close.display(status.showClose);
+    btn_close.element.style.display = "none";
+    print("closebutton: ${status.showClose} ${btn_close.element.style.display}");
   }
 
   void hideMenu(){

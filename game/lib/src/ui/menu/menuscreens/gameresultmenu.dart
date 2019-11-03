@@ -25,7 +25,7 @@ class GameResultMenu extends GameMenuScreen{
     el.append(gameResultContent);
 
     //el.append(createOpenMenuButtonWithIcon(menu,"Continue","play_arrow",menu.MENU_MAIN));
-    el.append(createOpenMenuButtonWithIcon(menu,"Main menu","menu",menu.MENU_MAIN));
+    el.append(createOpenMenuButtonWithIcon(menu,"Main menu","menu",menu.MENU_MAIN).element);
 
     closebutton = false;
     backbutton = false;

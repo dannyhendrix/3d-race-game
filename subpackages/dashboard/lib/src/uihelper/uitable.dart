@@ -1,12 +1,12 @@
-part of game.leveleditor;
+part of uihelper;
 
-class UITable{
+class UITable extends UiElement{
   int columns;
   int rows;
   List<List<Element>> _cells;
   UITable(this.columns, this.rows);
-  void append(int column, int row, Node element){
-    _cells[row][column].append(element);
+  void append(int column, int row, UiElement element){
+    _cells[row][column].append(element.element);
   }
   Element createElement(){
     var table = new TableElement();

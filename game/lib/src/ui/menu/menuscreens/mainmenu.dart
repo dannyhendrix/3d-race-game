@@ -41,17 +41,17 @@ class MainMenu extends GameMenuScreen
     el.append(el_right);
 
     //el_left.append(createOpenMenuButtonWithIcon(menu,"Singleplayer","account_circle",menu.MENU_SINGLEPLAYER));
-    el_left.append(createMenuButtonWithIcon("Random race","play_arrow",(Event e){
+    el_left.append(createMenuButtonWithIcon("Random race","play_arrow",(){
       menu.showMenu(new GameInputMenuStatus("Random race", menu.gameBuilder.newRandomGame(), (GameOutput result){
         menu.showMenu(new GameOutputMenuStatus("Race results", result));
       }));
-    }));
-    el_left.append(createOpenMenuButtonWithIcon(menu,"Single race","play_arrow",menu.MENU_SINGLERACE));
-    if(menu.settings.debug.v) el_left.append(createOpenMenuButtonWithIcon(menu,"Soccer","play_arrow",menu.MENU_SOCCER));
+    }).element);
+    el_left.append(createOpenMenuButtonWithIcon(menu,"Single race","play_arrow",menu.MENU_SINGLERACE).element);
+    if(menu.settings.debug.v) el_left.append(createOpenMenuButtonWithIcon(menu,"Soccer","play_arrow",menu.MENU_SOCCER).element);
     //el_left.append(createOpenMenuButtonWithIcon(menu,"Story mode","table_chart",menu.MENU_MAIN));
-    el_left.append(createOpenMenuButtonWithIcon(menu,"Profile","account_circle",menu.MENU_PROFILE));
+    el_left.append(createOpenMenuButtonWithIcon(menu,"Profile","account_circle",menu.MENU_PROFILE).element);
   /*
-    el_left.append(createMenuButtonWithIcon("Result","play_arrow",(Event e){
+    el_left.append(createMenuButtonWithIcon("Result","play_arrow",(){
       var a = new GameOutput();
       var p1 = new GamePlayerResult(new GameSettingsPlayer.asAiPlayer(3,"player1",VehicleType.Car));
       p1.position = 1;
@@ -72,14 +72,14 @@ class MainMenu extends GameMenuScreen
     }));
     */
 
-    if(menu.settings.debug.v) el_left.append(createMenuButtonWithIcon("Soccer random","play_arrow",(Event e){
+    if(menu.settings.debug.v) el_left.append(createMenuButtonWithIcon("Soccer random","play_arrow",(){
       menu.showMenu(new GameInputMenuStatus("Soccer", menu.gameBuilder.newRandomSoccerGame(), (GameOutput result){
         menu.showMenu(new GameOutputMenuStatus("Game results", result));
       }));
-    }));
+    }).element);
 
-    if(menu.settings.debug.v) el_left.append(createOpenMenuButtonWithIcon(menu,"Settings","settings",menu.MENU_SETTINGS));
-    el_left.append(createOpenMenuButtonWithIcon(menu,"Controls","videogame_asset",menu.MENU_CONTROLS));
+    if(menu.settings.debug.v) el_left.append(createOpenMenuButtonWithIcon(menu,"Settings","settings",menu.MENU_SETTINGS).element);
+    el_left.append(createOpenMenuButtonWithIcon(menu,"Controls","videogame_asset",menu.MENU_CONTROLS).element);
     //el_left.append(createOpenMenuButtonWithIcon(menu,"Credits","info",menu.MENU_CREDITS));
 
     for(GameMainMenuItem menuItem in _sideMenus.keys){

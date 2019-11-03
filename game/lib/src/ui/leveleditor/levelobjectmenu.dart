@@ -1,6 +1,6 @@
 part of game.leveleditor;
 
-class LevelObjectWrapper<T extends LevelObject>{
+class LevelObjectWrapper<T extends LevelObject> extends UiElement{
   Element el;
   List<T> levelObjects = [];
   void clearAll(){
@@ -25,14 +25,14 @@ class LevelObjectMenu{
   Element element;
   Element el_menu;
   Element el_controls;
-  Element el_buttonDelete;
+  UIButton el_buttonDelete;
   LevelObject _currentLevelObject;
   OnDelete onLevelObjectDelete;
 
-  Element createElementControls(){
+  UiElement createElementControls(){
     Element el = new DivElement();
     el_controls = new DivElement();
-    el_buttonDelete = new UIIconButton("delete",(Event e){
+    el_buttonDelete = new UIIconButton("delete",(){
       if(_currentLevelObject == null) return;
       if(onLevelObjectDelete != null){
         onLevelObjectDelete(_currentLevelObject);
@@ -41,20 +41,24 @@ class LevelObjectMenu{
       el_controls.nodes.clear();
       el_menu.nodes.clear();
       showDelete(false);
-    }).createElement();
+    });
     //element = el;
     el.append(el_controls);
-    el.append(el_buttonDelete);
+    el.append(el_buttonDelete.element);
 
     showDelete(false);
-    return el;
+
+    var uimenu = new UIMenu("Controls");
+    el.className = "controls";
+    uimenu.appendElement(el);
+    return uimenu;
   }
 
-  Element createElement(){
+  UiElement createElement(){
     Element el = new DivElement();
     el_menu = new DivElement();
     /*
-    el_buttonDelete = new UIIconButton("delete",(Event e){
+    el_buttonDelete = new UIIconButton("delete",(){
       if(_currentLevelObject == null) return;
       if(onLevelObjectDelete != null){
         onLevelObjectDelete(_currentLevelObject);
@@ -68,7 +72,12 @@ class LevelObjectMenu{
     //el.append(el_buttonDelete);
 
     //showDelete(false);
-    return el;
+    //return el;
+
+    var uimenu = new UIMenu("Properties");
+    uimenu.addStyle("properties");
+    uimenu.appendElement(el);
+    return uimenu;
   }
   void onSelect(LevelObject o){
     el_menu.nodes.clear();
@@ -80,6 +89,7 @@ class LevelObjectMenu{
   }
 
   void showDelete(bool show){
-    el_buttonDelete.style.display = show ? "" : "none";
+    if(show) el_buttonDelete.show();
+    else el_buttonDelete.hide();
   }
 }

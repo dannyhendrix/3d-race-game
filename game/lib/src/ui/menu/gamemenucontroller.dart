@@ -79,7 +79,7 @@ class GameMenuController extends Menu<GameMenuStatus>
     Element ell = new DivElement();
     ell.id = "menu_wrapper";
 
-    ell.append(createTitleElement(createBackButton(),createCloseButton()));
+    ell.append(createTitleElement(btn_back, btn_close));
     //ell.append(createCookieElement());
 
     for(GameMenuItem menuItem in menus.keys){
@@ -130,13 +130,6 @@ class GameMenuController extends Menu<GameMenuStatus>
     return el;
   }
   */
-  Element createBackButton()
-  {
-    ButtonElement btn = super.createBackButton();
-    btn.text = "";
-    btn.append(UIHelper.createIcon("navigate_before"));
-    return btn;
-  }
 
   void showMenu(GameMenuStatus m, [bool storeInHistory = true])
   {

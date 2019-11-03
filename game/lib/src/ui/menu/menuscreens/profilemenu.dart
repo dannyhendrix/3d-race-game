@@ -20,7 +20,7 @@ class ProfileMenu extends GameMenuScreen{
     el.append(_el_vehiclePreview);
     el.append(_createColorSelect(menu.settings.user_color1.v, (VehicleThemeColor newColor){ menu.settings.user_color1.v = newColor; _onColorChange();}));
     el.append(_createColorSelect(menu.settings.user_color2.v, (VehicleThemeColor newColor){ menu.settings.user_color2.v = newColor; _onColorChange();}));
-    el.append(_createUsernameInput(menu.settings.user_name.v));
+    el.append(_createUsernameInput(menu.settings.user_name.v).element);
 
     closebutton = false;
 
@@ -58,12 +58,14 @@ class ProfileMenu extends GameMenuScreen{
     return cs.setupFields(current);
   }
 
-  Element _createUsernameInput(String value){
-    Element el_in = UIHelper.createTextInput("Username",value,(String newValue){
+  UiElement _createUsernameInput(String value){
+    var el_in = new UiInputText("Username");
+    el_in.setValue(value);
+    el_in.onValueChange = (String newValue){
       menu.settings.user_name.v = newValue;
       menu.settings.saveToCookie();
-    });
-    Element el = UIHelper.createForm();
+    };
+    var el = UiPanelForm();
     el.append(el_in);
     return el;
   }

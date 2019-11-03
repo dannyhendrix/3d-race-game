@@ -118,8 +118,8 @@ abstract class GameInputSelectionInt extends GameInputSelection<int>{
 }
 
 abstract class GameInputSelection<T>{
-  Element _btn_next;
-  Element _btn_prev;
+  UiElement _btn_next;
+  UiElement _btn_prev;
   Element el_content;
   int index = 0;
   Element element;
@@ -135,34 +135,29 @@ abstract class GameInputSelection<T>{
       element.append(el_label);
     }
 
-    _btn_prev = createButtonWithIcon("navigate_before", (Event e){
+    _btn_prev = new UIIconButton("navigate_before", (){
       int oldIndex = index--;
       if(index < 0)
         index = optionsLength-1;
       onIndexChanged(oldIndex, index);
-    });
-    _btn_next = createButtonWithIcon("navigate_next", (Event e){
+    }).addStyle("navigate");
+    _btn_next = new UIIconButton("navigate_next", (){
       int oldIndex = index++;
       if(index >= optionsLength)
         index = 0;
       onIndexChanged(oldIndex, index);
-    });
+    }).addStyle("navigate");
     el_content = new DivElement();
     el_content.className = "content";
 
-    element.append(_btn_prev);
+    element.append(_btn_prev.element);
     element.append(el_content);
-    element.append(_btn_next);
+    element.append(_btn_next.element);
     return element;
   }
   void onIndexChanged(int oldIndex, int newIndex){
     el_content.text = newIndex.toString();
   }
-  Element createButtonWithIcon(String icon, Function onClick)
-  {
-    Element btn = UIHelper.createButtonWithIcon(icon, onClick);
-    btn.className = "navigate";
-    return btn;
-  }
+
   T getSelectedValue();
 }

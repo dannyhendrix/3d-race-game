@@ -1,9 +1,11 @@
-part of game.leveleditor;
+part of uihelper;
 
-abstract class UIButton{
+typedef void OnButtonClick();
+
+abstract class UIButton extends UiElement{
   Element _createButton()
   {
-    DivElement btn = new DivElement();
+    var btn = new ButtonElement();
     btn.className = "button";
     btn.onClick.listen((MouseEvent e){ _onButtonClick(e); return false; });
     btn.onTouchStart.listen((TouchEvent e){ _onButtonClick(e); return false; });
@@ -18,6 +20,18 @@ abstract class UIButton{
   void _onButtonClick(Event e);
 }
 
+class UiIcon extends UiElement{
+  String icon;
+  UiIcon(this.icon);
+  Element createElement() {
+    Element iel = new Element.tag("i");
+    iel.className = "material-icons";
+    iel.text = icon;
+    return iel;
+  }
+
+}
+
 typedef void ToggleOnClick(bool isToggled);
 class UIToggleIconButton extends UIButton{
   bool toggled = false;
@@ -26,6 +40,11 @@ class UIToggleIconButton extends UIButton{
   Element _el_icon;
   ToggleOnClick _onClick;
   UIToggleIconButton(this._icon_default, this._icon_toggled, this._onClick);
+  void setToggled(bool value){
+    if(toggled == value) return;
+    _toggle();
+    _onClick(toggled);
+  }
   void _toggle(){
     toggled = !toggled;
     _el_icon.text = toggled ? _icon_toggled : _icon_default;
@@ -37,18 +56,13 @@ class UIToggleIconButton extends UIButton{
     btn.append(_el_icon);
     return btn;
   }
-  void setToggled(bool value){
-    if(toggled == value) return;
-    _toggle();
-    _onClick(toggled);
-  }
   void _onButtonClick(Event e){
     e.preventDefault(); _toggle(); _onClick(toggled);
   }
 }
 class UIIconButton extends UIButton{
   String _icon_default;
-  Function _onClick;
+  OnButtonClick _onClick;
   UIIconButton(this._icon_default, this._onClick);
 
   Element createElement(){
@@ -61,12 +75,34 @@ class UIIconButton extends UIButton{
   }
   void _onButtonClick(Event e){
     e.preventDefault();
-    _onClick(e);
+    _onClick();
+  }
+}
+class UiIconTextButton extends UIButton{
+  String _icon_default;
+  String _text;
+  OnButtonClick _onClick;
+  UiIconTextButton(this._text, this._icon_default, this._onClick);
+
+  Element createElement(){
+    var eltxt = new SpanElement();
+    eltxt.text = _text;
+    var el_icon = _createIcon();
+    el_icon.text = _icon_default;
+    var btn = _createButton();
+    btn.classes.add("buttonIcon");
+    btn.append(el_icon);
+    btn.append(eltxt);
+    return btn;
+  }
+  void _onButtonClick(Event e){
+    e.preventDefault();
+    _onClick();
   }
 }
 class UITextButton extends UIButton{
   String _text;
-  Function _onClick;
+  OnButtonClick _onClick;
   UITextButton(this._text, this._onClick);
 
   Element createElement(){
@@ -76,6 +112,6 @@ class UITextButton extends UIButton{
   }
   void _onButtonClick(Event e){
     e.preventDefault();
-    _onClick(e);
+    _onClick();
   }
 }

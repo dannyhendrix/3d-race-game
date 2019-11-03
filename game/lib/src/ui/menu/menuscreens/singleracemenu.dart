@@ -5,8 +5,8 @@ class SingleRaceMenu extends GameMenuScreen{
   GameInputSelectionVehicle _vehicleSelection;
   GameInputSelectionTrailer _trailerSelection;
   GameInputSelectionLevel _levelSelection;
-  InputFormRadio _in_laps;
-  InputFormRadio _in_oponents;
+  UiInputOptionRadio _in_laps;
+  UiInputOptionRadio _in_oponents;
   TextAreaElement in_levelJson;
 
   SingleRaceMenu(this.menu){
@@ -29,12 +29,12 @@ class SingleRaceMenu extends GameMenuScreen{
     _trailerSelection = new GameInputSelectionTrailer();
     _levelSelection = new GameInputSelectionLevel(menu.levelManager);
 
-    _in_oponents = new InputFormRadio("Oponents", [0,1,2,3,4]);
-    Element el_oponents = _in_oponents.createElement();
+    _in_oponents = new UiInputOptionRadio("Oponents", [0,1,2,3,4]);
+    Element el_oponents = _in_oponents.element;
     _in_oponents.setValue(3);
 
-    _in_laps = new InputFormRadio("Laps",[1,2,3,5,10]);
-    Element el_laps = _in_laps.createElement();
+    _in_laps = new UiInputOptionRadio("Laps",[1,2,3,5,10]);
+    Element el_laps = _in_laps.element;
     _in_laps.setValue(2);
 
     el_left.append(_levelSelection.setupFieldsForLevels(_createLevelJsonInput(),menu.settings.levels_allowJsonInput.v));
@@ -45,11 +45,11 @@ class SingleRaceMenu extends GameMenuScreen{
     el_right.append(_trailerSelection.setupFieldsForTrailers());
     el_right.append(el_oponents);
 
-    el.append(createMenuButtonWithIcon("Start","play_arrow",(Event e){
+    el.append(createMenuButtonWithIcon("Start","play_arrow",(){
       menu.showMenu(new GameInputMenuStatus("Single race", createGameInput(), (GameOutput result){
         menu.showMenu(new GameOutputMenuStatus("Race results", result));
       }));
-    }));
+    }).element);
 
     _vehicleSelection.onIndexChanged(-1, 0);
     _trailerSelection.onIndexChanged(-1, 0);

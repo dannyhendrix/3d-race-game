@@ -5,9 +5,9 @@ class SoccerGameMenu extends GameMenuScreen{
   GameInputSelectionVehicle _vehicleSelection;
   GameInputSelectionTrailer _trailerSelection;
   GameInputSelectionLevel _levelSelection;
-  InputFormRadio _in_scorelimit;
-  InputFormRadio _in_teams;
-  InputFormRadio _in_playersperteam;
+  UiInputOptionRadio _in_scorelimit;
+  UiInputOptionRadio _in_teams;
+  UiInputOptionRadio _in_playersperteam;
   TextAreaElement in_levelJson;
 
   SoccerGameMenu(this.menu){
@@ -29,15 +29,15 @@ class SoccerGameMenu extends GameMenuScreen{
     _trailerSelection = new GameInputSelectionTrailer();
     _levelSelection = new GameInputSelectionLevel(menu.levelManager);
 
-    _in_teams = new InputFormRadio("Teams", [2,3,4,5,6]);
-    var el_teams = _in_teams.createElement();
+    _in_teams = new UiInputOptionRadio("Teams", [2,3,4,5,6]);
+    var el_teams = _in_teams.element;
     _in_teams.setValueIndex(0);
-    _in_playersperteam = new InputFormRadio("Players per team", [1,2,3,4,10,20]);
-    var el_playersperteam = _in_playersperteam.createElement();
+    _in_playersperteam = new UiInputOptionRadio("Players per team", [1,2,3,4,10,20]);
+    var el_playersperteam = _in_playersperteam.element;
     _in_playersperteam.setValueIndex(1);
 
-    _in_scorelimit = new InputFormRadio("Score limit",[3,5,10]);
-    Element el_scoreLimit = _in_scorelimit.createElement();
+    _in_scorelimit = new UiInputOptionRadio("Score limit",[3,5,10]);
+    Element el_scoreLimit = _in_scorelimit.element;
     _in_scorelimit.setValueIndex(1);
 
     el_left.append(_levelSelection.setupFieldsForLevels(_createLevelJsonInput(),menu.settings.levels_allowJsonInput.v));
@@ -48,11 +48,11 @@ class SoccerGameMenu extends GameMenuScreen{
     el_right.append(el_teams);
     el_right.append(el_playersperteam);
 
-    el.append(createMenuButtonWithIcon("Start","play_arrow",(Event e){
+    el.append(createMenuButtonWithIcon("Start","play_arrow",(){
       menu.showMenu(new GameInputMenuStatus("Soccer", createGameInput(), (GameOutput result){
         menu.showMenu(new GameOutputMenuStatus("Race results", result));
       }));
-    }));
+    }).element);
 
     _vehicleSelection.onIndexChanged(-1, 0);
     _trailerSelection.onIndexChanged(-1, 0);

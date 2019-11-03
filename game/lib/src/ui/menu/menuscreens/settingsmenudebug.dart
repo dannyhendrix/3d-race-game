@@ -16,63 +16,61 @@ class SettingsMenuDebug extends GameMenuScreen
   GameMenuController menu;
   bool showStoreIncookie = true;
 
-  Map<String, InputForm> settingElementMapping = {};
+  Map<String, UiInput> settingElementMapping = {};
 
   SettingsMenuDebug(this.menu);
 
   Element setupFields()
   {
     Element el = super.setupFields();
-    Element form = UIHelper.createForm();
+    var form = UiPanelForm();
     for(GameSetting s in menu.settings.getMenuSettings())
       form.append(createSettingElement(s));
-    form.append(UIHelper.createButtonWithText("Reset cookie", (Event e){
+    form.append(UITextButton("Reset cookie", (){
       menu.settings.emptyCookie();
     }));
-    el.append(form);
+    el.append(form.element);
     return el;
   }
   
-  Element createSettingElement(GameSetting s)
+  UiElement createSettingElement(GameSetting s)
   {
-
-
     if(s is GameSettingWithAllowedValues)
     {
-      InputForm form = new InputFormOption(s.description,s.allowedValues);
+      var form = new UiInputOption(s.description,s.allowedValues);
       settingElementMapping[s.k] = form;
-      return form.createElement();
+      return form;
     }
     else if(s is GameSettingWithEnum)
     {
-      InputFormOption form = new InputFormOption(s.description,s.allowedValues);
+      var form = new UiInputOption(s.description,s.allowedValues);
       form.objectToString = s.convertTo;
       settingElementMapping[s.k] = form;
-      return form.createElement();
+      return form;
     }
     else if(s.v is int)
     {
-      InputForm form = new InputFormInt(s.description);
+      var form = new UiInputInt(s.description);
       settingElementMapping[s.k] = form;
-      return form.createElement();
+      return form;
     }
     else if(s.v is double)
     {
-      InputForm form = new InputFormDouble(s.description);
+      var form = new UiInputDouble(s.description);
       settingElementMapping[s.k] = form;
-      return form.createElement();
+      return form;
     }
     else if(s.v is bool)
     {
-      InputForm form = new InputFormBool(s.description);
+      var form = new UiInputBoolIcon(s.description);
       settingElementMapping[s.k] = form;
-      return form.createElement();
+      return form;
     }
     else
     {
-      InputForm form =  new InputFormString(s.description);
+      var form =  new UiInputText(s.description);
       settingElementMapping[s.k] = form;
-      return form.createElement();
+      return form;
     }
   }
   

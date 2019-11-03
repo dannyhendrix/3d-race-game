@@ -46,13 +46,13 @@ class WebglGame3d extends WebglGame{
     Element el = new DivElement();
     el.id = "controlswrapper";
 
-    Element el_left = new DivElement();
-    el_left.className = "left";
-    Element el_right = new DivElement();
-    el_right.className = "right";
+    var el_left = new UiPanel();
+    el_left.addStyle("left");
+    var el_right = new UiPanel();
+    el_right.addStyle("right");
 
-    el.append(el_left);
-    el.append(el_right);
+    el.append(el_left.element);
+    el.append(el_right.element);
 
     el_left.append(createControlButton("keyboard_arrow_left",Control.SteerLeft));
     el_left.append(createControlButton("keyboard_arrow_right",Control.SteerRight));
@@ -60,13 +60,12 @@ class WebglGame3d extends WebglGame{
     el_right.append(createControlButton("keyboard_arrow_down",Control.Brake));
     return el;
   }
-  Element createControlButton(String icon, Control control){
-    ButtonElement el = new ButtonElement();
-    el.append(UIHelper.createIcon(icon));
-    el.onMouseDown.listen((Event e){onControl(control, true);});
-    el.onTouchStart.listen((Event e){onControl(control, true);});
-    el.onMouseUp.listen((Event e){onControl(control, false);});
-    el.onTouchEnd.listen((Event e){onControl(control, false);});
+  UiElement createControlButton(String icon, Control control){
+    var el = new UIIconButton(icon, (){});
+    el.element.onMouseDown.listen((Event e){onControl(control, true);});
+    el.element.onTouchStart.listen((Event e){onControl(control, true);});
+    el.element.onMouseUp.listen((Event e){onControl(control, false);});
+    el.element.onTouchEnd.listen((Event e){onControl(control, false);});
     return el;
   }
   @override

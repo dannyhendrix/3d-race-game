@@ -3,7 +3,7 @@ part of game.leveleditor;
 enum ClickToAddOptions {None, CheckPoint, Tree, Wall}
 
 class LevelEditor{
-  TextAreaElement el_txt;
+  UiInputTextLarge el_txt;
   GameLevel gamelevel = new GameLevel();
   Preview preview = new Preview();
   LevelObjectWrapper walls = new LevelObjectWrapper();
@@ -26,22 +26,22 @@ class LevelEditor{
   }
 
   Element createElement(){
-    Element el = new DivElement();
-    Element el_levelwrap = new DivElement();
-    el_levelwrap.onMouseDown.listen(_onLevelMouseDown);
-    el_levelwrap.className = "levelWrapper";
-    el_levelwrap.append(preview.createElement());
-    wrappers.forEach((o)=>el_levelwrap.append(o.createElement()));
+    var el = new UiPanel();
+    var el_levelwrap = new UiPanel();
+    el_levelwrap.element.onMouseDown.listen(_onLevelMouseDown);
+    el_levelwrap.addStyle("levelWrapper");
+    el_levelwrap.appendElement(preview.createElement());
+    wrappers.forEach((o)=>el_levelwrap.append(o));
     el.append(el_levelwrap);
-    Element el_right = new DivElement();
-    el_right.className = "rightpanel";
+    var el_right = new UiPanel();
+    el_right.addStyle("rightpanel");
     el_right.append(_createMenuCreate());
     el_right.append(_createMenuControls());
     el_right.append(_createMenuProperties());
     el_right.append(_createMenuClickAdd());
     el_right.append(_createMenuSaveLoad());
     el.append(el_right);
-    return el;
+    return el.element;
   }
   void _onLevelMouseDown(MouseEvent e){
     //document.elementFromPoint(e.page.x, e.page.y).style.background = "red";
@@ -62,36 +62,27 @@ class LevelEditor{
     }
     //wrapper.addNew(menu.onSelect,menu.onMove, e.offset.x/_scale, e.offset.y/_scale);
   }
-  Element _createMenuProperties(){
-    var uimenu = new UIMenu("Properties");
-    var el = uimenu.createElement(false);
-    el.className = "properties";
-    uimenu.append(menu.createElement());
-    return el;
+  UiElement _createMenuProperties(){
+    return menu.createElement();
   }
-  Element _createMenuControls(){
-    var uimenu = new UIMenu("Controls");
-    var el = uimenu.createElement();
-    el.className = "controls";
-    uimenu.append(menu.createElementControls());
-    return el;
+  UiElement _createMenuControls(){
+    return menu.createElementControls();
   }
-  Element _createMenuCreate(){
+  UiElement _createMenuCreate(){
     var menu = new UIMenu("Add objects");
-    var el_menu = menu.createElement();
-    el_menu.className = "menu";
+    menu.addStyle("menu");
 
-    menu.append(new UITextButton("New checkpoint", (Event e){
+    menu.append(new UITextButton("New checkpoint", (){
       _addNewCheckpoint(10.0,10.0);
-    }).createElement());
-    menu.append(new UITextButton("New wall", (Event e){
+    }));
+    menu.append(new UITextButton("New wall", (){
       _addNewWall(10.0,10.0);
-    }).createElement());
-    menu.append(new UITextButton("New tree", (Event e){
+    }));
+    menu.append(new UITextButton("New tree", (){
       _addNewStaticObject(10.0,10.0);
-    }).createElement());
+    }));
 
-    return el_menu;
+    return menu;
   }
   void _deleteLevelObject(LevelObject obj){
     if(obj is LevelObjectWall){
@@ -183,69 +174,67 @@ class LevelEditor{
   void _onProperyChange(LevelObject obj){
     loadToTextArea();
   }
-  Element _createMenuClickAdd(){
+  UiElement _createMenuClickAdd(){
     var menu = new UIMenu("Add new");
-    var el_menu = menu.createElement();
     for(ClickToAddOptions option in ClickToAddOptions.values){
       RadioButtonInputElement el = new RadioButtonInputElement();
       el.name = "clickToAdd";
       el.checked = option == ClickToAddOptions.None;
-      menu.append(el);
+      menu.appendElement(el);
       var el_txt = new SpanElement();
       el_txt.text = option.toString().split(".").last;
-      menu.append(el_txt);
-      menu.append(new BRElement());
+      menu.appendElement(el_txt);
+      menu.appendElement(new BRElement());
       el.onChange.listen((Event e){
         _currentClickOption = option;
       });
     }
-    return el_menu;
+    return menu;
   }
-  Element _createMenuSaveLoad(){
+  UiElement _createMenuSaveLoad(){
     var menu = new UIMenu("Load/Save from file");
-    var el_menu = menu.createElement();
 
     // text area
-    el_txt = new TextAreaElement();
+    el_txt = new UiInputTextLarge("Content");
     menu.append(el_txt);
-    el_txt.className = "json";
-    el_txt.onChange.listen((Event e){
+    el_txt.addStyle("json");
+    el_txt.onValueChange = (String val){
       loadFromTestArea();
-    });
+    };
     loadToTextArea();
 
     // save/load
-    var set_in = new InputFormString("Set");
-    var level_in = new InputFormString("Level");
-    menu.append(set_in.createElement());
-    menu.append(level_in.createElement());
+    var set_in = new UiInputText("Set");
+    var level_in = new UiInputText("Level");
+    menu.append(set_in);
+    menu.append(level_in);
     set_in.setValue("race");
     level_in.setValue("level1");
-    menu.append(new UIIconButton("cloud_download", (Event e){
+    menu.append(new UIIconButton("cloud_download", (){
       var set = set_in.getValue();
       var level = level_in.getValue();
       var loader = new PreLoader(()=> loadFromJson(JsonController.getJson("level/$set/$level")));
       loader.loadJson("levels/$set/$level.json","level/$set/$level");
       loader.start();
-    }).createElement());
-    menu.append(new UIIconButton("cloud_upload", (Event e){
+    }));
+    menu.append(new UIIconButton("cloud_upload", (){
       var json = levelSaver.levelToJson(gamelevel);
       var data = jsonEncode(json);
       HttpRequest.postFormData('http://localhost/0004-dart/MicroMachines/game/web/server/server.php', {"a":"save","set":set_in.getValue(),"level":level_in.getValue(),"data":data}
       ).then((data) {
         print("Saved ok");
       });
-    }).createElement());
+    }));
 
-    return el_menu;
+    return menu;
   }
 
   void loadToTextArea(){
     Map json = levelSaver.levelToJson(gamelevel);
-    el_txt.value = jsonEncode(json);
+    el_txt.setValue(jsonEncode(json));
   }
   void loadFromTestArea(){
-    Map json = jsonDecode(el_txt.value);
+    Map json = jsonDecode(el_txt.getValue());
     loadFromJson(json);
   }
 
