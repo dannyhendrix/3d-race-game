@@ -2,19 +2,22 @@ library uihelper;
 
 import "dart:html";
 
-part "src/uihelper/uihelper.dart";
 part "src/uihelper/uiicon.dart";
-part "src/uihelper/uimenu.dart";
-part "src/uihelper/uitable.dart";
 
 part "src/uihelper/uielement.dart";
-part "src/uihelper/uipanel.dart";
 
 part "src/uihelper/uibutton/uibutton.dart";
 part "src/uihelper/uibutton/uibuttonicon.dart";
 part "src/uihelper/uibutton/uibuttontext.dart";
 part "src/uihelper/uibutton/uibuttonicontext.dart";
 part "src/uihelper/uibutton/uibuttontoggleicon.dart";
+
+part "src/uihelper/uicontainer/uicontainer.dart";
+part "src/uihelper/uicontainer/uipanel.dart";
+part "src/uihelper/uicontainer/uipanelform.dart";
+part "src/uihelper/uicontainer/uipaneltitled.dart";
+part "src/uihelper/uicontainer/uicolumn.dart";
+part "src/uihelper/uicontainer/uitable.dart";
 
 part "src/uihelper/uiinput/uiinput.dart";
 part "src/uihelper/uiinput/uiinputbool.dart";

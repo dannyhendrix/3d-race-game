@@ -131,7 +131,7 @@ class TextureMenu{
   RenderTexture _renderTexture;
   Element createElement(){
     _renderTexture = new RenderTexture();
-    var menu = new UIMenu("Texture");
+    var menu = new UiPanelTitled("Texture");
     menu.appendElement(_renderTexture.layer.canvas);
     return menu.element;
   }
@@ -151,7 +151,7 @@ class PreviewMenu{
   GlPreview preview;
   Element _previewContainer;
   Element createElement(){
-    var menu = UIMenu("Preview");
+    var menu = UiPanelTitled("Preview");
     _previewContainer = new DivElement();
     var col_preview = UIColumn();
     var col_sliders = UIColumn();
@@ -274,7 +274,7 @@ class TriangleSelector extends UiElement{
   int getSelectedTriangleIndex() => _in_triangleIndex.getValue();
 
   Element createElement(){
-    var menu = new UIMenu("Selection");
+    var menu = new UiPanelTitled("Selection");
     _in_modelIndex = UiInputInt("Model index");
     _in_triangleIndex = UiInputInt("Triangle index");
     _in_modelIndex.onValueChange = (i) => _onValueChange();
@@ -302,7 +302,7 @@ class TriangleEditor extends UiElement{
     return GlTriangle([_in_point1.getValue(),_in_point2.getValue(),_in_point3.getValue()]);
   }
   Element createElement(){
-    var menu = new UIMenu("Triangle");
+    var menu = new UiPanelTitled("Triangle");
     _in_point1 = new PointEditor(_onValueChange);
     _in_point2 = new PointEditor(_onValueChange);
     _in_point3 = new PointEditor(_onValueChange);
@@ -334,7 +334,7 @@ class PointEditor extends UiElement{
     return GlPoint(_in_x.getValue(),_in_y.getValue(),_in_z.getValue(),_in_tx.getValue(),_in_ty.getValue());
   }
   Element createElement(){
-    var menu = new UIMenu("Point");
+    var menu = new UiPanelTitled("Point");
     _in_x = new UiInputDouble("x");
     _in_y = new UiInputDouble("y");
     _in_z = new UiInputDouble("z");

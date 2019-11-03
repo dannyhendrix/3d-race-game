@@ -69,7 +69,7 @@ class LevelEditor{
     return menu.createElementControls();
   }
   UiElement _createMenuCreate(){
-    var menu = new UIMenu("Add objects");
+    var menu = new UiPanelTitled("Add objects");
     menu.addStyle("menu");
 
     menu.append(new UiButtonText("New checkpoint", (){
@@ -175,7 +175,7 @@ class LevelEditor{
     loadToTextArea();
   }
   UiElement _createMenuClickAdd(){
-    var menu = new UIMenu("Add new");
+    var menu = new UiPanelTitled("Add new");
     for(ClickToAddOptions option in ClickToAddOptions.values){
       RadioButtonInputElement el = new RadioButtonInputElement();
       el.name = "clickToAdd";
@@ -192,7 +192,7 @@ class LevelEditor{
     return menu;
   }
   UiElement _createMenuSaveLoad(){
-    var menu = new UIMenu("Load/Save from file");
+    var menu = new UiPanelTitled("Load/Save from file");
 
     // text area
     el_txt = new UiInputTextLarge("Content");

@@ -2,7 +2,7 @@ import "dart:html";
 import "package:dashboard/uihelper.dart";
 
 void main(){
-  var panelForm = UIMenu("Inputform");
+  var panelForm = UiPanelTitled("Inputform");
   var form = UiPanelForm();
   panelForm.append(form);
   form.append(UiInputText("Enter text")..setValue("Voertaal"));
@@ -12,7 +12,7 @@ void main(){
   form.append(UiInputBool("Selected")..setValue(true));
   form.append(UiInputBoolIcon("Not selected")..setValue(true));
 
-  var panel = UIMenu("Input");
+  var panel = UiPanelTitled("Input");
   form.append(UiInputText("Enter text")..setValue("Voertaal"));
   form.append(UiInputOption("Select something",["Chinees","Friet","Pannekoek"])..setValue("Friet"));
   form.append(UiInputOptionRadio("Select integer",[1,2,3,4,5])..setValue(2));

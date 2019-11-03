@@ -48,7 +48,7 @@ class LevelObjectMenu{
 
     showDelete(false);
 
-    var uimenu = new UIMenu("Controls");
+    var uimenu = new UiPanelTitled("Controls");
     el.className = "controls";
     uimenu.appendElement(el);
     return uimenu;
@@ -74,7 +74,7 @@ class LevelObjectMenu{
     //showDelete(false);
     //return el;
 
-    var uimenu = new UIMenu("Properties");
+    var uimenu = new UiPanelTitled("Properties");
     uimenu.addStyle("properties");
     uimenu.appendElement(el);
     return uimenu;

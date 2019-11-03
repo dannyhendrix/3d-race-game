@@ -1,13 +1,13 @@
 part of uihelper;
 
-class UIMenu extends UiElement{
+class UiPanelTitled extends UiContainer{
   String title;
   Element el_content;
 
-  UIMenu(this.title){}
+  UiPanelTitled(this.title);
   Element createElement([bool expand = true]){
-    Element el_wrap = new FieldSetElement();
-    Element el_legend = new LegendElement();
+    var el_wrap = new FieldSetElement();
+    var el_legend = new LegendElement();
     el_content = new DivElement();
     el_wrap.append(el_legend);
     el_wrap.append(el_content);
@@ -19,21 +19,6 @@ class UIMenu extends UiElement{
     el_wrap.className = "menu";
     btn.setToggled(!expand);
     return el_wrap;
-  }
-  void append(UiElement el){
-    el_content.append(el.element);
-  }
-  void appendElement(Element el){
-    el_content.append(el);
-  }
-}
-
-class UIColumn extends UiElement{
-  Element el_content;
-  Element createElement(){
-    el_content = new SpanElement();
-    el_content.className = "column";
-    return el_content;
   }
   void append(UiElement el){
     el_content.append(el.element);
