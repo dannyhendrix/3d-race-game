@@ -5,42 +5,45 @@ class ControlsMenu extends GameMenuScreen
   GameMenuController menu;
   bool showStoreIncookie = true;
   EnterKey enterKey = new EnterKey(false);
-  Map<int, Element> keyToElementMapping = {};
+  Map<int, UiElement> keyToElementMapping = {};
 
   ControlsMenu(this.menu);
 
-  Element setupFields()
+  UiContainer setupFields()
   {
-    Element el = super.setupFields();
+    var el = super.setupFields();
     el.append(_createKeyboardControls());
     el.append(enterKey.createEnterKeyScreen());
-    el.id = "controls";
+    el.element.id = "controls";
     return el;
   }
 
-  Element _createKeyboardControls()
+  UiElement _createKeyboardControls()
   {
-    Element el = new DivElement();
+    var el = new UiPanel();
+    /*
     //tabs
-    Element el_tabs = new DivElement();
-    el_tabs.className = "tabs";
-    Element el_tabs_content = new DivElement();
+    var el_tabs = new UiPanel();
+    el_tabs.addStyle("tabs");
+    var el_tabs_content = new UiPanel();
     el_tabs_content.className = "tabs_content";
-    Element el_current_tab;
-    Element el_current_tab_content;
-    var setCurrentTab = (Element newCurrent, Element newCurrentContent, [ControlKeyType keyType])
+
+    UiElement el_current_tab;
+    UiElement el_current_tab_content;
+
+    var setCurrentTab = (UiElement newCurrent, UiElement newCurrentContent, [ControlKeyType keyType])
     {
       if(el_current_tab_content != null)
-        el_current_tab_content.style.display = "none";
+        el_current_tab_content.hide();
       el_current_tab_content = newCurrentContent;
-      el_current_tab_content.style.display = "block";
+      el_current_tab_content.show();
       if(el_current_tab != null)
-        el_current_tab.classes.remove("current");
+        el_current_tab.removeStyle("current");
       el_current_tab = newCurrent;
-      el_current_tab.classes.add("current");
+      el_current_tab.addStyle("current");
       if(keyType != null)
         menu.settings.client_controlkeytype.v = keyType;
-    };
+    };*/
     /*
     var addTab = (String title, Element el_content, ControlKeyType keyType){
       Element el = new DivElement();
@@ -65,10 +68,15 @@ class ControlsMenu extends GameMenuScreen
     el.append(_createKeyboardControlsTable(menu.settings.client_keys.v, true));
     return el;
   }
-  Element _createKeyboardControlsTable(Map<int, Control> keyMapping, [bool editable = false])
+  UiElement _createKeyboardControlsTable(Map<int, Control> keyMapping, [bool editable = false])
   {
-    TableElement ta = new TableElement();
-    ta.className = "controls_menu_table";
+    var ta = new UiTable(2,4);
+    ta.addStyle("controls_menu_table");
+
+
+
+
+    /*
     TableRowElement tr;
     var tdWrapperAppend = (String className, Node el) {
       TableCellElement td = new TableCellElement();
@@ -86,44 +94,41 @@ class ControlsMenu extends GameMenuScreen
       tr = new TableRowElement();
       ta.append(tr);
     };
-    var addControl = (String description, Control key)
+    */
+    var addControl = (String description, Control key, int row)
     {
-      thWrapperAppend("controls_label",new Text(description));
-      tdWrapperAppend("controls_keys",createEditKeyElement(key, keyMapping, editable));
+      ta.append(0, row, UiText(description)..addStyle("controls_label"));
+      ta.append(1, row, createEditKeyElement(key, keyMapping, editable)..addStyle("controls_keys"));
     };
-    newTr();
-    addControl("Accelerate",Control.Accelerate);
-    newTr();
-    addControl("Brake",Control.Brake);
-    newTr();
-    addControl("Steer left",Control.SteerLeft);
-    newTr();
-    addControl("Steer right",Control.SteerRight);
+    addControl("Accelerate",Control.Accelerate,0);
+    addControl("Brake",Control.Brake,1);
+    addControl("Steer left",Control.SteerLeft,2);
+    addControl("Steer right",Control.SteerRight,3);
     return ta;
   }
-  Element createKeyElement(int key, bool editable)
+  UiElement createKeyElement(int key, bool editable)
   {
     if(editable && keyToElementMapping.containsKey(key))
-      keyToElementMapping[key].remove();
-    Element el = new DivElement();
-    el.text = KeycodeToString.translate(key);
-    el.className = editable ? "control_key editable" : "control_key";
-    if(editable)
-    {
-      el.onClick.listen((MouseEvent e)
+      keyToElementMapping[key].element.remove();
+    UiButtonText el;
+    el = new UiButtonText(KeycodeToString.translate(key),(){
+      if(editable)
       {
-        menu.settings.client_keys.v.remove(key);
-        el.remove();
-      });
-      keyToElementMapping[key] = el;
-    }
+          menu.settings.client_keys.v.remove(key);
+          el.element.remove();
+      }
+    });
+    keyToElementMapping[key] = el;
+    el.addStyle("control_key");
+    if(editable) el.addStyle("editable");
+
     return el;
   }
-  Element createEditKeyElement(Control controlkey, Map<int,Control> keyMapping, [bool editable = false])
+  UiElement createEditKeyElement(Control controlkey, Map<int,Control> keyMapping, [bool editable = false])
   {
     // <div><span>keys</span>+</div>
-    DivElement el = new DivElement();
-    SpanElement keysWrapper = new SpanElement();
+    var el = new UiPanel();
+    var keysWrapper = new UiPanelInline();
 
     //add list of keys as elements
     keyMapping.forEach((int key, Control value){
@@ -137,19 +142,16 @@ class ControlsMenu extends GameMenuScreen
     if(editable)
     {
       //add new key
-      Element el_add = new DivElement();
-      el_add.text = "+";
-      el_add.className = "control_key add";
-
-      el_add.onClick.listen((MouseEvent e)
-      {
-        e.stopPropagation();
+      var el_add = new UiButtonText("+",(){
         enterKey.requestKey((int key)
         {
           keyMapping[key] = controlkey;
           keysWrapper.append(createKeyElement(key, editable));
         });
       });
+      el_add.addStyle("control_key");
+      el_add.addStyle("add");
+
       el.append(el_add);
     }
 

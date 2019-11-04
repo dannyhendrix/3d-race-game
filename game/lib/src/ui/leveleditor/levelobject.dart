@@ -43,7 +43,7 @@ class LevelObjectWall extends LevelObject{
   }
   Element createControlsElement(){
     var el = super.createControlsElement();
-    var table = new UITable(6,4);
+    var table = new UiTable(6,4);
     el.append(table.element);
 
     var step = 10.0;
@@ -99,7 +99,7 @@ class LevelObjectStaticObject extends LevelObject{
   }
   Element createControlsElement(){
     var el = super.createControlsElement();
-    var table = new UITable(3,4);
+    var table = new UiTable(3,4);
     el.append(table.element);
 
     var step = 10.0;
@@ -166,7 +166,7 @@ class LevelObjectCheckpoint extends LevelObject{
   }
   Element createControlsElement(){
     var el = super.createControlsElement();
-    var table = new UITable(6,4);
+    var table = new UiTable(6,4);
     el.append(table.element);
 
     var step = 10.0;

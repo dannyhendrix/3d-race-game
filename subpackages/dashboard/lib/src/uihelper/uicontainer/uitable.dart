@@ -1,10 +1,10 @@
 part of uihelper;
 
-class UITable extends UiElement{
+class UiTable extends UiElement{
   int columns;
   int rows;
   List<List<Element>> _cells;
-  UITable(this.columns, this.rows);
+  UiTable(this.columns, this.rows);
   void append(int column, int row, UiElement element){
     _cells[row][column].append(element.element);
   }

@@ -12,16 +12,16 @@ class PlayGameMenu extends GameMenuScreen{
   GameMenuController menu;
   PlayGameMenu(this.menu);
 
-  Element gameContent;
+  UiContainer gameContent;
   Element el_game;
   WebglGame game;
 
-  Element setupFields()
+  UiContainer setupFields()
   {
-    Element el = super.setupFields();
+    var el = super.setupFields();
 
-    gameContent = new DivElement();
-    gameContent.id = "gamewrapper";
+    gameContent = new UiPanel();
+    gameContent.element.id = "gamewrapper";
     el.append(gameContent);
 
     closebutton = false;
@@ -62,7 +62,7 @@ class PlayGameMenu extends GameMenuScreen{
       onFinished(result);
     };
     el_game = game.initAndCreateDom(gameSettings, menu.settings);
-    gameContent.append(el_game);
+    gameContent.appendElement(el_game);
     //element.append(createButton("Pause",(e)=>game.pause()));
     game.start();
   }

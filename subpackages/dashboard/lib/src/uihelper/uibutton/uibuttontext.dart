@@ -11,6 +11,7 @@ class UiButtonText extends UiButton{
   }
   void _onButtonClick(Event e){
     e.preventDefault();
+    e.stopPropagation();
     _onClick();
   }
 }

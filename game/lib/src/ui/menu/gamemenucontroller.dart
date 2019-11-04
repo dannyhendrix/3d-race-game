@@ -72,15 +72,14 @@ class GameMenuController extends Menu<GameMenuStatus>
   }
 
   @override
-  Element setupFields()
+  UiElement setupFields()
   {
-    Element el = new DivElement();
-    el.id = "menu_bg";
-    Element ell = new DivElement();
-    ell.id = "menu_wrapper";
+    var el = new UiPanel();
+    el.element.id = "menu_bg";
+    var ell = new UiPanel();
+    ell.element.id = "menu_wrapper";
 
     ell.append(createTitleElement(btn_back, btn_close));
-    //ell.append(createCookieElement());
 
     for(GameMenuItem menuItem in menus.keys){
       menus[menuItem].init();
@@ -88,48 +87,13 @@ class GameMenuController extends Menu<GameMenuStatus>
     }
     el.append(ell);
 
-    Element el_credits = new DivElement();
-    el_credits.text = "Created by Danny Hendrix";
+    var el_credits = new UiPanel();
+    var el_creditsText = new UiText("Created by Danny Hendrix");
+    el_credits.append(el_creditsText);
     el.append(el_credits);
 
     return el;
   }
-/*
-  Element createCookieElement()
-  {
-    DivElement el = new DivElement();
-    el.id = "menu_store_cookie";
-
-    Element chk_cookie = new SpanElement();
-    chk_cookie.className = "material-icons";
-
-    var changeStoreCookie = (bool store)
-    {
-      settings.storeInCookie.v = store;
-      if(store)
-      {
-        el.classes.add("selected");
-        chk_cookie.text = "check_box_outline";
-        settings.saveToCookie();
-      }
-      else
-      {
-        el.classes.remove("selected");
-        chk_cookie.text = "check_box_outline_blank";
-      }
-    };
-    el.onClick.listen((Event e){ changeStoreCookie(!settings.storeInCookie.v);});
-    changeStoreCookie(settings.storeInCookie.v);
-
-    SpanElement txt_cookie = new SpanElement();
-    txt_cookie.text = "Store settings in cookie.";
-
-    el.append(chk_cookie);
-    el.append(txt_cookie);
-    el_storeCookie = el;
-    return el;
-  }
-  */
 
   void showMenu(GameMenuStatus m, [bool storeInHistory = true])
   {
@@ -137,22 +101,8 @@ class GameMenuController extends Menu<GameMenuStatus>
     if(_currentMenu != null){
       _currentMenu.hide();
     }
-
     _currentMenu = menus[m.menuItem];
     _currentMenu.show(m);
-
-    /*
-    if(menus[m].showStoreIncookie && settings.client_showStoreInCookie.v)
-    {
-      el_storeCookie.style.display = "block";
-      menus[m].element.classes.add("withcookie");
-    }
-    else
-    {
-      el_storeCookie.style.display = "none";
-      menus[m].element.classes.remove("withcookie");
-    }
-    */
   }
 
   void hideMenu()

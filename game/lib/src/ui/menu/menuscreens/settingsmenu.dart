@@ -7,9 +7,9 @@ class SettingsMenu extends GameMenuScreen
 
   SettingsMenu(this.menu);
 
-  Element setupFields()
+  UiContainer setupFields()
   {
-    Element el = super.setupFields();
+    var el = super.setupFields();
     return el;
   }
 

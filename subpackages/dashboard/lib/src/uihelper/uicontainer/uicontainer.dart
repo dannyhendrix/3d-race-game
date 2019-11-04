@@ -7,4 +7,7 @@ abstract class UiContainer extends UiElement{
   void appendElement(Element el){
     element.append(el);
   }
+  void clear(){
+    element.children.clear();
+  }
 }

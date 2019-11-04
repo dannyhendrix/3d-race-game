@@ -11,16 +11,16 @@ class ProfileMenu extends GameMenuScreen{
 
   ImageElement _el_vehiclePreview;
 
-  Element setupFields()
+  UiContainer setupFields()
   {
-    Element el = super.setupFields();
+    var el = super.setupFields();
 
     _el_vehiclePreview = new ImageElement();
 
-    el.append(_el_vehiclePreview);
+    el.appendElement(_el_vehiclePreview);
     el.append(_createColorSelect(menu.settings.user_color1.v, (VehicleThemeColor newColor){ menu.settings.user_color1.v = newColor; _onColorChange();}));
     el.append(_createColorSelect(menu.settings.user_color2.v, (VehicleThemeColor newColor){ menu.settings.user_color2.v = newColor; _onColorChange();}));
-    el.append(_createUsernameInput(menu.settings.user_name.v).element);
+    el.append(_createUsernameInput(menu.settings.user_name.v));
 
     closebutton = false;
 
@@ -42,19 +42,8 @@ class ProfileMenu extends GameMenuScreen{
     }
   }
 
-  Element _createColorSelect(VehicleThemeColor current, OnColorChange onColorChange){
-    /*SelectElement el = new SelectElement();
-    for(var x in VehicleThemeColor.values){
-      el.append(new OptionElement(data:x.toString()));
-    }
-    el.selectedIndex = current.index;
-    el.onChange.listen((Event e){
-      onColorChange(VehicleThemeColor.values[el.selectedIndex]);
-      menu.settings.saveToCookie();
-      _onColorChange();
-    });
-    return el;*/
-    ColorSelection cs = new ColorSelection(onColorChange);
+  UiElement _createColorSelect(VehicleThemeColor current, OnColorChange onColorChange){
+    var cs = new ColorSelection(onColorChange);
     return cs.setupFields(current);
   }
 
@@ -100,17 +89,17 @@ class ProfileMenu extends GameMenuScreen{
 
 class ColorSelection{
   VehicleThemeColor selectedColor = null;
-  Map<VehicleThemeColor, Element> _colorToElement;
+  Map<VehicleThemeColor, UiElement> _colorToElement;
   OnColorChange onColorChange;
 
   ColorSelection(this.onColorChange);
 
-  Element setupFields(VehicleThemeColor initialColor){
-    Element el = new DivElement();
-    el.className = "colorSelection";
+  UiElement setupFields(VehicleThemeColor initialColor){
+    var el = new UiPanel();
+    el.addStyle("colorSelection");
     _colorToElement = {};
     for(VehicleThemeColor color in VehicleThemeColor.values){
-      Element el_color = _createColorButton(color);
+      var el_color = _createColorButton(color);
       _colorToElement[color] = el_color;
       el.append(el_color);
     }
@@ -119,17 +108,17 @@ class ColorSelection{
   }
 
   void setCurrentColor(VehicleThemeColor color){
-    if(selectedColor != null) _colorToElement[selectedColor].classes.remove("selected");
+    if(selectedColor != null) _colorToElement[selectedColor].removeStyle("selected");
     selectedColor = color;
-    _colorToElement[selectedColor].classes.add("selected");
+    _colorToElement[selectedColor].addStyle("selected");
     if(selectedColor != null) onColorChange(color);
   }
 
-  Element _createColorButton(VehicleThemeColor color){
-    Element el = new DivElement();
-    el.className = "colorSelectionItem";
-    el.style.backgroundColor = colorMappingCss[color];
-    el.onClick.listen((Event e){setCurrentColor(color);});
+  UiElement _createColorButton(VehicleThemeColor color){
+    var el = new UiPanel();
+    el.addStyle("colorSelectionItem");
+    el.element.style.backgroundColor = colorMappingCss[color];
+    el.element.onClick.listen((Event e){setCurrentColor(color);});
     return el;
   }
 }

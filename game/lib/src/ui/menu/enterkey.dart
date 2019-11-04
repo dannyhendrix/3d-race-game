@@ -9,6 +9,7 @@ class EnterKey
 
   void requestKey(OnEnterKey callback)
   {
+    print("request key");
     showEnterKeyWindow(true);
 
     List<StreamSubscription> streams;
@@ -20,6 +21,7 @@ class EnterKey
     StreamSubscription<TouchEvent> onBodyTouch;
 
     var onKey = (Event e, int key){
+      print("press $key");
       e.preventDefault();
       e.stopPropagation();
       cancelStreams();
@@ -47,21 +49,23 @@ class EnterKey
   /**
    * Press key screen
    */
-  Element _el_EnterKey;
+  UiElement _el_EnterKey;
 
-  Element createEnterKeyScreen()
+  UiElement createEnterKeyScreen()
   {
-    DivElement el = new DivElement();
-    el.id = "enterkey";
-    el.text = "Press prefered key";
-    if(_allowMouse) el.text += " or mouse button";
+    var el = new UiPanel();
+    el.element.id = "enterkey";
+    var txt = "Press prefered key";
+    if(_allowMouse) txt += " or mouse button";
     _el_EnterKey = el;
+    el.append(UiText(txt));
     showEnterKeyWindow(false);
     return el;
   }
 
   void showEnterKeyWindow(bool show)
   {
-    _el_EnterKey.style.display = show ? "block" : "none";
+    print(show);
+    _el_EnterKey.display(show);
   }
 }

@@ -1,6 +1,6 @@
 part of uihelper;
 
-class UIColumn extends UiContainer{
+class UiColumn extends UiContainer{
   Element createElement(){
     var el = new SpanElement();
     el.className = "column";

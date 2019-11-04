@@ -30,13 +30,13 @@ class MainMenu extends GameMenuScreen
     super.show(status);
   }
 
-  Element setupFields()
+  UiContainer setupFields()
   {
-    Element el = super.setupFields();
-    Element el_right = new DivElement();
-    Element el_left = new DivElement();
-    el_right.className = "rightPanel";
-    el_left.className = "leftPanel";
+    var el = super.setupFields();
+    var el_right = UiPanel();
+    var el_left = UiPanel();
+    el_right.addStyle("rightPanel");
+    el_left.addStyle("leftPanel");
     el.append(el_left);
     el.append(el_right);
 
@@ -45,11 +45,11 @@ class MainMenu extends GameMenuScreen
       menu.showMenu(new GameInputMenuStatus("Random race", menu.gameBuilder.newRandomGame(), (GameOutput result){
         menu.showMenu(new GameOutputMenuStatus("Race results", result));
       }));
-    }).element);
-    el_left.append(createOpenMenuButtonWithIcon(menu,"Single race","play_arrow",menu.MENU_SINGLERACE).element);
-    if(menu.settings.debug.v) el_left.append(createOpenMenuButtonWithIcon(menu,"Soccer","play_arrow",menu.MENU_SOCCER).element);
+    }));
+    el_left.append(createOpenMenuButtonWithIcon(menu,"Single race","play_arrow",menu.MENU_SINGLERACE));
+    if(menu.settings.debug.v) el_left.append(createOpenMenuButtonWithIcon(menu,"Soccer","play_arrow",menu.MENU_SOCCER));
     //el_left.append(createOpenMenuButtonWithIcon(menu,"Story mode","table_chart",menu.MENU_MAIN));
-    el_left.append(createOpenMenuButtonWithIcon(menu,"Profile","account_circle",menu.MENU_PROFILE).element);
+    el_left.append(createOpenMenuButtonWithIcon(menu,"Profile","account_circle",menu.MENU_PROFILE));
   /*
     el_left.append(createMenuButtonWithIcon("Result","play_arrow",(){
       var a = new GameOutput();
@@ -76,10 +76,10 @@ class MainMenu extends GameMenuScreen
       menu.showMenu(new GameInputMenuStatus("Soccer", menu.gameBuilder.newRandomSoccerGame(), (GameOutput result){
         menu.showMenu(new GameOutputMenuStatus("Game results", result));
       }));
-    }).element);
+    }));
 
-    if(menu.settings.debug.v) el_left.append(createOpenMenuButtonWithIcon(menu,"Settings","settings",menu.MENU_SETTINGS).element);
-    el_left.append(createOpenMenuButtonWithIcon(menu,"Controls","videogame_asset",menu.MENU_CONTROLS).element);
+    if(menu.settings.debug.v) el_left.append(createOpenMenuButtonWithIcon(menu,"Settings","settings",menu.MENU_SETTINGS));
+    el_left.append(createOpenMenuButtonWithIcon(menu,"Controls","videogame_asset",menu.MENU_CONTROLS));
     //el_left.append(createOpenMenuButtonWithIcon(menu,"Credits","info",menu.MENU_CREDITS));
 
     for(GameMainMenuItem menuItem in _sideMenus.keys){

@@ -5,13 +5,10 @@ class LoadingMenu extends GameMenuScreen
   GameMenuController menu;
   LoadingMenu(this.menu);
 
-  Element setupFields()
+  UiContainer setupFields()
   {
-    Element el = super.setupFields();
-
-    DivElement e = new DivElement();
-    e.text = "Loading resources, please wait";
-    el.append(e);
+    var el = super.setupFields();
+    el.append(new UiText("Loading resources, please wait"));
     return el;
   }
 }

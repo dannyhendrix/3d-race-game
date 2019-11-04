@@ -26,4 +26,7 @@ class UiPanelTitled extends UiContainer{
   void appendElement(Element el){
     el_content.append(el);
   }
+  void clear(){
+    el_content.children.clear();
+  }
 }

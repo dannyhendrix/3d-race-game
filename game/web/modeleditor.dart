@@ -153,8 +153,8 @@ class PreviewMenu{
   Element createElement(){
     var menu = UiPanelTitled("Preview");
     _previewContainer = new DivElement();
-    var col_preview = UIColumn();
-    var col_sliders = UIColumn();
+    var col_preview = UiColumn();
+    var col_sliders = UiColumn();
     menu.append(col_preview);
     menu.append(col_sliders);
     col_preview.appendElement(_previewContainer);

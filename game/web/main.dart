@@ -26,6 +26,6 @@ void main(){
     menu.init(false);
     menu.showMenu(menu.MENU_MAIN);
     document.body.querySelector("#loading").remove();
-    document.body.append(menu.element);
+    document.body.append(menu.element.element);
   });
 }

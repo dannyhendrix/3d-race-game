@@ -7,7 +7,7 @@ class GameResultMenu extends GameMenuScreen{
     _textureGenerator = new TextureGenerator(menu.resourceManager);
   }
 
-  Element gameResultContent;
+  UiContainer gameResultContent;
 
   /*
   1 | Player 1 | carImg
@@ -16,16 +16,16 @@ class GameResultMenu extends GameMenuScreen{
   4 | ..       | -
   . | ..       | -
    */
-  Element setupFields()
+  UiContainer setupFields()
   {
-    Element el = super.setupFields();
-    gameResultContent = new DivElement();
-    gameResultContent.className = "gameResult";
+    var el = super.setupFields();
+    gameResultContent = new UiPanel();
+    gameResultContent.addStyle("gameResult");
 
     el.append(gameResultContent);
 
     //el.append(createOpenMenuButtonWithIcon(menu,"Continue","play_arrow",menu.MENU_MAIN));
-    el.append(createOpenMenuButtonWithIcon(menu,"Main menu","menu",menu.MENU_MAIN).element);
+    el.append(createOpenMenuButtonWithIcon(menu,"Main menu","menu",menu.MENU_MAIN));
 
     closebutton = false;
     backbutton = false;
@@ -35,7 +35,7 @@ class GameResultMenu extends GameMenuScreen{
 
   Element _createTopPlayer(GameSettingsPlayer playerSettings){
     PlayerProfile player = _getPlayerProfileFromId(playerSettings.playerId);
-    DivElement el = new DivElement();
+    var el = new DivElement();
     el.className = "topplayer";
     ImageElement img = new ImageElement();
     img.src = _createPreviewFromModel(_getModelFromVehicleType(playerSettings.vehicle),colorMappingGl[player.theme.color1],colorMappingGl[player.theme.color2]);
@@ -46,7 +46,7 @@ class GameResultMenu extends GameMenuScreen{
     return el;
   }
   Element _createTableRow(int position, String playerName, [bool isHuman = false]){
-    DivElement el = new DivElement();
+    var el = new DivElement();
     el.className = "gameResultRow";
     if(isHuman) el.className = "gameResultRow highlight";
     el.append(_createTableCell(position.toString(),"position"));
@@ -55,7 +55,7 @@ class GameResultMenu extends GameMenuScreen{
     return el;
   }
   Element _createTableCell(String text, String className){
-    DivElement el = new DivElement();
+    var el = new DivElement();
     el.text = text;
     el.className = className;
     return el;
@@ -83,11 +83,11 @@ class GameResultMenu extends GameMenuScreen{
 
   void _setGameResult(GameOutput gameresult){
     //gameResultContent.text = gameresult.toString();
-    gameResultContent.children.clear();
+    gameResultContent.clear();
 
     // 1-3
-    Element el_topWrap = new DivElement();
-    el_topWrap.className = "topplayers";
+    var el_topWrap = new DivElement();
+    el_topWrap.classes.add("topplayers");
     int numberOfPlayers = gameresult.playerResults.length;
     Element el_player;
     if(numberOfPlayers > 0)
@@ -111,14 +111,14 @@ class GameResultMenu extends GameMenuScreen{
       el_topWrap.append(el_player);
       el_topWrap.append(_createTableCell("3", "podium podium3"));
     }
-    gameResultContent.append(el_topWrap);
+    gameResultContent.appendElement(el_topWrap);
 
     // 4-..
-    DivElement el_remaining = new DivElement();
+    var el_remaining = new UiPanel();
     for(int i = 3; i < gameresult.playerResults.length; i++){
       GamePlayerResult player = gameresult.playerResults[i];
       bool isHuman = player.player.playerId == -1;
-      el_remaining.append(_createTableRow(player.position, player.player.name, isHuman));
+      el_remaining.appendElement(_createTableRow(player.position, player.player.name, isHuman));
     }
     gameResultContent.append(el_remaining);
   }

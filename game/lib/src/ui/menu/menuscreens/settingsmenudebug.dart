@@ -20,16 +20,16 @@ class SettingsMenuDebug extends GameMenuScreen
 
   SettingsMenuDebug(this.menu);
 
-  Element setupFields()
+  UiContainer setupFields()
   {
-    Element el = super.setupFields();
+    var el = super.setupFields();
     var form = UiPanelForm();
     for(GameSetting s in menu.settings.getMenuSettings())
       form.append(createSettingElement(s));
     form.append(UiButtonText("Reset cookie", (){
       menu.settings.emptyCookie();
     }));
-    el.append(form.element);
+    el.append(form);
     return el;
   }
   

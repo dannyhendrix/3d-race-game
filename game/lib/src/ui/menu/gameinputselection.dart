@@ -1,7 +1,7 @@
 part of game.menu;
 
 class GameInputSelectionVehicle extends GameInputSelectionVehicleBase{
-  Element setupFieldsForVehicles(){
+  UiElement setupFieldsForVehicles(){
     _typeToPreview[VehicleType.Car.index] = _createPreviewFromModel(new GlModel_Vehicle());
     _typeToPreview[VehicleType.Truck.index] = _createPreviewFromModel(new GlModel_Truck());
     _typeToPreview[VehicleType.Formula.index] = _createPreviewFromModel(new GlModel_Formula());
@@ -10,7 +10,7 @@ class GameInputSelectionVehicle extends GameInputSelectionVehicleBase{
   }
 }
 class GameInputSelectionTrailer extends GameInputSelectionVehicleBase{
-  Element setupFieldsForTrailers(){
+  UiElement setupFieldsForTrailers(){
     _typeToPreview[TrailerType.None.index] = _createPreviewFromModel(null);
     _typeToPreview[TrailerType.Caravan.index] = _createPreviewFromModel(new GlModel_Caravan());
     _typeToPreview[TrailerType.TruckTrailer.index] = _createPreviewFromModel(new GlModel_TruckTrailer());
@@ -22,10 +22,10 @@ class GameInputSelectionVehicleBase extends GameInputSelectionInt
   Map<int, String> _typeToPreview = {};
   ImageElement img_preview;
 
-  Element setupFieldsForVehiclesBase(int numberOfOptions, [String label]){
-    Element el = setupFields(numberOfOptions, label);
+  UiElement setupFieldsForVehiclesBase(int numberOfOptions, [String label]){
+    var el = setupFields(numberOfOptions, label);
     img_preview = new ImageElement();
-    el_content.append(img_preview);
+    el_content.appendElement(img_preview);
     return el;
   }
 
@@ -69,13 +69,13 @@ class GameInputSelectionLevel extends GameInputSelection<String>{
   Map<int, String> _indexToLevelKey = {};
   ImageElement img_preview;
   LevelManager _levelManager;
-  Element el_customLevel;
+  UiElement el_customLevel;
 
   GameInputSelectionLevel(this._levelManager);
 
-  Element setupFieldsForLevels(Element customLevelElement, bool enableCustomLevels){
+  UiElement setupFieldsForLevels(UiElement customLevelElement, bool enableCustomLevels){
     var levelKeys = _levelManager.getLevelKeys();
-    Element el = setupFields(levelKeys.length+(enableCustomLevels?1:0), "Track");
+    var el = setupFields(levelKeys.length+(enableCustomLevels?1:0), "Track");
     int i = 0;
     for(var level in levelKeys){
       _typeToPreview[i] = _createPreviewFromModel(_levelManager.getLevel(level));
@@ -84,9 +84,9 @@ class GameInputSelectionLevel extends GameInputSelection<String>{
     }
     img_preview = new ImageElement();
     el_customLevel = customLevelElement;
-    el_content.append(img_preview);
+    el_content.appendElement(img_preview);
     el_content.append(el_customLevel);
-    el_customLevel.style.display = "none";
+    el_customLevel.hide();
     return el;
   }
 
@@ -95,11 +95,11 @@ class GameInputSelectionLevel extends GameInputSelection<String>{
     {
       img_preview.src = _typeToPreview[newIndex];
       img_preview.style.display = "";
-      el_customLevel.style.display = "none";
+      el_customLevel.hide();
     }
     else{
       img_preview.src = "";
-      el_customLevel.style.display = "";
+      el_customLevel.show();
       img_preview.style.display = "none";
     }
   }
@@ -120,18 +120,17 @@ abstract class GameInputSelectionInt extends GameInputSelection<int>{
 abstract class GameInputSelection<T>{
   UiElement _btn_next;
   UiElement _btn_prev;
-  Element el_content;
+  UiContainer el_content;
   int index = 0;
-  Element element;
+  UiContainer element;
 
-  Element setupFields(int optionsLength, [String label=""]){
-    element = new DivElement();
-    element.className = "GameInputSelection";
+  UiElement setupFields(int optionsLength, [String label=""]){
+    element = new UiPanel();
+    element.addStyle("GameInputSelection");
 
     if(label.isNotEmpty){
-      Element el_label = new DivElement();
-      el_label.className = "label";
-      el_label.text = label;
+      var el_label = new UiText(label);
+      el_label.addStyle("label");
       element.append(el_label);
     }
 
@@ -147,16 +146,16 @@ abstract class GameInputSelection<T>{
         index = 0;
       onIndexChanged(oldIndex, index);
     }).addStyle("navigate");
-    el_content = new DivElement();
-    el_content.className = "content";
+    el_content = new UiPanel();
+    el_content.addStyle("content");
 
-    element.append(_btn_prev.element);
+    element.append(_btn_prev);
     element.append(el_content);
-    element.append(_btn_next.element);
+    element.append(_btn_next);
     return element;
   }
   void onIndexChanged(int oldIndex, int newIndex){
-    el_content.text = newIndex.toString();
+    el_content.element.text = newIndex.toString();
   }
 
   T getSelectedValue();
