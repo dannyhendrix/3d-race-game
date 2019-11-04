@@ -1,28 +1,31 @@
 part of uihelper;
-typedef void ToggleOnClick(bool isToggled);
-class UiButtonToggleIcon extends UiButton{
+class UiButtonToggleIcon extends UiButtonIcon{
   bool toggled = false;
-  String _icon_default;
-  String _icon_toggled;
-  UiIcon _el_icon;
-  ToggleOnClick _onClick;
-  UiButtonToggleIcon(this._icon_default, this._icon_toggled, this._onClick);
+  String _iconIdOn;
+  String _iconIdOff;
+  UiButtonToggleIcon(String iconIdOn, this._iconIdOff, OnButtonClick onClick) : super(iconIdOn,onClick){
+    _iconIdOn = iconIdOn;
+  }
+  UiButtonToggleIcon.fromInjection() : super.fromInjection();
   void setToggled(bool value){
     if(toggled == value) return;
     _toggle();
-    _onClick(toggled);
+    _onClick();
   }
   void _toggle(){
     toggled = !toggled;
-    _el_icon.changeIcon(toggled ? _icon_toggled : _icon_default);
+    _setToggledIcon();
   }
-  Element createElement(){
-    _el_icon = UiIcon(_icon_default);
-    var btn = _createButton();
-    btn.append(_el_icon.element);
-    return btn;
+  bool _onButtonClick(Event e){
+    _toggle();
+    return super._onButtonClick(e);
   }
-  void _onButtonClick(Event e){
-    e.preventDefault(); _toggle(); _onClick(toggled);
+  void _setToggledIcon(){
+    changeIcon(toggled ? _iconIdOff : _iconIdOn);
+  }
+  void changeIconToggle(String iconIdOn, String iconIdOff){
+    _iconIdOn = iconIdOn;
+    _iconIdOff= iconIdOff;
+    _setToggledIcon();
   }
 }

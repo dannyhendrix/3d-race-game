@@ -2,15 +2,16 @@ part of dependencyinjection;
 
 enum LifeTimeScope {SingleInstance, PerLifeTime, PerUser}
 typedef T NewInstance<T>();
+typedef void InitializeInstance<T>(T obj);
 typedef void NewChildLifeTime(IDependencyBuilder builder);
 
 class DependencyBuilderFactory{
   ILifetime createNew([NewChildLifeTime build]) => new Lifetime.fromBuilder(null,build);
 }
 abstract class IDependencyBuilder{
-  void RegisterInstance<T>(T obj, {String name = null, List<Type> additionRegistrations});
-  void RegisterType<T>(NewInstance<T> create, {LifeTimeScope lifeTimeScope = LifeTimeScope.PerUser, String name = null, List<Type> additionRegistrations});
-  void _addRegistration<T>(List<Type> additionRegistrations, Registration registration, String name);
+  void registerInstance<T>(T obj, {String name = null, List<Type> additionRegistrations, InitializeInstance<T> initializeInstance});
+  void registerType<T>(NewInstance<T> create, {LifeTimeScope lifeTimeScope = LifeTimeScope.PerUser, String name = null, List<Type> additionRegistrations, InitializeInstance<T> initializeInstance});
+  void registerModule(IDependencyModule module);
   ILifetime build();
 }
 abstract class ILifetime{
@@ -21,25 +22,30 @@ abstract class ILifetime{
 abstract class IDependencyLoader{
   void setDependencies(ILifetime lifetime);
 }
+abstract class IDependencyModule{
+  void load(IDependencyBuilder builder);
+}
 
 class Registration{
   NewInstance<dynamic> create;
   LifeTimeScope lifeTimeScope;
-  Registration(this.create, this.lifeTimeScope);
+  InitializeInstance initializeInstance;
+  Registration(this.create, this.lifeTimeScope, this.initializeInstance);
+  dynamic createNew(ILifetime lifetime){
+    var obj = create();
+    if(obj is IDependencyLoader) obj.setDependencies(lifetime);
+    initializeInstance?.call(obj);
+    return obj;
+  }
 }
 
 class InstanceContainer{
   Map<Registration, dynamic> _lifetimeInstances = {};
   dynamic getInstance(Registration registration, ILifetime lifetime){
     if(!_lifetimeInstances.containsKey(registration)){
-      _lifetimeInstances[registration]=createNew(registration, lifetime);
+      _lifetimeInstances[registration]=registration.createNew(lifetime);
     }
     return _lifetimeInstances[registration];
-  }
-  static dynamic createNew(Registration registration, ILifetime lifetime){
-    var obj = registration.create();
-    if(obj is IDependencyLoader) obj.setDependencies(lifetime);
-    return obj;
   }
 }
 class Lifetime implements ILifetime, IDependencyBuilder{
@@ -55,11 +61,14 @@ class Lifetime implements ILifetime, IDependencyBuilder{
   Lifetime();
 
   //builder
-  void RegisterInstance<T>(T obj, {String name = null, List<Type> additionRegistrations}){
-    _addRegistration<T>(additionRegistrations,new Registration(() => obj, LifeTimeScope.SingleInstance),name);
+  void registerInstance<T>(T obj, {String name = null, List<Type> additionRegistrations, InitializeInstance<T> initializeInstance}){
+    _addRegistration<T>(additionRegistrations,new Registration(() => obj, LifeTimeScope.SingleInstance,initializeInstance),name);
   }
-  void RegisterType<T>(NewInstance<T> create, {LifeTimeScope lifeTimeScope = LifeTimeScope.PerUser, String name = null, List<Type> additionRegistrations}){
-    _addRegistration<T>(additionRegistrations,new Registration(create,lifeTimeScope),name);
+  void registerType<T>(NewInstance<T> create, {LifeTimeScope lifeTimeScope = LifeTimeScope.PerUser, String name = null, List<Type> additionRegistrations, InitializeInstance<T> initializeInstance}){
+    _addRegistration<T>(additionRegistrations,new Registration(create,lifeTimeScope,initializeInstance),name);
+  }
+  void registerModule(IDependencyModule module){
+    module.load(this);
   }
   ILifetime build(){
     return this;
@@ -91,7 +100,7 @@ class Lifetime implements ILifetime, IDependencyBuilder{
     switch(registration.lifeTimeScope){
       case LifeTimeScope.SingleInstance:return _singleInstanceContainer.getInstance(registration,this);
       case LifeTimeScope.PerLifeTime:return lifetime._lifetimeInstanceContainer.getInstance(registration,this);
-      case LifeTimeScope.PerUser: return InstanceContainer.createNew(registration, this);
+      case LifeTimeScope.PerUser: return registration.createNew(this);
     }
   }
   T _resolveFromLifetime<T>(Lifetime lifetime){

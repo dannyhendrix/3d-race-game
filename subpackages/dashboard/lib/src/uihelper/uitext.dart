@@ -1,15 +1,10 @@
 part of uihelper;
 
 class UiText extends UiElement {
-  String _text;
-  UiText(this._text);
-  Element createElement() {
-    var el = new SpanElement();
-    el.text = _text;
-    return el;
+  UiText(String text){
+    changeText(text);
   }
-  void changeText(String text){
-    element.text = text;
-    _text = text;
-  }
+  UiText.fromInjection() : super.fromInjection();
+  Element createElement() =>  new SpanElement();
+  void changeText(String text) => element.text = text;
 }

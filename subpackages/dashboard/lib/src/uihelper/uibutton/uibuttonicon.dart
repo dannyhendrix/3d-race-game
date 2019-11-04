@@ -1,18 +1,21 @@
 part of uihelper;
 class UiButtonIcon extends UiButton{
-  String _icon_default;
+  UiIcon icon;
   OnButtonClick _onClick;
-  UiButtonIcon(this._icon_default, this._onClick);
+  UiButtonIcon(String iconId, this._onClick) : icon = UiIcon(iconId);
+  UiButtonIcon.fromInjection() : super.fromInjection();
+
+  void setDependencies(ILifetime lifetime){
+    icon = lifetime.resolve();
+    super.setDependencies(lifetime);
+  }
 
   Element createElement(){
-    var el_icon = UiIcon(_icon_default);
     var btn = _createButton();
     btn.classes.add("buttonIcon");
-    btn.append(el_icon.element);
+    btn.append(icon.element);
     return btn;
   }
-  void _onButtonClick(Event e){
-    e.preventDefault();
-    _onClick();
-  }
+
+  void changeIcon(String iconId) => icon.changeIcon(iconId);
 }

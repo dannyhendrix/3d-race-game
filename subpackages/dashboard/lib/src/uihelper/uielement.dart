@@ -1,11 +1,15 @@
 part of uihelper;
 
-abstract class UiElement{
+abstract class UiElement implements IDependencyLoader{
   Element element;
   UiElement(){
     element = createElement();
   }
+  UiElement.fromInjection(){}
   Element createElement();
+  void setDependencies(ILifetime lifetime){
+    element = createElement();
+  }
   UiElement show(){
     element.style.display = "";
     return this;

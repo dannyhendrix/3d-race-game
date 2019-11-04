@@ -1,6 +1,7 @@
 library uihelper;
 
 import "dart:html";
+import "package:dependencyinjection/dependencyinjection.dart";
 
 part "src/uihelper/uiicon.dart";
 

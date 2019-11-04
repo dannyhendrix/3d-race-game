@@ -3,13 +3,23 @@ part of uihelper;
 typedef void OnButtonClick();
 
 abstract class UiButton extends UiElement{
-  Element _createButton()
-  {
+  UiButton();
+  UiButton.fromInjection() : super.fromInjection();
+  OnButtonClick _onClick;
+  Element _createButton(){
     var btn = new ButtonElement();
     btn.className = "button";
-    btn.onClick.listen((MouseEvent e){ _onButtonClick(e); return false; });
-    btn.onTouchStart.listen((TouchEvent e){ _onButtonClick(e); return false; });
+    btn.onClick.listen(_onButtonClick);
+    btn.onTouchStart.listen(_onButtonClick);
     return btn;
   }
-  void _onButtonClick(Event e);
+  void setOnClick(OnButtonClick onClick){
+    _onClick = onClick;
+  }
+  bool _onButtonClick(Event e){
+    e.preventDefault();
+    e.stopPropagation();
+    _onClick?.call();
+    return false;
+  }
 }

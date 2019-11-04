@@ -1,22 +1,24 @@
 part of uihelper;
 class UiButtonIconText extends UiButton{
-  String _icon_default;
-  String _text;
   OnButtonClick _onClick;
-  UiButtonIconText(this._text, this._icon_default, this._onClick);
-
+  UiIcon icon;
+  UiText text;
+  UiButtonIconText(String text, String iconId, this._onClick) : icon = UiIcon(iconId), text = UiText(text){
+    changeText(text);
+  }
+  UiButtonIconText.fromInjection() : super.fromInjection();
+  void setDependencies(ILifetime lifetime){
+    icon = lifetime.resolve();
+    text = lifetime.resolve();
+    super.setDependencies(lifetime);
+  }
   Element createElement(){
-    var eltxt = new SpanElement();
-    eltxt.text = _text;
-    var el_icon = UiIcon(_icon_default);
     var btn = _createButton();
     btn.classes.add("buttonIcon");
-    btn.append(el_icon.element);
-    btn.append(eltxt);
+    btn.append(icon.element);
+    btn.append(text.element);
     return btn;
   }
-  void _onButtonClick(Event e){
-    e.preventDefault();
-    _onClick();
-  }
+  void changeIcon(String iconId) => icon.changeIcon(iconId);
+  void changeText(String txt) => text.changeText(txt);
 }

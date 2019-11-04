@@ -1,6 +1,8 @@
 part of uihelper;
 
 abstract class UiContainer extends UiElement{
+  UiContainer();
+  UiContainer.fromInjection() : super.fromInjection();
   void append(UiElement el){
     element.append(el.element);
   }
