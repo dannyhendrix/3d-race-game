@@ -1,0 +1,12 @@
+@startuml
+rectangle {
+rectangle dashboard as dashboard.dart
+rectangle menu as menu.dart
+rectangle uihelper as uihelper.dart
+}
+dashboard.dart  -->  dart_html
+menu.dart  -->  uihelper.dart
+menu.dart  -->  dart_html
+uihelper.dart  -->  dart_html
+uihelper.dart  -->  package_dependencyinjection_dependencyinjection.dart
+@enduml

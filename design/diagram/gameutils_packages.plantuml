@@ -1,0 +1,9 @@
+@startuml
+rectangle {
+rectangle gameutils.gameloop as gameloop.dart
+rectangle gameutils.gametime as gametime.dart
+rectangle gameutils.gfx as gfx.dart
+rectangle gameutils.math as math.dart
+rectangle gameutils.settings as settings.dart
+}
+@enduml

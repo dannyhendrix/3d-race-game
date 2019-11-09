@@ -1,0 +1,8 @@
+@startuml
+rectangle {
+rectangle dashboard as dashboard.dart
+rectangle menu as menu.dart
+rectangle uihelper as uihelper.dart
+}
+menu.dart  -->  uihelper.dart
+@enduml

@@ -1,0 +1,31 @@
+@startuml
+rectangle {
+rectangle game.collision as collision.dart
+rectangle game.definitions as definitions.dart
+rectangle game as game.dart
+rectangle game.gameitem as gameitem.dart
+rectangle game.gamemode as gamemode.dart
+rectangle game.input as input.dart
+rectangle game.leveleditor as leveleditor.dart
+rectangle game.menu as menu.dart
+rectangle game.resources as resources.dart
+rectangle webgl_game as webgl_game.dart
+}
+collision.dart  -->  gameitem.dart
+game.dart  -->  definitions.dart
+game.dart  -->  gameitem.dart
+game.dart  -->  collision.dart
+gamemode.dart  -->  definitions.dart
+input.dart  -->  definitions.dart
+leveleditor.dart  -->  definitions.dart
+menu.dart  -->  webgl_game.dart
+menu.dart  -->  gamemode.dart
+menu.dart  -->  definitions.dart
+menu.dart  -->  resources.dart
+resources.dart  -->  definitions.dart
+webgl_game.dart  -->  game.dart
+webgl_game.dart  -->  input.dart
+webgl_game.dart  -->  definitions.dart
+webgl_game.dart  -->  gameitem.dart
+webgl_game.dart  -->  resources.dart
+@enduml

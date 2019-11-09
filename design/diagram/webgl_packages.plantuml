@@ -1,0 +1,5 @@
+@startuml
+rectangle {
+rectangle webgl as webgl.dart
+}
+@enduml

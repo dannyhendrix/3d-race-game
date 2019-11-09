@@ -1,0 +1,9 @@
+@startuml
+rectangle {
+rectangle webgl as webgl.dart
+}
+webgl.dart  -->  dart_html
+webgl.dart  -->  dart_web_gl
+webgl.dart  -->  dart_math
+webgl.dart  -->  dart_typed_data
+@enduml

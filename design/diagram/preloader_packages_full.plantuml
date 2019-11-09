@@ -1,0 +1,8 @@
+@startuml
+rectangle {
+rectangle preloader as preloader.dart
+}
+preloader.dart  -->  dart_html
+preloader.dart  -->  dart_convert
+preloader.dart  -->  package_logging_logging.dart
+@enduml

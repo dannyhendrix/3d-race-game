@@ -1,0 +1,66 @@
+@startuml
+rectangle {
+rectangle game.collision as collision.dart
+rectangle game.definitions as definitions.dart
+rectangle game as game.dart
+rectangle game.gameitem as gameitem.dart
+rectangle game.gamemode as gamemode.dart
+rectangle game.input as input.dart
+rectangle game.leveleditor as leveleditor.dart
+rectangle game.menu as menu.dart
+rectangle game.resources as resources.dart
+rectangle webgl_game as webgl_game.dart
+}
+collision.dart  -->  gameitem.dart
+collision.dart  -->  package_gameutils_math.dart
+collision.dart  -->  dart_math
+definitions.dart  -->  dart_math
+definitions.dart  -->  package_gameutils_settings.dart
+definitions.dart  -->  package_gameutils_math.dart
+game.dart  -->  definitions.dart
+game.dart  -->  gameitem.dart
+game.dart  -->  collision.dart
+game.dart  -->  package_gameutils_math.dart
+game.dart  -->  dart_math
+gameitem.dart  -->  package_gameutils_math.dart
+gamemode.dart  -->  definitions.dart
+gamemode.dart  -->  dart_math
+input.dart  -->  definitions.dart
+input.dart  -->  dart_html
+leveleditor.dart  -->  definitions.dart
+leveleditor.dart  -->  dart_html
+leveleditor.dart  -->  dart_convert
+leveleditor.dart  -->  dart_math
+leveleditor.dart  -->  package_gameutils_math.dart
+leveleditor.dart  -->  package_preloader_preloader.dart
+leveleditor.dart  -->  package_dashboard_uihelper.dart
+menu.dart  -->  webgl_game.dart
+menu.dart  -->  gamemode.dart
+menu.dart  -->  definitions.dart
+menu.dart  -->  resources.dart
+menu.dart  -->  dart_html
+menu.dart  -->  dart_math
+menu.dart  -->  dart_async
+menu.dart  -->  dart_convert
+menu.dart  -->  package_dashboard_menu.dart
+menu.dart  -->  package_gameutils_settings.dart
+menu.dart  -->  package_gameutils_math.dart
+menu.dart  -->  package_webgl_webgl.dart
+menu.dart  -->  package_renderlayer_renderlayer.dart
+menu.dart  -->  package_dashboard_uihelper.dart
+resources.dart  -->  definitions.dart
+resources.dart  -->  dart_html
+resources.dart  -->  package_preloader_preloader.dart
+webgl_game.dart  -->  game.dart
+webgl_game.dart  -->  input.dart
+webgl_game.dart  -->  definitions.dart
+webgl_game.dart  -->  gameitem.dart
+webgl_game.dart  -->  resources.dart
+webgl_game.dart  -->  dart_html
+webgl_game.dart  -->  dart_math
+webgl_game.dart  -->  package_renderlayer_renderlayer.dart
+webgl_game.dart  -->  package_gameutils_gameloop.dart
+webgl_game.dart  -->  package_gameutils_math.dart
+webgl_game.dart  -->  package_dashboard_uihelper.dart
+webgl_game.dart  -->  package_webgl_webgl.dart
+@enduml

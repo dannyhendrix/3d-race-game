@@ -1,0 +1,5 @@
+@startuml
+rectangle {
+rectangle dependencyinjection as dependencyinjection.dart
+}
+@enduml

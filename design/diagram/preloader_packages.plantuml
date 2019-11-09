@@ -1,0 +1,5 @@
+@startuml
+rectangle {
+rectangle preloader as preloader.dart
+}
+@enduml
