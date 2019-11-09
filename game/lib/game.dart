@@ -1,4 +1,4 @@
-library micromachines;
+library game;
 import "package:gameutils/math.dart";
 import "dart:math" as Math;
 import "definitions.dart";

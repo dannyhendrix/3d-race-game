@@ -1,4 +1,4 @@
-part of micromachines;
+part of game;
 
 class GameMode extends CollisionHandling{
   CollisionHandling _physicsHandler = new CollisionHandlingPhysics();

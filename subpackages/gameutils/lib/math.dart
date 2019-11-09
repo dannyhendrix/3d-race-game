@@ -2,6 +2,6 @@ library gameutils.math;
 
 import "dart:math" as Math;
 
-part "math/vector.dart";
-part "math/polygon.dart";
-part "math/matrix2d.dart";
+part "src/math/vector.dart";
+part "src/math/polygon.dart";
+part "src/math/matrix2d.dart";

@@ -4,5 +4,5 @@ import "dart:html";
 
 import "package:renderlayer/renderlayer.dart";
 
-part "gfx/animationframes.dart";
-part "gfx/sprite.dart";
+part "src/gfx/animationframes.dart";
+part "src/gfx/sprite.dart";

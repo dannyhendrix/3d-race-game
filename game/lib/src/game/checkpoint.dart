@@ -1,4 +1,4 @@
-part of micromachines;
+part of game;
 //TODO: support gameobjects with multiple polygons
 
 class CheckpointGatePost extends GameItemStatic{

@@ -1,4 +1,4 @@
-part of micromachines;
+part of game;
 
 abstract class Trailer extends GameItemMovable{
   Vehicle vehicle;

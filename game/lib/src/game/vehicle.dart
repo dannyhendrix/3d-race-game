@@ -1,4 +1,4 @@
-part of micromachines;
+part of game;
 
 enum VehicleSettingKeys {
   acceleration,

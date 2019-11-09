@@ -1,4 +1,4 @@
-part of micromachines;
+part of game;
 
 class Wall extends GameItemStatic{
   double w = 0.0;

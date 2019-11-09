@@ -1,4 +1,4 @@
-part of micromachines;
+part of game;
 
 typedef void onCountdownComplete();
 class Countdown{

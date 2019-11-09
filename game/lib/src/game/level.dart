@@ -1,4 +1,4 @@
-part of micromachines;
+part of game;
 
 class GameLevelController{
   List<Polygon> roadPolygons;

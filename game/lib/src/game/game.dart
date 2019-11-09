@@ -1,4 +1,4 @@
-part of micromachines;
+part of game;
 
 enum GameState {Initialized, Running, Countdown, Racing, Finished}
 

@@ -1,4 +1,4 @@
-part of micromachines;
+part of game;
 
 abstract class PathProgress{
   bool finished = false;
