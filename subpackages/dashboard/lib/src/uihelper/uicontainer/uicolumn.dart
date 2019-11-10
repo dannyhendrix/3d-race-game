@@ -1,9 +1,12 @@
 part of uihelper;
 
 class UiColumn extends UiContainer{
-  Element createElement(){
-    var el = new SpanElement();
-    el.className = "column";
-    return el;
+  UiColumn(ILifetime lifetime) : super(lifetime){
+    element = lifetime.resolve<SpanElement>();
+  }
+  @override
+  void build(){
+    super.build();
+    element.className = "column";
   }
 }

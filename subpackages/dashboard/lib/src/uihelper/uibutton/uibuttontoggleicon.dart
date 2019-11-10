@@ -3,10 +3,7 @@ class UiButtonToggleIcon extends UiButtonIcon{
   bool toggled = false;
   String _iconIdOn;
   String _iconIdOff;
-  UiButtonToggleIcon(String iconIdOn, this._iconIdOff, OnButtonClick onClick) : super(iconIdOn,onClick){
-    _iconIdOn = iconIdOn;
-  }
-  UiButtonToggleIcon.fromInjection() : super.fromInjection();
+  UiButtonToggleIcon(ILifetime lifetime) : super(lifetime);
   void setToggled(bool value){
     if(toggled == value) return;
     _toggle();

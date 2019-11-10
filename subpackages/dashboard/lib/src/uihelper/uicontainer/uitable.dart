@@ -1,26 +1,27 @@
 part of uihelper;
 
 class UiTable extends UiElement{
-  int columns;
-  int rows;
-  List<List<Element>> _cells;
-  UiTable(this.columns, this.rows);
-  void append(int column, int row, UiElement element){
-    _cells[row][column].append(element.element);
+  TableElement _elTable;
+  ElementFactory _elementFactory;
+
+  UiTable(ILifetime lifetime) : super(lifetime){
+    _elTable = lifetime.resolve();
+    _elementFactory = lifetime.resolve();
+    element = _elTable;
   }
-  Element createElement(){
-    var table = new TableElement();
-    _cells = [];
-    for(int row = 0; row < rows; row++){
-      _cells.add([]);
-      var tr = new TableRowElement();
-      table.append(tr);
-      for(int column = 0; column < columns; column++){
-        var td = new TableCellElement();
-        tr.append(td);
-        _cells[row].add(td);
-      }
+  void addRow(List<UiElement> items){
+    _addItemsToElement('td',items);
+  }
+  void addHeaderRow(List<UiElement> items){
+    _addItemsToElement('th',items);
+  }
+  void _addItemsToElement(String el, List<UiElement> items){
+    var tr = _elementFactory.createTag('tr');
+    for(var item in items){
+      var td = _elementFactory.createTag(el);
+      tr.append(td);
+      td.append(item.element);
     }
-    return table;
+    _elTable.append(tr);
   }
 }

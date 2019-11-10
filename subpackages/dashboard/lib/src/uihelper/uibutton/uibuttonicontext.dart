@@ -3,21 +3,16 @@ class UiButtonIconText extends UiButton{
   OnButtonClick _onClick;
   UiIcon icon;
   UiText text;
-  UiButtonIconText(String text, String iconId, this._onClick) : icon = UiIcon(iconId), text = UiText(text){
-    changeText(text);
-  }
-  UiButtonIconText.fromInjection() : super.fromInjection();
-  void setDependencies(ILifetime lifetime){
+  UiButtonIconText(ILifetime lifetime) : super(lifetime){
     icon = lifetime.resolve();
     text = lifetime.resolve();
-    super.setDependencies(lifetime);
   }
-  Element createElement(){
-    var btn = _createButton();
-    btn.classes.add("buttonIcon");
-    btn.append(icon.element);
-    btn.append(text.element);
-    return btn;
+  @override
+  void build(){
+    super.build();
+    element.classes.add("buttonIcon");
+    element.append(icon.element);
+    element.append(text.element);
   }
   void changeIcon(String iconId) => icon.changeIcon(iconId);
   void changeText(String txt) => text.changeText(txt);

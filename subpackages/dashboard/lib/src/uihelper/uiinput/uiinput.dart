@@ -6,18 +6,15 @@ abstract class UiInput<T> extends UiElement{
   UiInputLabel label;
   OnValueChange<T> onValueChange;
 
-  UiInput(String labelTxt) : label = UiInputLabel(labelTxt);
-  UiInput.fromInjection() : super.fromInjection();
-
-  void setDependencies(ILifetime lifetime){
+  UiInput(ILifetime lifetime) : super(lifetime){
     label = lifetime.resolve();
-    super.setDependencies(lifetime);
+    element = lifetime.resolve<DivElement>();
   }
 
-  Element _createElement(){
-    Element el = new DivElement();
-    el.append(label.element);
-    return el;
+  @override
+  void build(){
+    super.build();
+    element.append(label.element);
   }
   void setValue(T value);
   T getValue();
@@ -25,12 +22,10 @@ abstract class UiInput<T> extends UiElement{
 }
 
 class UiInputLabel extends UiText {
-  UiInputLabel(String text) : super(text){
-    addStyle("label");
-  }
-  UiInputLabel.fromInjection() : super.fromInjection();
-  void setDependencies(ILifetime lifetime){
-    super.setDependencies(lifetime);
+  UiInputLabel(ILifetime lifetime) : super(lifetime);
+  @override
+  void build(){
+    super.build();
     addStyle("label");
   }
 }

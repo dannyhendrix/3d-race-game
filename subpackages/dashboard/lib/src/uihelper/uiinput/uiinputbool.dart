@@ -3,15 +3,16 @@ part of uihelper;
 class UiInputBool extends UiInput<bool>{
   CheckboxInputElement el_in;
 
-  UiInputBool(String label) : super(label);
-  Element createElement(){
-    Element el = super._createElement();
-    el_in = new CheckboxInputElement();
+  UiInputBool(ILifetime lifetime) : super(lifetime){
+    el_in = lifetime.resolve();
+  }
+  @override
+  void build(){
+    super.build();
     el_in.onChange.listen((Event e){
       if(onValueChange != null)onValueChange(getValue());
     });
-    el.append(el_in);
-    return el;
+    element.append(el_in);
   }
 
   @override

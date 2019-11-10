@@ -3,16 +3,17 @@ part of uihelper;
 class UiInputText extends UiInput<String>{
   InputElement el_in;
 
-  UiInputText(String label) : super(label);
-  Element createElement(){
-    Element el = super._createElement();
-    el_in = new InputElement();
+  UiInputText(ILifetime lifetime) : super(lifetime){
+    el_in = lifetime.resolve();
+  }
+  @override
+  void build(){
+    super.build();
     el_in.type = "text";
     el_in.onChange.listen((Event e){
       if(onValueChange != null)onValueChange(getValue());
     });
-    el.append(el_in);
-    return el;
+    element.append(el_in);
   }
 
   @override

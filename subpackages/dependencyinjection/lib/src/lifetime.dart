@@ -1,27 +1,24 @@
 part of dependencyinjection;
 
 enum LifeTimeScope {SingleInstance, PerLifeTime, PerUser}
-typedef T NewInstance<T>();
-typedef void InitializeInstance<T>(T obj);
+typedef T NewInstance<T>(ILifetime lifetime);
 typedef void NewChildLifeTime(IDependencyBuilder builder);
 
 class DependencyBuilderFactory{
   ILifetime createNew([NewChildLifeTime build]) => new Lifetime.fromBuilder(null,build);
 }
 abstract class IDependencyBuilder{
-  void registerInstance<T>(T obj, {String name = null, List<Type> additionRegistrations, InitializeInstance<T> initializeInstance});
-  void registerType<T>(NewInstance<T> create, {LifeTimeScope lifeTimeScope = LifeTimeScope.PerUser, String name = null, List<Type> additionRegistrations, InitializeInstance<T> initializeInstance});
+  void registerInstance<T>(T obj, {String name = null, List<Type> additionRegistrations});
+  void registerType<T>(NewInstance<T> create, {LifeTimeScope lifeTimeScope = LifeTimeScope.PerUser, String name = null, List<Type> additionRegistrations});
   void registerModule(IDependencyModule module);
   ILifetime build();
 }
 abstract class ILifetime{
   ILifetime startNewLifetimeScope([NewChildLifeTime build]);
-  List<T> resolveList<T>({String name});
-  T resolve<T>({String name});
+  List<T> resolveList<T>({String key});
+  T resolve<T>({String key});
 }
-abstract class IDependencyLoader{
-  void setDependencies(ILifetime lifetime);
-}
+
 abstract class IDependencyModule{
   void load(IDependencyBuilder builder);
 }
@@ -29,12 +26,9 @@ abstract class IDependencyModule{
 class Registration{
   NewInstance<dynamic> create;
   LifeTimeScope lifeTimeScope;
-  InitializeInstance initializeInstance;
-  Registration(this.create, this.lifeTimeScope, this.initializeInstance);
+  Registration(this.create, this.lifeTimeScope);
   dynamic createNew(ILifetime lifetime){
-    var obj = create();
-    if(obj is IDependencyLoader) obj.setDependencies(lifetime);
-    initializeInstance?.call(obj);
+    var obj = create(lifetime);
     return obj;
   }
 }
@@ -61,11 +55,11 @@ class Lifetime implements ILifetime, IDependencyBuilder{
   Lifetime();
 
   //builder
-  void registerInstance<T>(T obj, {String name = null, List<Type> additionRegistrations, InitializeInstance<T> initializeInstance}){
-    _addRegistration<T>(additionRegistrations,new Registration(() => obj, LifeTimeScope.SingleInstance,initializeInstance),name);
+  void registerInstance<T>(T obj, {String name = null, List<Type> additionRegistrations}){
+    _addRegistration<T>(additionRegistrations,new Registration((lifetime) => obj, LifeTimeScope.SingleInstance),name);
   }
-  void registerType<T>(NewInstance<T> create, {LifeTimeScope lifeTimeScope = LifeTimeScope.PerUser, String name = null, List<Type> additionRegistrations, InitializeInstance<T> initializeInstance}){
-    _addRegistration<T>(additionRegistrations,new Registration(create,lifeTimeScope,initializeInstance),name);
+  void registerType<T>(NewInstance<T> create, {LifeTimeScope lifeTimeScope = LifeTimeScope.PerUser, String name = null, List<Type> additionRegistrations}){
+    _addRegistration<T>(additionRegistrations,new Registration(create,lifeTimeScope),name);
   }
   void registerModule(IDependencyModule module){
     module.load(this);
@@ -75,18 +69,16 @@ class Lifetime implements ILifetime, IDependencyBuilder{
   }
 
   //container
-  T resolve<T>({String name}){
-    if(name != null){
-      var key = _storedKey(name, T);
-      return _resolveFromLifetimeByName<T>(key,this);
+  T resolve<T>({String key}){
+    if(key != null){
+        return _resolveFromLifetimeByName<T>(key, this);
     }
     return _resolveFromLifetime<T>(this);
   }
-  List<T> resolveList<T>({String name}){
+  List<T> resolveList<T>({String key}){
     var lst = new List<T>();
-    if(name != null){
-      var key = _storedKey(name, T);
-      _resolveToListByName<T>(lst,key,this);
+    if(key != null){
+      _resolveToListByName<T>(lst,this,key);
     }else{
       _resolveToList(lst,this);
     }
@@ -109,7 +101,8 @@ class Lifetime implements ILifetime, IDependencyBuilder{
     throw new Exception("Cannot resolve type $T");
   }
   T _resolveFromLifetimeByName<T>(String key, Lifetime lifetime){
-    if(_registrationsByName.containsKey(key)) return _getInstance(_registrationsByName[key].last,lifetime);
+    var storedKey = _storedKey(key, T);
+    if(_registrationsByName.containsKey(storedKey)) return _getInstance(_registrationsByName[storedKey].last,lifetime);
     if(_parentLifetime != null) return _parentLifetime._resolveFromLifetimeByName<T>(key,lifetime);
     throw new Exception("Cannot resolve type $T by name $key");
   }
@@ -119,17 +112,18 @@ class Lifetime implements ILifetime, IDependencyBuilder{
       for(var x in _registrations[T]) objs.add(_getInstance(x, lifetime));
     }
   }
-  void _resolveToListByName<T>(List<T> objs, String key, Lifetime lifetime){
-    if(_parentLifetime != null) _parentLifetime._resolveToListByName<T>(objs, key, lifetime);
-    if(_registrationsByName.containsKey(key)){
-      for(var x in _registrationsByName[key]) objs.add(_getInstance(x, lifetime));
+  void _resolveToListByName<T>(List<T> objs, Lifetime lifetime, String key){
+    var storedKey = _storedKey(key, T);
+    if(_parentLifetime != null) _parentLifetime._resolveToListByName<T>(objs, lifetime, key);
+    if(_registrationsByName.containsKey(storedKey)){
+      for(var x in _registrationsByName[storedKey]) objs.add(_getInstance(x, lifetime));
     }
   }
 
-  void _addRegistration<T>(List<Type> additionRegistrations, Registration registration, String name){
-    _addSingleRegistration(T,registration, name);
+  void _addRegistration<T>(List<Type> additionRegistrations, Registration registration, String key){
+    _addSingleRegistration(T,registration, key);
     if(additionRegistrations == null) return;
-    for(var t in additionRegistrations) _addSingleRegistration(t,registration, name);
+    for(var t in additionRegistrations) _addSingleRegistration(t,registration, key);
   }
   void _addSingleRegistration(Type t, Registration registration, String name){
     if(!_registrations.containsKey(t)) _registrations[t] = [];

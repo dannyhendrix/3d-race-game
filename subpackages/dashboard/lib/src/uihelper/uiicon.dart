@@ -2,13 +2,14 @@ part of uihelper;
 
 class UiIcon extends UiElement{
   String icon;
-  UiIcon(this.icon);
-  UiIcon.fromInjection() : super();
-  Element createElement() {
-    var iel = new Element.tag("i");
-    iel.className = "material-icons";
-    iel.text = icon;
-    return iel;
+  UiIcon(ILifetime lifetime) : super(lifetime){
+    element = lifetime.resolve<ElementFactory>().createTag('i');
+  }
+  @override
+  void build(){
+    super.build();
+    element.className = "material-icons";
+    element.text = icon;
   }
   void changeIcon(String icon){
     element.text = icon;

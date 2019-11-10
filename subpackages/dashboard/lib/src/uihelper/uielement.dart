@@ -1,32 +1,33 @@
 part of uihelper;
 
-abstract class UiElement implements IDependencyLoader{
+abstract class UiElement{
+  UiElement(ILifetime lifetime);
   Element element;
-  UiElement(){
-    element = createElement();
-  }
-  UiElement.fromInjection(){}
-  Element createElement();
-  void setDependencies(ILifetime lifetime){
-    element = createElement();
-  }
   UiElement show(){
     element.style.display = "";
     return this;
   }
+  void build(){}
   UiElement hide(){
     element.style.display = "none";
     return this;
   }
-  UiElement display(bool display){
-    if(display) return show(); else return hide();
+  void display(bool display){
+    if(display) show(); else hide();
   }
-  UiElement addStyle(String style){
+  void addStyle(String style){
     element.classes.add(style);
-    return this;
   }
-  UiElement removeStyle(String style){
+  void removeStyle(String style){
     element.classes.remove(style);
-    return this;
+  }
+  void setStyleId(String id){
+    element.id = id;
+  }
+}
+
+class ElementFactory{
+  Element createTag(String tag){
+    return Element.tag(tag);
   }
 }

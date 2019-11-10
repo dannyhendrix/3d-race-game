@@ -1,10 +1,8 @@
 part of uihelper;
 
 class UiText extends UiElement {
-  UiText(String text){
-    changeText(text);
+  UiText(ILifetime lifetime) : super(lifetime){
+    element = lifetime.resolve<SpanElement>();
   }
-  UiText.fromInjection() : super.fromInjection();
-  Element createElement() =>  new SpanElement();
   void changeText(String text) => element.text = text;
 }

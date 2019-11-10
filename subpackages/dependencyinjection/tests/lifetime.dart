@@ -2,14 +2,12 @@ library dependencyinjection.test;
 import "package:test/test.dart";
 import "package:dependencyinjection/dependencyinjection.dart";
 
-abstract class Base implements IDependencyLoader{}
+abstract class Base {}
 
 class SimpleClassWithDependencies extends Base{
   int val;
-  SimpleClassWithDependencies(this.val);
   SimpleClass dependency;
-  @override
-  void setDependencies(ILifetime lifetime) {
+  SimpleClassWithDependencies(ILifetime lifetime, this.val) {
     dependency = lifetime.resolve();
   }
 }
@@ -30,7 +28,7 @@ void main()
   test("register_type", (){
     var value = 5;
     var lifetime = DependencyBuilderFactory().createNew((builder){
-      builder.registerType<int>(()=>value);
+      builder.registerType<int>((lifetime)=>value);
     });
     expect(value, equals(lifetime.resolve<int>()));
   });
@@ -38,8 +36,8 @@ void main()
     var value = 5;
     var value2 = 2;
     var lifetime = DependencyBuilderFactory().createNew((builder){
-      builder.registerType<int>(()=>value);
-      builder.registerType<int>(()=>value2);
+      builder.registerType<int>((lifetime)=>value);
+      builder.registerType<int>((lifetime)=>value2);
     });
     expect(value2, equals(lifetime.resolve<int>()));
   });
@@ -49,12 +47,12 @@ void main()
     var lifetime = DependencyBuilderFactory().createNew((builder){
       builder.registerInstance<int>(value, name:name);
     });
-    expect(value, equals(lifetime.resolve<int>(name:name)));
+    expect(value, equals(lifetime.resolve<int>(key:name)));
   });
   test("scope_single", (){
     var counter = 0;
     var lifetime = DependencyBuilderFactory().createNew((builder){
-      builder.registerType(()=>new SimpleClass(counter++), lifeTimeScope: LifeTimeScope.SingleInstance);
+      builder.registerType((lifetime)=>new SimpleClass(counter++), lifeTimeScope: LifeTimeScope.SingleInstance);
     });
     var childLifetime1 = lifetime.startNewLifetimeScope();
     var childLifetime2 = childLifetime1.startNewLifetimeScope();
@@ -69,7 +67,7 @@ void main()
   test("scope_peruser", (){
     var counter = 0;
     var lifetime = DependencyBuilderFactory().createNew((builder){
-      builder.registerType(()=>new SimpleClass(counter++), lifeTimeScope: LifeTimeScope.PerUser);
+      builder.registerType((lifetime)=>new SimpleClass(counter++), lifeTimeScope: LifeTimeScope.PerUser);
     });
     var childLifetime1 = lifetime.startNewLifetimeScope();
     var childLifetime2 = childLifetime1.startNewLifetimeScope();
@@ -85,7 +83,7 @@ void main()
   test("scope_perlifetime", (){
     var counter = 0;
     var lifetime = DependencyBuilderFactory().createNew((builder){
-      builder.registerType(()=>new SimpleClass(counter++), lifeTimeScope: LifeTimeScope.PerLifeTime);
+      builder.registerType((lifetime)=>new SimpleClass(counter++), lifeTimeScope: LifeTimeScope.PerLifeTime);
     });
     var childLifetime1 = lifetime.startNewLifetimeScope();
     var childLifetime2 = childLifetime1.startNewLifetimeScope();
@@ -104,14 +102,14 @@ void main()
     var value3 = 2;
     var value4 = 7;
     var lifetime = DependencyBuilderFactory().createNew((builder){
-      builder.registerType<int>(()=>value1);
-      builder.registerType<int>(()=>value2);
+      builder.registerType<int>((lifetime)=>value1);
+      builder.registerType<int>((lifetime)=>value2);
     });
     var childLifetime1 = lifetime.startNewLifetimeScope((builder){
-      builder.registerType<int>(()=>value3);
+      builder.registerType<int>((lifetime)=>value3);
     });
     var childLifetime2 = childLifetime1.startNewLifetimeScope((builder){
-      builder.registerType<int>(()=>value4);
+      builder.registerType<int>((lifetime)=>value4);
     });
     var list = childLifetime2.resolveList<int>();
     expect(list.length, equals(4));
@@ -124,8 +122,8 @@ void main()
   test("injection", (){
     var counter = 0;
     var lifetime = DependencyBuilderFactory().createNew((builder){
-      builder.registerType(()=>new SimpleClass(counter++), lifeTimeScope: LifeTimeScope.SingleInstance);
-      builder.registerType(()=>new SimpleClassWithDependencies(counter++));
+      builder.registerType((lifetime)=>new SimpleClass(counter++), lifeTimeScope: LifeTimeScope.SingleInstance);
+      builder.registerType((lifetime)=>new SimpleClassWithDependencies(lifetime, counter++));
     });
     expect(1, equals(lifetime.resolve<SimpleClassWithDependencies>().dependency.val));
     expect(1, equals(lifetime.resolve<SimpleClass>().val));
@@ -135,11 +133,11 @@ void main()
     var value2 = 2;
     var value3 = 5;
     var lifetime = DependencyBuilderFactory().createNew((builder){
-      builder.registerType(()=>new SimpleClass(value2), lifeTimeScope: LifeTimeScope.SingleInstance);
-      builder.registerType(()=>new SimpleClassWithDependencies(value1));
+      builder.registerType((lifetime)=>new SimpleClass(value2), lifeTimeScope: LifeTimeScope.SingleInstance);
+      builder.registerType((lifetime)=>new SimpleClassWithDependencies(lifetime, value1));
     });
     var childLifetime1 = lifetime.startNewLifetimeScope((builder){
-      builder.registerType(()=>new SimpleClass(value3), lifeTimeScope: LifeTimeScope.SingleInstance);
+      builder.registerType((lifetime)=>new SimpleClass(value3), lifeTimeScope: LifeTimeScope.SingleInstance);
     });
 
     expect(value2, equals(childLifetime1.resolve<SimpleClassWithDependencies>().dependency.val));
@@ -148,10 +146,10 @@ void main()
     var counter = 0;
     var value1 = 2;
     var lifetime = DependencyBuilderFactory().createNew((builder){
-      builder.registerType(()=>new SimpleClass(counter++), lifeTimeScope: LifeTimeScope.PerLifeTime);
+      builder.registerType((lifetime)=>new SimpleClass(counter++), lifeTimeScope: LifeTimeScope.PerLifeTime);
     });
     var childLifetime1 = lifetime.startNewLifetimeScope((builder){
-      builder.registerType(()=>new SimpleClassWithDependencies(value1));
+      builder.registerType((lifetime)=>new SimpleClassWithDependencies(lifetime,value1));
     });
 
     expect(0, equals(lifetime.resolve<SimpleClass>().val));

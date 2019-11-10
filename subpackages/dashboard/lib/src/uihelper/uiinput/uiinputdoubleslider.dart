@@ -2,23 +2,34 @@ part of uihelper;
 
 class UiInputDoubleSlider extends UiInput<double>{
   InputElement el_in;
-  double min, max, steps;
+  double _min, _max, _steps;
 
-  UiInputDoubleSlider(String label, this.min, this.max, this.steps) : super(label);
-  Element createElement(){
-    Element el = super._createElement();
-    el_in = new InputElement();
+  UiInputDoubleSlider(ILifetime lifetime) : super(lifetime){
+    el_in = lifetime.resolve();
+  }
+  @override
+  void build(){
+    super.build();
     el_in.type = "range";
-    el_in.min = min.toString();
-    el_in.max = max.toString();
-    if(steps > 0)
-      el_in.step = ((max-min)/steps).toString();
     el_in.onMouseMove.listen((Event e){
       if(onValueChange != null)onValueChange(getValue());
     });
-
-    el.append(el_in);
-    return el;
+    if(_min != null) setMin(_min);
+    if(_max != null) setMin(_max);
+    if(_steps != null) setMin(_steps);
+    element.append(el_in);
+  }
+  void setMin(double newMin){
+    _min = newMin;
+    el_in.min = _min.toString();
+  }
+  void setMax(double newMax){
+    _max = newMax;
+    el_in.max = _max.toString();
+  }
+  void setSteps(double newSteps){
+    _steps = newSteps;
+    el_in.step = _steps > 0 ? ((_max-_min)/_steps).toString() : "";
   }
   @override
   void setValue(double value) {

@@ -1,7 +1,7 @@
 part of uihelper;
 
 class UiPanelForm extends UiContainer {
-  Element createElement() {
-    return new FormElement();
+  UiPanelForm(ILifetime lifetime) : super(lifetime){
+    element = lifetime.resolve<FormElement>();
   }
 }

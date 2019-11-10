@@ -3,15 +3,18 @@ part of uihelper;
 typedef void OnButtonClick();
 
 abstract class UiButton extends UiElement{
-  UiButton();
-  UiButton.fromInjection() : super.fromInjection();
+  ButtonElement _buttonElement;
   OnButtonClick _onClick;
-  Element _createButton(){
-    var btn = new ButtonElement();
-    btn.className = "button";
-    btn.onClick.listen(_onButtonClick);
-    btn.onTouchStart.listen(_onButtonClick);
-    return btn;
+  UiButton(ILifetime lifetime) : super(lifetime){
+    _buttonElement = lifetime.resolve();
+    element = _buttonElement;
+  }
+  @override
+  void build(){
+    super.build();
+    _buttonElement.classes.add("button");
+    _buttonElement.onClick.listen(_onButtonClick);
+    _buttonElement.onTouchStart.listen(_onButtonClick);
   }
   void setOnClick(OnButtonClick onClick){
     _onClick = onClick;

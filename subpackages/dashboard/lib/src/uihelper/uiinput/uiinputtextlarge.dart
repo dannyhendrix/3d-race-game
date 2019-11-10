@@ -3,15 +3,16 @@ part of uihelper;
 class UiInputTextLarge extends UiInput<String>{
   TextAreaElement _el_in;
 
-  UiInputTextLarge(String label) : super(label);
-  Element createElement(){
-    Element el = super._createElement();
-    _el_in = new TextAreaElement();
+  UiInputTextLarge(ILifetime lifetime) : super(lifetime){
+    _el_in = lifetime.resolve();
+  }
+  @override
+  void build(){
+    super.build();
     _el_in.onChange.listen((Event e){
       if(onValueChange != null)onValueChange(getValue());
     });
-    el.append(_el_in);
-    return el;
+    element.append(_el_in);
   }
 
   @override

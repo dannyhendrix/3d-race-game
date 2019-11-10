@@ -1,7 +1,7 @@
 part of uihelper;
 
 class UiPanelInline extends UiContainer {
-  Element createElement() {
-    return new SpanElement();
+  UiPanelInline(ILifetime lifetime) : super(lifetime){
+    element = lifetime.resolve<SpanElement>();
   }
 }

@@ -1,7 +1,7 @@
 part of uihelper;
 
 class UiPanel extends UiContainer {
-  Element createElement() {
-    return new DivElement();
+  UiPanel(ILifetime lifetime) : super(lifetime){
+    element = lifetime.resolve<DivElement>();
   }
 }

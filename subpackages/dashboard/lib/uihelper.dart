@@ -3,6 +3,7 @@ library uihelper;
 import "dart:html";
 import "package:dependencyinjection/dependencyinjection.dart";
 
+part "src/uihelper/uicomposition.dart";
 part "src/uihelper/uiicon.dart";
 
 part "src/uihelper/uielement.dart";

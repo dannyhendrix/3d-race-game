@@ -24,15 +24,22 @@ html { background-color:white; color:#222;}
 .highlightText, legend {color:#3f51b5;}
 .highlightBordered, .selected {border: 3px solid #3f51b5;}
 .highlightSub, .highlightSubOver:hover, .button:hover {background:rgb(255, 169, 63); color:#222;}
+
+#menu_bg { top:0px; height:100%; left:0px; width:100%; text-align:center;}
+#menu_wrapper { margin: 0px auto;}
+#menu_wrapper .menu { padding: 0px; margin: 0px;}
+#menu_wrapper .menu_button { padding: 16px; text-align: center; font-weight: bold; text-decoration: none; display:block; width: 100%; margin: 5px 0px;}
+#menu_title { position:relative; font-weight: bold; border-bottom: 3px solid rgba(0, 0, 0, 0.17); color:#fff;}
+#menu_title h1 { font-size: 12pt; padding: 16px;}
+#menu_close { position: absolute; right: 7px; top: 7px; width: 30px; height: 24px; border: 0px; background: none; color: inherit; font-weight: bold; font-size: 15px; padding: 0px; }
+#menu_back { position: absolute; left: 7px; top: 7px; width: 30px; height: 24px; border: 0px; background: none; color: inherit; font-weight: bold; font-size: 15px; padding: 0px; }
+#menu_wrapper .menu_button i.material-icons { float: left;}
+#menu_wrapper .rightPanel { display:inline-block; width:50%; height: 420px; overflow-y: auto;}
+#menu_wrapper .leftPanel { display:inline-block; width:50%; height: 420px; overflow-y: auto;}
+
     </style>
 </head>
 <body>
-<script defer src="uihelper.dart.js"></script>
-<h1 class="specialText highlight">Title</h1>
-<div class="highlight">Highlight</div>
-<div class="highlightOver">Highlight mouse over</div>
-<div class="highlightBordered">Highlight border</div>
-<div class="highlightSub">Highlight sub</div>
-<div class="highlightSubOver">Highlight sub mouse over</div>
+<script defer src="menu.dart.js"></script>
 </body>
 </html>
