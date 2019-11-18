@@ -40,7 +40,6 @@ class ResourceManager{
     for(var r in set.resources){
       var resIdentifier = "${identifier}${r.name}";
       var type = r.type != GameResourceType.Dynamic ? r.type : rootType;
-      print("Start loading ${resIdentifier}");
       switch(type){
         case GameResourceType.Level:
           var location = r.location == "" ? "${resIdentifier}.json" : r.location;

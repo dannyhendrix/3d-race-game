@@ -2,95 +2,123 @@ part of game.menu;
 
 class MainMenu extends GameMenuScreen
 {
-  Map<GameMainMenuItem, GameMenuScreen> _sideMenus;
-  MenuScreen _currentMenu = null;
-  GameMenuController menu;
-  MainMenu(this.menu){
-    GameMenuScreen settingsMenu = menu.settings.debug.v ? new SettingsMenuDebug(menu) : new SettingsMenu(menu);
-    _sideMenus = {
-      GameMainMenuItem.Profile : new ProfileMenu(menu),
-      GameMainMenuItem.Credits : new CreditsMenu(menu),
-      GameMainMenuItem.Controls : new ControlsMenu(menu),
-      GameMainMenuItem.Settings : settingsMenu,
-    };
+  GameSettings _settings;
+  GameBuilder _gameBuilder;
+
+  MenuButton _btnRandomRace;
+  MenuButton _btnSingleRace;
+  MenuButton _btnProfile;
+  MenuButton _btnSettings;
+  MenuButton _btnCredits;
+  MenuButton _btnControls;
+  MenuButton _btnSoccerRandom;
+  MenuButton _btnSoccer;
+  UiSwitchPanel _subpageview;
+  UiPanel _panelLeft;
+  UiPanel _panelRight;
+
+  Map<GameMainMenuPage, GameMenuMainScreen> _menus = {};
+
+  MainMenu(ILifetime lifetime) : super(lifetime, GameMenuPage.Main){
+    _settings = lifetime.resolve();
+    _gameBuilder = lifetime.resolve();
+
+    _btnRandomRace = lifetime.resolve();
+    _btnSingleRace = lifetime.resolve();
+    _btnProfile = lifetime.resolve();
+    _btnSettings = lifetime.resolve();
+    _btnCredits = lifetime.resolve();
+    _btnControls = lifetime.resolve();
+    _btnSoccerRandom = lifetime.resolve();
+    _btnSoccer = lifetime.resolve();
+    _subpageview = lifetime.resolve();
+    _panelLeft = lifetime.resolve();
+    _panelRight = lifetime.resolve();
+
+
+    pageId = GameMenuPage.Main;
+    showClose = false;
+    showBack = false;
+    title = "Main menu";
+
+    var menus = lifetime.resolveList<GameMenuMainScreen>();
+    for(var menu in menus){
+      _menus[menu.mainPageId] = menu;
+    }
   }
 
-  void show(GameMenuStatus status)
-  {
-    if(_currentMenu != null){
-      _currentMenu.hide();
+  @override
+  void build(){
+    super.build();
+
+    _panelLeft.addStyle("leftPanel");
+    _panelRight..addStyle("rightPanel");
+    append(_panelLeft);
+    append(_panelRight);
+
+    _panelLeft.append(_btnRandomRace);
+    _panelLeft.append(_btnSingleRace);
+    _panelLeft.append(_btnProfile);
+    if(_settings.debug.v) _panelLeft.append(_btnSoccerRandom);
+    if(_settings.debug.v) _panelLeft.append(_btnSoccer);
+    if(_settings.debug.v) _panelLeft.append(_btnSettings);
+    if(_settings.debug.v) _panelLeft.append(_btnCredits);
+    _panelLeft.append(_btnControls);
+
+    _btnRandomRace..changeText("Random race")..changeIcon("play_arrow")..setOnClick((){
+      _menu.showMenu(new GameInputMenuStatus("Random race", _gameBuilder.newRandomGame(), (GameOutput result){
+        _menu.showMenu(new GameOutputMenuStatus("Race results", result));
+      }));
+    });
+    _btnSoccerRandom..changeText("Random soccer")..changeIcon("play_arrow")..setOnClick((){
+      _menu.showMenu(new GameInputMenuStatus("Soccer", _gameBuilder.newRandomSoccerGame(), (GameOutput result){
+        _menu.showMenu(new GameOutputMenuStatus("Race results", result));
+      }));
+    });
+    _btnSingleRace..changeText("Single race")..changeIcon("play_arrow")..setOnClick((){
+      _menu.showMenu(_menu.MENU_SINGLERACE);
+    });
+    _btnSoccer..changeText("Soccer")..changeIcon("play_arrow")..setOnClick((){
+      _menu.showMenu(_menu.MENU_SOCCER);
+    });
+    _btnProfile..changeText("Profile")..changeIcon("account_circle")..setOnClick((){
+      _menu.showMenu(_menu.MENU_PROFILE);
+    });
+    _btnSettings..changeText("Settings")..changeIcon("settings")..setOnClick((){
+      _menu.showMenu(_menu.MENU_SETTINGS);
+    });
+    _btnControls..changeText("Controls")..changeIcon("videogame_asset")..setOnClick((){
+      _menu.showMenu(_menu.MENU_CONTROLS);
+    });
+    _btnCredits..changeText("Credits")..changeIcon("info")..setOnClick((){
+      _menu.showMenu(_menu.MENU_CREDITS);
+    });
+
+    for(var menu in _menus.values){
+      _subpageview.setTab(menu.mainPageId.index,menu);
+      menu.attachToMenu(_menu);
+      menu.hide();
     }
-    if(status is GameMainMenuStatus){
-      GameMainMenuStatus mainMenuStatus = status;
-      _currentMenu = _sideMenus[mainMenuStatus.mainMenuItem];
-    }else{
-      _currentMenu = _sideMenus[GameMainMenuItem.Profile];
-    }
-    _currentMenu.show(status);
-    super.show(status);
+    _panelRight.append(_subpageview);
   }
 
-  UiContainer setupFields()
-  {
-    var el = super.setupFields();
-    var el_right = UiPanel();
-    var el_left = UiPanel();
-    el_right.addStyle("rightPanel");
-    el_left.addStyle("leftPanel");
-    el.append(el_left);
-    el.append(el_right);
-
-    //el_left.append(createOpenMenuButtonWithIcon(menu,"Singleplayer","account_circle",menu.MENU_SINGLEPLAYER));
-    el_left.append(createMenuButtonWithIcon("Random race","play_arrow",(){
-      menu.showMenu(new GameInputMenuStatus("Random race", menu.gameBuilder.newRandomGame(), (GameOutput result){
-        menu.showMenu(new GameOutputMenuStatus("Race results", result));
-      }));
-    }));
-    el_left.append(createOpenMenuButtonWithIcon(menu,"Single race","play_arrow",menu.MENU_SINGLERACE));
-    if(menu.settings.debug.v) el_left.append(createOpenMenuButtonWithIcon(menu,"Soccer","play_arrow",menu.MENU_SOCCER));
-    //el_left.append(createOpenMenuButtonWithIcon(menu,"Story mode","table_chart",menu.MENU_MAIN));
-    el_left.append(createOpenMenuButtonWithIcon(menu,"Profile","account_circle",menu.MENU_PROFILE));
-  /*
-    el_left.append(createMenuButtonWithIcon("Result","play_arrow",(){
-      var a = new GameOutput();
-      var p1 = new GamePlayerResult(new GameSettingsPlayer.asAiPlayer(3,"player1",VehicleType.Car));
-      p1.position = 1;
-      a.playerResults.add(p1);
-      p1 = new GamePlayerResult(new GameSettingsPlayer.asAiPlayer(2,"player2",VehicleType.Truck));
-      p1.position = 2;
-      a.playerResults.add(p1);
-      p1 = new GamePlayerResult(new GameSettingsPlayer.asHumanPlayer("playerUser",VehicleType.Formula));
-      p1.position = 3;
-      a.playerResults.add(p1);
-      p1 = new GamePlayerResult(new GameSettingsPlayer.asAiPlayer(4,"player3",VehicleType.Car));
-      p1.position = 4;
-      a.playerResults.add(p1);
-      p1 = new GamePlayerResult(new GameSettingsPlayer.asAiPlayer(6,"player5",VehicleType.Car));
-      p1.position = 5;
-      a.playerResults.add(p1);
-      menu.showMenu(new GameOutputMenuStatus("Race results", a));
-    }));
-    */
-
-    if(menu.settings.debug.v) el_left.append(createMenuButtonWithIcon("Soccer random","play_arrow",(){
-      menu.showMenu(new GameInputMenuStatus("Soccer", menu.gameBuilder.newRandomSoccerGame(), (GameOutput result){
-        menu.showMenu(new GameOutputMenuStatus("Game results", result));
-      }));
-    }));
-
-    if(menu.settings.debug.v) el_left.append(createOpenMenuButtonWithIcon(menu,"Settings","settings",menu.MENU_SETTINGS));
-    el_left.append(createOpenMenuButtonWithIcon(menu,"Controls","videogame_asset",menu.MENU_CONTROLS));
-    //el_left.append(createOpenMenuButtonWithIcon(menu,"Credits","info",menu.MENU_CREDITS));
-
-    for(GameMainMenuItem menuItem in _sideMenus.keys){
-      _sideMenus[menuItem].init();
-      el_right.append(_sideMenus[menuItem].element);
+  @override
+  void enterMenu(GameMenuStatus status){
+    super.enterMenu(status);
+    if(status is GameMenuMainStatus){
+      var currentIndex = _subpageview.current;
+      if(currentIndex != -1)
+      {
+        var current = GameMainMenuPage.values[currentIndex];
+        _menus[current].exitMenu();
+      }
+      _menus[status.sidepage].enterMenu(status);
+      _subpageview.showTab(status.sidepage.index);
     }
+  }
 
-    closebutton = false;
-    backbutton = false;
-
-    return el;
+  void _registerTabs(){
+    //_subpageview.setTab("", GameMainMenuPage.Profile.index, content)
   }
 }
 

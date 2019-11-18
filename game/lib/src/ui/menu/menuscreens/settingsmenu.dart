@@ -1,37 +1,11 @@
 part of game.menu;
 
-class SettingsMenu extends GameMenuScreen
+class SettingsMenu extends GameMenuMainScreen
 {
-  bool showStoreIncookie = true;
-  GameMenuController menu;
+  GameSettings _settings;
 
-  SettingsMenu(this.menu);
-
-  UiContainer setupFields()
-  {
-    var el = super.setupFields();
-    return el;
-  }
-
-  void storeSettings()
-  {
-    menu.settings.saveToCookie();
-  }
-  
-  void loadSettings()
-  {
-  }
-  
-  void hide()
-  {
-    storeSettings();
-    super.hide();
-  }
-
-  void show(GameMenuStatus status)
-  {
-    loadSettings();
-    super.show(status);
+  SettingsMenu(ILifetime lifetime) : super(lifetime, GameMainMenuPage.Settings){
+    _settings = lifetime.resolve();
   }
 }
 

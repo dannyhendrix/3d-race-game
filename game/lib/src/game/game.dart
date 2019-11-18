@@ -16,7 +16,8 @@ class Game{
   Countdown countdown;
   GameSettings settings;
 
-  Game(settings){
+  Game(ILifetime lifetime){
+    settings = lifetime.resolve();
   }
 
 

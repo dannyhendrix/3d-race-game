@@ -3,14 +3,12 @@ part of uihelper;
 abstract class UiElement{
   UiElement(ILifetime lifetime);
   Element element;
-  UiElement show(){
+  void show(){
     element.style.display = "";
-    return this;
   }
   void build(){}
-  UiElement hide(){
+  void hide(){
     element.style.display = "none";
-    return this;
   }
   void display(bool display){
     if(display) show(); else hide();

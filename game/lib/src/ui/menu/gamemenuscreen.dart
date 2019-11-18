@@ -1,19 +1,28 @@
 part of game.menu;
 
-class GameMenuScreen extends MenuScreen<GameMenuStatus>
-{
-  bool showStoreIncookie = false;
+abstract class GameMenuScreen extends UiPanel{
+  String title = "Title";
+  GameMenuPage pageId;
+  bool showBack = true;
+  bool showClose = false;
+  GameMenuController _menu;
 
-  UiButton createMenuButtonWithIcon(String label, String icon, [Function onClick])
-  {
-    return UiButtonIconText(label, icon, onClick).addStyle("menu_button");
-  }
+  GameMenuScreen(ILifetime lifetime, this.pageId) : super(lifetime);
+  void attachToMenu(GameMenuController menu) => _menu = menu;
+  void enterMenu(GameMenuStatus status){}
+  void exitMenu(){}
+}
 
-  UiButton createOpenMenuButtonWithIcon(Menu menu, String label, String icon, MenuStatus status)
-  {
-    return createMenuButtonWithIcon(label,icon,()
-    {
-      menu.showMenu(status);
-    });
+abstract class GameMenuMainScreen extends GameMenuScreen{
+  GameMainMenuPage mainPageId;
+  GameMenuMainScreen(ILifetime lifetime, this.mainPageId) : super(lifetime, GameMenuPage.Main);
+}
+
+class MenuButton extends UiButtonIconText{
+  MenuButton(ILifetime lifetime) : super(lifetime);
+  @override
+  void build(){
+    super.build();
+    addStyle("menu_button");
   }
 }

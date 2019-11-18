@@ -3,6 +3,10 @@ import "dart:math" as Math;
 import "dart:convert";
 import "package:micromachines/definitions.dart";
 import "package:micromachines/menu.dart";
+import "package:micromachines/gamemode.dart";
+import "package:micromachines/game.dart";
+import "package:dependencyinjection/dependencyinjection.dart";
+import "package:dashboard/uihelper.dart";
 
 
 bool isMobile()
@@ -15,17 +19,29 @@ bool isMobile()
       return true;
   return false;
 }
-
-void main(){
+GameSettings buildSettings(){
   var settings = new GameSettings();
   settings.debug.v = window.location.href.endsWith("ihaveseenthesourcecode");
   settings.levels_allowJsonInput.v = settings.debug.v;
   settings.client_showUIControls.v = isMobile();
-  var menu = new GameMenuController(settings);
-  menu.preLoad((){
-    menu.init(false);
+  return settings;
+}
+
+void main(){
+  var lifetime = DependencyBuilderFactory().createNew((builder){
+    builder.registerModule(UiComposition());
+    builder.registerModule(GameComposition());
+    builder.registerModule(GameMenuComposition());
+    builder.registerModule(GameModeComposition());
+    builder.registerInstance(buildSettings());
+  });
+
+  GameLoader loader = lifetime.resolve();
+  loader.preLoad((){
+    GameMenuController menu = lifetime.resolve();
     menu.showMenu(menu.MENU_MAIN);
     document.body.querySelector("#loading").remove();
-    document.body.append(menu.element.element);
+    document.body.append(menu.element);
   });
 }
+

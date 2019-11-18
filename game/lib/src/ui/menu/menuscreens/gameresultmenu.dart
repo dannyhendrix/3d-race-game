@@ -1,13 +1,25 @@
 part of game.menu;
 
+//TODO: clean up dependency injections for html elements
 class GameResultMenu extends GameMenuScreen{
-  GameMenuController menu;
   TextureGenerator _textureGenerator;
-  GameResultMenu(this.menu){
-    _textureGenerator = new TextureGenerator(menu.resourceManager);
+  UiPanel gameResultContent;
+  MenuButton _btnMainMenu;
+  GameSettings _settings;
+  AiPlayerProfileDatabase _playerDatabase;
+  ILifetime _lifetime;
+
+  GameResultMenu(ILifetime lifetime) : super(lifetime, GameMenuPage.GameResult){
+    _lifetime = lifetime;
+    _textureGenerator = lifetime.resolve();
+    gameResultContent = lifetime.resolve();
+    _btnMainMenu = lifetime.resolve();
+    _settings = lifetime.resolve();
+    _playerDatabase = lifetime.resolve();
+    showClose = false;
+    showBack = false;
   }
 
-  UiContainer gameResultContent;
 
   /*
   1 | Player 1 | carImg
@@ -16,28 +28,23 @@ class GameResultMenu extends GameMenuScreen{
   4 | ..       | -
   . | ..       | -
    */
-  UiContainer setupFields()
+  @override
+  void build()
   {
-    var el = super.setupFields();
-    gameResultContent = new UiPanel();
+    super.build();
     gameResultContent.addStyle("gameResult");
-
-    el.append(gameResultContent);
-
-    //el.append(createOpenMenuButtonWithIcon(menu,"Continue","play_arrow",menu.MENU_MAIN));
-    el.append(createOpenMenuButtonWithIcon(menu,"Main menu","menu",menu.MENU_MAIN));
-
-    closebutton = false;
-    backbutton = false;
-
-    return el;
+    _btnMainMenu..changeText("Main menu")..changeIcon("menu")..setOnClick((){
+      _menu.showMenu(_menu.MENU_MAIN);
+    });
+    append(gameResultContent);
+    append(_btnMainMenu);
   }
 
   Element _createTopPlayer(GameSettingsPlayer playerSettings){
     PlayerProfile player = _getPlayerProfileFromId(playerSettings.playerId);
-    var el = new DivElement();
+    DivElement el = _lifetime.resolve();
     el.className = "topplayer";
-    ImageElement img = new ImageElement();
+    ImageElement img = _lifetime.resolve();
     img.src = _createPreviewFromModel(_getModelFromVehicleType(playerSettings.vehicle),colorMappingGl[player.theme.color1],colorMappingGl[player.theme.color2]);
     el.append(_createTableCellWrap(img,"image"));
     String className = "name";
@@ -46,7 +53,7 @@ class GameResultMenu extends GameMenuScreen{
     return el;
   }
   Element _createTableRow(int position, String playerName, [bool isHuman = false]){
-    var el = new DivElement();
+    DivElement el = _lifetime.resolve();
     el.className = "gameResultRow";
     if(isHuman) el.className = "gameResultRow highlight";
     el.append(_createTableCell(position.toString(),"position"));
@@ -55,7 +62,7 @@ class GameResultMenu extends GameMenuScreen{
     return el;
   }
   Element _createTableCell(String text, String className){
-    var el = new DivElement();
+    DivElement el = _lifetime.resolve();
     el.text = text;
     el.className = className;
     return el;
@@ -67,18 +74,18 @@ class GameResultMenu extends GameMenuScreen{
     return el;
   }
 
-  void show(GameMenuStatus status)
+  void enterMenu(GameMenuStatus status)
   {
     if(status is GameOutputMenuStatus)
     {
       GameOutputMenuStatus resultStatus = status;
       _setGameResult(resultStatus.gameOutput);
     }
-    super.show(status);
+    super.enterMenu(status);
   }
   PlayerProfile _getPlayerProfileFromId(int id){
-    if(id == -1) return new PlayerProfile(-1,menu.settings.user_name.v, new VehicleTheme.withColor(menu.settings.user_color1.v,menu.settings.user_color2.v));
-    return menu.aiPlayerProfileDatabase.getPlayerById(id);
+    if(id == -1) return new PlayerProfile(-1,_settings.user_name.v, new VehicleTheme.withColor(_settings.user_color1.v,_settings.user_color2.v));
+    return _playerDatabase.getPlayerById(id);
   }
 
   void _setGameResult(GameOutput gameresult){
@@ -86,7 +93,7 @@ class GameResultMenu extends GameMenuScreen{
     gameResultContent.clear();
 
     // 1-3
-    var el_topWrap = new DivElement();
+    DivElement el_topWrap = _lifetime.resolve();;
     el_topWrap.classes.add("topplayers");
     int numberOfPlayers = gameresult.playerResults.length;
     Element el_player;
@@ -114,7 +121,7 @@ class GameResultMenu extends GameMenuScreen{
     gameResultContent.appendElement(el_topWrap);
 
     // 4-..
-    var el_remaining = new UiPanel();
+    UiPanel el_remaining = _lifetime.resolve();
     for(int i = 3; i < gameresult.playerResults.length; i++){
       GamePlayerResult player = gameresult.playerResults[i];
       bool isHuman = player.player.playerId == -1;
@@ -140,7 +147,7 @@ class GameResultMenu extends GameMenuScreen{
 
       return [instance];
 
-    },menu.settings.client_renderType.v == GameRenderType.Textures);
+    },_settings.client_renderType.v == GameRenderType.Textures);
     preview.ox = 0.0;
     preview.oy = 26.0;
     preview.oz = 240.0;

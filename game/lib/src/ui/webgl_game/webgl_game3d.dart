@@ -18,6 +18,7 @@ abstract class WebglGame{
 }
 */
 class WebglGame3d extends WebglGame{
+  ILifetime _lifetime;
   Game game;
   GameLoop _gameloop;
   bool _enableTextures = true;
@@ -37,11 +38,15 @@ class WebglGame3d extends WebglGame{
   Element el_rounds;
   Element el_countdown;
 
-  WebglGame3d(GameSettings settings, this._resourceManager, [this._enableTextures = true]){
-    game = new Game(settings);
+  //WebglGame3d(GameSettings settings, this._resourceManager, [this._enableTextures = true]){
+  WebglGame3d(ILifetime lifetime){
+    _lifetime = lifetime;
+    game = lifetime.resolve();
+    _resourceManager = lifetime.resolve();
     _gameloop = new GameLoop(_loop);
     textureGenerator = new TextureGenerator(_resourceManager);
   }
+  /*
   Element createControls(){
     Element el = new DivElement();
     el.id = "controlswrapper";
@@ -68,6 +73,7 @@ class WebglGame3d extends WebglGame{
     el.element.onTouchEnd.listen((Event e){onControl(control, false);});
     return el;
   }
+   */
   @override
   Element initAndCreateDom(GameInput input, GameSettings settings) {
     game.initSession(input);
@@ -126,7 +132,7 @@ class WebglGame3d extends WebglGame{
 
     InputController inputController = new InputController(settings);
     _registerControls(inputController);
-    if(settings.client_showUIControls.v) element.append(createControls());
+    //if(settings.client_showUIControls.v) element.append(createControls());
     return element;
   }
 

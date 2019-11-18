@@ -1,67 +1,62 @@
 part of game.menu;
 
-
-class GameInputMenuStatus extends GameMenuStatus{
-  GameInput gameInput;
-  OnGameFinished onFinished;
-  GameDisplayType displayType;
-  GameInputMenuStatus(String title, this.gameInput, this.onFinished, [this.displayType = null]) : super(title, GameMenuItem.Game, true);
-}
-
 class PlayGameMenu extends GameMenuScreen{
-  GameMenuController menu;
-  PlayGameMenu(this.menu);
-
-  UiContainer gameContent;
+  UiPanel gameContent;
   Element el_game;
   WebglGame game;
+  ILifetime _lifetime;
+  ILifetime _gamelifetime;
+  GameSettings _settings;
 
-  UiContainer setupFields()
-  {
-    var el = super.setupFields();
 
-    gameContent = new UiPanel();
-    gameContent.element.id = "gamewrapper";
-    el.append(gameContent);
-
-    closebutton = false;
-    backbutton = false;
-
-    return el;
+  PlayGameMenu(ILifetime lifetime) : super(lifetime, GameMenuPage.Game){
+    _lifetime = lifetime;
+    gameContent = lifetime.resolve();
+    _settings = lifetime.resolve();
   }
 
-  void show(GameMenuStatus status)
+  @override
+  void build()
   {
-    if(status is GameInputMenuStatus)
-    {
-      GameInputMenuStatus inputStatus = status;
-      _startGame(inputStatus.gameInput, inputStatus.onFinished, inputStatus.displayType);
-    }
-    super.show(status);
+    super.build();
+    gameContent.setStyleId("gamewrapper");
+    append(gameContent);
+
+    showClose = false;
+    showBack = false;
   }
-  void hide(){
+
+  @override
+  void enterMenu(GameMenuStatus status)
+  {
+    if(status is GameInputMenuStatus) _startGame(status.gameInput, status.onFinished, status.displayType);
+    super.enterMenu(status);
+  }
+  @override
+  void exitMenu(){
     if(game != null){
       game.stop();
       if(el_game !=null) el_game.remove();
+      _gamelifetime = null;
     }
-
-
-    super.hide();
+    super.exitMenu();
   }
 
   void _startGame(GameInput gameSettings, OnGameFinished onFinished, [GameDisplayType displayType = null]){
     if(displayType == null){
-      displayType = menu.settings.client_displayType.v;
+      displayType = _settings.client_displayType.v;
     }
-    var enableTextures = menu.settings.client_renderType.v == GameRenderType.Textures;
-    game = displayType == GameDisplayType.Webgl2d ? new WebglGame2d(menu.settings) : new WebglGame3d(menu.settings, menu.resourceManager, enableTextures);
+    //var enableTextures = menu.settings.client_renderType.v == GameRenderType.Textures;
+    _gamelifetime = _lifetime.startNewLifetimeScope();
+    //TODO: move this switch to composition
+    game = displayType == GameDisplayType.Webgl2d ? _gamelifetime.resolve<WebglGame3d>() : _gamelifetime.resolve<WebglGame3d>();
 
     game.onGameFinished = (result){
       el_game.remove();
       game = null;
       onFinished(result);
     };
-    el_game = game.initAndCreateDom(gameSettings, menu.settings);
+    el_game = game.initAndCreateDom(gameSettings, _settings);
     gameContent.appendElement(el_game);
     //element.append(createButton("Pause",(e)=>game.pause()));
     game.start();

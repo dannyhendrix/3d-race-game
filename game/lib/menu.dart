@@ -12,6 +12,7 @@ import "package:gameutils/math.dart";
 import "package:webgl/webgl.dart";
 import "package:renderlayer/renderlayer.dart";
 import "package:dashboard/uihelper.dart";
+import "package:dependencyinjection/dependencyinjection.dart";
 
 import "webgl_game.dart";
 import "gamemode.dart";
@@ -19,11 +20,15 @@ import "definitions.dart";
 import "resources.dart";
 
 part "src/ui/menu/gamemenuscreen.dart";
+part "src/ui/menu/gamemenucomposition.dart";
 part "src/ui/menu/gamemenucontroller.dart";
+part "src/ui/menu/uielements/colorselection.dart";
+part "src/ui/menu/uielements/enterkey.dart";
+part "src/ui/menu/uielements/levelpreview.dart";
+
 part "src/ui/menu/menuscreens/mainmenu.dart";
 part "src/ui/menu/menuscreens/creditsmenu.dart";
 part "src/ui/menu/menuscreens/gameresultmenu.dart";
-part "src/ui/menu/menuscreens/loadingmenu.dart";
 part "src/ui/menu/menuscreens/playgamemenu.dart";
 part "src/ui/menu/menuscreens/controlsmenu.dart";
 part "src/ui/menu/menuscreens/settingsmenu.dart";
@@ -31,6 +36,5 @@ part "src/ui/menu/menuscreens/settingsmenudebug.dart";
 part "src/ui/menu/menuscreens/soccergamemenu.dart";
 part "src/ui/menu/menuscreens/singleracemenu.dart";
 part "src/ui/menu/menuscreens/profilemenu.dart";
-part "src/ui/menu/enterkey.dart";
-part "src/ui/menu/levelpreview.dart";
-part "src/ui/menu/gameinputselection.dart";
+part "src/ui/menu/uielements/gameinputselectionvehicle.dart";
+part "src/ui/menu/uielements/gameinputselectionlevel.dart";

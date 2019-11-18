@@ -5,6 +5,7 @@ import "package:dependencyinjection/dependencyinjection.dart";
 void main(){
   var lifetime = DependencyBuilderFactory().createNew((builder){
     builder.registerModule(UiComposition());
+    builder.registerType((lifetime) => new GameInputSelectionInt(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
   });
 
   document.body.append((lifetime.resolve<UiTitle>()..changeText("Dependency Injection")).element);
@@ -29,6 +30,7 @@ UiPanelTitled createForm(ILifetime lifetime){
       ..append(lifetime.resolve<UiButtonText>()..changeText("Settings"))
       ..append(lifetime.resolve<UiButtonIcon>()..changeIcon("settings"))
       ..append(lifetime.resolve<UiButtonIconText>()..changeIcon("settings"))
+      ..append(lifetime.resolve<GameInputSelectionInt>())
     );
 }
 UiTabView createTabs(ILifetime lifetime){
@@ -56,4 +58,64 @@ UiTable createTable(ILifetime lifetime){
     lifetime.resolve<UiText>()..changeText("Item 3"),
   ]);
   return table;
+}
+
+class GameInputSelectionInt extends GameInputSelection<int>{
+  GameInputSelectionInt(ILifetime lifetime) : super(lifetime);
+
+  getSelectedValue() => index;
+}
+
+abstract class GameInputSelection<T> extends UiPanel{
+  UiButtonIcon _btn_next;
+  UiButtonIcon _btn_prev;
+  UiPanel el_content;
+  int index = 0;
+  int optionsLength = 5;
+
+  GameInputSelection(ILifetime lifetime) : super(lifetime){
+    _btn_next = lifetime.resolve();
+    _btn_prev = lifetime.resolve();
+    el_content = lifetime.resolve();
+  }
+
+  void setOptions(int options){
+    optionsLength = options;
+  }
+
+  @override
+  void build(){
+    super.build();
+
+    addStyle("GameInputSelection");
+/*
+    if(label.isNotEmpty){
+      var el_label = new UiText(label);
+      el_label.addStyle("label");
+      element.append(el_label);
+    }
+*/
+    _btn_prev..changeIcon("navigate_before")..addStyle("navigate")..setOnClick((){
+      int oldIndex = index--;
+      if(index < 0)
+        index = optionsLength-1;
+      onIndexChanged(oldIndex, index);
+    });
+    _btn_next..changeIcon("navigate_next")..addStyle("navigate")..setOnClick((){
+      int oldIndex = index++;
+      if(index >= optionsLength)
+        index = 0;
+      onIndexChanged(oldIndex, index);
+    });
+    el_content.addStyle("content");
+    el_content.element.text = 0.toString();
+    append(_btn_prev);
+    append(el_content);
+    append(_btn_next);
+  }
+  void onIndexChanged(int oldIndex, int newIndex){
+    el_content.element.text = newIndex.toString();
+  }
+
+  T getSelectedValue();
 }

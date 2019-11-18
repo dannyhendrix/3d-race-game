@@ -1,105 +1,73 @@
 part of game.menu;
 
-typedef T GetValueFromInput<T>();
-typedef void SetValueToInput<T>(T val);
-/*
-class SettingInput<T>
+class SettingsMenuDebug extends GameMenuMainScreen
 {
-  GetValueFromInput<T> getter;
-  SetValueToInput<T> setter;
-  bool changed = false;
-  SettingInput(this.getter, this.setter);
-}
-*/
-class SettingsMenuDebug extends GameMenuScreen
-{
-  GameMenuController menu;
+  ILifetime _lifetime;
+  GameSettings _settings;
+  UiPanelForm _form;
+  UiButtonText _btnResetCookie;
   bool showStoreIncookie = true;
-
   Map<String, UiInput> settingElementMapping = {};
 
-  SettingsMenuDebug(this.menu);
+  SettingsMenuDebug(ILifetime lifetime) : super(lifetime, GameMainMenuPage.SettingsDebug){
+    _lifetime = lifetime;
+    _settings = lifetime.resolve();
+    _form = lifetime.resolve();
+    _btnResetCookie = lifetime.resolve();
+  }
 
-  UiContainer setupFields()
+  @override
+  void build()
   {
-    var el = super.setupFields();
-    var form = UiPanelForm();
-    for(GameSetting s in menu.settings.getMenuSettings())
-      form.append(createSettingElement(s));
-    form.append(UiButtonText("Reset cookie", (){
-      menu.settings.emptyCookie();
-    }));
-    el.append(form);
-    return el;
+    super.build();
+    for(var s in _settings.getMenuSettings()){
+      var input = createSettingElement(s);
+      _form.append(input);
+      settingElementMapping[s.k] = input;
+    }
+    _form.append(_btnResetCookie);
+    _btnResetCookie..changeText("Reset cookie")..setOnClick((){
+      _settings.emptyCookie();
+    });
+    append(_form);
   }
   
   UiElement createSettingElement(GameSetting s)
   {
-    if(s is GameSettingWithAllowedValues)
-    {
-      var form = new UiInputOption(s.description,s.allowedValues);
-      settingElementMapping[s.k] = form;
-      return form;
-    }
-    else if(s is GameSettingWithEnum)
-    {
-      var form = new UiInputOption(s.description,s.allowedValues);
-      form.objectToString = s.convertTo;
-      settingElementMapping[s.k] = form;
-      return form;
-    }
-    else if(s.v is int)
-    {
-      var form = new UiInputInt(s.description);
-      settingElementMapping[s.k] = form;
-      return form;
-    }
-    else if(s.v is double)
-    {
-      var form = new UiInputDouble(s.description);
-      settingElementMapping[s.k] = form;
-      return form;
-    }
-    else if(s.v is bool)
-    {
-      var form = new UiInputBoolIcon(s.description);
-      settingElementMapping[s.k] = form;
-      return form;
-    }
-    else
-    {
-      var form =  new UiInputText(s.description);
-      settingElementMapping[s.k] = form;
-      return form;
-    }
+    if(s is GameSettingWithAllowedValues) return _lifetime.resolve<UiInputOption>()..changeLabel(s.description)..setOptions(s.allowedValues);
+    else if(s is GameSettingWithEnum) return _lifetime.resolve<UiInputOption>()..changeLabel(s.description)..setOptions(s.allowedValues)..objectToString = s.convertTo;
+    else if(s.v is int) return _lifetime.resolve<UiInputInt>()..changeLabel(s.description);
+    else if(s.v is double) return _lifetime.resolve<UiInputDouble>()..changeLabel(s.description);
+    else if(s.v is bool) return _lifetime.resolve<UiInputBoolIcon>()..changeLabel(s.description);
+    else return _lifetime.resolve<UiInputText>()..changeLabel(s.description);
   }
   
-  void storeSettings()
+  void _storeSettings()
   {
-    for(GameSetting s in menu.settings.getMenuSettings())
+    for(GameSetting s in _settings.getMenuSettings())
     {
       var gs = settingElementMapping[s.k];
       s.v = gs.getValue();
     }
-    menu.settings.saveToCookie();
+    _settings.saveToCookie();
   }
   
-  void loadSettings()
+  void _loadSettings()
   {
-    for(GameSetting s in menu.settings.getMenuSettings())
+    for(GameSetting s in _settings.getMenuSettings())
       settingElementMapping[s.k].setValue(s.v);
   }
-  
-  void hide()
-  {
-    storeSettings();
-    super.hide();
+
+  @override
+  void enterMenu(GameMenuStatus status){
+    _loadSettings();
+    super.enterMenu(status);
   }
-  
-  void show(GameMenuStatus status)
+  @override
+  void exitMenu()
   {
-    loadSettings();
-    super.show(status);
+    _storeSettings();
+    super.exitMenu();
   }
 }
 

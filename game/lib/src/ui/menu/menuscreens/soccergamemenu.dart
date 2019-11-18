@@ -1,81 +1,70 @@
 part of game.menu;
 
 class SoccerGameMenu extends GameMenuScreen{
-  GameMenuController menu;
   GameInputSelectionVehicle _vehicleSelection;
   GameInputSelectionTrailer _trailerSelection;
   GameInputSelectionLevel _levelSelection;
   UiInputOptionRadio _in_scorelimit;
   UiInputOptionRadio _in_teams;
   UiInputOptionRadio _in_playersperteam;
-  UiInputTextLarge in_levelJson;
+  UiPanel _panelLeft;
+  UiPanel _panelRight;
+  MenuButton _btnStart;
 
-  SoccerGameMenu(this.menu){
+
+  SoccerGameMenu(ILifetime lifetime) : super(lifetime, GameMenuPage.Soccer){
+    _panelLeft = lifetime.resolve();
+    _panelRight = lifetime.resolve();
+    _in_scorelimit = lifetime.resolve();
+    _in_teams = lifetime.resolve();
+    _in_playersperteam = lifetime.resolve();
+    _levelSelection = lifetime.resolve();
+    _btnStart = lifetime.resolve();
+    _vehicleSelection = lifetime.resolve();
+    _trailerSelection = lifetime.resolve();
+
+    showClose = false;
+    title = "Single race";
   }
 
-  UiContainer setupFields()
-  {
-    closebutton = false;
+  @override
+  void build(){
+    super.build();
 
-    var el = super.setupFields();
-    var el_left = new UiPanel();
-    var el_right = new UiPanel();
-    el_left.addStyle("leftPanel");
-    el_right.addStyle("rightPanel");
-    el.append(el_left);
-    el.append(el_right);
+    _panelLeft.addStyle("leftPanel");
+    _panelRight..addStyle("rightPanel");
+    append(_panelLeft);
+    append(_panelRight);
 
-    _vehicleSelection = new GameInputSelectionVehicle();
-    _trailerSelection = new GameInputSelectionTrailer();
-    _levelSelection = new GameInputSelectionLevel(menu.levelManager);
+    _in_teams..changeLabel("Teams")..setOptions([2,3,4,5,6])..setValue(2);
+    _in_playersperteam..changeLabel("Players per team")..setOptions([1,2,3,4,10,20])..setValue(2);
+    _in_scorelimit..changeLabel("Score limit")..setOptions([3,5,10])..setValue(5);
+    _vehicleSelection..changeLabel("Vehicle");
+    _trailerSelection..changeLabel("Trailer");
 
-    _in_teams = new UiInputOptionRadio("Teams", [2,3,4,5,6]);
-    _in_teams.setValueIndex(0);
-    _in_playersperteam = new UiInputOptionRadio("Players per team", [1,2,3,4,10,20]);
-    _in_playersperteam.setValueIndex(1);
+    _panelLeft.append(_levelSelection);
 
-    _in_scorelimit = new UiInputOptionRadio("Score limit",[3,5,10]);
-    _in_scorelimit.setValueIndex(1);
+    _panelLeft.append(_in_scorelimit);
 
-    el_left.append(_levelSelection.setupFieldsForLevels(_createLevelJsonInput(),menu.settings.levels_allowJsonInput.v));
-    el_left.append(_in_scorelimit);
+    _panelRight.append(_vehicleSelection);
+    _panelRight.append(_trailerSelection);
+    _panelRight.append(_in_teams);
+    _panelRight.append(_in_playersperteam);
 
-    el_right.append(_vehicleSelection.setupFieldsForVehicles());
-    el_right.append(_trailerSelection.setupFieldsForTrailers());
-    el_right.append(_in_teams);
-    el_right.append(_in_playersperteam);
-
-    el.append(createMenuButtonWithIcon("Start","play_arrow",(){
-      menu.showMenu(new GameInputMenuStatus("Soccer", createGameInput(), (GameOutput result){
-        menu.showMenu(new GameOutputMenuStatus("Race results", result));
+    _btnStart..changeText("Start")..changeIcon("play_arrow")..setOnClick((){
+      _menu.showMenu(new GameInputMenuStatus("Soccer", createGameInput(), (GameOutput result){
+        _menu.showMenu(new GameOutputMenuStatus("Soccer results", result));
       }));
-    }));
+    });
+    append(_btnStart);
 
-    _vehicleSelection.onIndexChanged(-1, 0);
-    _trailerSelection.onIndexChanged(-1, 0);
-    _levelSelection.onIndexChanged(-1, 0);
-
-    return el;
-  }
-
-  UiElement _createLevelJsonInput(){
-    var el = new UiPanel();
-    in_levelJson = new UiInputTextLarge("");
-    in_levelJson.addStyle("leveljson");
-    AnchorElement el_editorLink = new AnchorElement();
-    el_editorLink.href = menu.settings.editor_location.v;
-    el_editorLink.className = "button";
-    el_editorLink.text = "Open level editor";
-    el_editorLink.target = "_blank";
-    el.append(in_levelJson);
-    el.appendElement(new BRElement());
-    el.appendElement(el_editorLink);
-    return el;
+    _vehicleSelection.setValueIndex(0);
+    _trailerSelection.setValueIndex(0);
+    _levelSelection.setValueIndex(0);
   }
 
   GameInput createGameInput(){
-    var levelLoader = new GameLevelLoader();
-    var level = (in_levelJson != null && in_levelJson.getValue().isNotEmpty) ? levelLoader.loadLevelJson(jsonDecode(in_levelJson.getValue())) : menu.levelManager.getLevel(_levelSelection.getSelectedValue());
-    return menu.gameBuilder.newSoccerGame(_in_teams.getValue(),_in_playersperteam.getValue(),VehicleType.values[_vehicleSelection.index], TrailerType.values[_trailerSelection.index],level, _in_scorelimit.getValue());
+    return _menu.gameBuilder.newSoccerGame(_in_teams.getValue(),_in_playersperteam.getValue(),VehicleType.values[_vehicleSelection.index], TrailerType.values[_trailerSelection.index],_levelSelection.getSelectedLevel(), _in_scorelimit.getValue());
   }
+
 }

@@ -1,73 +1,91 @@
 part of game.menu;
 
-typedef void OnColorChange(VehicleThemeColor newColor);
 
-class ProfileMenu extends GameMenuScreen{
+class ProfileMenu extends GameMenuMainScreen{
+  GameSettings _settings;
   TextureGenerator _textureGenerator;
-  GameMenuController menu;
-  ProfileMenu(this.menu){
-    _textureGenerator = new TextureGenerator(menu.resourceManager);
-  }
-
+  ColorSelection _colorSelectionMain;
+  ColorSelection _colorSelectionSub;
   ImageElement _el_vehiclePreview;
+  UiPanelForm _form;
+  UiInputText _inUsername;
 
-  UiContainer setupFields()
-  {
-    var el = super.setupFields();
+  VehicleThemeColor _colorCache1;
+  VehicleThemeColor _colorCache2;
 
+  ProfileMenu(ILifetime lifetime) : super(lifetime, GameMainMenuPage.Profile){
+    _settings = lifetime.resolve();
+    _textureGenerator = lifetime.resolve();
+    _colorSelectionMain = lifetime.resolve();
+    _colorSelectionSub = lifetime.resolve();
+    _form = lifetime.resolve();
+    _inUsername = lifetime.resolve();
     _el_vehiclePreview = new ImageElement();
 
-    el.appendElement(_el_vehiclePreview);
-    el.append(_createColorSelect(menu.settings.user_color1.v, (VehicleThemeColor newColor){ menu.settings.user_color1.v = newColor; _onColorChange();}));
-    el.append(_createColorSelect(menu.settings.user_color2.v, (VehicleThemeColor newColor){ menu.settings.user_color2.v = newColor; _onColorChange();}));
-    el.append(_createUsernameInput(menu.settings.user_name.v));
+    showClose = false;
+    showBack = true;
+    title = "Profile";
+  }
 
-    closebutton = false;
+  @override
+  void build(){
+    super.build();
+    _colorSelectionMain.onValueChange = (VehicleThemeColor newColor){
+      _settings.user_color1.v = newColor;
+      _onColorChange();
+      _settings.saveToCookie();
+    };
+    _colorSelectionSub.onValueChange = (VehicleThemeColor newColor){
+      _settings.user_color2.v = newColor;
+      _onColorChange();
+      _settings.saveToCookie();
+    };
 
+    _inUsername..changeLabel("Username")..onValueChange = (String newValue){
+      _settings.user_name.v = newValue;
+      _settings.saveToCookie();
+    };
+
+    _form.appendElement(_el_vehiclePreview);
+    _form.append(_colorSelectionMain);
+    _form.append(_colorSelectionSub);
+    _form.append(_inUsername);
+    append(_form);
+  }
+
+  @override
+  void enterMenu(GameMenuStatus status){
+    _colorSelectionMain.setValue(_settings.user_color1.v);
+    _colorSelectionSub.setValue(_settings.user_color2.v);
+    _inUsername.setValue(_settings.user_name.v);
     _onColorChange();
-
-    //add(createOpenMenuButton("Options",TeamxMenuController.MENU_OPTION));
-    return el;
+    super.enterMenu(status);
   }
 
   void _onColorChange(){
-    _el_vehiclePreview.src = _createPreviewFromModel(new GlModel_Vehicle(), colorMappingGl[menu.settings.user_color1.v], colorMappingGl[menu.settings.user_color2.v]);
 
-    if(menu.settings.client_changeCSSWithThemeChange.v)
+    if(_colorCache1 == _settings.user_color1.v && _colorCache2 == _settings.user_color2.v) return;
+    _colorCache1 = _settings.user_color1.v;
+    _colorCache2 = _settings.user_color2.v;
+    _el_vehiclePreview.src = _createPreviewFromModel(new GlModel_Vehicle(), colorMappingGl[_settings.user_color1.v], colorMappingGl[_settings.user_color2.v]);
+
+    if(_settings.client_changeCSSWithThemeChange.v)
     {
       LinkElement theme1 = document.querySelector("#css_theme1");
-      theme1.href = "theme1/${colorMappingText[menu.settings.user_color1.v].toLowerCase()}.css";
+      theme1.href = "theme1/${colorMappingText[_settings.user_color1.v].toLowerCase()}.css";
       LinkElement theme2 = document.querySelector("#css_theme2");
-      theme2.href = "theme2/${colorMappingText[menu.settings.user_color2.v].toLowerCase()}.css";
+      theme2.href = "theme2/${colorMappingText[_settings.user_color2.v].toLowerCase()}.css";
     }
-  }
-
-  UiElement _createColorSelect(VehicleThemeColor current, OnColorChange onColorChange){
-    var cs = new ColorSelection(onColorChange);
-    return cs.setupFields(current);
-  }
-
-  UiElement _createUsernameInput(String value){
-    var el_in = new UiInputText("Username");
-    el_in.setValue(value);
-    el_in.onValueChange = (String newValue){
-      menu.settings.user_name.v = newValue;
-      menu.settings.saveToCookie();
-    };
-    var el = UiPanelForm();
-    el.append(el_in);
-    return el;
   }
 
   String _createPreviewFromModel(dynamic model, GlColor c1, GlColor c2){
     GlPreview preview = new GlPreview(200.0,150.0,(GlModelCollection modelCollection){
       model.loadModel(modelCollection);
-      var instance = model
-          .getModelInstance(modelCollection, c1, c2, new GlColor(0.7, 0.7, 0.9),"car");
+      var instance = model.getModelInstance(modelCollection, c1, c2, new GlColor(0.7, 0.7, 0.9),"car");
 
       return [instance];
 
-    },menu.settings.client_renderType.v == GameRenderType.Textures);
+    },_settings.client_renderType.v == GameRenderType.Textures);
     preview.ox = 0.0;
     preview.oy = 26.0;
     preview.oz = 200.0;
@@ -87,38 +105,3 @@ class ProfileMenu extends GameMenuScreen{
 }
 
 
-class ColorSelection{
-  VehicleThemeColor selectedColor = null;
-  Map<VehicleThemeColor, UiElement> _colorToElement;
-  OnColorChange onColorChange;
-
-  ColorSelection(this.onColorChange);
-
-  UiElement setupFields(VehicleThemeColor initialColor){
-    var el = new UiPanel();
-    el.addStyle("colorSelection");
-    _colorToElement = {};
-    for(VehicleThemeColor color in VehicleThemeColor.values){
-      var el_color = _createColorButton(color);
-      _colorToElement[color] = el_color;
-      el.append(el_color);
-    }
-    setCurrentColor(initialColor);
-    return el;
-  }
-
-  void setCurrentColor(VehicleThemeColor color){
-    if(selectedColor != null) _colorToElement[selectedColor].removeStyle("selected");
-    selectedColor = color;
-    _colorToElement[selectedColor].addStyle("selected");
-    if(selectedColor != null) onColorChange(color);
-  }
-
-  UiElement _createColorButton(VehicleThemeColor color){
-    var el = new UiPanel();
-    el.addStyle("colorSelectionItem");
-    el.element.style.backgroundColor = colorMappingCss[color];
-    el.element.onClick.listen((Event e){setCurrentColor(color);});
-    return el;
-  }
-}

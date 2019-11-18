@@ -6,8 +6,10 @@ class GameBuilder{
   AiPlayerProfileDatabase _aiplayers;
   Math.Random _random = new Math.Random();
 
-  GameBuilder(this._settings, this._levelManager, this._aiplayers){
-
+  GameBuilder(ILifetime lifetime){
+    _settings = lifetime.resolve();
+    _levelManager = lifetime.resolve();
+    _aiplayers = lifetime.resolve();
   }
 
   GameInput newRandomGame(){

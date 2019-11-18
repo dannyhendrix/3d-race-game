@@ -1,16 +1,18 @@
 part of game.menu;
 
-class CreditsMenu extends GameMenuScreen
+class CreditsMenu extends GameMenuMainScreen
 {
-  GameMenuController menu;
-  CreditsMenu(this.menu);
+  UiTextHtml _textHtml;
+  CreditsMenu(ILifetime lifetime) : super(lifetime, GameMainMenuPage.Credits){
+    _textHtml = lifetime.resolve();
+  }
 
-  UiContainer setupFields()
+  @override
+  void build()
   {
-    var el = super.setupFields();
+    super.build();
 
-    var e = new UiTextHtml("");
-    e.addStyle("credits_wrapper");
+    _textHtml.addStyle("credits_wrapper");
 
     Map jobtitles = {"Game design":["Lead design","Script writer","Object planner","GUI design"],
                      "Art and Animation": ["Creative manager","Art director","PreVis Artist","Lead artist","Animator","Concept artist","Environment artist"],
@@ -28,12 +30,9 @@ class CreditsMenu extends GameMenuScreen
         htmlb.write('<div class="credit"><span class="title">${jobtitles[key][i]}:</span><span class="value">Danny Hendrix</span></div>');
     }
 
-    e.changeText(htmlb.toString());
+    htmlb.write('This game was developed in <a href="http://www.dartlang.org">Dart</a> :D.');
+    _textHtml.changeText(htmlb.toString());
 
-    el.append(e);
-
-    e = new UiTextHtml('This game was developed in <a href="http://www.dartlang.org">Dart</a> :D.');
-    el.append(e);
-    return el;
+    append(_textHtml);
   }
 }

@@ -29,8 +29,8 @@ class WebglGame2d extends WebglGame{
   GameLoop _gameloop;
   int screenw = 1000;
   int screenh = 800;
-  WebglGame2d(GameSettings settings){
-    game = new Game(settings);
+  WebglGame2d(ILifetime lifetime){
+    game = lifetime.resolve();
     _gameloop = new GameLoop(_loop);
   }
 

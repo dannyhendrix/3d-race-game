@@ -2,15 +2,31 @@ part of game.menu;
 
 typedef void OnEnterKey(int keyId);
 
-class EnterKey
+class EnterKey extends UiPanel
 {
-  bool _allowMouse;
-  EnterKey([this._allowMouse = true]);
+  UiText _txtInfo;
 
-  void requestKey(OnEnterKey callback)
+  EnterKey(ILifetime lifetime) : super(lifetime){
+    _txtInfo = lifetime.resolve();
+  }
+
+  @override build(){
+    super.build();
+    setStyleId("enterkey");
+    append(_txtInfo);
+    hide();
+  }
+
+  void _updateText(bool allowMouse){
+    var txt = "Press prefered key";
+    if(allowMouse) txt += " or mouse button";
+    _txtInfo.changeText(txt);
+  }
+
+  void requestKey(OnEnterKey callback, bool allowMouse)
   {
-    print("request key");
-    showEnterKeyWindow(true);
+    _updateText(allowMouse);
+    show();
 
     List<StreamSubscription> streams;
     var cancelStreams = (){streams.forEach((StreamSubscription s){ s.cancel(); });};
@@ -21,15 +37,14 @@ class EnterKey
     StreamSubscription<TouchEvent> onBodyTouch;
 
     var onKey = (Event e, int key){
-      print("press $key");
       e.preventDefault();
       e.stopPropagation();
       cancelStreams();
-      showEnterKeyWindow(false);
+      hide();
       if(key != null)
         callback(key);
     };
-    var onClick = (MouseEvent e){ onKey(e, _allowMouse ? convertMouseClickToKeyIndex(e) : null); };
+    var onClick = (MouseEvent e){ onKey(e, allowMouse ? _convertMouseClickToKeyIndex(e) : null); };
     var onKeyDown = (KeyboardEvent e){ onKey(e, e.keyCode); };
     var onTouchStart = (TouchEvent e){ onKey(e, null); };
 
@@ -41,31 +56,8 @@ class EnterKey
     streams = [onBodyClick,onBodyContext,onBodyKeyPress,onBodyTouch];
   }
 
-  int convertMouseClickToKeyIndex(MouseEvent e)
+  int _convertMouseClickToKeyIndex(MouseEvent e)
   {
     return -(e.button+1);
-  }
-
-  /**
-   * Press key screen
-   */
-  UiElement _el_EnterKey;
-
-  UiElement createEnterKeyScreen()
-  {
-    var el = new UiPanel();
-    el.element.id = "enterkey";
-    var txt = "Press prefered key";
-    if(_allowMouse) txt += " or mouse button";
-    _el_EnterKey = el;
-    el.append(UiText(txt));
-    showEnterKeyWindow(false);
-    return el;
-  }
-
-  void showEnterKeyWindow(bool show)
-  {
-    print(show);
-    _el_EnterKey.display(show);
   }
 }

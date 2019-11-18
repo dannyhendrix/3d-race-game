@@ -16,18 +16,22 @@ class UiComposition implements IDependencyModule{
     builder.registerType((lifetime) => FieldSetElement(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => LegendElement(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => FormElement(), lifeTimeScope: LifeTimeScope.PerUser);
+    builder.registerType((lifetime) => ImageElement(), lifeTimeScope: LifeTimeScope.PerUser);
 
     builder.registerType((lifetime) => UiIcon(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiButtonIcon(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiPanelTitled(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
+    builder.registerType((lifetime) => UiPanelInline(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiPanel(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiPanelForm(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiTabView(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
+    builder.registerType((lifetime) => UiSwitchPanel(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiTable(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiButtonToggleIcon(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiButtonText(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiButtonIconText(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiText(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
+    builder.registerType((lifetime) => UiTextHtml(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiTitle(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiInputLabel(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiInputDouble(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
