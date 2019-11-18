@@ -6,6 +6,8 @@ import "package:renderlayer/renderlayer.dart";
 import "package:micromachines/leveleditor.dart";
 import "package:dashboard/uihelper.dart";
 
+//TODO: WIP needs to update to new UI framework
+/*
 void applyView(GlPreview preview, double rx, double ry, double rz){
   preview.rx = rx;
   preview.ry = ry;
@@ -439,3 +441,4 @@ class RenderTexture{
     layer.ctx.closePath();
   }
 }
+*/
