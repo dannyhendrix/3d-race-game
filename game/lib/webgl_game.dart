@@ -9,7 +9,6 @@ import "package:gameutils/math.dart";
 import "package:dashboard/uihelper.dart";
 import "package:webgl/webgl.dart";
 import "package:dependencyinjection/dependencyinjection.dart";
-
 import 'game.dart';
 import 'input.dart';
 import 'definitions.dart';

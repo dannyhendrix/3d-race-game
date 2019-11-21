@@ -43,8 +43,9 @@ class WebglGame3d extends WebglGame{
     _lifetime = lifetime;
     game = lifetime.resolve();
     _resourceManager = lifetime.resolve();
-    _gameloop = new GameLoop(_loop);
+    _gameloop = new GameLoop();
     textureGenerator = new TextureGenerator(_resourceManager);
+    _gameloop.setOnUpdate(_loop);
   }
   /*
   Element createControls(){
@@ -145,18 +146,18 @@ class WebglGame3d extends WebglGame{
   }
 
   @override
-  void pause([bool forceStart = null]){
-    _gameloop.pause(forceStart);
+  void pause(){
+    _gameloop.trigger(LoopTrigger.Toggle);
   }
   @override
   void stop(){
-    _gameloop.stop();
+    _gameloop.trigger(LoopTrigger.Stop);
   }
 
   @override
   void start(){
     game.startSession();
-    _gameloop.play();
+    _gameloop.trigger(LoopTrigger.Start);
   }
 
   void _loop(int now){
@@ -170,7 +171,7 @@ class WebglGame3d extends WebglGame{
       el_countdown.text = "${game.countdown.count}";
     }
     if(game.state == GameState.Finished){
-      _gameloop.stop();
+      _gameloop.trigger(LoopTrigger.Stop);
       el_countdown.style.display = "block";
       el_countdown.text = "Finished";
       if(onGameFinished != null) onGameFinished(game.createGameResult());

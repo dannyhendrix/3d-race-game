@@ -4,8 +4,16 @@ typedef void OnPlay();
 typedef void OnStop();
 typedef void OnUpdate(int now);
 
-class GameLoop
-{
+enum LoopTrigger {Stop, Start, Toggle}
+
+abstract class IGameLoop{
+	void setOnUpdate(OnUpdate action);
+	void setOnPlay(OnPlay action);
+	void setOnStop(OnStop action);
+	void trigger([LoopTrigger loopTrigger]);
+}
+
+class GameLoop implements IGameLoop{
   //framerate
   int frames = 0;
   int lastTime;
@@ -20,73 +28,66 @@ class GameLoop
   OnPlay onPlay;
   OnStop onStop;
 
-  GameLoop(this.update,[this.onPlay, this.onStop]);
-
-  void play()
-  {
-	stopping = false;
-	if(playing)
-		return;
-	
-	playing = true;
-	if(jstimer == -1)
-		jstimer = window.requestAnimationFrame(loop);
-	if(onPlay != null)
-		onPlay();
-  }
-  
-  void stop()
-  {
-	stopping = true;
+  void setOnUpdate(OnUpdate action) => update = action;
+  void setOnPlay(OnPlay action) => onPlay = action;
+  void setOnStop(OnStop action) => onStop = action;
+  void trigger([LoopTrigger loopTrigger = LoopTrigger.Toggle]){
+    switch(loopTrigger){
+      case LoopTrigger.Start:
+      _play();
+      break;
+      case LoopTrigger.Stop:
+      _stop();
+      break;
+      case LoopTrigger.Toggle:
+      if(playing) _stop(); 
+      else _play();
+      break;
+    }
   }
 
-  void pause([bool forceplay = null])
-  {
-	if(forceplay == null)
-		forceplay = !playing;
-    if(!stopping && !forceplay)
-    {
-      stop();
+  void _play(){
+    stopping = false;
+    if(playing)
+    return;
+
+    playing = true;
+    if(jstimer == -1)
+    jstimer = window.requestAnimationFrame(_loop);
+    if(onPlay != null)
+    onPlay();
+  }
+
+  void _stop(){
+    stopping = true;
+  }
+
+  void _loop(num looptime){
+    if(stopping == true){
+      jstimer = -1;
+      playing = false;
+      if(onStop != null)
+      onStop();
       return;
     }
-	//already stopping
-    if(!forceplay)
-      return;
-    
-    play();
-  }
-
-  void loop(num looptime)
-  {
-    if(stopping == true)
-    {
-		jstimer = -1;
-		playing = false;
-		if(onStop != null)
-		  onStop();
-		return;
-    }
-    if(lastTime == null)
-      lastTime = looptime.toInt();
+    if(lastTime == null) lastTime = looptime.toInt();
 
     //framerate
     int now = looptime.toInt();//(new Date.now()).value;
-	
-	if(update != null)
-      update(now);
-	  
-	int delta = now-lastTime;
+
+    if(update != null) update(now);
+
+    int delta = now-lastTime;
     lastTime = now;
     time += delta;
     frames++;
-    if(time > 1000)
-    {
+    if(time > 1000){
       fps = 1000*frames~/time;
       time = 0;
       frames = 0;
     }
 
-    window.requestAnimationFrame(loop);
+    window.requestAnimationFrame(_loop);
     return;
   }
 }

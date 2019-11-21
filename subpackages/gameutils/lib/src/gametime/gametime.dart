@@ -7,7 +7,7 @@ class GameTime
   int min = 0;
   int hour = 0;
   
-  int fps;
+  int fps = 60;
   
   GameTime(this.fps);
   

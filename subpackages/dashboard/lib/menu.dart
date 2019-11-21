@@ -1,6 +1,5 @@
 library menu;
 
-import "dart:html";
 import "uihelper.dart";
 import "package:dependencyinjection/dependencyinjection.dart";
 
