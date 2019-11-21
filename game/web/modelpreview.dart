@@ -2,7 +2,6 @@ import "dart:html";
 import "dart:math" as Math;
 import "package:webgl/webgl.dart";
 import "package:micromachines/webgl_game.dart";
-import "package:renderlayer/renderlayer.dart";
 
 void applyView(GlPreview preview, double rx, double ry, double rz){
   preview.rx = rx;
@@ -15,13 +14,6 @@ void main(){
   var model = new GlModel_Truck();
   //var model = new GlModel_Wall();
   model.loadModel(collection);
-
-  var renderTexture = RenderTexture();
-  document.body.append(renderTexture.layer.canvas);
-  for(var modelpart in collection.getAllModels()){
-    renderTexture.drawModel(modelpart as GlAreaModel);
-  }
-
 
   GlPreview preview;
   preview = new GlPreview(800.0,500.0,(GlModelCollection modelCollection){
@@ -45,16 +37,14 @@ void main(){
   preview.ly = 0.7;
   preview.lz = 0.1;
   preview.create();
-  preview.layer.setTexture("truck", renderTexture.layer.canvas);
 
-/*
   var image = new ImageElement();
   image.src = "textures/texture_caravan.png";
   preview.layer.setTexture("caravan", image);
   image.onLoad.listen((event){
     preview.layer.setTexture("caravan", image);
   });
-*/
+
   preview.draw();
 
   document.body.append(preview.layer.canvas);
@@ -158,45 +148,4 @@ Element createButton(String text, Function onClick){
     onClick();
   });
   return element;
-}
-
-class RenderTexture{
-  static const int textureSize = 256;
-  List<String> _colors = ["#F00","#0F0","#00F","#FF0","#F0F","#0FF"];
-  int _colorIndex = 0;
-  RenderLayer layer;
-
-  RenderTexture(){
-    layer = new RenderLayer.withSize(textureSize,textureSize);
-    layer.ctx.fillStyle = "#000";
-    layer.ctx.fillRect(0, 0, textureSize, textureSize);
-  }
-  void drawModel(GlAreaModel model){
-    for(var area in model.areas){
-      if(area is GlTriangle)
-      {
-        _drawTriangle(area);
-      }
-      if(area is GlArea){
-        for(var triangle in area.triangles){
-          _drawTriangle(triangle);
-        }
-      }
-    }
-  }
-
-  void _drawTriangle(GlTriangle triangle){
-    var color = _colors[_colorIndex];
-    _colorIndex++;
-    if(_colorIndex >= _colors.length) _colorIndex = 0;
-    layer.ctx.fillStyle = color;
-    var p = triangle.toTextureVertex(1.0); // returns a triangle with texture points [x1,y1,x2,y2,x3,y3]
-    layer.ctx.moveTo(p[0], p[1]);
-    layer.ctx.beginPath();
-    layer.ctx.lineTo(p[2], p[3]);
-    layer.ctx.lineTo(p[4], p[5]);
-    layer.ctx.lineTo(p[0], p[1]);
-    layer.ctx.fill();
-    layer.ctx.closePath();
-  }
 }

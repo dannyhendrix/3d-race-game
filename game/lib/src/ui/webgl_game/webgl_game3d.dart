@@ -44,7 +44,7 @@ class WebglGame3d extends WebglGame{
     game = lifetime.resolve();
     _resourceManager = lifetime.resolve();
     _gameloop = new GameLoop();
-    textureGenerator = new TextureGenerator(_resourceManager);
+    textureGenerator = lifetime.resolve();
     _gameloop.setOnUpdate(_loop);
   }
   /*

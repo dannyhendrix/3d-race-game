@@ -116,9 +116,5 @@ class MainMenu extends GameMenuScreen
       _subpageview.showTab(status.sidepage.index);
     }
   }
-
-  void _registerTabs(){
-    //_subpageview.setTab("", GameMainMenuPage.Profile.index, content)
-  }
 }
 

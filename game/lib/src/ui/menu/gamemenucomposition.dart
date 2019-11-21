@@ -24,9 +24,10 @@ class GameMenuComposition implements IDependencyModule{
     builder.registerType((lifetime) => new GameInputSelectionLevel(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => new CustomLevelInput(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => new EnterKey(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
+    builder.registerType((lifetime) => new LevelPreview(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
 
     //TODO: move to correct composition
-    builder.registerType((lifetime) => new TextureGenerator(lifetime.resolve()), lifeTimeScope: LifeTimeScope.SingleInstance);
+    builder.registerType((lifetime) => new TextureGenerator(lifetime), lifeTimeScope: LifeTimeScope.SingleInstance);
     builder.registerType((lifetime) => new GameLevelLoader(), lifeTimeScope: LifeTimeScope.SingleInstance);
     builder.registerType((lifetime) => new WebglGame2d(lifetime), lifeTimeScope: LifeTimeScope.PerLifeTime);
     builder.registerType((lifetime) => new WebglGame3d(lifetime), lifeTimeScope: LifeTimeScope.PerLifeTime);

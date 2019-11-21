@@ -25,19 +25,20 @@ abstract class WebglGame {
 
 class WebglGame2d extends WebglGame {
   Game game;
-  RenderLayer layer;
+  UiRenderLayer layer;
   GameLoop _gameloop;
   int screenw = 1000;
   int screenh = 800;
   WebglGame2d(ILifetime lifetime) {
     game = lifetime.resolve();
+    layer = lifetime.resolve();
     _gameloop = new GameLoop();
     _gameloop.setOnUpdate(_loop);
   }
 
   Element initAndCreateDom(GameInput input, GameSettings settings) {
     game.initSession(input);
-    layer = new RenderLayer.withSize(screenw, screenh);
+    layer.setSize(screenw, screenh);
     //document.body.append(layer.canvas);
     InputController inputController = new InputController(settings);
     _registerControls(inputController);
@@ -111,7 +112,7 @@ class WebglGame2d extends WebglGame {
       } else if (o is CheckpointGameItem) {
         var current = (game.humanPlayer.pathProgress as PathProgressCheckpoint)
             .currentIndex;
-        var index = (o as CheckpointGameItem).index;
+        var index = o.index;
         _drawPolygon(o.polygon, layer,
             index == current ? "yellow" : (index == 0 ? "#fff" : "#999"));
       } else {
@@ -147,7 +148,7 @@ class WebglGame2d extends WebglGame {
     }
   }
 
-  void _drawPolygon(Polygon polygon, RenderLayer layer, String color,
+  void _drawPolygon(Polygon polygon, UiRenderLayer layer, String color,
       [bool stroke = false]) {
     var midx = screenw / 2;
     var midy = screenh / 2;
@@ -169,7 +170,7 @@ class WebglGame2d extends WebglGame {
     }
   }
 
-  void _drawRoadPolygon(Polygon polygon, RenderLayer layer) {
+  void _drawRoadPolygon(Polygon polygon, UiRenderLayer layer) {
     var midx = screenw / 2;
     var midy = screenh / 2;
     var scale = 0.5;

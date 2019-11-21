@@ -7,6 +7,7 @@ part "src/uihelper/uicomposition.dart";
 part "src/uihelper/uiicon.dart";
 
 part "src/uihelper/uielement.dart";
+part "src/uihelper/uirenderlayer.dart";
 part "src/uihelper/uitext.dart";
 part "src/uihelper/uititle.dart";
 part "src/uihelper/uitexthtml.dart";

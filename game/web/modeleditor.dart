@@ -1,7 +1,6 @@
 import "dart:html";
 import "dart:math" as Math;
 import "package:webgl/webgl.dart";
-import "package:renderlayer/renderlayer.dart";
 import "package:dashboard/uihelper.dart";
 import "package:dependencyinjection/dependencyinjection.dart";
 
@@ -15,7 +14,7 @@ void applyView(GlPreview preview, double rx, double ry, double rz) {
 void main() {
   var lifetime = DependencyBuilderFactory().createNew((builder) {
     builder.registerModule(UiComposition());
-    builder.registerType((lifetime) => new RenderTexture(), lifeTimeScope: LifeTimeScope.PerUser);
+    builder.registerType((lifetime) => new RenderTexture(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => new PointEditor(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => new PreviewMenu(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => new TextureMenu(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
@@ -123,11 +122,11 @@ class TextureMenu extends UiPanelTitled {
   void build() {
     super.build();
     changeTitle("Texture");
-    appendElement(_renderTexture.layer.canvas);
+    append(_renderTexture);
   }
 
   void repaint(List<GlModel> models, int currentModel, int currentTriangle) {
-    _renderTexture.layer.clear();
+    _renderTexture.clear();
     _renderTexture.drawModels(models, currentModel, currentTriangle);
   }
 }
@@ -470,15 +469,19 @@ GlModelInstanceCollection createXYZMark(GlRenderLayer layer) {
   return new GlModelInstanceCollection([new GlModelInstance(xaxis, new GlColor(1.0, 0.0, 0.0)), new GlModelInstance(yaxis, new GlColor(0.0, 0.0, 1.0)), new GlModelInstance(zaxis, new GlColor(0.0, 1.0, 0.0))]);
 }
 
-class RenderTexture {
+class RenderTexture extends UiRenderLayer{
   static const int textureSize = 256;
-  RenderLayer layer;
-
-  RenderTexture() {
-    layer = new RenderLayer.withSize(textureSize, textureSize);
-    layer.ctx.fillStyle = "#000";
-    layer.ctx.fillRect(0, 0, textureSize, textureSize);
+  RenderTexture(ILifetime lifetime) : super(lifetime){
   }
+  
+  @override
+  void build(){
+    super.build();
+    setSize(textureSize, textureSize);
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, textureSize, textureSize);
+  }
+
   void drawModels(List<GlAreaModel> models, int selectedModel, int selectedTriangle) {
     int im = 0;
     for (var m in models) {
@@ -497,14 +500,14 @@ class RenderTexture {
 
   void _drawTriangle(GlTriangle triangle, bool selected) {
     var color = selected ? "#F00" : "#00F";
-    layer.ctx.fillStyle = color;
+    ctx.fillStyle = color;
     var p = triangle.toTextureVertex(1.0); // returns a triangle with texture points [x1,y1,x2,y2,x3,y3]
-    layer.ctx.moveTo(p[0], p[1]);
-    layer.ctx.beginPath();
-    layer.ctx.lineTo(p[2], p[3]);
-    layer.ctx.lineTo(p[4], p[5]);
-    layer.ctx.lineTo(p[0], p[1]);
-    layer.ctx.fill();
-    layer.ctx.closePath();
+    ctx.moveTo(p[0], p[1]);
+    ctx.beginPath();
+    ctx.lineTo(p[2], p[3]);
+    ctx.lineTo(p[4], p[5]);
+    ctx.lineTo(p[0], p[1]);
+    ctx.fill();
+    ctx.closePath();
   }
 }

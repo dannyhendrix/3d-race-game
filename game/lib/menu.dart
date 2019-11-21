@@ -10,7 +10,6 @@ import "package:dashboard/menu.dart";
 import "package:gameutils/settings.dart";
 import "package:gameutils/math.dart";
 import "package:webgl/webgl.dart";
-import "package:renderlayer/renderlayer.dart";
 import "package:dashboard/uihelper.dart";
 import "package:dependencyinjection/dependencyinjection.dart";
 

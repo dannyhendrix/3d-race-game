@@ -2,10 +2,13 @@ part of webgl_game;
 
 class TextureGenerator{
   ResourceManager _resourceManager;
-  TextureGenerator(this._resourceManager);
+  ILifetime _lifetime;
+  TextureGenerator(this._lifetime){
+    _resourceManager = _lifetime.resolve();
+  }
 
-  RenderLayer CreateTexture(GlColor color1, GlColor color2, [String texture = "texture_vehicle"]){
-    var layer = new RenderLayer.withSize(256,256);
+  UiRenderLayer CreateTexture(GlColor color1, GlColor color2, [String texture = "texture_vehicle"]){
+    UiRenderLayer layer = _lifetime.resolve()..setSize(256,256);
     layer.drawImage(_resourceManager.getTexture(texture), 0, 0);
     var newColors = _constructReplaceColors(_getColorInts(color1),_getColorInts(color2));
     var oldColors = _constructReplaceColors([90,240,0,255],[240,0,180,255]);
@@ -18,7 +21,7 @@ class TextureGenerator{
     newColor2Ints, _getColorIntsDark(newColor2Ints, 20),_getColorIntsDark(newColor2Ints, 40)];
   }
 
-  void _replaceColors(RenderLayer layer,List<List<int>> oldColors, List<List<int>> newColors) {
+  void _replaceColors(UiRenderLayer layer,List<List<int>> oldColors, List<List<int>> newColors) {
     var imgdata = layer.ctx.getImageData(0, 0, layer.actualwidth, layer.actualheight);
     List<int> newColor;
     List<int> color;

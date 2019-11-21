@@ -8,12 +8,14 @@ class GameInputSelectionLevel extends UiInputOptionCycle<String>{
   GameLevelLoader _levelLoader;
   GameSettings _settings;
   CustomLevelInput _customLevelInput;
+  LevelPreview _preview;
 
   GameInputSelectionLevel(ILifetime lifetime) : super(lifetime){
     _levelManager = lifetime.resolve();
     _customLevelInput = lifetime.resolve();
     _settings = lifetime.resolve();
     _levelLoader = lifetime.resolve();
+    _preview = lifetime.resolve();
     img_preview = new ImageElement();
   }
 
@@ -52,10 +54,10 @@ class GameInputSelectionLevel extends UiInputOptionCycle<String>{
     }
   }
   String _createPreviewFromModel(GameLevel level){
-    LevelPreview preview = new LevelPreview(150.0,100.0);
-    preview.create();
-    preview.draw(level, "#666");
-    return preview.layer.canvas.toDataUrl("image/png");
+    _preview.setSize(150,100);
+    _preview.clear();
+    _preview.draw(level, "#666");
+    return _preview.canvas.toDataUrl("image/png");
   }
 
   getValue() => _indexToLevelKey[index];

@@ -24,11 +24,13 @@ class UiInputOptionCycle<T> extends UiInput<T>{
   void build(){
     super.build();
     _btn_prev..changeIcon("navigate_before")..addStyle("navigate")..setOnClick((){
+      index--;
       if(index < 0)
         index = optionsLength-1;
       setValueIndex(index);
     });
     _btn_next..changeIcon("navigate_next")..addStyle("navigate")..setOnClick((){
+      index++;
       if(index >= optionsLength)
         index = 0;
       setValueIndex(index);
