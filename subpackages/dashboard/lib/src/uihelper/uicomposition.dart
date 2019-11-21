@@ -22,6 +22,7 @@ class UiComposition implements IDependencyModule{
     builder.registerType((lifetime) => UiButtonIcon(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiPanelTitled(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiPanelInline(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
+    builder.registerType((lifetime) => UiColumn(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiPanel(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiPanelForm(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiTabView(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
