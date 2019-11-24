@@ -1,17 +1,11 @@
 part of game.leveleditor;
 
-class Preview{
+class Preview extends UiRenderLayer{
   double mouseX = 0.0;
   double mouseY = 0.0;
   double scale = 0.5;
-  CanvasElement canvas;
-  CanvasRenderingContext2D ctx;
 
-  Element createElement(){
-    canvas = new CanvasElement();
-    ctx = canvas.context2D;
-    return canvas;
-  }
+  Preview(ILifetime lifetime) : super(lifetime);
 
   void _setWidthHeight(List<Polygon> polygons){
     double maxX = 0.0;

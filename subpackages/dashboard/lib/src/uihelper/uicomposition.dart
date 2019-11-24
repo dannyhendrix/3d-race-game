@@ -1,6 +1,6 @@
 part of uihelper;
 
-class UiComposition implements IDependencyModule{
+class UiComposition implements IDependencyModule {
   @override
   void load(IDependencyBuilder builder) {
     builder.registerType((lifetime) => ElementFactory(), lifeTimeScope: LifeTimeScope.SingleInstance);
@@ -30,6 +30,7 @@ class UiComposition implements IDependencyModule{
     builder.registerType((lifetime) => UiSwitchPanel(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiTable(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiButtonToggleIcon(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
+    builder.registerType((lifetime) => UiButtonToggleIconText(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiButtonText(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiButtonIconText(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => UiText(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);

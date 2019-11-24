@@ -20,7 +20,7 @@ class UiTable extends UiElement{
     for(var item in items){
       var td = _elementFactory.createTag(el);
       tr.append(td);
-      td.append(item.element);
+      if(item != null) td.append(item.element);
     }
     _elTable.append(tr);
   }

@@ -40,12 +40,13 @@ height: 10em;
     background: green;
 }
 
-.rightpanel{
-position:absolute;
-width:300px;
-height:100%;
-top:0px;
-right:0px;
+.menuWrapper{
+    position:absolute;
+    width:300px;
+    height:100%;
+    top:0px;
+    right:0px;
+    overflow:auto;
 }
 .marker {
     background: yellow;
@@ -55,24 +56,31 @@ right:0px;
     position:absolute;
 }
 
-.selected { background: #ff000042; }
-
 .button {
     display: inline-block;
     padding: 8px;
-    background: #eee;
+    background: #f7f7f7;
     cursor: pointer;
     margin: 2px;
-    font-weight: bold;
     user-select: none;
+    border: 1px solid #e2e2e2;
+    border-radius: 2px;
+    outline:none;
+}
+.button span{
+    display: inline-block; 
+    height: 18px; 
+    vertical-align: bottom; 
+    padding: 4px;
 }
 
 input {
-    border: 1px solid #ccc;
+    border: 1px solid #e2e2e2;
     margin: 5px;
     padding: 5px;
     outline: none;
     width: 100px;
+    border-radius: 2px;
 }
 
 span.label {
@@ -82,10 +90,7 @@ span.label {
 
 legend {
     font-weight: bold;
-    padding: 5px;
-    background: #fff;
     border-bottom: none;
-    min-width: 150px;
 }
 
 fieldset {
@@ -115,14 +120,16 @@ textarea:focus {
     border-color: #FF5722;
 }
 .buttonIcon{
-    padding: 0px;
+    padding: 3px 5px 0px 5px;
 }
 
 legend .button {
-    padding: 0px;
-    background: none;
+    background: #fff;
     margin: 0px 5px;
+    border: 0px;
 }
+
+.selected { background: #ff000042; }
     </style>
 </head>
 <body>
