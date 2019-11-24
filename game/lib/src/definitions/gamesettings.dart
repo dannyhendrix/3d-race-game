@@ -1,21 +1,20 @@
 part of game.definitions;
 
-enum ControlKeyType {Default, Alternative, UserDefined}
-enum GameDashboardTheme {Default, Red, Green, Blue}
-enum GameDisplayType {Webgl3d, Webgl2d}
-enum GameRenderType {Colors, Textures}
-enum GameCameraType {BirdView, VehicleView}
+enum ControlKeyType { Default, Alternative, UserDefined }
+enum GameDashboardTheme { Default, Red, Green, Blue }
+enum GameDisplayType { Webgl3d, Webgl2d }
+enum GameRenderType { Colors, Textures }
+enum GameCameraType { BirdView, VehicleView }
 
-class GameSettings extends SettingsStoredInCookie
-{
-  static Map<int,Control> _defaultKeys = {
+class GameSettings extends SettingsStoredInCookie {
+  static Map<int, Control> _defaultKeys = {
     /*
     Base
     */
-    65 : Control.SteerLeft,//a
-    68 : Control.SteerRight,//d
-    87 : Control.Accelerate,//w
-    83 : Control.Brake,//s
+    65: Control.SteerLeft, //a
+    68: Control.SteerRight, //d
+    87: Control.Accelerate, //w
+    83: Control.Brake, //s
 
     /*
     Shared
@@ -28,19 +27,19 @@ class GameSettings extends SettingsStoredInCookie
     109 : GameControls.CONTROL_ZOOM_OUT,//-
     */
   };
-  static Map<int,Control> _defaultUserKeys = {
+  static Map<int, Control> _defaultUserKeys = {
     /*
     Base
     */
-    37 : Control.SteerLeft,//left
-    39 : Control.SteerRight,//right
-    38 : Control.Accelerate,//up
-    40 : Control.Brake,//down
+    37: Control.SteerLeft, //left
+    39: Control.SteerRight, //right
+    38: Control.Accelerate, //up
+    40: Control.Brake, //down
 
-    65 : Control.SteerLeft,//a
-    68 : Control.SteerRight,//d
-    87 : Control.Accelerate,//w
-    83 : Control.Brake,//s
+    65: Control.SteerLeft, //a
+    68: Control.SteerRight, //d
+    87: Control.Accelerate, //w
+    83: Control.Brake, //s
 
     /*
     Shared
@@ -53,14 +52,14 @@ class GameSettings extends SettingsStoredInCookie
     109 : GameControls.CONTROL_ZOOM_OUT,//-
     */
   };
-  static Map<int,Control> _alternativeKeys = {
+  static Map<int, Control> _alternativeKeys = {
     /*
     Base
     */
-    37 : Control.SteerLeft,//left
-    39 : Control.SteerRight,//right
-    38 : Control.Accelerate,//up
-    40 : Control.Brake,//down
+    37: Control.SteerLeft, //left
+    39: Control.SteerRight, //right
+    38: Control.Accelerate, //up
+    40: Control.Brake, //down
 
     /*
     Shared
@@ -80,10 +79,7 @@ class GameSettings extends SettingsStoredInCookie
   GameSettingWithEnum<GameDashboardTheme> client_theme = new GameSettingWithEnum("client_theme", GameDashboardTheme.Default, GameDashboardTheme.values, "Theme");
   GameSetting<bool> client_showUIControls = new GameSetting("client_showuicontrols", false, "Show control buttons");
 
-  GameSetting<String> editor_location = new GameSetting("editor_location", "leveleditor.html", "Location to leveleditor");
-  GameSetting<bool> levels_allowJsonInput = new GameSetting("levels_location", true, "Allow users to enter json level in level selection");
-  GameSetting<String> levels_location = new GameSetting("levels_location", null, "Location to levels");
-  GameSetting<String> levels_definition_location = new GameSetting("levels_definition_location", null, "Location to levels file");
+  GameSetting<bool> leveleditor_enabled = new GameSetting("levels_enable_editor", true, "Enable level editor");
 
   GameSetting<bool> client_showStoreInCookie = new GameSetting("client_showStoreInCookie", true, "Show cookie message");
   GameSetting<bool> client_changeCSSWithThemeChange = new GameSetting("client_changeccswiththemechange", true, "Match theme with user colors");
@@ -101,26 +97,19 @@ class GameSettings extends SettingsStoredInCookie
   GameSettingWithEnum<VehicleThemeColor> user_color2 = new GameSettingWithEnum("user_color2", VehicleThemeColor.Yellow, VehicleThemeColor.values, "Theme color 2");
   GameSetting<int> user_texture = new GameSetting("user_texture", 0, "Theme texture");
 
-
-  GameSettings([bool autoload = true])
-  {
-    if(autoload)
-      loadFromCookie();
+  GameSettings([bool autoload = true]) {
+    if (autoload) loadFromCookie();
   }
 
-  List<GameSetting> getStoredSettingsKeys()
-  {
-    return [user_name,user_wins,user_races,user_color1,user_color2,user_texture,client_theme, client_controlkeytype,client_displayType,client_renderType,client_cameraType, debug];
+  List<GameSetting> getStoredSettingsKeys() {
+    return [user_name, user_wins, user_races, user_color1, user_color2, user_texture, client_theme, client_controlkeytype, client_displayType, client_renderType, client_cameraType, debug];
   }
 
-  List<GameSetting> getMenuSettings()
-  {
-    if(debug.v == true)
-      return [user_name, user_color1, user_color2,user_texture, client_theme, client_changeCSSWithThemeChange,client_showUIControls, client_displayType,client_renderType,client_cameraType, storeInCookie, debug];
+  List<GameSetting> getMenuSettings() {
+    if (debug.v == true) return [user_name, user_color1, user_color2, user_texture, client_theme, client_changeCSSWithThemeChange, client_showUIControls, client_displayType, client_renderType, client_cameraType, leveleditor_enabled, storeInCookie, debug];
     return [storeInCookie];
   }
 
-  Map<int,Control> getDefaultKeys() => _defaultKeys;
-  Map<int,Control> getAlternativeKeys() => _alternativeKeys;
+  Map<int, Control> getDefaultKeys() => _defaultKeys;
+  Map<int, Control> getAlternativeKeys() => _alternativeKeys;
 }
-

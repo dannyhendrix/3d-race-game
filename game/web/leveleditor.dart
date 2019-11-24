@@ -1,6 +1,7 @@
 import "dart:html";
 import "package:dependencyinjection/dependencyinjection.dart";
 import "package:micromachines/leveleditor.dart";
+import "package:micromachines/definitions.dart";
 import "package:dashboard/uihelper.dart";
 
 /*
@@ -10,11 +11,19 @@ void main(){
   //editor.loadFromJson(LevelManager.leveljson);
 }
 */
+GameSettings buildSettings() {
+  var settings = new GameSettings();
+  settings.debug.v = window.location.href.endsWith("ihaveseenthesourcecode");
+  return settings;
+}
+
 void main() {
   print("hoi");
   var lifetime = DependencyBuilderFactory().createNew((builder) {
+    var settings = buildSettings();
+    builder.registerInstance(settings);
     builder.registerModule(UiComposition());
-    builder.registerModule(LevelEditorComposition());
+    builder.registerModule(LevelEditorComposition(settings));
   });
 
   LevelEditor editor = lifetime.resolve();

@@ -20,19 +20,19 @@ bool isMobile() {
 GameSettings buildSettings() {
   var settings = new GameSettings();
   settings.debug.v = window.location.href.endsWith("ihaveseenthesourcecode");
-  settings.levels_allowJsonInput.v = settings.debug.v;
   settings.client_showUIControls.v = isMobile();
   return settings;
 }
 
 void main() {
   var lifetime = DependencyBuilderFactory().createNew((builder) {
+    var settings = buildSettings();
     builder.registerModule(UiComposition());
     builder.registerModule(GameComposition());
     builder.registerModule(GameMenuComposition());
     builder.registerModule(GameModeComposition());
-    builder.registerModule(LevelEditorComposition());
-    builder.registerInstance(buildSettings());
+    builder.registerModule(LevelEditorComposition(settings));
+    builder.registerInstance(settings);
   });
 
   GameLoader loader = lifetime.resolve();

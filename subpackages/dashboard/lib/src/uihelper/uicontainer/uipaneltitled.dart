@@ -1,11 +1,11 @@
 part of uihelper;
 
 class UiPanelTitled extends UiContainer {
-  DivElement el_content;
+  UiPanel el_content;
   UiButtonToggleIconText btn_expand;
 
-  FieldSetElement _el_wrap;
-  LegendElement _el_legend;
+  DivElement _el_wrap;
+  UiPanel _el_legend;
 
   UiPanelTitled(ILifetime lifetime) : super(lifetime) {
     btn_expand = lifetime.resolve();
@@ -20,22 +20,24 @@ class UiPanelTitled extends UiContainer {
     super.build();
     btn_expand.changeIconToggle("expand_less", "expand_more");
     btn_expand.setOnClick(_onBtnExpand);
-    _el_wrap.append(_el_legend);
-    _el_wrap.append(el_content);
-    _el_legend.append(btn_expand.element);
+    _el_wrap.append(_el_legend.element);
+    _el_wrap.append(el_content.element);
+    _el_legend.append(btn_expand);
+    _el_legend.addStyle("title");
+    el_content.addStyle("content");
     _el_wrap.className = "menu";
   }
 
   void append(UiElement el) {
-    el_content.append(el.element);
-  }
-
-  void appendElement(Element el) {
     el_content.append(el);
   }
 
+  void appendElement(Element el) {
+    el_content.appendElement(el);
+  }
+
   void clear() {
-    el_content.children.clear();
+    el_content.clear();
   }
 
   void setExpand(bool expand) {
@@ -47,6 +49,6 @@ class UiPanelTitled extends UiContainer {
   }
 
   void _onBtnExpand() {
-    el_content.style.display = btn_expand.toggled ? "none" : "block";
+    el_content.display(!btn_expand.toggled);
   }
 }

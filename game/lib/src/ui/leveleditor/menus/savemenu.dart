@@ -1,14 +1,37 @@
 part of game.leveleditor;
 
-class SaveMenu extends EditorMenu {
+class JsonMenu extends EditorMenu {
   UiInputTextLarge _inputContent;
+  JsonMenu(ILifetime lifetime) : super(lifetime) {
+    _inputContent = lifetime.resolve();
+  }
+  @override
+  void build() {
+    super.build();
+    changeTitle("Json level data");
+    // text area
+    _inputContent
+      ..changeLabel("Content")
+      ..onValueChange = (String val) {
+        Map json = jsonDecode(_inputContent.getValue());
+        _editor.loadFromJson(json);
+      };
+    append(_inputContent);
+  }
+
+  @override
+  void onGameLevelChange(GameLevel gamelevel) {
+    _inputContent.setValue(_editor.saveToJson());
+  }
+}
+
+class SaveMenu extends EditorMenu {
   UiInputText _inputSet;
   UiInputText _inputLevel;
   UiButtonIcon _buttonSave;
   UiButtonIcon _buttonLoad;
 
   SaveMenu(ILifetime lifetime) : super(lifetime) {
-    _inputContent = lifetime.resolve();
     _inputSet = lifetime.resolve();
     _inputLevel = lifetime.resolve();
     _buttonSave = lifetime.resolve();
@@ -19,16 +42,7 @@ class SaveMenu extends EditorMenu {
   void build() {
     super.build();
     changeTitle("Load/Save from file");
-    // text area
-    _inputContent
-      ..changeLabel("Content")
-      ..onValueChange = (String val) {
-        Map json = jsonDecode(_inputContent.getValue());
-        _editor.loadFromJson(json);
-      };
-    append(_inputContent);
 
-    // save/load
     _inputSet
       ..changeLabel("Set")
       ..setValue("race");
@@ -60,10 +74,5 @@ class SaveMenu extends EditorMenu {
         loader.loadJson("levels/$levelset/$level.json", "level/$levelset/$level");
         loader.start();
       });
-  }
-
-  @override
-  void onGameLevelChange(GameLevel gamelevel) {
-    _inputContent.setValue(_editor.saveToJson());
   }
 }

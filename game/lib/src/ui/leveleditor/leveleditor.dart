@@ -42,6 +42,7 @@ class LevelEditor extends UiPanel {
   @override
   void build() {
     super.build();
+    addStyle("leveleditor");
     _levelwrapper.element.onMouseDown.listen(_onLevelMouseDown);
     _levelwrapper.addStyle("levelWrapper");
     _levelwrapper.append(_preview);

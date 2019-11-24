@@ -118,7 +118,7 @@ class SingleRaceMenu extends GameMenuScreen {
 
     _panelLeft.append(_levelSelection);
     _panelEditorButton.append(_btnEditor);
-    if (_settings.levels_allowJsonInput.v) _panelLeft.append(_panelEditorButton);
+    if (_settings.leveleditor_enabled.v) _panelLeft.append(_panelEditorButton);
     _panelLeft.append(_in_laps);
 
     _panelRight.append(_vehicleSelection);

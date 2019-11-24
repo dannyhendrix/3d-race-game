@@ -1,6 +1,8 @@
 part of game.leveleditor;
 
 class LevelEditorComposition implements IDependencyModule {
+  GameSettings _settings;
+  LevelEditorComposition(this._settings);
   @override
   void load(IDependencyBuilder builder) {
     builder.registerType((lifetime) => LevelEditor(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerLifeTime);
@@ -18,7 +20,8 @@ class LevelEditorComposition implements IDependencyModule {
     builder.registerType((lifetime) => ClickAddMenu(lifetime)..build(), additionRegistrations: [EditorMenu], lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => LevelObjectControlsMenu(lifetime)..build(), additionRegistrations: [EditorMenu], lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => LevelObjectPropertiesMenu(lifetime)..build(), additionRegistrations: [EditorMenu], lifeTimeScope: LifeTimeScope.PerUser);
-    builder.registerType((lifetime) => SaveMenu(lifetime)..build(), additionRegistrations: [EditorMenu], lifeTimeScope: LifeTimeScope.PerUser);
+    builder.registerType((lifetime) => JsonMenu(lifetime)..build(), additionRegistrations: [EditorMenu], lifeTimeScope: LifeTimeScope.PerUser);
+    if (_settings.debug.v) builder.registerType((lifetime) => SaveMenu(lifetime)..build(), additionRegistrations: [EditorMenu], lifeTimeScope: LifeTimeScope.PerUser);
 
     //TODO: move to correct composition
     builder.registerType((lifetime) => GameLevelLoader(), lifeTimeScope: LifeTimeScope.SingleInstance);

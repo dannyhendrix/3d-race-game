@@ -28,7 +28,11 @@ body { width:800px; margin:0px auto;}
 
 #menu_bg { top:0px; height:100%; left:0px; width:100%; text-align:center;}
 #menu_wrapper { margin: 0px auto;}
-#menu_wrapper .menu { padding: 0px; margin: 0px;}
+#menu_wrapper .menu {
+    padding: 0px;
+    margin: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.17);
+}
 #menu_wrapper .menu_button { padding: 16px; text-align: center; font-weight: bold; text-decoration: none; display:block; width: 100%; margin: 5px 0px;}
 #menu_title { position:relative; font-weight: bold; border-bottom: 3px solid rgba(0, 0, 0, 0.17); color:#fff;}
 #menu_title h1 { font-size: 12pt; padding: 16px;}
@@ -87,4 +91,17 @@ body { width:800px; margin:0px auto;}
 
 .topplayer.currentuser .name,.gameResultRow.currentuser { background:#3F51B5; color:white; }
 
-
+.title {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.17);
+    background: rgba(0, 0, 0, 0.06);
+}
+.leveleditor .content {
+    padding: 5px;
+}
+.leveleditor .title .button {
+    background: none;
+}
+.leveleditor .label {
+    display: inline-block;
+    width: 90px;
+}
