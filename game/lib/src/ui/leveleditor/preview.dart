@@ -1,29 +1,28 @@
 part of game.leveleditor;
 
-class Preview extends UiRenderLayer{
+class Preview extends UiRenderLayer {
   double mouseX = 0.0;
   double mouseY = 0.0;
   double scale = 0.5;
 
   Preview(ILifetime lifetime) : super(lifetime);
 
-  void _setWidthHeight(List<Polygon> polygons){
+  void _setWidthHeight(List<Polygon> polygons) {
     double maxX = 0.0;
     double maxZ = 0.0;
-    for(var c in polygons){
-    for(var p in c.points)
-    {
-    var mx = p.x;
-      var mz = p.y;
-      if(mx > maxX) maxX = mx;
-      if(mz > maxZ) maxZ = mz;
+    for (var c in polygons) {
+      for (var p in c.points) {
+        var mx = p.x;
+        var mz = p.y;
+        if (mx > maxX) maxX = mx;
+        if (mz > maxZ) maxZ = mz;
+      }
     }
-    }
-    canvas.width = (maxX*scale).ceil() + 100;
-    canvas.height = (maxZ*scale).ceil() + 100;
+    canvas.width = (maxX * scale).ceil() + 100;
+    canvas.height = (maxZ * scale).ceil() + 100;
   }
 
-  void paintLevel(GameLevel level){
+  void paintLevel(GameLevel level) {
     scale = 0.5;
 
     //draw road
@@ -44,65 +43,61 @@ class Preview extends UiRenderLayer{
     }
 */
   }
-  void _drawRoad(GameLevelPath path, double scale){
+
+  void _drawRoad(GameLevelPath path, double scale) {
     PathToTrack pathToTrack = new PathToTrack();
     TrackToPolygons trackToPolygons = new TrackToPolygons();
     var track = pathToTrack.createTrack(path);
     var roadPolygons = trackToPolygons.createRoadPolygons(track, path.circular);
 
-
     _setWidthHeight(roadPolygons);
-    ctx.fillStyle = "#999";
-    ctx.strokeStyle = "#999";
-    for(Polygon p in roadPolygons){
+    ctx.fillStyle = "#333";
+    ctx.strokeStyle = "#333";
+    for (Polygon p in roadPolygons) {
       _drawRoadPolygon(p, scale);
     }
 
-    _drawPath(track, path.circular, scale);
+    //_drawPath(track, path.circular, scale);
   }
-  void _drawPath(List<PathPoint> path, bool circular, double scale){
+
+  void _drawPath(List<PathPoint> path, bool circular, double scale) {
     //var angles = new GameLevelExtensions().getCheckpointAngles(path);
-    if(path.length > 0)
-    {
+    if (path.length > 0) {
       // 1 line path
       var startPoint = path[0];
       ctx.beginPath();
-      ctx.moveTo(startPoint.vector.x*scale, startPoint.vector.y*scale);
-      for (int i = 1; i < path.length; i++)
-      {
+      ctx.moveTo(startPoint.vector.x * scale, startPoint.vector.y * scale);
+      for (int i = 1; i < path.length; i++) {
         var p = path[i];
-        ctx.lineTo(p.vector.x*scale, p.vector.y*scale);
+        ctx.lineTo(p.vector.x * scale, p.vector.y * scale);
       }
-      if (circular)
-      {
-        ctx.lineTo(startPoint.vector.x*scale, startPoint.vector.y*scale);
+      if (circular) {
+        ctx.lineTo(startPoint.vector.x * scale, startPoint.vector.y * scale);
       }
-      ctx.strokeStyle = '#555';
+      ctx.strokeStyle = '#666';
       ctx.stroke();
     }
   }
 
-  void _drawCheckPoints(List<GameLevelCheckPoint> path, double scale){
+  void _drawCheckPoints(List<GameLevelCheckPoint> path, double scale) {
     //var angles = new GameLevelExtensions().getCheckpointAngles(path);
-    if(path.length > 0)
-    {
+    if (path.length > 0) {
       // 2 circles and angleline
-      for (int i = 0; i < path.length; i++)
-      {
+      for (int i = 0; i < path.length; i++) {
         var p = path[i];
         ctx.beginPath();
-        ctx.arc(p.x*scale, p.y*scale, p.width/2*scale, 0, 2 * Math.pi, false);
+        ctx.arc(p.x * scale, p.y * scale, p.width / 2 * scale, 0, 2 * Math.pi, false);
         ctx.stroke();
-
+        /*
         ctx.save();
-        ctx.translate(p.x*scale, p.y*scale);
+        ctx.translate(p.x * scale, p.y * scale);
         ctx.rotate(p.angle);
         ctx.beginPath();
-        ctx.moveTo(-p.width/2*scale,0);
-        ctx.lineTo(p.width/2*scale,0);
+        ctx.moveTo(-p.width / 2 * scale, 0);
+        ctx.lineTo(p.width / 2 * scale, 0);
         ctx.stroke();
         ctx.closePath();
-
+        */
         ctx.restore();
       }
 
@@ -110,31 +105,28 @@ class Preview extends UiRenderLayer{
       var vehicleW = GameConstants.carSize.x;
       var vehicleH = GameConstants.carSize.y;
       var startingPositions = new StartingPositions();
-      var positions = startingPositions.determineStartPositions(
-          path[0].x,
-          path[0].y,
-          path[0].angle,
-          path[0].width,
-          vehicleW, vehicleH, 8);
+      var positions = startingPositions.determineStartPositions(path[0].x, path[0].y, path[0].angle, path[0].width, vehicleW, vehicleH, 8);
       var startingPositionsPreview = new StartingPositionsPreview();
       startingPositionsPreview.paintPositions(ctx, positions, vehicleW, vehicleH, scale);
     }
   }
-  void _drawSquare(double x, double z, double w, double d, double r, double scale){
+
+  void _drawSquare(double x, double z, double w, double d, double r, double scale) {
     ctx.save();
-    ctx.translate(x*scale,z*scale);
+    ctx.translate(x * scale, z * scale);
     ctx.rotate(r);
-    ctx.fillRect(-w*scale/2, -d*scale/2, w*scale, d*scale);
+    ctx.fillRect(-w * scale / 2, -d * scale / 2, w * scale, d * scale);
     ctx.restore();
   }
-  void _drawRoadPolygon(Polygon polygon, double scale){
+
+  void _drawRoadPolygon(Polygon polygon, double scale) {
     ctx.beginPath();
     var first = polygon.points.first;
-    ctx.moveTo(first.x*scale,first.y*scale);
-    for(Vector p in polygon.points){
-      ctx.lineTo(p.x*scale,p.y*scale);
+    ctx.moveTo(first.x * scale, first.y * scale);
+    for (Vector p in polygon.points) {
+      ctx.lineTo(p.x * scale, p.y * scale);
     }
-    ctx.lineTo(first.x*scale,first.y*scale);
+    ctx.lineTo(first.x * scale, first.y * scale);
     ctx.fill();
     ctx.stroke();
   }

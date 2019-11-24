@@ -1,6 +1,6 @@
 part of game.menu;
 
-class GameMenuComposition implements IDependencyModule{
+class GameMenuComposition implements IDependencyModule {
   @override
   void load(IDependencyBuilder builder) {
     builder.registerType((lifetime) => new MainMenu(lifetime)..build(), additionRegistrations: [GameMenuScreen], lifeTimeScope: LifeTimeScope.SingleInstance);
@@ -15,6 +15,7 @@ class GameMenuComposition implements IDependencyModule{
     builder.registerType((lifetime) => new ControlsMenu(lifetime)..build(), additionRegistrations: [GameMenuMainScreen], lifeTimeScope: LifeTimeScope.SingleInstance);
     builder.registerType((lifetime) => new MenuHistory<GameMenuStatus>(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => new MenuButton(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
+    builder.registerType((lifetime) => new LevelEditorInGame(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => new GameMenuController(lifetime)..build(), lifeTimeScope: LifeTimeScope.SingleInstance);
     builder.registerType((lifetime) => new ResourceManager(), lifeTimeScope: LifeTimeScope.SingleInstance);
     builder.registerType((lifetime) => new GameLoader(lifetime), lifeTimeScope: LifeTimeScope.SingleInstance);
@@ -22,9 +23,9 @@ class GameMenuComposition implements IDependencyModule{
     builder.registerType((lifetime) => new GameInputSelectionVehicle(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => new GameInputSelectionTrailer(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => new GameInputSelectionLevel(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
-    builder.registerType((lifetime) => new CustomLevelInput(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => new EnterKey(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
     builder.registerType((lifetime) => new LevelPreview(lifetime)..build(), lifeTimeScope: LifeTimeScope.PerUser);
+    builder.registerType((lifetime) => new LevelPreviewController(lifetime), lifeTimeScope: LifeTimeScope.PerLifeTime);
 
     //TODO: move to correct composition
     builder.registerType((lifetime) => new TextureGenerator(lifetime), lifeTimeScope: LifeTimeScope.SingleInstance);

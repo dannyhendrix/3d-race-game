@@ -1,69 +1,80 @@
 part of game.menu;
 
-class GameInputSelectionVehicle extends GameInputSelectionVehicleBase{
+class GameInputSelectionVehicle extends GameInputSelectionVehicleBase<VehicleType> {
   GameInputSelectionVehicle(ILifetime lifetime) : super(lifetime);
 
   @override
-  void build(){
-    optionsLength = VehicleType.values.length;
+  void build() {
     super.build();
     changeLabel("Vehicle");
     _typeToPreview[VehicleType.Car.index] = _createPreviewFromModel(new GlModel_Vehicle());
     _typeToPreview[VehicleType.Truck.index] = _createPreviewFromModel(new GlModel_Truck());
     _typeToPreview[VehicleType.Formula.index] = _createPreviewFromModel(new GlModel_Formula());
     _typeToPreview[VehicleType.Pickup.index] = _createPreviewFromModel(new GlModel_Pickup());
+    setOptions(VehicleType.values);
+  }
+
+  @override
+  int getIndex(VehicleType item) {
+    return item.index;
   }
 }
-class GameInputSelectionTrailer extends GameInputSelectionVehicleBase{
+
+class GameInputSelectionTrailer extends GameInputSelectionVehicleBase<TrailerType> {
   GameInputSelectionTrailer(ILifetime lifetime) : super(lifetime);
 
   @override
-  void build(){
-    optionsLength = TrailerType.values.length;
+  void build() {
     super.build();
     changeLabel("Trailer");
     _typeToPreview[TrailerType.None.index] = _createPreviewFromModel(null);
     _typeToPreview[TrailerType.Caravan.index] = _createPreviewFromModel(new GlModel_Caravan());
     _typeToPreview[TrailerType.TruckTrailer.index] = _createPreviewFromModel(new GlModel_TruckTrailer());
+    setOptions(TrailerType.values);
+  }
+
+  @override
+  int getIndex(TrailerType item) {
+    return item.index;
   }
 }
 
-class GameInputSelectionVehicleBase extends UiInputOptionCycle<int>
-{
+abstract class GameInputSelectionVehicleBase<T> extends UiInputOptionCycle<T> {
   Map<int, String> _typeToPreview = {};
   ImageElement img_preview;
 
-  GameInputSelectionVehicleBase(ILifetime lifetime) : super(lifetime){
+  GameInputSelectionVehicleBase(ILifetime lifetime) : super(lifetime) {
     img_preview = new ImageElement();
   }
 
   @override
-  void build(){
+  void build() {
     super.build();
     addStyle("GameInputSelection");
     appendElementToContent(img_preview);
   }
 
   @override
-  void setValueIndex(int index){
-    if(_typeToPreview.containsKey(index))
-    {
+  void setValue(T value) {
+    super.setValue(value);
+    int index = getIndex(value);
+    if (_typeToPreview.containsKey(index)) {
       img_preview.src = _typeToPreview[index];
-    }
-    else{
+    } else {
       img_preview.src = "";
     }
   }
+
+  int getIndex(T item);
+
 //TODO: remove dynamic?
-  String _createPreviewFromModel(dynamic model){
-    GlPreview preview = new GlPreview(150.0,100.0,(GlModelCollection modelCollection){
-      if(model == null) return [];
+  String _createPreviewFromModel(dynamic model) {
+    GlPreview preview = new GlPreview(150.0, 100.0, (GlModelCollection modelCollection) {
+      if (model == null) return [];
       model.loadModel(modelCollection);
-      var instance = model
-          .getModelInstance(modelCollection, colorMappingGl[VehicleThemeColor.White], colorMappingGl[VehicleThemeColor.White], new GlColor(0.7, 0.7, 0.9));
+      var instance = model.getModelInstance(modelCollection, colorMappingGl[VehicleThemeColor.White], colorMappingGl[VehicleThemeColor.White], new GlColor(0.7, 0.7, 0.9));
 
       return [instance];
-
     });
     preview.ox = 0.0;
     preview.oy = 26.0;

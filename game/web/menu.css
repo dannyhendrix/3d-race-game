@@ -4,9 +4,9 @@ h1 {padding:10px; margin:0px; text-align:center;}
 a {color:#333;}
 input { width: 150px; border: 1px solid rgba(0, 0, 0, 0.3); padding: 5px; outline:0px; }
 select { width: 162px; border: 1px solid rgba(0, 0, 0, 0.3); padding: 5px; }
-button {cursor: pointer; background: rgba(0, 0, 0, 0.06); border:0px; border-bottom: 2px solid rgba(0, 0, 0, 0.3); padding: 6px 10px; margin: 3px; display:inline-block; font-weight:bold; }
+button {cursor: pointer; background: rgba(0, 0, 0, 0.06); border:0px; padding: 4px 8px; margin: 2px; display:inline-block; }
 button span { display: inline-block; height: 18px; vertical-align: bottom; padding-top: 3px; }
-.material-icons { font-size:18px; }
+.material-icons { font-size:16px; }
 fieldset { border: 1px solid rgba(0, 0, 0, 0.3); padding: 5px 15px; }
 legend { padding: 7px; font-weight: bold; }
 form span.label { display: inline-block; width: 100px; text-align: left; }
@@ -15,10 +15,12 @@ form button { width: 162px; }
 
 .specialText, h1, legend {font-family: monospace;}
 html { background-color:white; color:#222;}
+table {border-collapse: collapse;}
+td {padding:0px;}
 /*Theme 1*/
 .highlight, .highlightOver:hover, h1 {background:#3f51b5; color:#fff;}
 .highlightText, legend {color:#3f51b5;}
-.highlightBordered, .selected {border: 3px solid #3f51b5;}
+.highlightBordered, .selected {outline: 3px solid #3f51b5;}
 /*Theme 2*/
 .highlightSub, .highlightSubOver:hover, button:hover {background:rgb(255, 169, 63); color:#222;}
 
@@ -57,7 +59,7 @@ body { width:800px; margin:0px auto;}
 
 /** Profile menu **/
 .colorSelectionItem { width: 20px; height: 20px; display: inline-block; margin: 4px; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 24px; }
-.colorSelectionItem.selected { border-radius: 0px; width: 32px; border: 1px solid rgba(0, 0, 0, 0.1);}
+.colorSelectionItem.selected { border-radius: 0px; width: 32px; border: 1px solid rgba(0, 0, 0, 0.1); outline:0px;}
 .colorSelectionItem:hover { border-radius: 0px;}
 .colorSelection{ width: 300px; padding: 5px; display: inline-block; margin: 10px;}
 

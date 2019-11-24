@@ -168,6 +168,10 @@ class LevelEditor extends UiPanel {
     _menus.onGameLevelChange(gamelevel);
   }
 
+  void load(GameLevel level) {
+    loadFromJson(_levelSaver.levelToJson(level));
+  }
+
   void loadFromJson(Map json) {
     gamelevel = _levelLoader.loadLevelJson(json);
     _wrappers.forEach((w) => w.clearAll());

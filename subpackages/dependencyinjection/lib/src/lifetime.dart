@@ -47,6 +47,8 @@ class InstanceContainer {
 }
 
 class Lifetime implements ILifetime, IDependencyBuilder {
+  static int _idcounter = 0;
+  int _uniqueId = _idcounter++;
   InstanceContainer _singleInstanceContainer = new InstanceContainer();
   InstanceContainer _lifetimeInstanceContainer = new InstanceContainer();
   Lifetime _parentLifetime = null;
@@ -57,6 +59,7 @@ class Lifetime implements ILifetime, IDependencyBuilder {
     build?.call(this);
   }
   Lifetime();
+  String toString() => "Lifetime $_uniqueId";
 
   //builder
   void registerInstance<T>(T obj, {String name = null, List<Type> additionRegistrations}) {
@@ -108,11 +111,11 @@ class Lifetime implements ILifetime, IDependencyBuilder {
   dynamic _getInstance(Registration registration, Lifetime lifetime) {
     switch (registration.lifeTimeScope) {
       case LifeTimeScope.SingleInstance:
-        return _singleInstanceContainer.getInstance(registration, this);
+        return _singleInstanceContainer.getInstance(registration, lifetime);
       case LifeTimeScope.PerLifeTime:
-        return lifetime._lifetimeInstanceContainer.getInstance(registration, this);
+        return lifetime._lifetimeInstanceContainer.getInstance(registration, lifetime);
       case LifeTimeScope.PerUser:
-        return registration.createNew(this);
+        return registration.createNew(lifetime);
     }
   }
 

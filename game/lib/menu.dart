@@ -17,6 +17,7 @@ import "webgl_game.dart";
 import "gamemode.dart";
 import "definitions.dart";
 import "resources.dart";
+import "leveleditor.dart";
 
 part "src/ui/menu/gamemenuscreen.dart";
 part "src/ui/menu/gamemenucomposition.dart";

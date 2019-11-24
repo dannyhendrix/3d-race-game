@@ -1,71 +1,62 @@
 part of game.menu;
 
-class GameInputSelectionLevel extends UiInputOptionCycle<String>{
-  Map<int, String> _typeToPreview = {};
-  Map<int, String> _indexToLevelKey = {};
-  ImageElement img_preview;
-  LevelManager _levelManager;
-  GameLevelLoader _levelLoader;
-  GameSettings _settings;
-  CustomLevelInput _customLevelInput;
+class LevelPreviewController {
   LevelPreview _preview;
+  LevelManager _levelManager;
+  Map<String, String> _typeToPreview = {};
 
-  GameInputSelectionLevel(ILifetime lifetime) : super(lifetime){
+  LevelPreviewController(ILifetime lifetime) {
     _levelManager = lifetime.resolve();
-    _customLevelInput = lifetime.resolve();
-    _settings = lifetime.resolve();
-    _levelLoader = lifetime.resolve();
     _preview = lifetime.resolve();
-    img_preview = new ImageElement();
   }
 
-  @override
-  void build(){
-    var levelKeys = _levelManager.getLevelKeys();
-    optionsLength = levelKeys.length;
-    if(_settings.levels_allowJsonInput.v) optionsLength += 1;
-    super.build();
-    //var el = setupFields(levelKeys.length+(enableCustomLevels?1:0), "Track");
-    changeLabel("Track");
-    addStyle("GameInputSelection");
+  void loadAll(List<String> options) {
+    options.forEach(_loadLevel);
+  }
 
-    int i = 0;
-    for(var level in levelKeys){
-      _typeToPreview[i] = _createPreviewFromModel(_levelManager.getLevel(level));
-      _indexToLevelKey[i] = level;
-      i++;
-    }
-    appendElementToContent(img_preview);
-    appendToContent(_customLevelInput);
-    _customLevelInput.hide();
+  String getPreview(String level) {
+    return _typeToPreview[level];
   }
-  @override
-  void setValueIndex(int index){
-    if(_typeToPreview.containsKey(index))
-    {
-      img_preview.src = _typeToPreview[index];
-      img_preview.style.display = "";
-      _customLevelInput.hide();
-    }
-    else{
-      img_preview.src = "";
-      _customLevelInput.show();
-      img_preview.style.display = "none";
-    }
+
+  void _loadLevel(String level) {
+    _typeToPreview[level] = _createPreviewFromModel(_levelManager.getLevel(level));
   }
-  String _createPreviewFromModel(GameLevel level){
-    _preview.setSize(150,100);
+
+  String _createPreviewFromModel(GameLevel level) {
+    _preview.setSize(150, 100);
     _preview.clear();
     _preview.draw(level, "#666");
     return _preview.canvas.toDataUrl("image/png");
   }
+}
 
-  getValue() => _indexToLevelKey[index];
+class GameInputSelectionLevel extends UiInputOptionCycle<String> {
+  ImageElement img_preview;
+  GameSettings _settings;
+  LevelPreviewController _previewController;
 
-  GameLevel getSelectedLevel(){
-    if(_typeToPreview.containsKey(index)) return _levelManager.getLevel(_indexToLevelKey[index]);
-    var customInput = _customLevelInput.getValue();
-    if(customInput.isNotEmpty) return _levelLoader.loadLevelJson(jsonDecode(customInput));
-    throw new Exception("Constum level is not set");
+  GameInputSelectionLevel(ILifetime lifetime) : super(lifetime) {
+    _settings = lifetime.resolve();
+    _previewController = lifetime.resolve();
+    img_preview = new ImageElement();
+  }
+  @override
+  void build() {
+    super.build();
+    changeLabel("Track");
+    addStyle("GameInputSelection");
+    appendElementToContent(img_preview);
+  }
+
+  @override
+  void setValue(String newValue) {
+    super.setValue(newValue);
+    img_preview.src = _previewController.getPreview(newValue);
+  }
+
+  @override
+  void setOptions(List<String> options) {
+    super.setOptions(options);
+    _previewController.loadAll(options);
   }
 }

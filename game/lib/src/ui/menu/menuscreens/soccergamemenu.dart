@@ -1,6 +1,7 @@
 part of game.menu;
 
-class SoccerGameMenu extends GameMenuScreen{
+class SoccerGameMenu extends GameMenuScreen {
+  LevelManager _levelManager;
   GameInputSelectionVehicle _vehicleSelection;
   GameInputSelectionTrailer _trailerSelection;
   GameInputSelectionLevel _levelSelection;
@@ -11,8 +12,8 @@ class SoccerGameMenu extends GameMenuScreen{
   UiPanel _panelRight;
   MenuButton _btnStart;
 
-
-  SoccerGameMenu(ILifetime lifetime) : super(lifetime, GameMenuPage.Soccer){
+  SoccerGameMenu(ILifetime lifetime) : super(lifetime, GameMenuPage.Soccer) {
+    _levelManager = lifetime.resolve();
     _panelLeft = lifetime.resolve();
     _panelRight = lifetime.resolve();
     _in_scorelimit = lifetime.resolve();
@@ -28,7 +29,7 @@ class SoccerGameMenu extends GameMenuScreen{
   }
 
   @override
-  void build(){
+  void build() {
     super.build();
 
     _panelLeft.addStyle("leftPanel");
@@ -36,9 +37,18 @@ class SoccerGameMenu extends GameMenuScreen{
     append(_panelLeft);
     append(_panelRight);
 
-    _in_teams..changeLabel("Teams")..setOptions([2,3,4,5,6])..setValue(2);
-    _in_playersperteam..changeLabel("Players per team")..setOptions([1,2,3,4,10,20])..setValue(2);
-    _in_scorelimit..changeLabel("Score limit")..setOptions([3,5,10])..setValue(5);
+    _in_teams
+      ..changeLabel("Teams")
+      ..setOptions([2, 3, 4, 5, 6])
+      ..setValue(2);
+    _in_playersperteam
+      ..changeLabel("Players per team")
+      ..setOptions([1, 2, 3, 4, 10, 20])
+      ..setValue(2);
+    _in_scorelimit
+      ..changeLabel("Score limit")
+      ..setOptions([3, 5, 10])
+      ..setValue(5);
     _vehicleSelection..changeLabel("Vehicle");
     _trailerSelection..changeLabel("Trailer");
 
@@ -51,20 +61,21 @@ class SoccerGameMenu extends GameMenuScreen{
     _panelRight.append(_in_teams);
     _panelRight.append(_in_playersperteam);
 
-    _btnStart..changeText("Start")..changeIcon("play_arrow")..setOnClick((){
-      _menu.showMenu(new GameInputMenuStatus("Soccer", createGameInput(), (GameOutput result){
-        _menu.showMenu(new GameOutputMenuStatus("Soccer results", result));
-      }));
-    });
+    _btnStart
+      ..changeText("Start")
+      ..changeIcon("play_arrow")
+      ..setOnClick(() {
+        _menu.showMenu(new GameInputMenuStatus("Soccer", createGameInput(), (GameOutput result) {
+          _menu.showMenu(new GameOutputMenuStatus("Soccer results", result));
+        }));
+      });
     append(_btnStart);
 
-    _vehicleSelection.setValueIndex(0);
-    _trailerSelection.setValueIndex(0);
-    _levelSelection.setValueIndex(0);
+    _vehicleSelection.setValue(VehicleType.Car);
+    _trailerSelection.setValue(TrailerType.None);
   }
 
-  GameInput createGameInput(){
-    return _menu.gameBuilder.newSoccerGame(_in_teams.getValue(),_in_playersperteam.getValue(),VehicleType.values[_vehicleSelection.index], TrailerType.values[_trailerSelection.index],_levelSelection.getSelectedLevel(), _in_scorelimit.getValue());
+  GameInput createGameInput() {
+    return _menu.gameBuilder.newSoccerGame(_in_teams.getValue(), _in_playersperteam.getValue(), VehicleType.values[_vehicleSelection.index], TrailerType.values[_trailerSelection.index], _levelManager.getLevel(_levelSelection.getValue()), _in_scorelimit.getValue());
   }
-
 }
