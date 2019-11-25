@@ -16,8 +16,6 @@ dependencies:
     path: ../subpackages/dashboard
   preloader:
     path: ../subpackages/preloader
-  renderlayer:
-    path: ../subpackages/renderlayer
   webgl:
     path: ../subpackages/webgl
   dependencyinjection:
