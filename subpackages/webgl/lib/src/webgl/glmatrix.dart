@@ -1,38 +1,43 @@
 part of webgl;
 
-class GlVector{
-  double x,y,z;
-  GlVector(this.x,this.y,this.z);
-  GlVector clone(){
-    return new GlVector(x,y,z);
+class GlVector {
+  double x, y, z;
+  GlVector(this.x, this.y, this.z);
+  GlVector clone() {
+    return new GlVector(x, y, z);
   }
+
   /*
   GlVector operator -(GlVector b) {
     return new GlVector(x-b.x, y-b.y, z-b.z);
   }*/
   GlVector subtractFromThis(GlVector b) {
-    x = x-b.x;
-    y = y-b.y;
-    z = z-b.z;
+    x = x - b.x;
+    y = y - b.y;
+    z = z - b.z;
     return this;
-  }/*
+  }
+
+  /*
   GlVector normalize() {
     var l = Math.sqrt(x * x + y * y + z * z);
     return l > 0.00001 ? new GlVector(x/l,y/l,z/l) : new GlVector(0.0,0.0,0.0);
   }*/
   GlVector normalizeThis() {
-    var l = Math.sqrt(x * x + y * y + z * z);
-    if(1 > 0.00001){
-      x = x/l;
-      y = x/l;
-      z = x/l;
-    }else{
+    var l = sqrt(x * x + y * y + z * z);
+    if (1 > 0.00001) {
+      x = x / l;
+      y = x / l;
+      z = x / l;
+    } else {
       x = 0.0;
       y = 0.0;
       z = 0.0;
     }
     return this;
-  }/*
+  }
+
+  /*
   GlVector cross(GlVector b) {
     return new GlVector(
         y*b.z-z*b.y,
@@ -41,16 +46,16 @@ class GlVector{
     );
   }*/
   GlVector crossThis(GlVector b) {
-    x = y*b.z-z*b.y;
-    y = z*b.x-x*b.z;
-    z = x*b.y-y*b.x;
+    x = y * b.z - z * b.y;
+    y = z * b.x - x * b.z;
+    z = x * b.y - y * b.x;
     return this;
   }
 }
 
-class GlMatrix{
+class GlMatrix {
   Float32List buffer;
-  double val(int row, int col) => buffer[row*4  + col];
+  double val(int row, int col) => buffer[row * 4 + col];
 
   /**
    *     c+ x y z _
@@ -63,108 +68,207 @@ class GlMatrix{
    *     [ b00,b01,b02,b03, b10,b11,b12,b13, b20,b21,b22,b23, b30,b31,b32,b33 ]
    */
 
-  GlMatrix():buffer = new Float32List(16);
+  GlMatrix() : buffer = new Float32List(16);
   GlMatrix.fromBuffer(this.buffer);
-  GlMatrix.fromList(List<double> values):this.fromBuffer(new Float32List.fromList(values));
+  GlMatrix.fromList(List<double> values) : this.fromBuffer(new Float32List.fromList(values));
 
   static GlMatrix identityMatrix() {
     return new GlMatrix.fromList([
-      1.0, 0.0, 0.0, 0.0,
-      0.0, 1.0, 0.0, 0.0,
-      0.0, 0.0, 1.0, 0.0,
-      0.0, 0.0, 0.0, 1.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
     ]);
   }
+
   static GlMatrix translationMatrix(double tx, double ty, double tz) {
     return new GlMatrix.fromList([
-      1.0,  0.0,  0.0,  0.0,
-      0.0,  1.0,  0.0,  0.0,
-      0.0,  0.0,  1.0,  0.0,
-      tx,   ty,   tz,   1.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      tx,
+      ty,
+      tz,
+      1.0,
     ]);
   }
+
   static GlMatrix rotationXMatrix(double angleInRadians) {
-    double c = Math.cos(angleInRadians);
-    double s = Math.sin(angleInRadians);
+    double c = cos(angleInRadians);
+    double s = sin(angleInRadians);
 
     return new GlMatrix.fromList([
-      1.0, 0.0, 0.0, 0.0,
-      0.0, c,   s,  0.0,
-      0.0, -s,  c,  0.0,
-      0.0, 0.0, 0.0, 1.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      c,
+      s,
+      0.0,
+      0.0,
+      -s,
+      c,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
     ]);
   }
+
   static GlMatrix rotationYMatrix(double angleInRadians) {
-    double c = Math.cos(angleInRadians);
-    double s = Math.sin(angleInRadians);
+    double c = cos(angleInRadians);
+    double s = sin(angleInRadians);
 
     return new GlMatrix.fromList([
-      c, 0.0, -s, 0.0,
-      0.0, 1.0, 0.0, 0.0,
-      s, 0.0, c, 0.0,
-      0.0, 0.0, 0.0, 1.0,
+      c,
+      0.0,
+      -s,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      s,
+      0.0,
+      c,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
     ]);
   }
+
   static GlMatrix rotationZMatrix(double angleInRadians) {
-    double c = Math.cos(angleInRadians);
-    double s = Math.sin(angleInRadians);
+    double c = cos(angleInRadians);
+    double s = sin(angleInRadians);
 
     return new GlMatrix.fromList([
-      c, s, 0.0, 0.0,
-      -s, c, 0.0, 0.0,
-      0.0, 0.0, 1.0, 0.0,
-      0.0, 0.0, 0.0, 1.0,
+      c,
+      s,
+      0.0,
+      0.0,
+      -s,
+      c,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
     ]);
   }
+
   static GlMatrix scalingMatrix(double sx, double sy, double sz) {
     return new GlMatrix.fromList([
-      sx, 0.0,  0.0,  0.0,
-      0.0, sy,  0.0,  0.0,
-      0.0,  0.0, sz,  0.0,
-      0.0,  0.0,  0.0,  1.0,
+      sx,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      sy,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      sz,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
     ]);
   }
-  static GlMatrix perspectiveMatrix(double fieldOfViewInRadians,double aspect,double near,double far) {
-    double f = Math.tan(Math.pi * 0.5 - 0.5 * fieldOfViewInRadians);
+
+  static GlMatrix perspectiveMatrix(double fieldOfViewInRadians, double aspect, double near, double far) {
+    double f = tan(pi * 0.5 - 0.5 * fieldOfViewInRadians);
     double rangeInv = 1.0 / (near - far);
 
-    return new GlMatrix.fromList([
-      f / aspect, 0.0,  0.0,                          0.0,
-      0.0,        f,    0.0,                          0.0,
-      0.0,        0.0,  (near + far) * rangeInv,      -1.0,
-      0.0,        0.0,  near * far * rangeInv * 2.0,  0.0
-    ]);
+    return new GlMatrix.fromList([f / aspect, 0.0, 0.0, 0.0, 0.0, f, 0.0, 0.0, 0.0, 0.0, (near + far) * rangeInv, -1.0, 0.0, 0.0, near * far * rangeInv * 2.0, 0.0]);
   }
+
   static GlMatrix lookAtMatrix(GlVector cameraPosition, GlVector target, GlVector up) {
     // camera is in -Z therefor subtract taget from camera
     // zAxis is the angle between the two points. Normalized because we only care about the angle.
     //GlVector zAxis = (cameraPosition-target).normalize();
-    GlVector zAxis = cameraPosition.clone().subtractFromThis(target).normalizeThis();//(cameraPosition-target).normalize();
+    GlVector zAxis = cameraPosition.clone().subtractFromThis(target).normalizeThis(); //(cameraPosition-target).normalize();
     // xAxis is the perpendicular vector between the angle and a vector pointing upwards
     GlVector xAxis = up.clone().crossThis(zAxis);
     // yAxis is the perpendicular vector between the angle and the xAngle
     GlVector yAxis = zAxis.clone().crossThis(xAxis);
 
     return new GlMatrix.fromList([
-      xAxis.x, xAxis.y, xAxis.z, 0.0,
-      yAxis.x, yAxis.y, yAxis.z, 0.0,
-      zAxis.x, zAxis.y, zAxis.z, 0.0,
-      cameraPosition.x, cameraPosition.y, cameraPosition.z, 1.0,
-    ]);
-  }
-  static GlMatrix projectionMatrix(double width,double height,double depth) {
-    // Note: This matrix flips the Y axis so 0 is at the top.
-    return new GlMatrix.fromList([
-      2.0 / width, 0.0, 0.0, 0.0,
-      0.0, -2.0 / height, 0.0, 0.0,
-      0.0, 0.0, 2.0 / depth, 0.0,
-      -1.0, 1.0, 0.0, 1.0,
+      xAxis.x,
+      xAxis.y,
+      xAxis.z,
+      0.0,
+      yAxis.x,
+      yAxis.y,
+      yAxis.z,
+      0.0,
+      zAxis.x,
+      zAxis.y,
+      zAxis.z,
+      0.0,
+      cameraPosition.x,
+      cameraPosition.y,
+      cameraPosition.z,
+      1.0,
     ]);
   }
 
-  GlMatrix clone(){
+  static GlMatrix projectionMatrix(double width, double height, double depth) {
+    // Note: This matrix flips the Y axis so 0 is at the top.
+    return new GlMatrix.fromList([
+      2.0 / width,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      -2.0 / height,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      2.0 / depth,
+      0.0,
+      -1.0,
+      1.0,
+      0.0,
+      1.0,
+    ]);
+  }
+
+  GlMatrix clone() {
     Float32List newBuffer = new Float32List(16);
-    for(int i = 0; i< 16; i++){
+    for (int i = 0; i < 16; i++) {
       newBuffer[i] = buffer[i];
     }
     return new GlMatrix.fromBuffer(newBuffer);
@@ -172,39 +276,40 @@ class GlMatrix{
 
   //GlMatrix operator *(GlMatrix b) {
   GlMatrix multThis(GlMatrix b) {
-    double a00 = val(0,0);
-    double a01 = val(0,1);
-    double a02 = val(0,2);
-    double a03 = val(0,3);
-    double a10 = val(1,0);
-    double a11 = val(1,1);
-    double a12 = val(1,2);
-    double a13 = val(1,3);
-    double a20 = val(2,0);
-    double a21 = val(2,1);
-    double a22 = val(2,2);
-    double a23 = val(2,3);
-    double a30 = val(3,0);
-    double a31 = val(3,1);
-    double a32 = val(3,2);
-    double a33 = val(3,3);
+    double a00 = val(0, 0);
+    double a01 = val(0, 1);
+    double a02 = val(0, 2);
+    double a03 = val(0, 3);
+    double a10 = val(1, 0);
+    double a11 = val(1, 1);
+    double a12 = val(1, 2);
+    double a13 = val(1, 3);
+    double a20 = val(2, 0);
+    double a21 = val(2, 1);
+    double a22 = val(2, 2);
+    double a23 = val(2, 3);
+    double a30 = val(3, 0);
+    double a31 = val(3, 1);
+    double a32 = val(3, 2);
+    double a33 = val(3, 3);
 
     double b00 = b.val(0, 0);
-    double b01 = b.val(0 ,1);
-    double b02 = b.val(0 ,2);
-    double b03 = b.val(0 ,3);
-    double b10 = b.val(1 ,0);
-    double b11 = b.val(1 ,1);
-    double b12 = b.val(1 ,2);
-    double b13 = b.val(1 ,3);
-    double b20 = b.val(2 ,0);
-    double b21 = b.val(2 ,1);
-    double b22 = b.val(2 ,2);
-    double b23 = b.val(2 ,3);
-    double b30 = b.val(3 ,0);
-    double b31 = b.val(3 ,1);
-    double b32 = b.val(3 ,2);
-    double b33 = b.val(3 ,3);/*
+    double b01 = b.val(0, 1);
+    double b02 = b.val(0, 2);
+    double b03 = b.val(0, 3);
+    double b10 = b.val(1, 0);
+    double b11 = b.val(1, 1);
+    double b12 = b.val(1, 2);
+    double b13 = b.val(1, 3);
+    double b20 = b.val(2, 0);
+    double b21 = b.val(2, 1);
+    double b22 = b.val(2, 2);
+    double b23 = b.val(2, 3);
+    double b30 = b.val(3, 0);
+    double b31 = b.val(3, 1);
+    double b32 = b.val(3, 2);
+    double b33 = b.val(3, 3);
+    /*
     return new GlMatrix.fromList([
       b00 * a00 + b01 * a10 + b02 * a20 + b03 * a30,
       b00 * a01 + b01 * a11 + b02 * a21 + b03 * a31,
@@ -260,16 +365,16 @@ class GlMatrix{
     double m31 = val(3, 1);
     double m32 = val(3, 2);
     double m33 = val(3, 3);
-    double tmp_0  = m22 * m33;
-    double tmp_1  = m32 * m23;
-    double tmp_2  = m12 * m33;
-    double tmp_3  = m32 * m13;
-    double tmp_4  = m12 * m23;
-    double tmp_5  = m22 * m13;
-    double tmp_6  = m02 * m33;
-    double tmp_7  = m32 * m03;
-    double tmp_8  = m02 * m23;
-    double tmp_9  = m22 * m03;
+    double tmp_0 = m22 * m33;
+    double tmp_1 = m32 * m23;
+    double tmp_2 = m12 * m33;
+    double tmp_3 = m32 * m13;
+    double tmp_4 = m12 * m23;
+    double tmp_5 = m22 * m13;
+    double tmp_6 = m02 * m33;
+    double tmp_7 = m32 * m03;
+    double tmp_8 = m02 * m23;
+    double tmp_9 = m22 * m03;
     double tmp_10 = m02 * m13;
     double tmp_11 = m12 * m03;
     double tmp_12 = m20 * m31;
@@ -285,14 +390,10 @@ class GlMatrix{
     double tmp_22 = m00 * m11;
     double tmp_23 = m10 * m01;
 
-    double t0 = (tmp_0 * m11 + tmp_3 * m21 + tmp_4 * m31) -
-        (tmp_1 * m11 + tmp_2 * m21 + tmp_5 * m31);
-    double t1 = (tmp_1 * m01 + tmp_6 * m21 + tmp_9 * m31) -
-        (tmp_0 * m01 + tmp_7 * m21 + tmp_8 * m31);
-    double t2 = (tmp_2 * m01 + tmp_7 * m11 + tmp_10 * m31) -
-        (tmp_3 * m01 + tmp_6 * m11 + tmp_11 * m31);
-    double t3 = (tmp_5 * m01 + tmp_8 * m11 + tmp_11 * m21) -
-        (tmp_4 * m01 + tmp_9 * m11 + tmp_10 * m21);
+    double t0 = (tmp_0 * m11 + tmp_3 * m21 + tmp_4 * m31) - (tmp_1 * m11 + tmp_2 * m21 + tmp_5 * m31);
+    double t1 = (tmp_1 * m01 + tmp_6 * m21 + tmp_9 * m31) - (tmp_0 * m01 + tmp_7 * m21 + tmp_8 * m31);
+    double t2 = (tmp_2 * m01 + tmp_7 * m11 + tmp_10 * m31) - (tmp_3 * m01 + tmp_6 * m11 + tmp_11 * m31);
+    double t3 = (tmp_5 * m01 + tmp_8 * m11 + tmp_11 * m21) - (tmp_4 * m01 + tmp_9 * m11 + tmp_10 * m21);
 
     double d = 1.0 / (m00 * t0 + m10 * t1 + m20 * t2 + m30 * t3);
 /*
@@ -327,7 +428,6 @@ class GlMatrix{
           (tmp_20 * m12 + tmp_23 * m22 + tmp_17 * m02))
     ]);
     */
-
 
     buffer[0] = d * t0;
     buffer[1] = d * t1;
@@ -377,6 +477,7 @@ class GlMatrix{
     multThis(scalingMatrix(sx, sy, sz));
     return this;
   }
+
   GlVector applyToVector(GlVector p) {
     var x = buffer[0] * p.x + buffer[4] * p.y + buffer[8] * p.z + buffer[12];
     var y = buffer[1] * p.x + buffer[5] * p.y + buffer[9] * p.z + buffer[13];

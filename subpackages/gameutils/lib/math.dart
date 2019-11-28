@@ -1,7 +1,7 @@
 library gameutils.math;
 
-import "dart:math" as Math;
+import "dart:math";
 
-part "src/math/vector.dart";
-part "src/math/polygon.dart";
 part "src/math/matrix2d.dart";
+part "src/math/polygon.dart";
+part "src/math/vector.dart";

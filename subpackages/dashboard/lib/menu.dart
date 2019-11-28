@@ -1,8 +1,8 @@
 library menu;
 
-import "uihelper.dart";
 import "package:dependencyinjection/dependencyinjection.dart";
 
-part "src/menu.dart";
-part "src/menuscreen.dart";
-part "src/messagemenu.dart";
+import "uihelper.dart";
+part "src/menu/menu.dart";
+part "src/menu/menuscreen.dart";
+part "src/menu/messagemenu.dart";

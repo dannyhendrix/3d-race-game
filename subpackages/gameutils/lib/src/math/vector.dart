@@ -1,6 +1,3 @@
-/**
-@author Danny Hendrix
-**/
 part of gameutils.math;
 
 /**
@@ -10,7 +7,7 @@ class Vector {
   double x;
   double y;
   // constructors
-  Vector.fromAngleRadians(double angle, double power) : this(Math.cos(angle) * power, Math.sin(angle) * power);
+  Vector.fromAngleRadians(double angle, double power) : this(cos(angle) * power, sin(angle) * power);
   Vector.empty() : this(0.0, 0.0);
 
   Vector(this.x, this.y);
@@ -57,7 +54,7 @@ class Vector {
   // distance
   double distanceToThis(Vector p) => distanceTo(this, p);
   double unsquaredDistanceToThis(Vector p) => unsquaredDistanceTo(this, p);
-  static double distanceTo(Vector a, Vector b) => Math.sqrt(unsquaredDistanceTo(a, b));
+  static double distanceTo(Vector a, Vector b) => sqrt(unsquaredDistanceTo(a, b));
   static double unsquaredDistanceTo(Vector a, Vector b) {
     var nX = b.x - a.x;
     var nY = b.y - a.y;
@@ -66,9 +63,9 @@ class Vector {
 
   // angle
   double angleThis() => angle(this);
-  static double angle(Vector a) => Math.atan2(a.y, a.x);
+  static double angle(Vector a) => atan2(a.y, a.x);
   double angleWithThis(Vector p) => angleWith(this, p);
-  static double angleWith(Vector a, Vector b) => Math.atan2(b.y - a.y, b.x - a.x);
+  static double angleWith(Vector a, Vector b) => atan2(b.y - a.y, b.x - a.x);
 
   // dot/cross product
   double dotProductThis(Vector p) => dotProduct(this, p);
@@ -86,7 +83,7 @@ class Vector {
   }
 
   // normalize
-  double magnitude() => Math.sqrt(x * x + y * y);
+  double magnitude() => sqrt(x * x + y * y);
   Vector normalized() => clone().normalizeThis();
   Vector normalizeThis() {
     var m = magnitude();
@@ -95,7 +92,7 @@ class Vector {
     return this;
   }
 
-  static Vector intersection(Vector A, Vector B, Vector C, Vector D){
+  static Vector intersection(Vector A, Vector B, Vector C, Vector D) {
     // Line AB represented as a1x + b1y = c1
     double a1 = B.y - A.y;
     double b1 = A.x - B.x;
@@ -108,14 +105,11 @@ class Vector {
 
     double determinant = a1 * b2 - a2 * b1;
 
-    if (determinant == 0)
-    {
+    if (determinant == 0) {
       // The lines are parallel. This is simplified
       // by returning a pair of FLT_MAX
       return new Vector(double.maxFinite, double.maxFinite);
-    }
-    else
-    {
+    } else {
       double x = (b2 * c1 - b1 * c2) / determinant;
       double y = (a1 * c2 - a2 * c1) / determinant;
       return new Vector(x, y);

@@ -1,3 +1,4 @@
 library dependencyinjection;
 
-part "src/lifetime.dart";
+
+part "src/dependencyinjection/lifetime.dart";

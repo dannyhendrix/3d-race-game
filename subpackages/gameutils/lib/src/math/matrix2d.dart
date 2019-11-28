@@ -60,8 +60,7 @@ class Matrix2d {
   Matrix2d scale(double sx, double sy) => clone().scale(sx, sy);
 
   // apply
-  Vector apply(Vector p) =>
-      new Vector(_data[0] * p.x + _data[2] * p.y + _data[4], _data[1] * p.x + _data[3] * p.y + _data[5]);
+  Vector apply(Vector p) => new Vector(_data[0] * p.x + _data[2] * p.y + _data[4], _data[1] * p.x + _data[3] * p.y + _data[5]);
 
   Vector applyToVector(Vector p) {
     var x = _data[0] * p.x + _data[2] * p.y + _data[4];
@@ -76,8 +75,8 @@ class Matrix2d {
   static List<double> _translation(double tx, double ty) => [1.0, 0.0, 0.0, 1.0, tx, ty];
 
   static List<double> _rotation(double angleInRadians) {
-    var c = Math.cos(angleInRadians);
-    var s = Math.sin(angleInRadians);
+    var c = cos(angleInRadians);
+    var s = sin(angleInRadians);
     return [c, s, -s, c, 0.0, 0.0];
   }
 
