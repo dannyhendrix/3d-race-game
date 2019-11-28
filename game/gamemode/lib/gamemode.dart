@@ -2,8 +2,8 @@ library game.gamemode;
 
 import "dart:math";
 import "package:dependencyinjection/dependencyinjection.dart";
+import "package:gamedefinitions/definitions.dart";
 
-import "definitions.dart";
 
 part "src/gamemode/gamebuilder.dart";
 part "src/gamemode/gamemodecomposition.dart";

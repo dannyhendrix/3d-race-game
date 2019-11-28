@@ -1,7 +1,7 @@
 import "dart:html";
 import "package:dependencyinjection/dependencyinjection.dart";
-import "package:micromachines/leveleditor.dart";
-import "package:micromachines/definitions.dart";
+import "package:gameweb/leveleditor.dart";
+import "package:gamedefinitions/definitions.dart";
 import "package:dashboard/uihelper.dart";
 
 /*

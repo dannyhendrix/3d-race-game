@@ -10,10 +10,10 @@ import "package:gameutils/math.dart";
 import "package:webgl/webgl.dart";
 import "package:dashboard/uihelper.dart";
 import "package:dependencyinjection/dependencyinjection.dart";
+import "package:gamedefinitions/definitions.dart";
+import "package:gamemode/gamemode.dart";
 
 import "webgl_game.dart";
-import "gamemode.dart";
-import "definitions.dart";
 import "resources.dart";
 import "leveleditor.dart";
 

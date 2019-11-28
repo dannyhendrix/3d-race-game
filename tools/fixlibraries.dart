@@ -8,14 +8,14 @@ import 'dart:io';
 import "contentfiles/library.dart";
 import "contentfiles/package.dart";
 
-const String path_library = "../game/lib/";
+const String path_library = "../game/";
 const String path_subpackages = "../subpackages/";
 
 void main() {
   var libraryLoader = new LibraryLoader();
   var packageLoader = new PackageLoader(libraryLoader);
   var libraryFixer = new LibaryFix();
-  fixPackages({"game": packageLoader.load("game", path_library)}, libraryFixer);
+  fixPackages(getPackages(path_library, packageLoader), libraryFixer);
   fixPackages(getPackages(path_subpackages, packageLoader), libraryFixer);
 }
 

@@ -3,8 +3,8 @@ library game;
 import "package:gameutils/math.dart";
 import "dart:math";
 import "package:dependencyinjection/dependencyinjection.dart";
+import "package:gamedefinitions/definitions.dart";
 
-import "definitions.dart";
 import "gameitem.dart";
 import "collision.dart";
 

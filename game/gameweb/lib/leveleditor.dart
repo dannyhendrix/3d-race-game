@@ -7,8 +7,8 @@ import "package:gameutils/math.dart";
 import "package:preloader/preloader.dart";
 import "package:dashboard/uihelper.dart";
 import "package:dependencyinjection/dependencyinjection.dart";
+import "package:gamedefinitions/definitions.dart";
 
-import "definitions.dart";
 
 part "src/leveleditor/leveleditor.dart";
 part "src/leveleditor/leveleditorcomposition.dart";

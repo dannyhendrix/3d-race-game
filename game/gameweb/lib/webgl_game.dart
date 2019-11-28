@@ -7,11 +7,11 @@ import "package:gameutils/math.dart";
 import "package:dashboard/uihelper.dart";
 import "package:webgl/webgl.dart";
 import "package:dependencyinjection/dependencyinjection.dart";
+import "package:gamedefinitions/definitions.dart";
+import "package:gamelogic/game.dart";
+import "package:gamelogic/gameitem.dart";
 
-import "game.dart";
 import "input.dart";
-import "definitions.dart";
-import "gameitem.dart";
 import "resources.dart";
 
 part "src/webgl_game/glmodel_caravan.dart";

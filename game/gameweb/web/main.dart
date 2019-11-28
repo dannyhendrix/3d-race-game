@@ -1,11 +1,9 @@
 import "dart:html";
-import "dart:math" as Math;
-import "dart:convert";
-import "package:micromachines/definitions.dart";
-import "package:micromachines/menu.dart";
-import "package:micromachines/leveleditor.dart";
-import "package:micromachines/gamemode.dart";
-import "package:micromachines/game.dart";
+import "package:gamedefinitions/definitions.dart";
+import "package:gameweb/menu.dart";
+import "package:gameweb/leveleditor.dart";
+import "package:gamemode/gamemode.dart";
+import "package:gamelogic/game.dart";
 import "package:dependencyinjection/dependencyinjection.dart";
 import "package:dashboard/uihelper.dart";
 
