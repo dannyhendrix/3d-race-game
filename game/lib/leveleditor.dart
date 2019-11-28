@@ -9,6 +9,7 @@ import "package:dashboard/uihelper.dart";
 import "package:dependencyinjection/dependencyinjection.dart";
 
 import "definitions.dart";
+
 part "src/leveleditor/leveleditor.dart";
 part "src/leveleditor/leveleditorcomposition.dart";
 part "src/leveleditor/levelobject/levelobject.dart";

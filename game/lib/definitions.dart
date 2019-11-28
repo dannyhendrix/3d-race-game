@@ -4,6 +4,7 @@ import "dart:math";
 import "package:gameutils/settings.dart";
 import "package:gameutils/math.dart";
 
+
 part "src/definitions/gameconstants.dart";
 part "src/definitions/gamecontrols.dart";
 part "src/definitions/gameinput.dart";

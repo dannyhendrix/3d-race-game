@@ -7,6 +7,7 @@ import "package:dependencyinjection/dependencyinjection.dart";
 import "definitions.dart";
 import "gameitem.dart";
 import "collision.dart";
+
 part "src/game/ball.dart";
 part "src/game/checkpoint.dart";
 part "src/game/countdown.dart";

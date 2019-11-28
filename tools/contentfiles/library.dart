@@ -56,6 +56,7 @@ class LibaryFix {
     for (var a in library.internalRef) {
       str.writeln("import \"$a\";");
     }
+    str.writeln("");
     for (var a in library.parts) {
       str.writeln("part \"$a\";");
     }

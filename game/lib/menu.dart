@@ -16,6 +16,7 @@ import "gamemode.dart";
 import "definitions.dart";
 import "resources.dart";
 import "leveleditor.dart";
+
 part "src/menu/gamemenucomposition.dart";
 part "src/menu/gamemenucontroller.dart";
 part "src/menu/gamemenuscreen.dart";
