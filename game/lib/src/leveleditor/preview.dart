@@ -86,7 +86,7 @@ class Preview extends UiRenderLayer {
       for (int i = 0; i < path.length; i++) {
         var p = path[i];
         ctx.beginPath();
-        ctx.arc(p.x * scale, p.y * scale, p.width / 2 * scale, 0, 2 * Math.pi, false);
+        ctx.arc(p.x * scale, p.y * scale, p.width / 2 * scale, 0, 2 * pi, false);
         ctx.stroke();
         /*
         ctx.save();

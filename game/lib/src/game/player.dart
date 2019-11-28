@@ -159,11 +159,11 @@ class VehicleControl {
       return Steer.Right;
     }
     if (ra < 0 && rt > 0) {
-      if (rt - ra > Math.pi) return Steer.Left;
+      if (rt - ra > pi) return Steer.Left;
       return Steer.Right;
     }
     if (ra > 0 && rt < 0) {
-      if (ra - rt > Math.pi) return Steer.Right;
+      if (ra - rt > pi) return Steer.Right;
       return Steer.Left;
     }
     return Steer.None;

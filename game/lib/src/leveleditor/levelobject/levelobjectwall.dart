@@ -84,7 +84,7 @@ class LevelObjectWall extends LevelObject {
 
   void buildControlsTable() {
     const double step = 10.0;
-    const double stepAngle = Math.pi / 16;
+    const double stepAngle = pi / 16;
     _controlsTable
       ..addRow([
         null,

@@ -1,4 +1,4 @@
-part of  game.definitions;
+part of game.definitions;
 
 abstract class KeycodeToString
 {

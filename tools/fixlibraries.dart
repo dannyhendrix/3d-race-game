@@ -15,7 +15,7 @@ void main() {
   var libraryLoader = new LibraryLoader();
   var packageLoader = new PackageLoader(libraryLoader);
   var libraryFixer = new LibaryFix();
-  //fixPackages({"name":packageLoader.load("game", path_library)}, libraryFixer);
+  fixPackages({"game": packageLoader.load("game", path_library)}, libraryFixer);
   fixPackages(getPackages(path_subpackages, packageLoader), libraryFixer);
 }
 

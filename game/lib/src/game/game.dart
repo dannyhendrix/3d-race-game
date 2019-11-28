@@ -174,9 +174,9 @@ class Game {
 
     for (Player p in players) {
       Vehicle v = p.vehicle;
-      vehicleH = Math.max(vehicleH, v.polygon.dimensions.y);
-      vehicleH = Math.max(vehicleH, v.trailer.polygon.dimensions.y);
-      vehicleLength = Math.max(vehicleLength, v.polygon.dimensions.x - v.trailerSnapPoint.x + v.trailer.vehicleSnapPoint.x + v.trailer.polygon.dimensions.x / 2);
+      vehicleH = max(vehicleH, v.polygon.dimensions.y);
+      vehicleH = max(vehicleH, v.trailer.polygon.dimensions.y);
+      vehicleLength = max(vehicleLength, v.polygon.dimensions.x - v.trailerSnapPoint.x + v.trailer.vehicleSnapPoint.x + v.trailer.polygon.dimensions.x / 2);
     }
 
     List<StartingPosition> startingPositions = startingPositionsCreater.determineStartPositions(path.checkpoints[0].x, path.checkpoints[0].y, path.checkpoints[0].angle, path.checkpoints[0].width, vehicleLength, vehicleH, players.length);

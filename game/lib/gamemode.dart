@@ -1,10 +1,10 @@
 library game.gamemode;
 
-import "dart:math" as Math;
-import "definitions.dart";
+import "dart:math";
 import "package:dependencyinjection/dependencyinjection.dart";
 
-part "src/gamemode/playerprofile.dart";
+import "definitions.dart";
 part "src/gamemode/gamebuilder.dart";
-part "src/gamemode/levelmanager.dart";
 part "src/gamemode/gamemodecomposition.dart";
+part "src/gamemode/levelmanager.dart";
+part "src/gamemode/playerprofile.dart";

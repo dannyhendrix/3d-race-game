@@ -1,4 +1,4 @@
-part of  game.input;
+part of game.input;
 
 typedef bool OnControlChange(Control control, bool active);
 

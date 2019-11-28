@@ -50,7 +50,7 @@ class LevelObjectCheckpoint extends LevelObject {
     input_angle
       ..changeLabel("angle")
       ..setMin(0.0)
-      ..setMax(Math.pi * 2)
+      ..setMax(pi * 2)
       ..setSteps(32)
       ..onValueChange = (double value) {
         gameObject.angle = value;
@@ -106,7 +106,7 @@ class LevelObjectCheckpoint extends LevelObject {
 
   void buildControlsTable() {
     const double step = 10.0;
-    const double stepAngle = Math.pi / 16;
+    const double stepAngle = pi / 16;
     _controlsTable
       ..addRow([
         null,

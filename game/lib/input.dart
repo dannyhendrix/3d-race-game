@@ -1,6 +1,6 @@
 library game.input;
 
 import "dart:html";
-import "definitions.dart";
 
-part "src/ui/input/inputcontroller.dart";
+import "definitions.dart";
+part "src/input/inputcontroller.dart";

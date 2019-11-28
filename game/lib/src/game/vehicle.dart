@@ -222,8 +222,8 @@ abstract class Vehicle extends GameItemMovable {
 
   double _applyFriction(double V, double F) {
     if (V > 0)
-      V -= Math.min(V, F);
-    else if (V < 0) V += Math.min(-V, F);
+      V -= min(V, F);
+    else if (V < 0) V += min(-V, F);
     return V;
   }
 
@@ -240,9 +240,9 @@ abstract class Vehicle extends GameItemMovable {
         }
       } else if (V > 0) {
         if (acc) V += A;
-        if (brake) V -= Math.min(V, B);
+        if (brake) V -= min(V, B);
       } else if (V < 0) {
-        if (acc) V += Math.min(-V, B);
+        if (acc) V += min(-V, B);
         if (brake) V -= R;
       }
     }
