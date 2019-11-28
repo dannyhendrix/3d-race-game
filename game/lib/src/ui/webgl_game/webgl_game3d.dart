@@ -1,4 +1,5 @@
 part of webgl_game;
+
 /**
  * Flow:
  * create game
@@ -17,7 +18,7 @@ abstract class WebglGame{
   void pause([bool forceStart = null]);
 }
 */
-class WebglGame3d extends WebglGame{
+class WebglGame3d extends WebglGame {
   ILifetime _lifetime;
   Game game;
   GameLoop _gameloop;
@@ -32,14 +33,14 @@ class WebglGame3d extends WebglGame{
   GlRenderLayer layer;
   List<GlModelInstanceCollection> modelInstances = [];
   GlCameraFollowTarget camera;
-  Map<Player,PlayerStats> playerElements;
+  Map<Player, PlayerStats> playerElements;
 
   Element el_Fps;
   Element el_rounds;
   Element el_countdown;
 
   //WebglGame3d(GameSettings settings, this._resourceManager, [this._enableTextures = true]){
-  WebglGame3d(ILifetime lifetime){
+  WebglGame3d(ILifetime lifetime) {
     _lifetime = lifetime;
     game = lifetime.resolve();
     _resourceManager = lifetime.resolve();
@@ -80,7 +81,7 @@ class WebglGame3d extends WebglGame{
     game.initSession(input);
     double windowW = 800.0;
     double windowH = 500.0;
-    layer = new GlRenderLayer.withSize(windowW.toInt(),windowH.toInt(),false, _enableTextures);
+    layer = new GlRenderLayer.withSize(windowW.toInt(), windowH.toInt(), false, _enableTextures);
     el_Fps = new DivElement();
     el_rounds = new DivElement();
     el_rounds.className = "rounds";
@@ -91,12 +92,12 @@ class WebglGame3d extends WebglGame{
     layer.setTexture("car", _resourceManager.getTexture("textures/texture_vehicle"));
     layer.setTexture("tree", _resourceManager.getTexture("textures/texture_tree"));
     layer.setTexture("road", _resourceManager.getTexture("textures/texture_road"));
-    layer.setTexture("wall", _resourceManager.getTexture("textures/texture_wall"),true);
+    layer.setTexture("wall", _resourceManager.getTexture("textures/texture_wall"), true);
     layer.setTexture("caravan", _resourceManager.getTexture("textures/texture_caravan"));
 
-    for(var player in game.players){
-      if(player.vehicle is Car){
-        layer.setTexture("car${player.player.playerId}", textureGenerator.CreateTexture(colorMappingGl[player.theme.color1], colorMappingGl[player.theme.color2],"textures/texture_vehicle1").canvas);
+    for (var player in game.players) {
+      if (player.vehicle is Car) {
+        layer.setTexture("car${player.player.playerId}", textureGenerator.CreateTexture(colorMappingGl[player.theme.color1], colorMappingGl[player.theme.color2], "textures/texture_vehicle1").canvas);
       }
     }
 
@@ -106,7 +107,7 @@ class WebglGame3d extends WebglGame{
     Element el_playersWrapper = new DivElement();
     el_playersWrapper.className = "players";
     playerElements = {};
-    for(Player p in game.players){
+    for (Player p in game.players) {
       var stats = new PlayerStats(p);
       el_playersWrapper.append(stats.element);
       playerElements[p] = stats;
@@ -119,9 +120,11 @@ class WebglGame3d extends WebglGame{
     layer.ctx.viewport(0, 0, layer.canvas.width, layer.canvas.height);
 
     //3 set view perspective
-    if(settings.client_cameraType.v == GameCameraType.VehicleView) camera = new GlCameraFollowTargetClose(800.0,0.6);
-    else camera = new GlCameraFollowTargetBirdView(1000,1.0);
-    camera.setPerspective(aspect:windowW / windowH, fieldOfViewRadians: 0.5, zFar: 4000.0);
+    if (settings.client_cameraType.v == GameCameraType.VehicleView)
+      camera = new GlCameraFollowTargetClose(800.0, 0.6);
+    else
+      camera = new GlCameraFollowTargetBirdView(1000, 1.0);
+    camera.setPerspective(aspect: windowW / windowH, fieldOfViewRadians: 0.5, zFar: 4000.0);
 
     //create all models
     modelInstances = _createModels();
@@ -138,78 +141,77 @@ class WebglGame3d extends WebglGame{
   }
 
   @override
-  bool onControl(Control control, bool active){
-    if(!_gameloop.playing || _gameloop.stopping)
-      return false;
-    game.humanPlayer.onControl(control,active);
+  bool onControl(Control control, bool active) {
+    if (!_gameloop.playing || _gameloop.stopping) return false;
+    game.humanPlayer.onControl(control, active);
     return true;
   }
 
   @override
-  void pause(){
+  void pause() {
     _gameloop.trigger(LoopTrigger.Toggle);
   }
+
   @override
-  void stop(){
+  void stop() {
     _gameloop.trigger(LoopTrigger.Stop);
   }
 
   @override
-  void start(){
+  void start() {
     game.startSession();
     _gameloop.trigger(LoopTrigger.Start);
   }
 
-  void _loop(int now){
+  void _loop(int now) {
     game.step();
-    if(game.countdown.complete){
-      if(el_countdown != null){
+    if (game.countdown.complete) {
+      if (el_countdown != null) {
         el_countdown.style.display = "none";
         //el_countdown = null;
       }
-    }else{
+    } else {
       el_countdown.text = "${game.countdown.count}";
     }
-    if(game.state == GameState.Finished){
+    if (game.state == GameStatus.Finished) {
       _gameloop.trigger(LoopTrigger.Stop);
       el_countdown.style.display = "block";
       el_countdown.text = "Finished";
-      if(onGameFinished != null) onGameFinished(game.createGameResult());
+      if (onGameFinished != null) onGameFinished(game.createGameResult());
       return;
     }
 
     layer.clearForNextFrame();
-    camera.setCameraAngleAndOffset(new GlVector(game.humanPlayer.vehicle.position.x,0.0,game.humanPlayer.vehicle.position.y),game.humanPlayer.vehicle.r);
+    camera.setCameraAngleAndOffset(new GlVector(game.humanPlayer.vehicle.position.x, 0.0, game.humanPlayer.vehicle.position.y), game.humanPlayer.vehicle.r);
 
-    GlMatrix viewProjectionMatrix = camera.cameraMatrix;//perspective*viewMatrix;
+    GlMatrix viewProjectionMatrix = camera.cameraMatrix; //perspective*viewMatrix;
     GlMatrix worldMatrix = GlMatrix.rotationYMatrix(0.0);
     GlMatrix worldViewProjectionMatrix = worldMatrix.clone().multThis(viewProjectionMatrix);
 
     //2 call draw method with buffer
-    for(GlModelInstanceCollection m in modelInstances){
+    for (GlModelInstanceCollection m in modelInstances) {
       GlMatrix objPerspective = worldViewProjectionMatrix.clone().multThis(m.CreateTransformMatrix());
       //if(m is GlModelInstanceFromCheckpoint) (m as GlModelInstanceFromCheckpoint).update();
-      for(GlModelInstance mi in m.modelInstances){
+      for (GlModelInstance mi in m.modelInstances) {
         var mimatrix = objPerspective.clone().multThis(mi.CreateTransformMatrix());
-        layer.setWorld(worldMatrix,mimatrix, new GlVector(lightx, lighty,lightz),0.3);
+        layer.setWorld(worldMatrix, mimatrix, new GlVector(lightx, lighty, lightz), 0.3);
         layer.drawModel(mi);
       }
     }
     int h = 24;
     int y = 0;
     int pos = 1;
-    for(Player p in game.players){
+    for (Player p in game.players) {
       playerElements[p].setPosition(pos++);
       playerElements[p].element.style.top = "${y}px";
-      y+=h;
+      y += h;
     }
     //TODO: print current round
     var progress = game.humanPlayer.pathProgress;
-    if(progress is PathProgressCheckpoint)
-      el_rounds.text = "${progress.round}";
+    if (progress is PathProgressCheckpoint) el_rounds.text = "${progress.round}";
   }
 
-  List<GlModelInstanceCollection> _createModels(){
+  List<GlModelInstanceCollection> _createModels() {
     //TODO: why load all the models? (why load truck if we only have cars?)
     GlModelCollection modelCollection = new GlModelCollectionBuffer(layer);
     GlModel_Vehicle vehicleModel = new GlModel_Vehicle();
@@ -235,55 +237,36 @@ class WebglGame3d extends WebglGame{
     //GlColor colorWindows = new GlColor(0.2,0.2,0.2);
     GlColor colorWindows = new GlColor(0.3, 0.3, 0.3);
     //create all buffer
-    for(var o in game.gameobjects){
-      if(o is Car)
-      {
+    for (var o in game.gameobjects) {
+      if (o is Car) {
         print("car model");
         Vehicle v = o;
-        modelInstances.add(new GlModelInstanceFromModel(o, vehicleModel
-            .getModelInstance(modelCollection, colorMappingGl[v.player.theme
-            .color1], colorMappingGl[v.player.theme.color2], colorWindows, "car${v.player.player.playerId}")));
-      }else if(o is FormulaCar){
+        modelInstances.add(new GlModelInstanceFromModel(o, vehicleModel.getModelInstance(modelCollection, colorMappingGl[v.player.theme.color1], colorMappingGl[v.player.theme.color2], colorWindows, "car${v.player.player.playerId}")));
+      } else if (o is FormulaCar) {
         print("formula model");
         Vehicle v = o;
-        modelInstances.add(new GlModelInstanceFromModel(o, formulaModel
-            .getModelInstance(modelCollection, colorMappingGl[v.player.theme
-            .color1], colorMappingGl[v.player.theme.color2], colorWindows)));
-      }else if(o is PickupCar){
+        modelInstances.add(new GlModelInstanceFromModel(o, formulaModel.getModelInstance(modelCollection, colorMappingGl[v.player.theme.color1], colorMappingGl[v.player.theme.color2], colorWindows)));
+      } else if (o is PickupCar) {
         print("pickup model");
         Vehicle v = o;
-        modelInstances.add(new GlModelInstanceFromModel(o, pickupModel
-            .getModelInstance(modelCollection, colorMappingGl[v.player.theme
-            .color1], colorMappingGl[v.player.theme.color2], colorWindows)));
-      }else if(o is Truck){
+        modelInstances.add(new GlModelInstanceFromModel(o, pickupModel.getModelInstance(modelCollection, colorMappingGl[v.player.theme.color1], colorMappingGl[v.player.theme.color2], colorWindows)));
+      } else if (o is Truck) {
         Vehicle v = o;
-        modelInstances.add(new GlModelInstanceFromModel(o, truckModel
-            .getModelInstance(modelCollection, colorMappingGl[v.player.theme
-            .color1], colorMappingGl[v.player.theme.color2], colorWindows)));
-
-      }else if(o is Caravan){
+        modelInstances.add(new GlModelInstanceFromModel(o, truckModel.getModelInstance(modelCollection, colorMappingGl[v.player.theme.color1], colorMappingGl[v.player.theme.color2], colorWindows)));
+      } else if (o is Caravan) {
         Trailer t = o;
-        modelInstances.add(new GlModelInstanceFromModel(o, caravanModel
-            .getModelInstance(modelCollection, colorMappingGl[t.vehicle.player.theme.color1], colorMappingGl[t.vehicle.player.theme.color2], colorWindows)));
-      }else if(o is TruckTrailer){
+        modelInstances.add(new GlModelInstanceFromModel(o, caravanModel.getModelInstance(modelCollection, colorMappingGl[t.vehicle.player.theme.color1], colorMappingGl[t.vehicle.player.theme.color2], colorWindows)));
+      } else if (o is TruckTrailer) {
         Trailer t = o;
-        modelInstances.add(new GlModelInstanceFromModel(o, truckTrailerModel
-            .getModelInstance(modelCollection, colorMappingGl[t.vehicle.player.theme.color1], colorMappingGl[t.vehicle.player.theme.color2], colorWindows)));
-
-      }else if(o is Wall){
-        modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,0.0,o.position.y, 0.0,-o.r,0.0, wallModel
-            .getModelInstance(modelCollection, o.w, 150.0, o.h)));
-      }else if(o is Tree){
-        modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x,0.0,o.position.y, 0.0,-o.r,0.0, treeModel
-            .getModelInstance(modelCollection)));
-      }else if(o is CheckpointGatePost){
+        modelInstances.add(new GlModelInstanceFromModel(o, truckTrailerModel.getModelInstance(modelCollection, colorMappingGl[t.vehicle.player.theme.color1], colorMappingGl[t.vehicle.player.theme.color2], colorWindows)));
+      } else if (o is Wall) {
+        modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 0.0, o.position.y, 0.0, -o.r, 0.0, wallModel.getModelInstance(modelCollection, o.w, 150.0, o.h)));
+      } else if (o is Tree) {
+        modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 0.0, o.position.y, 0.0, -o.r, 0.0, treeModel.getModelInstance(modelCollection)));
+      } else if (o is CheckpointGatePost) {
         var colorPoles = new GlColor(0.6, 0.6, 0.6);
-        modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 0.0, o.position.y, 0.0, -o
-            .r, 0.0, wallModel
-            .getModelInstance(modelCollection, 8.0, 150.0, 8.0, colorPoles)));
-
-      }else if(o is CheckpointGameItem){
-
+        modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 0.0, o.position.y, 0.0, -o.r, 0.0, wallModel.getModelInstance(modelCollection, 8.0, 150.0, 8.0, colorPoles)));
+      } else if (o is CheckpointGameItem) {
         CheckpointGameItem c = o;
         //if(c.isGate)
         {
@@ -297,34 +280,29 @@ class WebglGame3d extends WebglGame{
           modelInstances.add(new GlModelInstanceFromModelStatic(wallRightPosition.x, 0.0, wallRightPosition.y, 0.0, -o
               .r, 0.0, wallModel
               .getModelInstance(modelCollection, o.wallW, 150.0, o.wallH, colorPoles)));*/
-          modelInstances.add(new GlModelInstanceFromCheckpoint(game, c, o.position.x, 150.0-60.0, o.position.y, 0.0, -o
-              .r, 0.0, wallModel
-              .getModelInstance(modelCollection, 4.0, 60.0,c.width,  color)));
+          modelInstances.add(new GlModelInstanceFromCheckpoint(game, c, o.position.x, 150.0 - 60.0, o.position.y, 0.0, -o.r, 0.0, wallModel.getModelInstance(modelCollection, 4.0, 60.0, c.width, color)));
         }
         /*
       }else{
         double h = 80.0;
         GlModelBuffer cube = new GlCube.fromTopCenter(0.0,(h/2),0.0,o.w,h,o.h).createBuffers(layer);
         modelInstances.add(new GlModelInstanceFromGameObject(o, new GlModelInstanceCollection([new GlModelInstance(cube, new GlColor(1.0,1.0,1.0))])));*/
-      }else if(o is Ball){
+      } else if (o is Ball) {
         //GlModelBuffer cube = new GlCube.fromTopCenter(0.0,0.0,0.0,30.0,30.0,30.0).createBuffers(layer);
         //modelInstances.add(new GlModelInstanceFromGameObject(o, new GlModelInstanceCollection([new GlModelInstance(cube, new GlColor(1.0,1.0,0.0))])));
-        var color = new GlColor(1.0,1.0,0.0);
-        modelInstances.add(new GlModelInstanceFromModel(o, caravanModel
-            .getModelInstance(modelCollection, color, color, colorWindows)));
-
+        var color = new GlColor(1.0, 1.0, 0.0);
+        modelInstances.add(new GlModelInstanceFromModel(o, caravanModel.getModelInstance(modelCollection, color, color, colorWindows)));
       }
     }
 
     //GlModel worldModel = new GlAreaModel([new GlRectangle.withWD(0.0,0.0,0.0,1500.0,800.0,false)]);
-    var triangles = game.level.roadPolygons.map((Polygon p)=>new GlTriangle(p.points.map((var p)=>new GlPoint(p.x,0.0,p.y,p.x,-p.y)).toList(growable: false))).toList(growable: false);
+    var triangles = game.level.roadPolygons.map((Polygon p) => new GlTriangle(p.points.map((var p) => new GlPoint(p.x, 0.0, p.y, p.x, -p.y)).toList(growable: false))).toList(growable: false);
     GlModel roadModel = new GlAreaModel(triangles);
     GlModelBuffer road = roadModel.createBuffers(layer);
-    modelInstances.add(new GlModelInstanceCollection([new GlModelInstance(road, new GlColor(0.3,0.3,0.3),null,"road")]));
+    modelInstances.add(new GlModelInstanceCollection([new GlModelInstance(road, new GlColor(0.3, 0.3, 0.3), null, "road")]));
 
-    GlModelBuffer cube = new GlCube.fromTopCenter(0.0,0.0,0.0,30.0,30.0,30.0).createBuffers(layer);
-    if(game.gamelevelType == GameLevelType.Checkpoint)
-    {
+    GlModelBuffer cube = new GlCube.fromTopCenter(0.0, 0.0, 0.0, 30.0, 30.0, 30.0).createBuffers(layer);
+    if (game.gamelevelType == GameLevelType.Checkpoint) {
       /*
       modelInstances.add(new GlModelInstanceCheckpoint(game.humanPlayer
           .pathProgress as PathProgressCheckpoint, new GlModelInstanceCollection([
@@ -334,37 +312,37 @@ class WebglGame3d extends WebglGame{
   }
 }
 
-
-class GlModelInstanceFromModelStatic extends GlModelInstanceCollection{
+class GlModelInstanceFromModelStatic extends GlModelInstanceCollection {
   GlMatrix _transform;
-  GlModelInstanceFromModelStatic(double x, double y, double z, double rx, double ry, double rz, GlModelInstanceCollection model):super([]){
+  GlModelInstanceFromModelStatic(double x, double y, double z, double rx, double ry, double rz, GlModelInstanceCollection model) : super([]) {
     this.modelInstances = model.modelInstances;
-    _transform = GlMatrix.translationMatrix(x,y,z).rotateXThis(rx).rotateYThis(ry).rotateZThis(rz);
+    _transform = GlMatrix.translationMatrix(x, y, z).rotateXThis(rx).rotateYThis(ry).rotateZThis(rz);
   }
-  GlMatrix CreateTransformMatrix(){
+  GlMatrix CreateTransformMatrix() {
     return _transform;
   }
 }
-class GlModelInstanceFromCheckpoint extends GlModelInstanceCollection{
+
+class GlModelInstanceFromCheckpoint extends GlModelInstanceCollection {
   GlMatrix _transform;
   CheckpointGameItem _checkpoint;
   Game _game;
   int checkpointTicker = 0;
-  GlModelInstanceFromCheckpoint(this._game, this._checkpoint, double x, double y, double z, double rx, double ry, double rz, GlModelInstanceCollection model):super([]){
+  GlModelInstanceFromCheckpoint(this._game, this._checkpoint, double x, double y, double z, double rx, double ry, double rz, GlModelInstanceCollection model) : super([]) {
     this.modelInstances = model.modelInstances;
-    _transform = GlMatrix.translationMatrix(x,y,z).rotateXThis(rx).rotateYThis(ry).rotateZThis(rz);
+    _transform = GlMatrix.translationMatrix(x, y, z).rotateXThis(rx).rotateYThis(ry).rotateZThis(rz);
   }
-  GlMatrix CreateTransformMatrix(){
+  GlMatrix CreateTransformMatrix() {
     var isCurrent = (_checkpoint.index == (_game.humanPlayer.pathProgress as PathProgressCheckpoint).currentIndex);
-    if(!isCurrent) return _transform;
+    if (!isCurrent) return _transform;
 
     checkpointTicker++;
     //showBlank = (checkpointTicker < 20);
-    if(checkpointTicker == 40){
+    if (checkpointTicker == 40) {
       checkpointTicker = 0;
     }
 
-    return _transform.clone().scaleThis(1.0+(checkpointTicker/10), 1.0, 1.0);
+    return _transform.clone().scaleThis(1.0 + (checkpointTicker / 10), 1.0, 1.0);
   }
   /*
   void update(){
@@ -381,22 +359,24 @@ class GlModelInstanceFromCheckpoint extends GlModelInstanceCollection{
   }
   */
 }
-class GlModelInstanceFromModel extends GlModelInstanceCollection{
+
+class GlModelInstanceFromModel extends GlModelInstanceCollection {
   GameItem gameObject;
-  GlModelInstanceFromModel(this.gameObject, GlModelInstanceCollection model):super([]){
+  GlModelInstanceFromModel(this.gameObject, GlModelInstanceCollection model) : super([]) {
     this.modelInstances = model.modelInstances;
   }
-  GlMatrix CreateTransformMatrix(){
-    GlMatrix m = GlMatrix.translationMatrix(gameObject.position.x,0.0,gameObject.position.y);
+  GlMatrix CreateTransformMatrix() {
+    GlMatrix m = GlMatrix.translationMatrix(gameObject.position.x, 0.0, gameObject.position.y);
     m.rotateYThis(-gameObject.r);
     return m;
   }
 }
-class GlModelInstanceFromGameObject extends GlModelInstanceCollection{
+
+class GlModelInstanceFromGameObject extends GlModelInstanceCollection {
   GameItem gameObject;
-  GlModelInstanceFromGameObject(this.gameObject, GlModelInstanceCollection model):super(model.modelInstances);
-  GlMatrix CreateTransformMatrix(){
-    GlMatrix m = GlMatrix.translationMatrix(gameObject.position.x,0.0,gameObject.position.y);
+  GlModelInstanceFromGameObject(this.gameObject, GlModelInstanceCollection model) : super(model.modelInstances);
+  GlMatrix CreateTransformMatrix() {
+    GlMatrix m = GlMatrix.translationMatrix(gameObject.position.x, 0.0, gameObject.position.y);
     m.rotateYThis(-gameObject.r);
     return m;
   }

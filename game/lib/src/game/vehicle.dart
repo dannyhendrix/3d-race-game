@@ -13,36 +13,39 @@ enum VehicleSettingKeys {
   collision_force_after_collision,
 }
 
-class VehicleSettings{
+class VehicleSettings {
   Map data = {
-    VehicleSettingKeys.acceleration.toString() :0.3,
-    VehicleSettingKeys.acceleration_max.toString() : 5.0,
-    VehicleSettingKeys.reverse_acceleration.toString() : 0.1,
-    VehicleSettingKeys.reverse_acceleration_max.toString() : 2.0,
-    VehicleSettingKeys.friction.toString() : 0.05,
-    VehicleSettingKeys.brake_speed.toString() : 0.2,
-    VehicleSettingKeys.steering_speed.toString() : 0.1,
-    VehicleSettingKeys.standstill_delay.toString() : 6,
-    VehicleSettingKeys.collision_force.toString() : 4.0,
-    VehicleSettingKeys.collision_force_after_collision.toString() : 0.35,
+    VehicleSettingKeys.acceleration.toString(): 0.3,
+    VehicleSettingKeys.acceleration_max.toString(): 5.0,
+    VehicleSettingKeys.reverse_acceleration.toString(): 0.1,
+    VehicleSettingKeys.reverse_acceleration_max.toString(): 2.0,
+    VehicleSettingKeys.friction.toString(): 0.05,
+    VehicleSettingKeys.brake_speed.toString(): 0.2,
+    VehicleSettingKeys.steering_speed.toString(): 0.1,
+    VehicleSettingKeys.standstill_delay.toString(): 6,
+    VehicleSettingKeys.collision_force.toString(): 4.0,
+    VehicleSettingKeys.collision_force_after_collision.toString(): 0.35,
   };
-  dynamic getValue(VehicleSettingKeys key){
+  dynamic getValue(VehicleSettingKeys key) {
     return data[key.toString()];
   }
-  void setValue(VehicleSettingKeys key, dynamic value){
+
+  void setValue(VehicleSettingKeys key, dynamic value) {
     data[key.toString()] = value;
   }
 }
+
 // TODO: maybe make the whole car body a sensor?
-class VehicleSensor{
+class VehicleSensor {
   Polygon polygon;
   bool collides = false;
-  VehicleSensor.fromVector(Vector origin, Vector v){
+  VehicleSensor.fromVector(Vector origin, Vector v) {
     polygon = new Polygon([origin, origin + v]);
   }
 }
-class Truck extends Vehicle{
-  Truck(Game game, Player player) : super(game,player, GameConstants.truckSize){
+
+class Truck extends Vehicle {
+  Truck(Game game, Player player) : super(game, player, GameConstants.truckSize) {
     /*
     VehicleSettingKeys.acceleration.toString() :0.3,
     VehicleSettingKeys.acceleration_max.toString() : 5.0,
@@ -60,24 +63,28 @@ class Truck extends Vehicle{
     vehicleSettings.setValue(VehicleSettingKeys.standstill_delay, 8);
   }
 }
-class Car extends Vehicle{
-  Car(Game game, Player player) : super(game,player, GameConstants.carSize);
+
+class Car extends Vehicle {
+  Car(Game game, Player player) : super(game, player, GameConstants.carSize);
 }
-class FormulaCar extends Vehicle{
-  FormulaCar(Game game, Player player) : super(game,player, GameConstants.formulaCarSize){
+
+class FormulaCar extends Vehicle {
+  FormulaCar(Game game, Player player) : super(game, player, GameConstants.formulaCarSize) {
     vehicleSettings.setValue(VehicleSettingKeys.acceleration, 2.0);
     vehicleSettings.setValue(VehicleSettingKeys.acceleration_max, 7.0);
     vehicleSettings.setValue(VehicleSettingKeys.standstill_delay, 4);
   }
 }
-class PickupCar extends Vehicle{
-  PickupCar(Game game, Player player) : super(game,player, GameConstants.pickupCarSize){
+
+class PickupCar extends Vehicle {
+  PickupCar(Game game, Player player) : super(game, player, GameConstants.pickupCarSize) {
     vehicleSettings.setValue(VehicleSettingKeys.acceleration, 1.0);
     vehicleSettings.setValue(VehicleSettingKeys.acceleration_max, 4.0);
     vehicleSettings.setValue(VehicleSettingKeys.standstill_delay, 6);
   }
 }
-abstract class Vehicle extends GameItemMovable{
+
+abstract class Vehicle extends GameItemMovable {
   static int BASEID = 0x10000;
   Game game;
   Player player;
@@ -131,58 +138,54 @@ abstract class Vehicle extends GameItemMovable{
   bool sensorCollision = false;
   Trailer trailer;
 
-  Vehicle(this.game, this.player, Vector size):super(Polygon.createSquare(0.0, 0.0, size.x, size.y, 0.0)){
+  Vehicle(this.game, this.player, Vector size) : super(Polygon.createSquare(0.0, 0.0, size.x, size.y, 0.0)) {
     id += BASEID;
-    trailerSnapPoint = new Vector(-size.x/2,0.0);
-    double hw = size.x/2;
-    double hh= size.y/2;
-    sensorLeftFrontAngle = new VehicleSensor.fromVector(new Vector(hw,-hh), new Vector.fromAngleRadians(-sensorFrontAngle, sensorLengthFrontSide));
-    sensorLeftFront = new VehicleSensor.fromVector(new Vector(hw,-hh), new Vector(sensorLength, 0.0));
-    sensorFront = new VehicleSensor.fromVector(new Vector(hw,0.0), new Vector(sensorLength, 0.0));
-    sensorRightFront = new VehicleSensor.fromVector(new Vector(hw,hh), new Vector(sensorLength, 0.0));
-    sensorRightFrontAngle = new VehicleSensor.fromVector(new Vector(hw,hh), new Vector.fromAngleRadians(sensorFrontAngle, sensorLengthFrontSide));
-    sensorLeft = new VehicleSensor.fromVector(new Vector(0.0,-hh), new Vector(0.0, -sensorLengthSide));
-    sensorRight = new VehicleSensor.fromVector(new Vector(0.0,hh), new Vector(0.0, sensorLengthSide));
+    trailerSnapPoint = new Vector(-size.x / 2, 0.0);
+    double hw = size.x / 2;
+    double hh = size.y / 2;
+    sensorLeftFrontAngle = new VehicleSensor.fromVector(new Vector(hw, -hh), new Vector.fromAngleRadians(-sensorFrontAngle, sensorLengthFrontSide));
+    sensorLeftFront = new VehicleSensor.fromVector(new Vector(hw, -hh), new Vector(sensorLength, 0.0));
+    sensorFront = new VehicleSensor.fromVector(new Vector(hw, 0.0), new Vector(sensorLength, 0.0));
+    sensorRightFront = new VehicleSensor.fromVector(new Vector(hw, hh), new Vector(sensorLength, 0.0));
+    sensorRightFrontAngle = new VehicleSensor.fromVector(new Vector(hw, hh), new Vector.fromAngleRadians(sensorFrontAngle, sensorLengthFrontSide));
+    sensorLeft = new VehicleSensor.fromVector(new Vector(0.0, -hh), new Vector(0.0, -sensorLengthSide));
+    sensorRight = new VehicleSensor.fromVector(new Vector(0.0, hh), new Vector(0.0, sensorLengthSide));
     sensors = [sensorLeftFrontAngle, sensorLeftFront, sensorFront, sensorRightFront, sensorRightFrontAngle, sensorLeft, sensorRight];
   }
-  void setAccelarate(bool a){
+  void setAccelarate(bool a) {
     _isAccelerating = a;
   }
-  void setBrake(bool a){
+
+  void setBrake(bool a) {
     _isBraking = a;
   }
-  void setSteer(Steer a){
+
+  void setSteer(Steer a) {
     _isSteering = a;
   }
 
   bool get isCollided => _isCollided;
 
-  void update(){
-    bool gameStateRacing = game.state == GameState.Racing;
+  void update() {
+    bool gameStateRacing = game.state == GameStatus.Racing;
     //bool gameStateRacingOrCountDown = game.state == GameState.Racing || game.state == GameState.Countdown;
     //Steering
     var oldr = r;
-    if(gameStateRacing) r = _applySteering(r,vehicleSettings.getValue(VehicleSettingKeys.steering_speed), _isSteering);
-var newr = r;
-r=oldr;
+    if (gameStateRacing) r = _applySteering(r, vehicleSettings.getValue(VehicleSettingKeys.steering_speed), _isSteering);
+    var newr = r;
+    r = oldr;
 
     //Apply Forces
     bool wasStandingStill = _speed == 0;
-    _speed = _applyAccelerationAndBrake(_speed,
-        vehicleSettings.getValue(VehicleSettingKeys.acceleration),
-        vehicleSettings.getValue(VehicleSettingKeys.reverse_acceleration),
-        vehicleSettings.getValue(VehicleSettingKeys.brake_speed),
-        vehicleSettings.getValue(VehicleSettingKeys.acceleration_max),
-        vehicleSettings.getValue(VehicleSettingKeys.reverse_acceleration_max),
-        _currentStandStillDelay==0,  _isAccelerating && gameStateRacing, _isBraking && gameStateRacing);
-    _speed = _applyFriction(_speed,vehicleSettings.getValue(VehicleSettingKeys.friction));
+    _speed = _applyAccelerationAndBrake(_speed, vehicleSettings.getValue(VehicleSettingKeys.acceleration), vehicleSettings.getValue(VehicleSettingKeys.reverse_acceleration), vehicleSettings.getValue(VehicleSettingKeys.brake_speed), vehicleSettings.getValue(VehicleSettingKeys.acceleration_max), vehicleSettings.getValue(VehicleSettingKeys.reverse_acceleration_max), _currentStandStillDelay == 0, _isAccelerating && gameStateRacing, _isBraking && gameStateRacing);
+    _speed = _applyFriction(_speed, vehicleSettings.getValue(VehicleSettingKeys.friction));
 
     // slower off road
     // TODO: make this level dependant?
-    if(!game.level.onRoad(position)){
+    if (!game.level.onRoad(position)) {
       _speed *= 0.9;
     }
-    _currentStandStillDelay = _updateStandStillDelay(_currentStandStillDelay,vehicleSettings.getValue(VehicleSettingKeys.standstill_delay), wasStandingStill, _speed==0);
+    _currentStandStillDelay = _updateStandStillDelay(_currentStandStillDelay, vehicleSettings.getValue(VehicleSettingKeys.standstill_delay), wasStandingStill, _speed == 0);
 
     //Velocity *= 0.6;
     //Velocity += Vector.NewFromAngleRadians(R, Speed)*0.01;
@@ -199,8 +202,7 @@ r=oldr;
     velocity.addVectorToThis(collisionCorrection);
     velocityRotation += collisionCorrectionRotation;
 
-    if (!hasCollided)
-    {
+    if (!hasCollided) {
       velocity.multiplyToThis(1 - _friction);
       //VelocityRotation *= (1 - _friction);
       velocity.addVectorToThis(new Vector.fromAngleRadians(r, _speed) * 0.5);
@@ -211,54 +213,55 @@ r=oldr;
     ResetCollisions();
   }
 
-  void applyMatrix(Matrix2d matrix){
+  void applyMatrix(Matrix2d matrix) {
     super.applyMatrix(matrix);
-    for(var s in sensors){
+    for (var s in sensors) {
       s.polygon.applyMatrixToThis(matrix);
     }
   }
 
-  double _applyFriction(double V, double F){
-    if(V > 0) V -= Math.min(V,F);
-    else if(V < 0) V += Math.min(-V,F);
+  double _applyFriction(double V, double F) {
+    if (V > 0)
+      V -= Math.min(V, F);
+    else if (V < 0) V += Math.min(-V, F);
     return V;
   }
-  double _applyAccelerationAndBrake(double V, double A, double R, double B, double MaxA, double MaxR, bool canStartFromZero, bool acc, bool brake){
-    if(acc && brake){
-      if(V>0) V -= B;
-      else if(V<0) V += B;
-    }else{
-      if(V==0){
-        if(canStartFromZero)
-        {
+
+  double _applyAccelerationAndBrake(double V, double A, double R, double B, double MaxA, double MaxR, bool canStartFromZero, bool acc, bool brake) {
+    if (acc && brake) {
+      if (V > 0)
+        V -= B;
+      else if (V < 0) V += B;
+    } else {
+      if (V == 0) {
+        if (canStartFromZero) {
           if (acc) V += A;
           if (brake) V -= R;
         }
-      }
-      else if(V>0){
-        if(acc) V += A;
-        if(brake) V -= Math.min(V,B);
-      }
-      else if(V<0){
-        if(acc) V +=  Math.min(-V,B);
-        if(brake) V -= R;
+      } else if (V > 0) {
+        if (acc) V += A;
+        if (brake) V -= Math.min(V, B);
+      } else if (V < 0) {
+        if (acc) V += Math.min(-V, B);
+        if (brake) V -= R;
       }
     }
-    if(V > MaxA) V = MaxA;
-    if(V < -MaxR) V = -MaxR;
+    if (V > MaxA) V = MaxA;
+    if (V < -MaxR) V = -MaxR;
     return V;
   }
-  int _updateStandStillDelay(int currentStandStillDelay, int standStillDelay, bool wasStandingStill, bool standingStill){
-    if(!standingStill || !wasStandingStill) return standStillDelay;
+
+  int _updateStandStillDelay(int currentStandStillDelay, int standStillDelay, bool wasStandingStill, bool standingStill) {
+    if (!standingStill || !wasStandingStill) return standStillDelay;
 
     currentStandStillDelay -= 1;
-    if(currentStandStillDelay < 0)
-      currentStandStillDelay = 0;
+    if (currentStandStillDelay < 0) currentStandStillDelay = 0;
 
     return currentStandStillDelay;
   }
-  double _applySteering(double r, double S, Steer steering){
-    switch(steering){
+
+  double _applySteering(double r, double S, Steer steering) {
+    switch (steering) {
       case Steer.Left:
         r -= S;
         break;

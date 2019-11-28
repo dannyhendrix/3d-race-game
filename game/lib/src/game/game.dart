@@ -1,8 +1,18 @@
 part of game;
 
-enum GameState {Initialized, Running, Countdown, Racing, Finished}
+enum GameStatus { Initialized, Running, Countdown, Racing, Finished }
 
-class Game{
+class GameState {
+  List<GameItem> gameobjects = [];
+  List<GameItemMovable> movableGameObjects = [];
+  List<Player> players;
+  HumanPlayer humanPlayer;
+  GameLevelType gamelevelType;
+  GameLevelController level;
+  GameStatus state = GameStatus.Countdown;
+}
+
+class Game {
   List<GameItem> gameobjects = [];
   List<GameItemMovable> _movableGameObjects = [];
   List<Player> players;
@@ -10,18 +20,17 @@ class Game{
   String info = "";
   GameLevelType gamelevelType;
   GameLevelController level;
-  CollisionController _collisionController = new CollisionController(new GameMode());
+  CollisionController _collisionController = new CollisionController(new GameMode(), new CollisionDetection());
 
-  GameState state = GameState.Countdown;
+  GameStatus state = GameStatus.Countdown;
   Countdown countdown;
   GameSettings settings;
 
-  Game(ILifetime lifetime){
+  Game(ILifetime lifetime) {
     settings = lifetime.resolve();
   }
 
-
-  void initSession(GameInput gameSettings){
+  void initSession(GameInput gameSettings) {
     gameSettings.validate();
     // 1. load level
     level = new GameLevelController(gameSettings.level.path);
@@ -29,85 +38,93 @@ class Game{
 
     // 2. load players
     players = [];
-    for(var t in gameSettings.teams){
+    for (var t in gameSettings.teams) {
       Player player;
-      for(var p in t.players){
-        if(p.isHuman){
+      for (var p in t.players) {
+        if (p.isHuman) {
           player = new HumanPlayer(p, t.vehicleTheme);
           humanPlayer = player;
-        }else{
+        } else {
           player = new AiPlayer(p, t.vehicleTheme);
         }
         players.add(player);
 
         Vehicle v;
-        switch(p.vehicle){
-          case VehicleType.Truck: v = new Truck(this,player); break;
-          case VehicleType.Pickup: v = new PickupCar(this,player); break;
-          case VehicleType.Formula: v = new FormulaCar(this,player); break;
-          case VehicleType.Car: v = new Car(this,player); break;
+        switch (p.vehicle) {
+          case VehicleType.Truck:
+            v = new Truck(this, player);
+            break;
+          case VehicleType.Pickup:
+            v = new PickupCar(this, player);
+            break;
+          case VehicleType.Formula:
+            v = new FormulaCar(this, player);
+            break;
+          case VehicleType.Car:
+            v = new Car(this, player);
+            break;
         }
         gameobjects.add(v);
         _movableGameObjects.add(v);
         _collisionController.register(v);
 
-        if(p.trailer != TrailerType.None){
+        if (p.trailer != TrailerType.None) {
           Trailer t;
-          if(p.trailer == TrailerType.TruckTrailer)
+          if (p.trailer == TrailerType.TruckTrailer)
             t = new TruckTrailer(v);
           else
             t = new Caravan(v);
           gameobjects.add(t);
           _movableGameObjects.add(t);
           _collisionController.register(t);
-        }else{
+        } else {
           new NullTrailer(v);
         }
 
-        player.init(this,v, gameSettings.level.path);
+        player.init(this, v, gameSettings.level.path);
       }
     }
-    if(gamelevelType == GameLevelType.Checkpoint)
-      _setStartingPositions(players, gameSettings.level.path);
+    if (gamelevelType == GameLevelType.Checkpoint) _setStartingPositions(players, gameSettings.level.path);
 /*
     var ball = new Ball(this);
     _movableGameObjects.add(ball);
     gameobjects.add(ball);
 */
   }
-  void startSession(){
-    countdown = new Countdown((){
-      state = GameState.Racing;
+
+  void startSession() {
+    countdown = new Countdown(() {
+      state = GameStatus.Racing;
     });
     countdown.start();
   }
 
-  void step(){
-    if(!countdown.complete){
+  void step() {
+    if (!countdown.complete) {
       countdown.tick();
     }
     _collisionController.handleCollisions();
-    for(Player p in players) p.update();
-    for(var o in _movableGameObjects){
+    for (Player p in players) p.update();
+    for (var o in _movableGameObjects) {
       o.update();
     }
-    players.sort((Player a, Player b){
+    players.sort((Player a, Player b) {
       double ap = a.pathProgress.progress;
       double bp = b.pathProgress.progress;
-      if(ap < bp) return 1;
-      if(ap > bp) return -1;
+      if (ap < bp) return 1;
+      if (ap > bp) return -1;
       return 0;
     });
-    if(players.every((p)=>p.finished)){
-      state = GameState.Finished;
+    if (players.every((p) => p.finished)) {
+      state = GameStatus.Finished;
     }
   }
 
-  GameOutput createGameResult(){
+  GameOutput createGameResult() {
     //TODO: fill raceTimes
     GameOutput result = new GameOutput();
     result.playerResults = [];
-    for(int i = 0; i < players.length; i++){
+    for (int i = 0; i < players.length; i++) {
       Player p = players[i];
       GamePlayerResult playerResult = new GamePlayerResult(p.player);
       playerResult.position = i;
@@ -116,28 +133,28 @@ class Game{
     return result;
   }
 
-  void _loadLevel(GameLevel level){
+  void _loadLevel(GameLevel level) {
     gamelevelType = level.gameLevelType;
-    for(var obj in level.walls){
+    for (var obj in level.walls) {
       var wall = new Wall(obj.x, obj.y, obj.w, obj.h, obj.r);
       gameobjects.add(wall);
       _collisionController.register(wall);
     }
-    for(var obj in level.staticobjects){
+    for (var obj in level.staticobjects) {
       var tree = new Tree(obj.x, obj.y, obj.r);
       gameobjects.add(tree);
       _collisionController.register(tree);
     }
 
-    for(var obj in level.score.balls){
+    for (var obj in level.score.balls) {
       var ball = new Ball(obj.x, obj.y, obj.r);
       gameobjects.add(ball);
       _collisionController.register(ball);
       _movableGameObjects.add(ball);
     }
 
-    if(level.gameLevelType == GameLevelType.Checkpoint){
-      for(var c in this.level.checkpoints){
+    if (level.gameLevelType == GameLevelType.Checkpoint) {
+      for (var c in this.level.checkpoints) {
         gameobjects.add(c);
         _collisionController.register(c);
         var leftpost = new CheckpointGatePost(c, true);
@@ -150,33 +167,24 @@ class Game{
     }
   }
 
-
-  void _setStartingPositions(List<Player> players, GameLevelPath path){
+  void _setStartingPositions(List<Player> players, GameLevelPath path) {
     StartingPositions startingPositionsCreater = new StartingPositions();
     double vehicleLength = 0.0;
     double vehicleH = 0.0;
 
-    for(Player p in players){
+    for (Player p in players) {
       Vehicle v = p.vehicle;
       vehicleH = Math.max(vehicleH, v.polygon.dimensions.y);
       vehicleH = Math.max(vehicleH, v.trailer.polygon.dimensions.y);
-      vehicleLength = Math.max(vehicleLength, v.polygon.dimensions.x-v.trailerSnapPoint.x+v.trailer.vehicleSnapPoint.x+v.trailer.polygon.dimensions.x/2);
+      vehicleLength = Math.max(vehicleLength, v.polygon.dimensions.x - v.trailerSnapPoint.x + v.trailer.vehicleSnapPoint.x + v.trailer.polygon.dimensions.x / 2);
     }
 
-    List<StartingPosition> startingPositions = startingPositionsCreater.determineStartPositions(
-        path.checkpoints[0].x,
-        path.checkpoints[0].y,
-        path.checkpoints[0].angle,
-        path.checkpoints[0].width,
-        vehicleLength,
-        vehicleH,
-        players.length
-    );
+    List<StartingPosition> startingPositions = startingPositionsCreater.determineStartPositions(path.checkpoints[0].x, path.checkpoints[0].y, path.checkpoints[0].angle, path.checkpoints[0].width, vehicleLength, vehicleH, players.length);
     int i = 0;
-    for(Player player in players){
+    for (Player player in players) {
       var rdif = startingPositions[i].r - player.vehicle.r;
       var rpos = startingPositions[i].point - player.vehicle.position;
-      player.vehicle.Teleport(rpos,rdif);
+      player.vehicle.Teleport(rpos, rdif);
       //player.vehicle.Teleport(rpos,0.0);
       //player.vehicle.Teleport(new Vector(0.0,0.0), rdif);
       //player.vehicle.TelePort(startingPositions[i].point.x,startingPositions[i].point.y);

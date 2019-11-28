@@ -1,5 +1,21 @@
 part of game.gameitem;
 
+abstract class GameObjectState {
+  static int _idCounter = 0;
+  int id = _idCounter++;
+  double elasticy = 1.5;
+  Polygon polygon;
+  Aabb aabb = new Aabb();
+  double r = 0.0;
+  Vector get position => polygon.center;
+}
+
+abstract class GameObjectHandler {
+  void resetCollisions();
+  void update();
+  void teleport();
+}
+
 class GameItemStatic extends GameItem {
   GameItemStatic(Polygon polygon) : super(polygon);
 }
@@ -45,12 +61,7 @@ class GameItemMovable extends GameItem {
     var width = polygon.dimensions.x;
     var height = polygon.dimensions.y;
     mass = width * width + height * height; //w * h * h / 1000;
-    rotationalMass = 4.0 /
-        3.0 *
-        width *
-        height *
-        (width * width + height * height) *
-        _density; //rotational mass, 4/3 * width * height * (width^2 + height^2) * a.density
+    rotationalMass = 4.0 / 3.0 * width * height * (width * width + height * height) * _density; //rotational mass, 4/3 * width * height * (width^2 + height^2) * a.density
   }
 }
 
@@ -76,14 +87,11 @@ class GameItem {
     var centerX = polygon.center.x;
     var centerY = polygon.center.y;
     r += rotate;
-    var m = new Matrix2d().translateThisVector(offset).translateThis(centerX, centerY)
-        .rotateThis(rotate)
-        .translateThis(-centerX, -centerY)
-        ;
+    var m = new Matrix2d().translateThisVector(offset).translateThis(centerX, centerY).rotateThis(rotate).translateThis(-centerX, -centerY);
     applyMatrix(m);
   }
 
-  void applyMatrix(Matrix2d matrix){
+  void applyMatrix(Matrix2d matrix) {
     polygon.applyMatrixToThis(matrix);
     aabb.update(polygon);
   }
