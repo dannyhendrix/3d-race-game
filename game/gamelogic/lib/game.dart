@@ -8,6 +8,7 @@ import "package:gamedefinitions/definitions.dart";
 import "gameitem.dart";
 import "collision.dart";
 
+part "src/game/aiplayercontrol.dart";
 part "src/game/countdown.dart";
 part "src/game/game.dart";
 part "src/game/gamecomposition.dart";
@@ -18,6 +19,7 @@ part "src/game/gameitems/tree.dart";
 part "src/game/gameitems/vehicle.dart";
 part "src/game/gameitems/wall.dart";
 part "src/game/gamemode.dart";
+part "src/game/gamestandings.dart";
 part "src/game/level.dart";
 part "src/game/path.dart";
 part "src/game/player.dart";

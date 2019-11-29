@@ -47,7 +47,8 @@ class WebglGame2d extends WebglGame {
 
   bool onControl(Control control, bool active) {
     if (!_gameloop.playing || _gameloop.stopping) return false;
-    game.humanPlayer.onControl(control, active);
+    game.onControl(game.humanPlayer, control, active);
+
     return true;
   }
 
@@ -116,7 +117,7 @@ class WebglGame2d extends WebglGame {
     }
 
     layer.ctx.font = "10px Arial";
-    layer.ctx.fillText("Vehicle: ${game.players[0].vehicle.info}", 10, 10);
+    layer.ctx.fillText("Vehicle: ${game.playerRanking[0].vehicle.info}", 10, 10);
     layer.ctx.fillText("Game: ${game.info}", 10, 50);
     if (!game.countdown.complete) {
       layer.ctx.font = "124px Arial";

@@ -95,7 +95,13 @@ class WebglGame3d extends WebglGame {
     layer.setTexture("wall", _resourceManager.getTexture("textures/texture_wall"), true);
     layer.setTexture("caravan", _resourceManager.getTexture("textures/texture_caravan"));
 
-    for (var player in game.players) {
+    for (var player in game.playersHuman) {
+      if (player.vehicle is Car) {
+        layer.setTexture("car${player.player.playerId}", textureGenerator.CreateTexture(colorMappingGl[player.theme.color1], colorMappingGl[player.theme.color2], "textures/texture_vehicle1").canvas);
+      }
+    }
+
+    for (var player in game.playersCpu) {
       if (player.vehicle is Car) {
         layer.setTexture("car${player.player.playerId}", textureGenerator.CreateTexture(colorMappingGl[player.theme.color1], colorMappingGl[player.theme.color2], "textures/texture_vehicle1").canvas);
       }
@@ -107,7 +113,12 @@ class WebglGame3d extends WebglGame {
     Element el_playersWrapper = new DivElement();
     el_playersWrapper.className = "players";
     playerElements = {};
-    for (Player p in game.players) {
+    for (Player p in game.playersHuman) {
+      var stats = new PlayerStats(p);
+      el_playersWrapper.append(stats.element);
+      playerElements[p] = stats;
+    }
+    for (Player p in game.playersCpu) {
       var stats = new PlayerStats(p);
       el_playersWrapper.append(stats.element);
       playerElements[p] = stats;
@@ -143,7 +154,7 @@ class WebglGame3d extends WebglGame {
   @override
   bool onControl(Control control, bool active) {
     if (!_gameloop.playing || _gameloop.stopping) return false;
-    game.humanPlayer.onControl(control, active);
+    game.onControl(game.humanPlayer, control, active);
     return true;
   }
 
@@ -200,7 +211,7 @@ class WebglGame3d extends WebglGame {
     int h = 24;
     int y = 0;
     int pos = 1;
-    for (Player p in game.players) {
+    for (Player p in game.playerRanking) {
       playerElements[p].setPosition(pos++);
       playerElements[p].element.style.top = "${y}px";
       y += h;

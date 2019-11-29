@@ -18,21 +18,25 @@ class Game {
   //List<GameItemMovable> _movableGameObjects = [];
   List<Vehicle> vehicles = [];
   List<Trailer> trailers = [];
-  List<Ball> _balls = [];
+  List<Ball> balls = [];
   List<Tree> trees = [];
   List<Wall> walls = [];
   List<CheckpointGameItem> checkpoints = [];
   List<CheckpointGatePost> checkpointPosts = [];
 
-  List<Player> players;
-  HumanPlayer humanPlayer;
+  List<Player> playerRanking;
+  List<AiPlayer> playersCpu = [];
+  List<HumanPlayer> playersHuman = [];
+  HumanPlayer get humanPlayer => playersHuman[0];
   String info = "";
   GameLevelType gamelevelType;
   GameLevelController level;
   GameObjectCollisionHandler _collisionHandler;
   VehicleControl _vehicleControl;
   TrailerControl _trailerControl;
+  AiPlayerControl _aiPlayerControl;
   CollisionController _collisionController = new CollisionController(new GameMode(), new CollisionDetection());
+  GameStandings _gameStandings;
 
   GameStatus state = GameStatus.Countdown;
   Countdown countdown;
@@ -43,6 +47,8 @@ class Game {
     _collisionHandler = new GameObjectCollisionHandler();
     _vehicleControl = new VehicleControl();
     _trailerControl = new TrailerControl();
+    _gameStandings = new GameStandings();
+    _aiPlayerControl = new AiPlayerControl();
   }
 
   void initSession(GameInput gameSettings) {
@@ -52,17 +58,22 @@ class Game {
     _loadLevel(gameSettings.level);
 
     // 2. load players
-    players = [];
+    playersCpu = [];
     for (var team in gameSettings.teams) {
       Player player;
       for (var p in team.players) {
+        PathProgress pathProgress;
+        if (gamelevelType == GameLevelType.Checkpoint)
+          pathProgress = new PathProgressCheckpoint(gameSettings.level.path.checkpoints.length, gameSettings.level.path.laps, gameSettings.level.path.circular);
+        else
+          pathProgress = new PathProgressScore();
         if (p.isHuman) {
-          player = new HumanPlayer(p, team.vehicleTheme);
-          humanPlayer = player;
+          player = new HumanPlayer(p, team.vehicleTheme, pathProgress);
+          playersHuman.add(player);
         } else {
-          player = new AiPlayer(p, team.vehicleTheme);
+          player = new AiPlayer(p, team.vehicleTheme, pathProgress, new TrackProgress(level.trackLength()));
+          playersCpu.add(player);
         }
-        players.add(player);
 
         Vehicle v;
         switch (p.vehicle) {
@@ -90,16 +101,10 @@ class Game {
           trailer = new Caravan();
         trailers.add(trailer);
         _trailerControl.connectToVehicle(trailer, v);
-
-        player.init(this, v, gameSettings.level.path);
+        player.vehicle = v;
       }
     }
-    if (gamelevelType == GameLevelType.Checkpoint) _setStartingPositions(players, gameSettings.level.path);
-/*
-    var ball = new Ball(this);
-    _movableGameObjects.add(ball);
-    gameobjects.add(ball);
-*/
+    if (gamelevelType == GameLevelType.Checkpoint) playerRanking = _setStartingPositions(playersHuman, playersCpu, gameSettings.level.path);
   }
 
   void startSession() {
@@ -118,27 +123,20 @@ class Game {
     _collisionController.handleCollisions2(walls, vehicles);
     _collisionController.handleCollisions2(checkpointPosts, vehicles);
     _collisionController.handleCollisions2(checkpoints, vehicles);
-    _collisionController.handleCollisions2(trees, _balls);
-    _collisionController.handleCollisions2(walls, _balls);
-    _collisionController.handleCollisions2(checkpointPosts, _balls);
-    _collisionController.handleCollisions(_balls);
+    _collisionController.handleCollisions2(trees, balls);
+    _collisionController.handleCollisions2(walls, balls);
+    _collisionController.handleCollisions2(checkpointPosts, balls);
+    _collisionController.handleCollisions(balls);
     _collisionController.handleCollisions(vehicles);
-    _collisionController.handleCollisions3(_balls, vehicles);
+    _collisionController.handleCollisions3(balls, vehicles);
     _collisionController.handleCollisions3(trailers, vehicles);
 
-    for (Player p in players) p.update();
-    for (var o in _balls) _collisionHandler.update(o);
+    for (AiPlayer p in playersCpu) _aiPlayerControl.update(this, p.vehicle, p);
+    for (var o in balls) _collisionHandler.update(o);
     //for (var o in vehicles) _collisionHandler.update(o);
     for (var o in vehicles) _vehicleControl.update(o, this);
     for (var o in trailers) _trailerControl.update(o);
-    players.sort((Player a, Player b) {
-      double ap = a.pathProgress.progress;
-      double bp = b.pathProgress.progress;
-      if (ap < bp) return 1;
-      if (ap > bp) return -1;
-      return 0;
-    });
-    if (players.every((p) => p.finished)) {
+    if (playerRanking.last.pathProgress.finished) {
       state = GameStatus.Finished;
     }
   }
@@ -147,8 +145,8 @@ class Game {
     //TODO: fill raceTimes
     GameOutput result = new GameOutput();
     result.playerResults = [];
-    for (int i = 0; i < players.length; i++) {
-      Player p = players[i];
+    for (int i = 0; i < playerRanking.length; i++) {
+      Player p = playerRanking[i];
       GamePlayerResult playerResult = new GamePlayerResult(p.player);
       playerResult.position = i;
       result.playerResults.add(playerResult);
@@ -169,7 +167,7 @@ class Game {
 
     for (var obj in level.score.balls) {
       var ball = new Ball(obj.x, obj.y, obj.r);
-      _balls.add(ball);
+      balls.add(ball);
     }
 
     if (level.gameLevelType == GameLevelType.Checkpoint) {
@@ -183,26 +181,45 @@ class Game {
     }
   }
 
-  void _setStartingPositions(List<Player> players, GameLevelPath path) {
+  List<Player> _setStartingPositions(List<HumanPlayer> playersHuman, List<AiPlayer> playersAi, GameLevelPath path) {
     StartingPositions startingPositionsCreater = new StartingPositions();
     double vehicleLength = 0.0;
     double vehicleH = 0.0;
 
-    for (Player p in players) {
+    for (var p in playersAi) {
+      Vehicle v = p.vehicle;
+      vehicleH = max(vehicleH, v.polygon.dimensions.y);
+      vehicleH = max(vehicleH, v.trailer.polygon.dimensions.y);
+      vehicleLength = max(vehicleLength, v.polygon.dimensions.x - v.trailerSnapPoint.x + v.trailer.vehicleSnapPoint.x + v.trailer.polygon.dimensions.x / 2);
+    }
+    for (var p in playersHuman) {
       Vehicle v = p.vehicle;
       vehicleH = max(vehicleH, v.polygon.dimensions.y);
       vehicleH = max(vehicleH, v.trailer.polygon.dimensions.y);
       vehicleLength = max(vehicleLength, v.polygon.dimensions.x - v.trailerSnapPoint.x + v.trailer.vehicleSnapPoint.x + v.trailer.polygon.dimensions.x / 2);
     }
 
-    List<StartingPosition> startingPositions = startingPositionsCreater.determineStartPositions(path.checkpoints[0].x, path.checkpoints[0].y, path.checkpoints[0].angle, path.checkpoints[0].width, vehicleLength, vehicleH, players.length);
+    List<StartingPosition> startingPositions = startingPositionsCreater.determineStartPositions(path.checkpoints[0].x, path.checkpoints[0].y, path.checkpoints[0].angle, path.checkpoints[0].width, vehicleLength, vehicleH, playersHuman.length + playersAi.length);
     int i = 0;
-    for (Player player in players) {
+    List<Player> startRanking = [];
+    //human players start last
+    for (var player in playersAi) {
       var rdif = startingPositions[i].r - player.vehicle.r;
       var rpos = startingPositions[i].point - player.vehicle.position;
       player.vehicle.applyOffsetRotation(rpos, rdif);
+      startRanking.add(player);
+      i++;
+    }
+    for (var player in playersHuman) {
+      var rdif = startingPositions[i].r - player.vehicle.r;
+      var rpos = startingPositions[i].point - player.vehicle.position;
+      player.vehicle.applyOffsetRotation(rpos, rdif);
+      startRanking.add(player);
       i++;
     }
     for (var o in trailers) _trailerControl.connectToVehicle(o, o.vehicle);
+    return startRanking;
   }
+
+  void onControl(HumanPlayer player, Control control, bool active) => _vehicleControl.onControl(control, active, player, player.vehicle);
 }
