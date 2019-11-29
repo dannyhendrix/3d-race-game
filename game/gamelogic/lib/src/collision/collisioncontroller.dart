@@ -10,10 +10,12 @@ class CollisionController {
     // check all movable items
     for (var i = 0; i < _gameItemsMovable.length; i++) {
       var gameItemMovable = _gameItemsMovable[i];
+      if (!gameItemMovable.canCollide) continue;
 
       // check for collisions against all movable items with a higher index than this (this prevenst testing the same objects twice)
       for (var j = i + 1; j < _gameItemsMovable.length; j++) {
         var gameItem = _gameItemsMovable[j];
+        if (!gameItem.canCollide) continue;
         // if both are not moving, skip checking
         if (!gameItem.isMoving && !gameItemMovable.isMoving) continue;
         if (!gameItemMovable.aabb.collidesWith(gameItem.aabb)) continue;
@@ -29,10 +31,12 @@ class CollisionController {
     // check all movable items
     for (var i = 0; i < _gameItemsMovable.length; i++) {
       var gameItemMovable = _gameItemsMovable[i];
+      if (!gameItemMovable.canCollide) continue;
 
       // if the object is moving, check for collisions against all static items
       if (gameItemMovable.isMoving) {
         for (var gameItem in _gameItemsStatic) {
+          if (!gameItem.canCollide) continue;
           if (!gameItemMovable.aabb.collidesWith(gameItem.aabb)) continue;
           var collision = _collistionDetection.polygonCollision(gameItemMovable.polygon, gameItem.polygon);
           if (collision == null) continue;
@@ -47,10 +51,12 @@ class CollisionController {
     // check all movable items
     for (var i = 0; i < _gameItemsMovableA.length; i++) {
       var gameItemMovable = _gameItemsMovableA[i];
+      if (!gameItemMovable.canCollide) continue;
 
       // check for collisions against all movable items with a higher index than this (this prevenst testing the same objects twice)
       for (var j = 0; j < _gameItemsMovableB.length; j++) {
         var gameItem = _gameItemsMovableB[j];
+        if (!gameItem.canCollide) continue;
         // if both are not moving, skip checking
         if (!gameItem.isMoving && !gameItemMovable.isMoving) continue;
         if (!gameItemMovable.aabb.collidesWith(gameItem.aabb)) continue;

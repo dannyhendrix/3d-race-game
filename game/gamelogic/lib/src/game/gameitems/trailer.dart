@@ -14,6 +14,7 @@ class NullTrailer extends Trailer {
   NullTrailer() : super(Polygon.createSquare(0.0, 0.0, 0.0, 0.0, 0.0)) {
     wheelPoint = new Vector(0.0, 0.0);
     vehicleSnapPoint = new Vector(0.0, 0.0);
+    canCollide = false;
   }
 }
 

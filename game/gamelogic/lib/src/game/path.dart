@@ -1,62 +1,70 @@
 part of game;
 
-abstract class PathProgress{
+abstract class PathProgress {
   bool finished = false;
   double get progress;
-  void collect(CheckpointGameItem checkpoint);
+  bool collect(CheckpointGameItem checkpoint);
 }
 
-class PathProgressScore implements PathProgress{
+class PathProgressScore implements PathProgress {
   bool finished = false;
   double get progress => 0.0;
-  void collect(CheckpointGameItem checkpoint){}
+  bool collect(CheckpointGameItem checkpoint) {
+    return false;
+  }
 }
 
-class PathProgressCheckpoint extends PathProgress{
+class PathProgressCheckpoint extends PathProgress {
   int round = 0;
   int _index = 0;
-  int _roundCompleted = 0;
   int _totalCheckpoints = 0;
   int _totalRounds = 0;
   bool _circular = false;
+  int _requiredCheckpoints = 0;
+  int _collectedCheckpoints = 0;
 
   int get currentIndex => _index;
-  double get completedFactor => _roundCompleted.toDouble()/_totalCheckpoints.toDouble();
-  double get progress => round*1.0 + completedFactor;
+  double get _completedFactor => _collectedCheckpoints.toDouble() / _requiredCheckpoints.toDouble();
+  double get progress => _completedFactor;
 
-  PathProgressCheckpoint(this._totalCheckpoints, this._totalRounds, this._circular);
-
-  void collect(CheckpointGameItem checkpoint){
-    if(_index == checkpoint.index) _next();
+  PathProgressCheckpoint(this._totalCheckpoints, this._totalRounds, this._circular) {
+    _requiredCheckpoints = _totalCheckpoints * _totalRounds + (_circular ? 1 : 0);
   }
 
-  void _next(){
-    if(finished) return;
-    if(_index == 0){
+  bool collect(CheckpointGameItem checkpoint) {
+    if (finished) return false;
+    var collected = _index == checkpoint.index;
+    if (collected) _next();
+    return collected;
+  }
+
+  void _next() {
+    if (finished) return;
+    _collectedCheckpoints++;
+    if (_index == 0) {
+      print("collect 0");
       round++;
-      _roundCompleted = 0;
-      if(_totalRounds > -1 && round > _totalRounds){
+      if (_totalRounds > -1 && round > _totalRounds) {
         finished = true;
         return;
       }
     }
     _index++;
-    _roundCompleted++;
-    if(_index >= _totalCheckpoints){
+    if (_index >= _totalCheckpoints) {
       _index = 0;
-      if(!_circular) finished = true;
+      if (!_circular) finished = true;
     }
   }
 }
 
-class TrackProgress{
+class TrackProgress {
   int _index = 0;
   int _totalCheckpoints = 0;
   TrackProgress(this._totalCheckpoints);
   int get currentIndex => _index;
-  void next(){
+  void next() {
     _index++;
-    if(_index >= _totalCheckpoints){
+    if (_index >= _totalCheckpoints) {
       _index = 0;
     }
   }

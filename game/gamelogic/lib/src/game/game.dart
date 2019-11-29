@@ -40,6 +40,7 @@ class Game {
     _aiPlayerControl = new AiPlayerControl();
     //TODO: circular dep..
     _collisionController = new CollisionController(new GameMode(this), new CollisionDetection());
+    state = new GameState();
   }
 
   void initSession(GameInput gameSettings) {
@@ -128,7 +129,7 @@ class Game {
     for (var o in state.balls) _collisionHandler.update(o);
     //for (var o in vehicles) _collisionHandler.update(o);
     for (var o in state.vehicles) _vehicleControl.update(o, state);
-    for (var o in state.trailers) _trailerControl.update(o);
+    //for (var o in state.trailers) _trailerControl.update(o);
     if (state.playerRanking.last.pathProgress.finished) {
       state.state = GameStatus.Finished;
     }
@@ -201,6 +202,7 @@ class Game {
       var rpos = startingPositions[i].point - player.vehicle.position;
       player.vehicle.applyOffsetRotation(rpos, rdif);
       startRanking.add(player);
+      player.position = i;
       i++;
     }
     for (var player in playersHuman) {
@@ -208,6 +210,7 @@ class Game {
       var rpos = startingPositions[i].point - player.vehicle.position;
       player.vehicle.applyOffsetRotation(rpos, rdif);
       startRanking.add(player);
+      player.position = i;
       i++;
     }
     return startRanking;
@@ -216,7 +219,6 @@ class Game {
   void onControl(HumanPlayer player, Control control, bool active) => _vehicleControl.onControl(control, active, player, player.vehicle);
 
   void collectCheckPoint(Vehicle vehicle, CheckpointGameItem checkpoint) {
-    vehicle.player.pathProgress.collect(checkpoint);
-    _gameStandings.collect(vehicle.player, state.playerRanking);
+    if (vehicle.player.pathProgress.collect(checkpoint)) _gameStandings.collect(vehicle.player, state.playerRanking);
   }
 }

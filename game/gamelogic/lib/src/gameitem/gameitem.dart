@@ -5,6 +5,7 @@ abstract class GameItem {
   int id = _idCounter++;
   double elasticy = 1.5;
   double r = 0.0;
+  bool canCollide = true;
   Polygon _polygon;
   Aabb _aabb = new Aabb();
   Polygon get polygon => _polygon;

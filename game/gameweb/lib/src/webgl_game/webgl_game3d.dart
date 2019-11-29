@@ -186,7 +186,7 @@ class WebglGame3d extends WebglGame {
     } else {
       el_countdown.text = "${gameState.countdown.count}";
     }
-    if (game.state == GameStatus.Finished) {
+    if (game.state.state == GameStatus.Finished) {
       _gameloop.trigger(LoopTrigger.Stop);
       el_countdown.style.display = "block";
       el_countdown.text = "Finished";
