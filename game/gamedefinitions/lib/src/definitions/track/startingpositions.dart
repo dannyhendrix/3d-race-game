@@ -7,9 +7,6 @@ class StartingPosition {
 }
 
 class StartingPositions {
-  double spaceBetweenVehicleW = GameConstants.startingPositionSpacing.x;
-  double spaceBetweenVehicleH = GameConstants.startingPositionSpacing.y;
-
   List<StartingPosition> determineStartPositions(double sx, double sy, double sr, double radius, double vehicleW, double vehicleH, int totalCars) {
     return transformAndRotatePositions(sx, sy, sr, determineStartLocations(radius, vehicleW, vehicleH, totalCars));
   }
@@ -22,6 +19,8 @@ class StartingPositions {
 
   List<Vector> determineStartLocations(double width, double vehicleW, double vehicleH, int totalCars) {
     List<Vector> result = [];
+    var spaceBetweenVehicleW = GameConstants.startingPositionSpacing.x;
+    var spaceBetweenVehicleH = GameConstants.startingPositionSpacing.y;
     var availableH = width;
     var availableHH = availableH / 2;
     var vehicleHH = vehicleH / 2;

@@ -13,13 +13,23 @@ class GameState {
 }
 
 class Game {
-  List<GameItem> gameobjects = [];
-  List<GameItemMovable> _movableGameObjects = [];
+  //List<GameItem> gameobjects = [];
+  //List<GameItemStatic> _staticObjects = [];
+  //List<GameItemMovable> _movableGameObjects = [];
+  List<Vehicle> vehicles = [];
+  List<Trailer> trailers = [];
+  List<Ball> _balls = [];
+  List<Tree> trees = [];
+  List<Wall> walls = [];
+  List<CheckpointGameItem> checkpoints = [];
+  List<CheckpointGatePost> checkpointPosts = [];
+
   List<Player> players;
   HumanPlayer humanPlayer;
   String info = "";
   GameLevelType gamelevelType;
   GameLevelController level;
+  GameObjectCollisionHandler _collisionHandler;
   CollisionController _collisionController = new CollisionController(new GameMode(), new CollisionDetection());
 
   GameStatus state = GameStatus.Countdown;
@@ -28,6 +38,7 @@ class Game {
 
   Game(ILifetime lifetime) {
     settings = lifetime.resolve();
+    _collisionHandler = new GameObjectCollisionHandler();
   }
 
   void initSession(GameInput gameSettings) {
@@ -64,9 +75,7 @@ class Game {
             v = new Car(this, player);
             break;
         }
-        gameobjects.add(v);
-        _movableGameObjects.add(v);
-        _collisionController.register(v);
+        vehicles.add(v);
 
         if (p.trailer != TrailerType.None) {
           Trailer t;
@@ -74,9 +83,7 @@ class Game {
             t = new TruckTrailer(v);
           else
             t = new Caravan(v);
-          gameobjects.add(t);
-          _movableGameObjects.add(t);
-          _collisionController.register(t);
+          trailers.add(t);
         } else {
           new NullTrailer(v);
         }
@@ -103,11 +110,23 @@ class Game {
     if (!countdown.complete) {
       countdown.tick();
     }
-    _collisionController.handleCollisions();
+
+    _collisionController.handleCollisions2(trees, vehicles);
+    _collisionController.handleCollisions2(walls, vehicles);
+    _collisionController.handleCollisions2(checkpointPosts, vehicles);
+    _collisionController.handleCollisions2(checkpoints, vehicles);
+    _collisionController.handleCollisions2(trees, _balls);
+    _collisionController.handleCollisions2(walls, _balls);
+    _collisionController.handleCollisions2(checkpointPosts, _balls);
+    _collisionController.handleCollisions(_balls);
+    _collisionController.handleCollisions(vehicles);
+    _collisionController.handleCollisions3(_balls, vehicles);
+    _collisionController.handleCollisions3(trailers, vehicles);
+
     for (Player p in players) p.update();
-    for (var o in _movableGameObjects) {
-      o.update();
-    }
+    for (var o in _balls) _collisionHandler.update(o);
+    //for (var o in vehicles) _collisionHandler.update(o);
+    for (var o in vehicles) o.update();
     players.sort((Player a, Player b) {
       double ap = a.pathProgress.progress;
       double bp = b.pathProgress.progress;
@@ -137,32 +156,25 @@ class Game {
     gamelevelType = level.gameLevelType;
     for (var obj in level.walls) {
       var wall = new Wall(obj.x, obj.y, obj.w, obj.h, obj.r);
-      gameobjects.add(wall);
-      _collisionController.register(wall);
+      walls.add(wall);
     }
     for (var obj in level.staticobjects) {
       var tree = new Tree(obj.x, obj.y, obj.r);
-      gameobjects.add(tree);
-      _collisionController.register(tree);
+      trees.add(tree);
     }
 
     for (var obj in level.score.balls) {
       var ball = new Ball(obj.x, obj.y, obj.r);
-      gameobjects.add(ball);
-      _collisionController.register(ball);
-      _movableGameObjects.add(ball);
+      _balls.add(ball);
     }
 
     if (level.gameLevelType == GameLevelType.Checkpoint) {
       for (var c in this.level.checkpoints) {
-        gameobjects.add(c);
-        _collisionController.register(c);
+        checkpoints.add(c);
         var leftpost = new CheckpointGatePost(c, true);
         var rightpost = new CheckpointGatePost(c, false);
-        gameobjects.add(leftpost);
-        _collisionController.register(leftpost);
-        gameobjects.add(rightpost);
-        _collisionController.register(rightpost);
+        checkpointPosts.add(leftpost);
+        checkpointPosts.add(rightpost);
       }
     }
   }
@@ -184,7 +196,7 @@ class Game {
     for (Player player in players) {
       var rdif = startingPositions[i].r - player.vehicle.r;
       var rpos = startingPositions[i].point - player.vehicle.position;
-      player.vehicle.Teleport(rpos, rdif);
+      player.vehicle.applyOffsetRotation(rpos, rdif);
       //player.vehicle.Teleport(rpos,0.0);
       //player.vehicle.Teleport(new Vector(0.0,0.0), rdif);
       //player.vehicle.TelePort(startingPositions[i].point.x,startingPositions[i].point.y);

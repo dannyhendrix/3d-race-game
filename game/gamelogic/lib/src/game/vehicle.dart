@@ -138,7 +138,8 @@ abstract class Vehicle extends GameItemMovable {
   bool sensorCollision = false;
   Trailer trailer;
 
-  Vehicle(this.game, this.player, Vector size) : super(Polygon.createSquare(0.0, 0.0, size.x, size.y, 0.0)) {
+  Vehicle(this.game, this.player, Vector size) {
+    setPolygon(Polygon.createSquare(0.0, 0.0, size.x, size.y, 0.0));
     id += BASEID;
     trailerSnapPoint = new Vector(-size.x / 2, 0.0);
     double hw = size.x / 2;
@@ -208,9 +209,10 @@ abstract class Vehicle extends GameItemMovable {
       velocity.addVectorToThis(new Vector.fromAngleRadians(r, _speed) * 0.5);
     }
 
-    Teleport(velocity, velocityRotation);
+    applyOffsetRotation(velocity, velocityRotation);
 
-    ResetCollisions();
+    resetCollisions();
+    trailer.update();
   }
 
   void applyMatrix(Matrix2d matrix) {

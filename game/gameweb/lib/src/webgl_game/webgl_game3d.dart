@@ -180,7 +180,6 @@ class WebglGame3d extends WebglGame {
       if (onGameFinished != null) onGameFinished(game.createGameResult());
       return;
     }
-
     layer.clearForNextFrame();
     camera.setCameraAngleAndOffset(new GlVector(game.humanPlayer.vehicle.position.x, 0.0, game.humanPlayer.vehicle.position.y), game.humanPlayer.vehicle.r);
 
@@ -236,62 +235,41 @@ class WebglGame3d extends WebglGame {
     //createVehicleModel().modelInstances.forEach((GlModelInstance model) => modelInstances.add(model));
     //GlColor colorWindows = new GlColor(0.2,0.2,0.2);
     GlColor colorWindows = new GlColor(0.3, 0.3, 0.3);
+
     //create all buffer
-    for (var o in game.gameobjects) {
+    for (var o in game.trees) modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 0.0, o.position.y, 0.0, -o.r, 0.0, treeModel.getModelInstance(modelCollection)));
+    for (var o in game.walls) modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 0.0, o.position.y, 0.0, -o.r, 0.0, wallModel.getModelInstance(modelCollection, o.w, 150.0, o.h)));
+    for (var o in game.checkpointPosts) {
+      var colorPoles = new GlColor(0.6, 0.6, 0.6);
+      modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 0.0, o.position.y, 0.0, -o.r, 0.0, wallModel.getModelInstance(modelCollection, 8.0, 150.0, 8.0, colorPoles)));
+    }
+    for (var o in game.checkpoints) {
+      CheckpointGameItem c = o;
+      var color = new GlColor(1.0, 0.5, 0.0);
+      modelInstances.add(new GlModelInstanceFromCheckpoint(game, c, o.position.x, 150.0 - 60.0, o.position.y, 0.0, -o.r, 0.0, wallModel.getModelInstance(modelCollection, 4.0, 60.0, c.width, color)));
+    }
+    for (var o in game.vehicles) {
       if (o is Car) {
-        print("car model");
         Vehicle v = o;
         modelInstances.add(new GlModelInstanceFromModel(o, vehicleModel.getModelInstance(modelCollection, colorMappingGl[v.player.theme.color1], colorMappingGl[v.player.theme.color2], colorWindows, "car${v.player.player.playerId}")));
       } else if (o is FormulaCar) {
-        print("formula model");
         Vehicle v = o;
         modelInstances.add(new GlModelInstanceFromModel(o, formulaModel.getModelInstance(modelCollection, colorMappingGl[v.player.theme.color1], colorMappingGl[v.player.theme.color2], colorWindows)));
       } else if (o is PickupCar) {
-        print("pickup model");
         Vehicle v = o;
         modelInstances.add(new GlModelInstanceFromModel(o, pickupModel.getModelInstance(modelCollection, colorMappingGl[v.player.theme.color1], colorMappingGl[v.player.theme.color2], colorWindows)));
       } else if (o is Truck) {
         Vehicle v = o;
         modelInstances.add(new GlModelInstanceFromModel(o, truckModel.getModelInstance(modelCollection, colorMappingGl[v.player.theme.color1], colorMappingGl[v.player.theme.color2], colorWindows)));
-      } else if (o is Caravan) {
+      }
+    }
+    for (var o in game.trailers) {
+      if (o is Caravan) {
         Trailer t = o;
         modelInstances.add(new GlModelInstanceFromModel(o, caravanModel.getModelInstance(modelCollection, colorMappingGl[t.vehicle.player.theme.color1], colorMappingGl[t.vehicle.player.theme.color2], colorWindows)));
       } else if (o is TruckTrailer) {
         Trailer t = o;
         modelInstances.add(new GlModelInstanceFromModel(o, truckTrailerModel.getModelInstance(modelCollection, colorMappingGl[t.vehicle.player.theme.color1], colorMappingGl[t.vehicle.player.theme.color2], colorWindows)));
-      } else if (o is Wall) {
-        modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 0.0, o.position.y, 0.0, -o.r, 0.0, wallModel.getModelInstance(modelCollection, o.w, 150.0, o.h)));
-      } else if (o is Tree) {
-        modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 0.0, o.position.y, 0.0, -o.r, 0.0, treeModel.getModelInstance(modelCollection)));
-      } else if (o is CheckpointGatePost) {
-        var colorPoles = new GlColor(0.6, 0.6, 0.6);
-        modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 0.0, o.position.y, 0.0, -o.r, 0.0, wallModel.getModelInstance(modelCollection, 8.0, 150.0, 8.0, colorPoles)));
-      } else if (o is CheckpointGameItem) {
-        CheckpointGameItem c = o;
-        //if(c.isGate)
-        {
-          var color = new GlColor(1.0, 0.5, 0.0);
-          //List<Polygon> absoluteCollisionFields = o.getAbsoluteCollisionFields();
-          //var wallLeftPosition = absoluteCollisionFields[0].center;
-          //var wallRightPosition = absoluteCollisionFields[1].center;
-          /*modelInstances.add(new GlModelInstanceFromModelStatic(wallLeftPosition.x, 0.0, wallLeftPosition.y, 0.0, -o
-              .r, 0.0, wallModel
-              .getModelInstance(modelCollection, o.wallW, 150.0, o.wallH, colorPoles)));
-          modelInstances.add(new GlModelInstanceFromModelStatic(wallRightPosition.x, 0.0, wallRightPosition.y, 0.0, -o
-              .r, 0.0, wallModel
-              .getModelInstance(modelCollection, o.wallW, 150.0, o.wallH, colorPoles)));*/
-          modelInstances.add(new GlModelInstanceFromCheckpoint(game, c, o.position.x, 150.0 - 60.0, o.position.y, 0.0, -o.r, 0.0, wallModel.getModelInstance(modelCollection, 4.0, 60.0, c.width, color)));
-        }
-        /*
-      }else{
-        double h = 80.0;
-        GlModelBuffer cube = new GlCube.fromTopCenter(0.0,(h/2),0.0,o.w,h,o.h).createBuffers(layer);
-        modelInstances.add(new GlModelInstanceFromGameObject(o, new GlModelInstanceCollection([new GlModelInstance(cube, new GlColor(1.0,1.0,1.0))])));*/
-      } else if (o is Ball) {
-        //GlModelBuffer cube = new GlCube.fromTopCenter(0.0,0.0,0.0,30.0,30.0,30.0).createBuffers(layer);
-        //modelInstances.add(new GlModelInstanceFromGameObject(o, new GlModelInstanceCollection([new GlModelInstance(cube, new GlColor(1.0,1.0,0.0))])));
-        var color = new GlColor(1.0, 1.0, 0.0);
-        modelInstances.add(new GlModelInstanceFromModel(o, caravanModel.getModelInstance(modelCollection, color, color, colorWindows)));
       }
     }
 

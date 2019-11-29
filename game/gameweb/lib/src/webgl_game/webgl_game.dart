@@ -98,46 +98,22 @@ class WebglGame2d extends WebglGame {
     }
 */
     //draw gameObjects
-    for (var o in game.gameobjects) {
-      //Matrix2d M = o.getTransformation();
-      //var absolutePolygons = o.getAbsoluteCollisionFields();
-      //draw gameObjects
-      if (o is Vehicle) {
-        Vehicle v = o;
-        _drawPolygon(v.polygon, layer, v.isCollided ? "red" : "green");
-        for (var s in v.sensors) {
-          //print(s.collides);
-          _drawPolygon(s.polygon, layer, s.collides ? "red" : "#ffffff", true);
-        }
-      } else if (o is CheckpointGameItem) {
-        var current = (game.humanPlayer.pathProgress as PathProgressCheckpoint)
-            .currentIndex;
-        var index = o.index;
-        _drawPolygon(o.polygon, layer,
-            index == current ? "yellow" : (index == 0 ? "#fff" : "#999"));
-      } else {
-        //for(Polygon p in absolutePolygons) _drawPolygon(p, layer, "blue");
-        _drawPolygon(o.polygon, layer, "blue");
+    for (var o in game.trees) _drawPolygon(o.polygon, layer, "blue");
+    for (var o in game.walls) _drawPolygon(o.polygon, layer, "blue");
+    for (var o in game.checkpointPosts) _drawPolygon(o.polygon, layer, "blue");
+    for (var o in game.vehicles) {
+      _drawPolygon(o.polygon, layer, o.isCollided ? "red" : "green");
+      for (var s in o.sensors) {
+        //print(s.collides);
+        _drawPolygon(s.polygon, layer, s.collides ? "red" : "#ffffff", true);
       }
-/*
-      layer.ctx.beginPath();
-      layer.ctx.arc(o.position.x, o.position.y, 2, 0, 2 * Math.pi, false);
-      layer.ctx.fillStyle = 'green';
-      layer.ctx.fill();*/
     }
-/*
-    //draw line from each player to his next target
-    layer.ctx.strokeStyle = '#777';
-    for(int i = 0; i < game.players.length; i++){
-      var p =game.players[i];
-      layer.ctx.beginPath();
-      layer.ctx.moveTo(p.vehicle.position.x, p.vehicle.position.y);
-      if(p.pathProgress is PathProgressCheckpoint){
-        PathProgressCheckpoint pathProgressCheckpoint = p.pathProgress;
-        layer.ctx.lineTo(pathProgressCheckpoint.current.x, pathProgressCheckpoint.current.y);
-      }
-      layer.ctx.stroke();
-    }*/
+    for (var o in game.trailers) _drawPolygon(o.polygon, layer, "blue");
+    for (var o in game.checkpoints) {
+      var current = (game.humanPlayer.pathProgress as PathProgressCheckpoint).currentIndex;
+      var index = o.index;
+      _drawPolygon(o.polygon, layer, index == current ? "yellow" : (index == 0 ? "#fff" : "#999"));
+    }
 
     layer.ctx.font = "10px Arial";
     layer.ctx.fillText("Vehicle: ${game.players[0].vehicle.info}", 10, 10);
@@ -148,16 +124,14 @@ class WebglGame2d extends WebglGame {
     }
   }
 
-  void _drawPolygon(Polygon polygon, UiRenderLayer layer, String color,
-      [bool stroke = false]) {
+  void _drawPolygon(Polygon polygon, UiRenderLayer layer, String color, [bool stroke = false]) {
     var midx = screenw / 2;
     var midy = screenh / 2;
     var scale = 0.5;
     var offsetx = game.humanPlayer.vehicle.position.x * scale - midx;
     var offsety = game.humanPlayer.vehicle.position.y * scale - midy;
     layer.ctx.beginPath();
-    layer.ctx.moveTo((polygon.points.first.x * scale - offsetx),
-        (polygon.points.first.y * scale - offsety));
+    layer.ctx.moveTo((polygon.points.first.x * scale - offsetx), (polygon.points.first.y * scale - offsety));
     for (var p in polygon.points) {
       layer.ctx.lineTo((p.x * scale - offsetx), (p.y * scale - offsety));
     }

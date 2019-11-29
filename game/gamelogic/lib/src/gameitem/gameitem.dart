@@ -1,26 +1,41 @@
 part of game.gameitem;
 
-abstract class GameObjectState {
+abstract class GameItem {
   static int _idCounter = 0;
   int id = _idCounter++;
   double elasticy = 1.5;
-  Polygon polygon;
-  Aabb aabb = new Aabb();
   double r = 0.0;
-  Vector get position => polygon.center;
+  Polygon _polygon;
+  Aabb _aabb = new Aabb();
+  Polygon get polygon => _polygon;
+  Vector get position => _polygon.center;
+  Aabb get aabb => _aabb;
+  void setPolygon(Polygon polygon) {
+    _polygon = polygon;
+    _aabb.update(polygon);
+  }
+
+  void moveToPosition(double x, double y) {
+    applyMatrix(new Matrix2d.translation(x - _polygon.center.x, y - _polygon.center.y));
+  }
+
+  void applyOffsetRotation(Vector offset, double rotate) {
+    var centerX = _polygon.center.x;
+    var centerY = _polygon.center.y;
+    r += rotate;
+    var m = new Matrix2d().translateThisVector(offset).translateThis(centerX, centerY).rotateThis(rotate).translateThis(-centerX, -centerY);
+    applyMatrix(m);
+  }
+
+  void applyMatrix(Matrix2d matrix) {
+    _polygon.applyMatrixToThis(matrix);
+    _aabb.update(_polygon);
+  }
 }
 
-abstract class GameObjectHandler {
-  void resetCollisions();
-  void update();
-  void teleport();
-}
+abstract class GameItemStatic extends GameItem {}
 
-class GameItemStatic extends GameItem {
-  GameItemStatic(Polygon polygon) : super(polygon);
-}
-
-class GameItemMovable extends GameItem {
+abstract class GameItemMovable extends GameItem {
   bool hasCollided = false;
   Vector collisionCorrection = new Vector(0, 0);
   double collisionCorrectionRotation = 0;
@@ -30,71 +45,44 @@ class GameItemMovable extends GameItem {
   double rotationalMass = 0.0;
   bool isMoving = false;
 
-  double _density = 1;
-  double _friction = 0.001;
+  double density = 1;
+  double friction = 0.001;
 
-  void update() {
-    var TOLERANCE = 1e-4;
-    isMoving = velocityRotation.abs() >= TOLERANCE || velocity.x.abs() >= TOLERANCE || velocity.y.abs() >= TOLERANCE;
-
-    if (!isMoving && !hasCollided) return;
-
-    if (hasCollided) {
-      velocity.addVectorToThis(collisionCorrection);
-      velocityRotation += collisionCorrectionRotation;
-    } else {
-      velocity.multiplyToThis(1 - _friction);
-      velocityRotation *= (1 - _friction);
-    }
-    Teleport(velocity, velocityRotation);
-
-    ResetCollisions();
+  @override
+  void setPolygon(Polygon polygon) {
+    super.setPolygon(polygon);
+    var width = polygon.dimensions.x;
+    var height = polygon.dimensions.y;
+    mass = width * width + height * height; //w * h * h / 1000;
+    rotationalMass = 4.0 / 3.0 * width * height * (width * width + height * height) * density; //rotational mass, 4/3 * width * height * (width^2 + height^2) * a.density
   }
 
-  void ResetCollisions() {
+  void resetCollisions() {
     collisionCorrectionRotation = 0;
     collisionCorrection.reset();
     hasCollided = false;
   }
+}
 
-  GameItemMovable(Polygon polygon) : super(polygon) {
-    var width = polygon.dimensions.x;
-    var height = polygon.dimensions.y;
-    mass = width * width + height * height; //w * h * h / 1000;
-    rotationalMass = 4.0 / 3.0 * width * height * (width * width + height * height) * _density; //rotational mass, 4/3 * width * height * (width^2 + height^2) * a.density
+class GameObjectCollisionHandler extends GameObjectHandler {
+  void update(GameItemMovable gameobject) {
+    var TOLERANCE = 1e-4;
+    gameobject.isMoving = gameobject.velocityRotation.abs() >= TOLERANCE || gameobject.velocity.x.abs() >= TOLERANCE || gameobject.velocity.y.abs() >= TOLERANCE;
+
+    if (!gameobject.isMoving && !gameobject.hasCollided) return;
+
+    if (gameobject.hasCollided) {
+      gameobject.velocity.addVectorToThis(gameobject.collisionCorrection);
+      gameobject.velocityRotation += gameobject.collisionCorrectionRotation;
+    } else {
+      gameobject.velocity.multiplyToThis(1 - gameobject.friction);
+      gameobject.velocityRotation *= (1 - gameobject.friction);
+    }
+    gameobject.applyOffsetRotation(gameobject.velocity, gameobject.velocityRotation);
+    gameobject.resetCollisions();
   }
 }
 
-class GameItem {
-  static int _idCounter = 0;
-  int id = _idCounter++;
-  double elasticy = 1.5;
-  Polygon polygon;
-  Aabb aabb = new Aabb();
-  double r = 0.0;
-
-  Vector get position => polygon.center;
-
-  GameItem(this.polygon) {
-    aabb.update(polygon);
-  }
-
-  void TelePort(double x, double y) {
-    applyMatrix(new Matrix2d.translation(x - polygon.center.x, y - polygon.center.y));
-  }
-
-  void Teleport(Vector offset, double rotate) {
-    var centerX = polygon.center.x;
-    var centerY = polygon.center.y;
-    r += rotate;
-    var m = new Matrix2d().translateThisVector(offset).translateThis(centerX, centerY).rotateThis(rotate).translateThis(-centerX, -centerY);
-    applyMatrix(m);
-  }
-
-  void applyMatrix(Matrix2d matrix) {
-    polygon.applyMatrixToThis(matrix);
-    aabb.update(polygon);
-  }
-
-  void onCollision(GameItem other) {}
+abstract class GameObjectHandler {
+  update(GameItemMovable gameobject);
 }
