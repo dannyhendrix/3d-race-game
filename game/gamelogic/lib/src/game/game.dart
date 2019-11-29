@@ -35,7 +35,7 @@ class Game {
   VehicleControl _vehicleControl;
   TrailerControl _trailerControl;
   AiPlayerControl _aiPlayerControl;
-  CollisionController _collisionController = new CollisionController(new GameMode(), new CollisionDetection());
+  CollisionController _collisionController;
   GameStandings _gameStandings;
 
   GameStatus state = GameStatus.Countdown;
@@ -49,6 +49,8 @@ class Game {
     _trailerControl = new TrailerControl();
     _gameStandings = new GameStandings();
     _aiPlayerControl = new AiPlayerControl();
+    //TODO: circular dep..
+    _collisionController = new CollisionController(new GameMode(this), new CollisionDetection());
   }
 
   void initSession(GameInput gameSettings) {
@@ -222,4 +224,9 @@ class Game {
   }
 
   void onControl(HumanPlayer player, Control control, bool active) => _vehicleControl.onControl(control, active, player, player.vehicle);
+
+  void collectCheckPoint(Vehicle vehicle, CheckpointGameItem checkpoint) {
+    vehicle.player.pathProgress.collect(checkpoint);
+    _gameStandings.collect(vehicle.player, playerRanking);
+  }
 }

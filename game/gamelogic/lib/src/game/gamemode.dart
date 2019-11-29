@@ -2,6 +2,8 @@ part of game;
 
 class GameMode extends CollisionHandling {
   CollisionHandling _physicsHandler = new CollisionHandlingPhysics();
+  Game _game;
+  GameMode(this._game);
   @override
   void handleCollision(GameItemMovable a, GameItemMovable b, PolygonCollisionResult collision) {
     _physicsHandler.handleCollision(a, b, collision);
@@ -9,28 +11,10 @@ class GameMode extends CollisionHandling {
 
   @override
   void handleCollisionSingle(GameItemMovable a, GameItemStatic b, PolygonCollisionResult collision) {
-    if (b is CheckpointGameItem) {
-      Vehicle v = a;
-      CheckpointGameItem c = b;
-      v.player.pathProgress.collect(c);
+    if (b is CheckpointGameItem && a is Vehicle) {
+      _game.collectCheckPoint(a, b);
       return;
     }
     _physicsHandler.handleCollisionSingle(a, b, collision);
-  }
-
-  void handleCollisionId(int idA, int idB) {
-    var aIsCar = idA & Vehicle.BASEID;
-  }
-}
-
-abstract class GameProgress {
-  GameStatus state;
-  void collisionEvent(GameItem itemA, GameItem itemB) {
-    //order based on ID
-    if (itemA.id < itemB.id) {
-      var itemC = itemA;
-      itemA = itemB;
-      itemB = itemC;
-    }
   }
 }
