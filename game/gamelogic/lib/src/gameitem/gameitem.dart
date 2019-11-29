@@ -15,10 +15,6 @@ abstract class GameItem {
     _aabb.update(polygon);
   }
 
-  void moveToPosition(double x, double y) {
-    applyMatrix(new Matrix2d.translation(x - _polygon.center.x, y - _polygon.center.y));
-  }
-
   void applyOffsetRotation(Vector offset, double rotate) {
     var centerX = _polygon.center.x;
     var centerY = _polygon.center.y;

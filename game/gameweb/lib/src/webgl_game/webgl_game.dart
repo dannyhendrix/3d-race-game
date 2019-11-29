@@ -25,6 +25,7 @@ abstract class WebglGame {
 
 class WebglGame2d extends WebglGame {
   Game game;
+  GameState gameState;
   UiRenderLayer layer;
   GameLoop _gameloop;
   int screenw = 1000;
@@ -34,6 +35,7 @@ class WebglGame2d extends WebglGame {
     layer = lifetime.resolve();
     _gameloop = new GameLoop();
     _gameloop.setOnUpdate(_loop);
+    gameState = game.state;
   }
 
   Element initAndCreateDom(GameInput input, GameSettings settings) {
@@ -47,7 +49,7 @@ class WebglGame2d extends WebglGame {
 
   bool onControl(Control control, bool active) {
     if (!_gameloop.playing || _gameloop.stopping) return false;
-    game.onControl(game.humanPlayer, control, active);
+    game.onControl(game.state.humanPlayer, control, active);
 
     return true;
   }
@@ -72,7 +74,7 @@ class WebglGame2d extends WebglGame {
     //draw road
     layer.ctx.fillStyle = "#111";
     layer.ctx.strokeStyle = "#111";
-    for (Polygon p in game.level.roadPolygons) {
+    for (Polygon p in game.state.level.roadPolygons) {
       _drawRoadPolygon(p, layer);
     }
 /*
@@ -99,29 +101,28 @@ class WebglGame2d extends WebglGame {
     }
 */
     //draw gameObjects
-    for (var o in game.trees) _drawPolygon(o.polygon, layer, "blue");
-    for (var o in game.walls) _drawPolygon(o.polygon, layer, "blue");
-    for (var o in game.checkpointPosts) _drawPolygon(o.polygon, layer, "blue");
-    for (var o in game.vehicles) {
+    for (var o in gameState.trees) _drawPolygon(o.polygon, layer, "blue");
+    for (var o in gameState.walls) _drawPolygon(o.polygon, layer, "blue");
+    for (var o in gameState.checkpointPosts) _drawPolygon(o.polygon, layer, "blue");
+    for (var o in gameState.vehicles) {
       _drawPolygon(o.polygon, layer, o.isCollided ? "red" : "green");
       for (var s in o.sensors) {
         //print(s.collides);
         _drawPolygon(s.polygon, layer, s.collides ? "red" : "#ffffff", true);
       }
     }
-    for (var o in game.trailers) _drawPolygon(o.polygon, layer, "blue");
-    for (var o in game.checkpoints) {
-      var current = (game.humanPlayer.pathProgress as PathProgressCheckpoint).currentIndex;
+    for (var o in gameState.trailers) _drawPolygon(o.polygon, layer, "blue");
+    for (var o in gameState.checkpoints) {
+      var current = (gameState.humanPlayer.pathProgress as PathProgressCheckpoint).currentIndex;
       var index = o.index;
       _drawPolygon(o.polygon, layer, index == current ? "yellow" : (index == 0 ? "#fff" : "#999"));
     }
 
     layer.ctx.font = "10px Arial";
-    layer.ctx.fillText("Vehicle: ${game.playerRanking[0].vehicle.info}", 10, 10);
-    layer.ctx.fillText("Game: ${game.info}", 10, 50);
-    if (!game.countdown.complete) {
+    layer.ctx.fillText("Vehicle: ${gameState.playerRanking[0].vehicle.info}", 10, 10);
+    if (!gameState.countdown.complete) {
       layer.ctx.font = "124px Arial";
-      layer.ctx.fillText("${game.countdown.count}", 400, 400);
+      layer.ctx.fillText("${gameState.countdown.count}", 400, 400);
     }
   }
 
@@ -129,8 +130,8 @@ class WebglGame2d extends WebglGame {
     var midx = screenw / 2;
     var midy = screenh / 2;
     var scale = 0.5;
-    var offsetx = game.humanPlayer.vehicle.position.x * scale - midx;
-    var offsety = game.humanPlayer.vehicle.position.y * scale - midy;
+    var offsetx = gameState.humanPlayer.vehicle.position.x * scale - midx;
+    var offsety = gameState.humanPlayer.vehicle.position.y * scale - midy;
     layer.ctx.beginPath();
     layer.ctx.moveTo((polygon.points.first.x * scale - offsetx), (polygon.points.first.y * scale - offsety));
     for (var p in polygon.points) {
@@ -149,8 +150,8 @@ class WebglGame2d extends WebglGame {
     var midx = screenw / 2;
     var midy = screenh / 2;
     var scale = 0.5;
-    var offsetx = game.humanPlayer.vehicle.position.x * scale - midx;
-    var offsety = game.humanPlayer.vehicle.position.y * scale - midy;
+    var offsetx = gameState.humanPlayer.vehicle.position.x * scale - midx;
+    var offsety = gameState.humanPlayer.vehicle.position.y * scale - midy;
     layer.ctx.beginPath();
     var first = polygon.points.first;
     layer.ctx.moveTo((first.x * scale - offsetx), (first.y * scale - offsety));

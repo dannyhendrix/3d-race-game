@@ -97,7 +97,7 @@ class VehicleControl {
     return Steer.None;
   }
 
-  void update(Vehicle vehicle, Game game) {
+  void update(Vehicle vehicle, GameState game) {
     bool gameStateRacing = game.state == GameStatus.Racing;
     //bool gameStateRacingOrCountDown = game.state == GameState.Racing || game.state == GameState.Countdown;
     //Steering

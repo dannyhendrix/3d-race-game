@@ -1,7 +1,8 @@
 part of game;
+
 class AiPlayerControl {
   VehicleControl _vehicleControl = new VehicleControl();
-  void update(Game game, Vehicle vehicle, AiPlayer player) {
+  void update(GameState game, Vehicle vehicle, AiPlayer player) {
     if (player.pathProgress.finished) {
       vehicle.setSteer(Steer.Left);
       vehicle.setAccelarate(false);
