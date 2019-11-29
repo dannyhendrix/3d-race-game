@@ -30,6 +30,8 @@ class Game {
   GameLevelType gamelevelType;
   GameLevelController level;
   GameObjectCollisionHandler _collisionHandler;
+  VehicleControl _vehicleControl;
+  TrailerControl _trailerControl;
   CollisionController _collisionController = new CollisionController(new GameMode(), new CollisionDetection());
 
   GameStatus state = GameStatus.Countdown;
@@ -39,6 +41,8 @@ class Game {
   Game(ILifetime lifetime) {
     settings = lifetime.resolve();
     _collisionHandler = new GameObjectCollisionHandler();
+    _vehicleControl = new VehicleControl();
+    _trailerControl = new TrailerControl();
   }
 
   void initSession(GameInput gameSettings) {
@@ -49,14 +53,14 @@ class Game {
 
     // 2. load players
     players = [];
-    for (var t in gameSettings.teams) {
+    for (var team in gameSettings.teams) {
       Player player;
-      for (var p in t.players) {
+      for (var p in team.players) {
         if (p.isHuman) {
-          player = new HumanPlayer(p, t.vehicleTheme);
+          player = new HumanPlayer(p, team.vehicleTheme);
           humanPlayer = player;
         } else {
-          player = new AiPlayer(p, t.vehicleTheme);
+          player = new AiPlayer(p, team.vehicleTheme);
         }
         players.add(player);
 
@@ -77,16 +81,15 @@ class Game {
         }
         vehicles.add(v);
 
-        if (p.trailer != TrailerType.None) {
-          Trailer t;
-          if (p.trailer == TrailerType.TruckTrailer)
-            t = new TruckTrailer(v);
-          else
-            t = new Caravan(v);
-          trailers.add(t);
-        } else {
-          new NullTrailer(v);
-        }
+        Trailer trailer;
+        if (p.trailer == TrailerType.None)
+          trailer = new NullTrailer();
+        else if (p.trailer == TrailerType.TruckTrailer)
+          trailer = new TruckTrailer();
+        else
+          trailer = new Caravan();
+        trailers.add(trailer);
+        _trailerControl.connectToVehicle(trailer, v);
 
         player.init(this, v, gameSettings.level.path);
       }
@@ -126,7 +129,8 @@ class Game {
     for (Player p in players) p.update();
     for (var o in _balls) _collisionHandler.update(o);
     //for (var o in vehicles) _collisionHandler.update(o);
-    for (var o in vehicles) o.update();
+    for (var o in vehicles) _vehicleControl.update(o, this);
+    for (var o in trailers) _trailerControl.update(o);
     players.sort((Player a, Player b) {
       double ap = a.pathProgress.progress;
       double bp = b.pathProgress.progress;
@@ -197,11 +201,8 @@ class Game {
       var rdif = startingPositions[i].r - player.vehicle.r;
       var rpos = startingPositions[i].point - player.vehicle.position;
       player.vehicle.applyOffsetRotation(rpos, rdif);
-      //player.vehicle.Teleport(rpos,0.0);
-      //player.vehicle.Teleport(new Vector(0.0,0.0), rdif);
-      //player.vehicle.TelePort(startingPositions[i].point.x,startingPositions[i].point.y);
-      player.vehicle.trailer.updateVehiclePosition();
       i++;
     }
+    for (var o in trailers) _trailerControl.connectToVehicle(o, o.vehicle);
   }
 }
