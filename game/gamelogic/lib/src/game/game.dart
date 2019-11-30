@@ -101,12 +101,13 @@ class Game {
     if (state.gamelevelType == GameLevelType.Checkpoint) state.playerRanking = _setStartingPositions(state.playersHuman, state.playersCpu, gameSettings.level.path);
 
     for (var o in state.trailers) _trailerControl.connectToVehicle(o, o.vehicle);
+
+    state.countdown = new Countdown(() {
+      state.state = GameStatus.Racing;
+    }, 60, gameSettings.startCountdown);
   }
 
   void startSession() {
-    state.countdown = new Countdown(() {
-      state.state = GameStatus.Racing;
-    });
     state.countdown.start();
   }
 

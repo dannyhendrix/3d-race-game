@@ -39,5 +39,17 @@ void main() {
     menu.showMenu(menu.MENU_MAIN);
     document.body.querySelector("#loading").remove();
     document.body.append(menu.element);
+    if (window.location.href.endsWith("debugcollisions")) {
+      GameBuilder gameBuilder = lifetime.resolve();
+      LevelManager levelManager = lifetime.resolve();
+      GameSettings settings = lifetime.resolve();
+      settings.debug.v = true;
+      settings.client_displayType.v = GameDisplayType.Webgl2d;
+      var input = gameBuilder.newGameRandomPlayers(0, VehicleType.Car, TrailerType.None, levelManager.getLevel("levels/race/level1"), 1);
+      input.startCountdown = 0;
+      menu.showMenu(new GameInputMenuStatus("Random race", input, (GameOutput result) {
+        menu.showMenu(new GameOutputMenuStatus("Race results", result));
+      }));
+    }
   });
 }

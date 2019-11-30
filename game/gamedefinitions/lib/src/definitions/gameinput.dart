@@ -1,6 +1,6 @@
 part of game.definitions;
 
-class GameSettingsInvalidException implements Exception{
+class GameSettingsInvalidException implements Exception {
   final String msg;
   GameSettingsInvalidException(this.msg);
   String toString() {
@@ -8,32 +8,34 @@ class GameSettingsInvalidException implements Exception{
   }
 }
 
-class GameInput{
+class GameInput {
   List<GameSettingsTeam> teams = [];
   GameLevel level;
+  int startCountdown = 3;
 
-  void validate(){
-    if(level == null) throw new GameSettingsInvalidException("Level is null");
+  void validate() {
+    if (level == null) throw new GameSettingsInvalidException("Level is null");
     level.validate();
     //TODO: check if teams > 1 (for debugging reasons, allow this for now)
-    teams.forEach((p)=>p.validate());
+    teams.forEach((p) => p.validate());
   }
 }
 
-class GameSettingsTeam{
+class GameSettingsTeam {
   List<GameSettingsPlayer> players = [];
   VehicleTheme vehicleTheme = new VehicleTheme.withDefaults();
 
   GameSettingsTeam();
   GameSettingsTeam.withTheme(this.vehicleTheme);
 
-  void validate(){
-    if(players.length == 0) throw new GameSettingsInvalidException("Team has no players");
-    players.forEach((p)=>p.validate());
-    if(vehicleTheme == null) throw new GameSettingsInvalidException("Team.vehicleTheme is null");
+  void validate() {
+    if (players.length == 0) throw new GameSettingsInvalidException("Team has no players");
+    players.forEach((p) => p.validate());
+    if (vehicleTheme == null) throw new GameSettingsInvalidException("Team.vehicleTheme is null");
   }
 }
-class GameSettingsPlayer{
+
+class GameSettingsPlayer {
   String name = "Player";
   int playerId;
   bool isHuman = false;
@@ -41,10 +43,10 @@ class GameSettingsPlayer{
   TrailerType trailer = TrailerType.None;
 
   GameSettingsPlayer();
-  GameSettingsPlayer.asHumanPlayer(this.name,this.vehicle,[this.trailer = TrailerType.None]) : isHuman = true, playerId = -1;
-  GameSettingsPlayer.asAiPlayer(this.playerId, this.name,this.vehicle,[this.trailer = TrailerType.None]) : isHuman = false;
+  GameSettingsPlayer.asHumanPlayer(this.name, this.vehicle, [this.trailer = TrailerType.None])
+      : isHuman = true,
+        playerId = -1;
+  GameSettingsPlayer.asAiPlayer(this.playerId, this.name, this.vehicle, [this.trailer = TrailerType.None]) : isHuman = false;
 
-  void validate(){
-
-  }
+  void validate() {}
 }

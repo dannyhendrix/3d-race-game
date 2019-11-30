@@ -11,14 +11,15 @@ class Countdown {
   Countdown(this._onComplete, [this.frameDelay = 60, this.count = 3]);
   void start() {
     _tick = frameDelay;
+    if (count == 0) _tick = 0;
   }
 
   void tick() {
     _tick--;
-    if (_tick == 0) {
+    if (_tick <= 0) {
       _tick = frameDelay;
       count--;
-      if (count == 0) {
+      if (count <= 0) {
         complete = true;
         _onComplete();
       }
