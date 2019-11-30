@@ -3,10 +3,10 @@ import "package:dashboard/uihelper.dart";
 import "package:dashboard/menu.dart";
 import "package:dependencyinjection/dependencyinjection.dart";
 
-enum MenuPage {MainMenu, TestMenu, MainMenu2}
+enum MenuPage { MainMenu, TestMenu, MainMenu2 }
 
-void main(){
-  var lifetime = DependencyBuilderFactory().createNew((builder){
+void main() {
+  var lifetime = DependencyBuilderFactory().createNew((builder) {
     builder.registerModule(UiMenuComposition());
     builder.registerModule(UiComposition());
   });
@@ -14,7 +14,8 @@ void main(){
   menu.showMenu(MenuPage.MainMenu2);
   document.body.append(menu.element);
 }
-class UiMenuComposition implements IDependencyModule{
+
+class UiMenuComposition implements IDependencyModule {
   @override
   void load(IDependencyBuilder builder) {
     builder.registerType((lifetime) => new MenuMain(lifetime)..build(), additionRegistrations: [MenuScreenExampleBase], lifeTimeScope: LifeTimeScope.SingleInstance);
@@ -26,7 +27,7 @@ class UiMenuComposition implements IDependencyModule{
   }
 }
 
-abstract class MenuScreenExampleBase extends UiPanel{
+abstract class MenuScreenExampleBase extends UiPanel {
   String title = "Title";
   MenuPage id;
   bool showBack = true;
@@ -37,42 +38,40 @@ abstract class MenuScreenExampleBase extends UiPanel{
   void attachToMenu(MenuExample menu) => _menu = menu;
 }
 
-class MenuButton extends UiButtonIconText{
+class MenuButton extends UiButtonIconText {
   MenuButton(ILifetime lifetime) : super(lifetime);
-
 }
 
-class MenuTest extends MenuScreenExampleBase{
+class MenuTest extends MenuScreenExampleBase {
   String title = "Main Menu";
   UiText _text;
-  MenuTest(ILifetime lifetime):super(lifetime)
-  {
+  MenuTest(ILifetime lifetime) : super(lifetime) {
     id = MenuPage.TestMenu;
     _text = lifetime.resolve();
   }
-  void build(){
+  void build() {
     _text.changeText("Ahoi");
     append(_text);
   }
 }
 
-class MenuMain extends MenuScreenExampleBase{
+class MenuMain extends MenuScreenExampleBase {
   String title = "Main Menu";
   MenuButton _btn_test;
-  MenuMain(ILifetime lifetime) : super(lifetime)
-  {
+  MenuMain(ILifetime lifetime) : super(lifetime) {
     id = MenuPage.MainMenu;
     showBack = false;
     _btn_test = lifetime.resolve();
   }
-  void build(){
+  void build() {
     _btn_test.changeText("Go to test menu");
     _btn_test.setOnClick(() => _menu.showMenu(MenuPage.TestMenu));
     //_btn_test.setOnClick(() => _menu.showMenu(MenuPage.MainMenu2));
     append(_btn_test);
   }
 }
-class MenuMain2 extends MenuScreenExampleBase{
+
+class MenuMain2 extends MenuScreenExampleBase {
   String title = "Main Menu2";
   MenuButton _btn_test;
   UiPanel _wrapper;
@@ -80,8 +79,7 @@ class MenuMain2 extends MenuScreenExampleBase{
   UiPanel _side;
   UiText _textSide;
   UiText _textMain;
-  MenuMain2(ILifetime lifetime) : super(lifetime)
-  {
+  MenuMain2(ILifetime lifetime) : super(lifetime) {
     id = MenuPage.MainMenu2;
     showBack = false;
     _btn_test = lifetime.resolve();
@@ -91,12 +89,18 @@ class MenuMain2 extends MenuScreenExampleBase{
     _textSide = lifetime.resolve();
     _textMain = lifetime.resolve();
   }
-  void build(){
+  void build() {
     _btn_test.changeText("Hide side menu");
     _btn_test.setOnClick(() => _menu.showMenu(MenuPage.TestMenu));
-    _textSide..changeText("Side panel")..addStyle("sidemenu");
-    _textSide..changeText("Main panel")..addStyle("mainpanel");
-    _textSide..changeText("Main panel")..addStyle("mainpanel");
+    _textSide
+      ..changeText("Side panel")
+      ..addStyle("sidemenu");
+    _textSide
+      ..changeText("Main panel")
+      ..addStyle("mainpanel");
+    _textSide
+      ..changeText("Main panel")
+      ..addStyle("mainpanel");
 
     _wrapper.append(_side);
     _wrapper.append(_main);
@@ -104,11 +108,10 @@ class MenuMain2 extends MenuScreenExampleBase{
     _side.append(_textMain);
     append(_btn_test);
     append(_wrapper);
-
   }
 }
 
-class MenuExample extends UiPanel{
+class MenuExample extends UiPanel {
   //menu element
   UiPanel content;
   UiSwitchPanel tabs;
@@ -119,7 +122,7 @@ class MenuExample extends UiPanel{
   MenuHistory<MenuPage> _history;
   Map<MenuPage, MenuScreenExampleBase> _menus = {};
 
-  MenuExample(ILifetime lifetime) : super(lifetime){
+  MenuExample(ILifetime lifetime) : super(lifetime) {
     _history = lifetime.resolve();
     btn_back = lifetime.resolve();
     txt_title = lifetime.resolve();
@@ -127,14 +130,12 @@ class MenuExample extends UiPanel{
     tabs = lifetime.resolve();
     titleContent = lifetime.resolve();
     var menus = lifetime.resolveList<MenuScreenExampleBase>();
-    for(var menu in menus){
+    for (var menu in menus) {
       _menus[menu.id] = menu;
       menu.attachToMenu(this);
-      print("Loaded ${menu.id}");
     }
   }
-  void build()
-  {
+  void build() {
     setStyleId("menu_bg");
     content.setStyleId("menu_wrapper");
 
@@ -148,28 +149,29 @@ class MenuExample extends UiPanel{
     content.append(titleContent);
     content.append(tabs);
     append(content);
-    for(var menu in _menus.values){
+    for (var menu in _menus.values) {
       tabs.setTab(menu.id.index, menu);
     }
   }
-  void showMenu(MenuPage id){
+
+  void showMenu(MenuPage id) {
     var current = _history.any() ? _history.current() : null;
-    _showMenu(id,current, true);
+    _showMenu(id, current, true);
   }
-  void _showMenu(MenuPage id, MenuPage current, bool storeInHistory){
+
+  void _showMenu(MenuPage id, MenuPage current, bool storeInHistory) {
     var screen = _menus[id];
     txt_title.changeText(screen.title);
     btn_back.display(screen.showBack && _history.any());
     tabs.showTab(id.index);
-    if(storeInHistory) _history.goTo(id);
+    if (storeInHistory) _history.goTo(id);
   }
-  void _createBackButton()
-  {
+
+  void _createBackButton() {
     btn_back.changeIcon("navigate_before");
-    btn_back.setOnClick((){
+    btn_back.setOnClick(() {
       var prev = _history.goBack();
-      if(_history.any())
-        _showMenu(_history.current(),prev, false);
+      if (_history.any()) _showMenu(_history.current(), prev, false);
     });
     btn_back.setStyleId("menu_back");
   }

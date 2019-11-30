@@ -107,7 +107,6 @@ class WebglGame2d extends WebglGame {
     for (var o in gameState.vehicles) {
       _drawPolygon(o.polygon, layer, o.isCollided ? "red" : "green");
       for (var s in o.sensors) {
-        //print(s.collides);
         _drawPolygon(s.polygon, layer, s.collides ? "red" : "#ffffff", true);
       }
     }

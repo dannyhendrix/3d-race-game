@@ -46,7 +46,6 @@ class PlayGameMenu extends GameMenuScreen {
     }
     //var enableTextures = menu.settings.client_renderType.v == GameRenderType.Textures;
     _gamelifetime = _lifetime.startNewLifetimeScope();
-    print("Game lifetime $_gamelifetime");
     //TODO: move this switch to composition
     game = displayType == GameDisplayType.Webgl2d ? _gamelifetime.resolve<WebglGame3d>() : _gamelifetime.resolve<WebglGame3d>();
 

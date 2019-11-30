@@ -320,10 +320,11 @@ class TriangleSelector extends UiPanelTitled {
     _in_triangleIndex = lifetime.resolve();
   }
 
-  void setOnValueChange(Function onValueChange){
+  void setOnValueChange(Function onValueChange) {
     _in_modelIndex.onValueChange = (i) => onValueChange();
     _in_triangleIndex.onValueChange = (i) => onValueChange();
   }
+
   int getSelectedModelIndex() => _in_modelIndex.getValue();
   int getSelectedTriangleIndex() => _in_triangleIndex.getValue();
 
@@ -390,7 +391,7 @@ class PointEditor extends UiPanelTitled {
     _in_ty = lifetime.resolve();
   }
 
-  void setOnValueChange(Function onValueChange){
+  void setOnValueChange(Function onValueChange) {
     _in_x.onValueChange = (i) => onValueChange();
     _in_y.onValueChange = (i) => onValueChange();
     _in_z.onValueChange = (i) => onValueChange();
@@ -469,13 +470,12 @@ GlModelInstanceCollection createXYZMark(GlRenderLayer layer) {
   return new GlModelInstanceCollection([new GlModelInstance(xaxis, new GlColor(1.0, 0.0, 0.0)), new GlModelInstance(yaxis, new GlColor(0.0, 0.0, 1.0)), new GlModelInstance(zaxis, new GlColor(0.0, 1.0, 0.0))]);
 }
 
-class RenderTexture extends UiRenderLayer{
+class RenderTexture extends UiRenderLayer {
   static const int textureSize = 256;
-  RenderTexture(ILifetime lifetime) : super(lifetime){
-  }
-  
+  RenderTexture(ILifetime lifetime) : super(lifetime) {}
+
   @override
-  void build(){
+  void build() {
     super.build();
     setSize(textureSize, textureSize);
     ctx.fillStyle = "#000";

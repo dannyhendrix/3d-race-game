@@ -218,7 +218,6 @@ class WebglGame3d extends WebglGame {
       playerElements[p].element.style.top = "${y}px";
       y += h;
     }
-    //TODO: print current round
     var progress = gameState.humanPlayer.pathProgress;
     if (progress is PathProgressCheckpoint) el_rounds.text = "${progress.round}";
   }

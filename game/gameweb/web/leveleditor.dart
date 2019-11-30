@@ -18,7 +18,6 @@ GameSettings buildSettings() {
 }
 
 void main() {
-  print("hoi");
   var lifetime = DependencyBuilderFactory().createNew((builder) {
     var settings = buildSettings();
     builder.registerInstance(settings);

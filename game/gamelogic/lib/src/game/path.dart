@@ -42,7 +42,6 @@ class PathProgressCheckpoint extends PathProgress {
     if (finished) return;
     _collectedCheckpoints++;
     if (_index == 0) {
-      print("collect 0");
       round++;
       if (_totalRounds > -1 && round > _totalRounds) {
         finished = true;
