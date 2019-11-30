@@ -14,7 +14,7 @@ class GameState {
   List<AiPlayer> playersCpu = [];
   List<HumanPlayer> playersHuman = [];
   GameLevelType gamelevelType;
-  GameLevelController level;
+  GameLevelContainer level;
   GameStatus state = GameStatus.Countdown;
   Countdown countdown;
   HumanPlayer get humanPlayer => playersHuman[0];
@@ -27,6 +27,7 @@ class Game {
   AiPlayerControl _aiPlayerControl;
   CollisionController _collisionController;
   GameStandings _gameStandings;
+  GameLevelController _levelController;
 
   GameState state;
   GameSettings settings;
@@ -38,6 +39,7 @@ class Game {
     _trailerControl = new TrailerControl();
     _gameStandings = new GameStandings();
     _aiPlayerControl = new AiPlayerControl();
+    _levelController = new GameLevelController();
     //TODO: circular dep..
     _collisionController = new CollisionController(new GameMode(this), new CollisionDetection());
     state = new GameState();
@@ -46,8 +48,8 @@ class Game {
   void initSession(GameInput gameSettings) {
     gameSettings.validate();
     // 1. load level
-    state.level = new GameLevelController(gameSettings.level.path);
-    _loadLevel(gameSettings.level, state);
+    state.level = _levelController.createLevel(gameSettings.level.path);
+    _levelController.loadLevel(gameSettings.level, state);
 
     // 2. load players
     state.playersCpu = [];
@@ -146,33 +148,6 @@ class Game {
       result.playerResults.add(playerResult);
     }
     return result;
-  }
-
-  void _loadLevel(GameLevel level, GameState state) {
-    state.gamelevelType = level.gameLevelType;
-    for (var obj in level.walls) {
-      var wall = new Wall(obj.x, obj.y, obj.w, obj.h, obj.r);
-      state.walls.add(wall);
-    }
-    for (var obj in level.staticobjects) {
-      var tree = new Tree(obj.x, obj.y, obj.r);
-      state.trees.add(tree);
-    }
-
-    for (var obj in level.score.balls) {
-      var ball = new Ball(obj.x, obj.y, obj.r);
-      state.balls.add(ball);
-    }
-
-    if (level.gameLevelType == GameLevelType.Checkpoint) {
-      for (var c in state.level.checkpoints) {
-        state.checkpoints.add(c);
-        var leftpost = new CheckpointGatePost(c, true);
-        var rightpost = new CheckpointGatePost(c, false);
-        state.checkpointPosts.add(leftpost);
-        state.checkpointPosts.add(rightpost);
-      }
-    }
   }
 
   List<Player> _setStartingPositions(List<HumanPlayer> playersHuman, List<AiPlayer> playersAi, GameLevelPath path) {

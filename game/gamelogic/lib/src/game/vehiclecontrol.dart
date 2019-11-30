@@ -1,6 +1,7 @@
 part of game;
 
 class VehicleControl {
+  GameLevelController _levelController = new GameLevelController();
   void controlToTarget(Vehicle vehicle, Vector target) {
     vehicle.setSteer(steerToPoint(vehicle.position, vehicle.r, target));
     vehicle.setAccelarate(true);
@@ -113,7 +114,7 @@ class VehicleControl {
 
     // slower off road
     // TODO: make this level dependant?
-    if (!game.level.onRoad(vehicle.position)) {
+    if (!_levelController.onRoad(game.level, vehicle.position)) {
       vehicle._speed *= 0.9;
     }
     vehicle._currentStandStillDelay = _updateStandStillDelay(vehicle._currentStandStillDelay, vehicle.vehicleSettings.getValue(VehicleSettingKeys.standstill_delay), wasStandingStill, vehicle._speed == 0);
