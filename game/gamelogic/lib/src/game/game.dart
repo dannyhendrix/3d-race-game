@@ -131,7 +131,7 @@ class Game {
     for (var o in state.balls) _collisionHandler.update(o);
     //for (var o in vehicles) _collisionHandler.update(o);
     for (var o in state.vehicles) _vehicleControl.update(o, state);
-    //for (var o in state.trailers) _trailerControl.update(o);
+    for (var o in state.trailers) _trailerControl.update(o);
     if (state.playerRanking.last.pathProgress.finished) {
       state.state = GameStatus.Finished;
     }

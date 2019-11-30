@@ -1,7 +1,6 @@
 part of game.menu;
 
-
-class ProfileMenu extends GameMenuMainScreen{
+class ProfileMenu extends GameMenuMainScreen {
   GameSettings _settings;
   TextureGenerator _textureGenerator;
   ColorSelection _colorSelectionMain;
@@ -10,10 +9,7 @@ class ProfileMenu extends GameMenuMainScreen{
   UiPanelForm _form;
   UiInputText _inUsername;
 
-  VehicleThemeColor _colorCache1;
-  VehicleThemeColor _colorCache2;
-
-  ProfileMenu(ILifetime lifetime) : super(lifetime, GameMainMenuPage.Profile){
+  ProfileMenu(ILifetime lifetime) : super(lifetime, GameMainMenuPage.Profile) {
     _settings = lifetime.resolve();
     _textureGenerator = lifetime.resolve();
     _colorSelectionMain = lifetime.resolve();
@@ -28,23 +24,25 @@ class ProfileMenu extends GameMenuMainScreen{
   }
 
   @override
-  void build(){
+  void build() {
     super.build();
-    _colorSelectionMain.onValueChange = (VehicleThemeColor newColor){
+    _colorSelectionMain.onValueChange = (VehicleThemeColor newColor) {
       _settings.user_color1.v = newColor;
       _onColorChange();
       _settings.saveToCookie();
     };
-    _colorSelectionSub.onValueChange = (VehicleThemeColor newColor){
+    _colorSelectionSub.onValueChange = (VehicleThemeColor newColor) {
       _settings.user_color2.v = newColor;
       _onColorChange();
       _settings.saveToCookie();
     };
 
-    _inUsername..changeLabel("Username")..onValueChange = (String newValue){
-      _settings.user_name.v = newValue;
-      _settings.saveToCookie();
-    };
+    _inUsername
+      ..changeLabel("Username")
+      ..onValueChange = (String newValue) {
+        _settings.user_name.v = newValue;
+        _settings.saveToCookie();
+      };
 
     _form.appendElement(_el_vehiclePreview);
     _form.append(_colorSelectionMain);
@@ -54,7 +52,7 @@ class ProfileMenu extends GameMenuMainScreen{
   }
 
   @override
-  void enterMenu(GameMenuStatus status){
+  void enterMenu(GameMenuStatus status) {
     _colorSelectionMain.setValue(_settings.user_color1.v);
     _colorSelectionSub.setValue(_settings.user_color2.v);
     _inUsername.setValue(_settings.user_name.v);
@@ -62,15 +60,10 @@ class ProfileMenu extends GameMenuMainScreen{
     super.enterMenu(status);
   }
 
-  void _onColorChange(){
-
-    if(_colorCache1 == _settings.user_color1.v && _colorCache2 == _settings.user_color2.v) return;
-    _colorCache1 = _settings.user_color1.v;
-    _colorCache2 = _settings.user_color2.v;
+  void _onColorChange() {
     _el_vehiclePreview.src = _createPreviewFromModel(new GlModel_Vehicle(), colorMappingGl[_settings.user_color1.v], colorMappingGl[_settings.user_color2.v]);
 
-    if(_settings.client_changeCSSWithThemeChange.v)
-    {
+    if (_settings.client_changeCSSWithThemeChange.v) {
       LinkElement theme1 = document.querySelector("#css_theme1");
       theme1.href = "theme1/${colorMappingText[_settings.user_color1.v].toLowerCase()}.css";
       LinkElement theme2 = document.querySelector("#css_theme2");
@@ -78,14 +71,13 @@ class ProfileMenu extends GameMenuMainScreen{
     }
   }
 
-  String _createPreviewFromModel(dynamic model, GlColor c1, GlColor c2){
-    GlPreview preview = new GlPreview(200.0,150.0,(GlModelCollection modelCollection){
+  String _createPreviewFromModel(dynamic model, GlColor c1, GlColor c2) {
+    GlPreview preview = new GlPreview(200.0, 150.0, (GlModelCollection modelCollection) {
       model.loadModel(modelCollection);
-      var instance = model.getModelInstance(modelCollection, c1, c2, new GlColor(0.7, 0.7, 0.9),"car");
+      var instance = model.getModelInstance(modelCollection, c1, c2, new GlColor(0.7, 0.7, 0.9), "car");
 
       return [instance];
-
-    },_settings.client_renderType.v == GameRenderType.Textures);
+    }, _settings.client_renderType.v == GameRenderType.Textures);
     preview.ox = 0.0;
     preview.oy = 26.0;
     preview.oz = 200.0;
@@ -98,10 +90,8 @@ class ProfileMenu extends GameMenuMainScreen{
     preview.lightImpact = 0.3;
 
     preview.create();
-    preview.layer.setTexture("car", _textureGenerator.CreateTexture(c1, c2,"textures/texture_vehicle1").canvas);
+    preview.layer.setTexture("car", _textureGenerator.CreateTexture(c1, c2, "textures/texture_vehicle1").canvas);
     preview.draw();
     return preview.layer.canvas.toDataUrl("image/png");
   }
 }
-
-

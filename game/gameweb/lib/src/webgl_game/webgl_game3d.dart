@@ -80,6 +80,7 @@ class WebglGame3d extends WebglGame {
    */
   @override
   Element initAndCreateDom(GameInput input, GameSettings settings) {
+    _enableTextures = settings.client_renderType.v == GameRenderType.Textures;
     game.initSession(input);
     double windowW = 800.0;
     double windowH = 500.0;

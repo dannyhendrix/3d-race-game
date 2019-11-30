@@ -47,7 +47,7 @@ class PlayGameMenu extends GameMenuScreen {
     //var enableTextures = menu.settings.client_renderType.v == GameRenderType.Textures;
     _gamelifetime = _lifetime.startNewLifetimeScope();
     //TODO: move this switch to composition
-    game = displayType == GameDisplayType.Webgl2d ? _gamelifetime.resolve<WebglGame3d>() : _gamelifetime.resolve<WebglGame3d>();
+    game = displayType == GameDisplayType.Webgl2d ? _gamelifetime.resolve<WebglGame2d>() : _gamelifetime.resolve<WebglGame3d>();
 
     game.onGameFinished = (result) {
       el_game.remove();

@@ -28,8 +28,8 @@ class WebglGame2d extends WebglGame {
   GameState gameState;
   UiRenderLayer layer;
   GameLoop _gameloop;
-  int screenw = 1000;
-  int screenh = 800;
+  int screenw = 800;
+  int screenh = 500;
   WebglGame2d(ILifetime lifetime) {
     game = lifetime.resolve();
     layer = lifetime.resolve();
