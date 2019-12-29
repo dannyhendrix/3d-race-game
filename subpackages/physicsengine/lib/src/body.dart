@@ -11,7 +11,7 @@ class Body {
   double staticFriction;
   double dynamicFriction;
   double restitution;
-  Shape shape;
+  PolygonShape shape;
 
   Body(this.shape, double x, double y) {
     this.shape = shape;

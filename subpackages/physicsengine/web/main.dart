@@ -95,12 +95,9 @@ class Example {
   void start() {
     Body b = null;
 
-    b = impulse.add(new Circle(20.0), 200, 200);
-    //b = impulse.add(new Circle(30.0), 300, 200);
-    //b.setStatic();
-
+    b = impulse.add(new PolygonShape.rectangle(10.0, 50.0), 240, 200);
+    b.setOrient(0);
     b = impulse.add(new PolygonShape.rectangle(200.0, 10.0), 240, 100);
-
     b.setOrient(0);
     b = impulse.add(new PolygonShape.rectangle(200.0, 10.0), 240, 300);
     b.setStatic();
@@ -130,36 +127,23 @@ class Example {
     uistate.renderlayer.ctx.strokeStyle = "black";
     uistate.renderlayer.ctx.fillStyle = "black";
     for (Body b in impulse.bodies) {
-      if (b.shape is Circle) {
-        Circle c = b.shape;
+      PolygonShape p = b.shape;
 
-        double rx = cos(b.orient) * c.radius;
-        double ry = sin(b.orient) * c.radius;
+      uistate.renderlayer.ctx.beginPath();
+      for (int i = 0; i < p.vertexCount; i++) {
+        Vec2 v = p.vertices[i].clone();
+        b.shape.u.mulV(v);
+        v.addV(b.position);
 
-        //gr.setColor(Color.red);
-        //gr.draw(new Ellipse2D.double(b.position.x - c.radius, b.position.y - c.radius, c.radius * 2, c.radius * 2));
-        //gr.draw(new Line2D.double(b.position.x, b.position.y, b.position.x + rx, b.position.y + ry));
-        uistate.renderlayer.ctx.beginPath();
-        uistate.renderlayer.ctx.arc(b.position.x, b.position.y, c.radius, 0, pi * 2);
-        uistate.renderlayer.ctx.stroke();
-      } else if (b.shape is PolygonShape) {
-        PolygonShape p = b.shape;
-
-        uistate.renderlayer.ctx.beginPath();
-        for (int i = 0; i < p.vertexCount; i++) {
-          Vec2 v = p.vertices[i].clone();
-          b.shape.u.mulV(v);
-          v.addV(b.position);
-
-          if (i == 0) {
-            uistate.renderlayer.ctx.moveTo(v.x, v.y);
-          } else {
-            uistate.renderlayer.ctx.lineTo(v.x, v.y);
-          }
+        if (i == 0) {
+          uistate.renderlayer.ctx.moveTo(v.x, v.y);
+        } else {
+          uistate.renderlayer.ctx.lineTo(v.x, v.y);
         }
-        uistate.renderlayer.ctx.closePath();
-        uistate.renderlayer.ctx.stroke();
       }
+      uistate.renderlayer.ctx.closePath();
+      uistate.renderlayer.ctx.stroke();
+
       /*
       } else if (b.shape is PolygonShape) {
         PolygonShape polygon = b.shape;
@@ -187,8 +171,6 @@ class Example {
       }
     }
   }
-
-  void _drawCircle(Circle circle, UiRenderLayer layer, String color, double offsetx, double offsety, [bool stroke = false]) {}
 
   void _drawPolygon(List<Vec2> vertices, UiRenderLayer layer, String color, double offsetx, double offsety, [bool stroke = false]) {
     var scale = 1.0;

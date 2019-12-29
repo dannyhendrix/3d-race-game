@@ -1,8 +1,6 @@
 part of physicsengine;
 
-class CollisionPolygonPolygon implements CollisionHandler {
-  static final CollisionPolygonPolygon instance = new CollisionPolygonPolygon();
-
+class CollisionHandler {
   @override
   void handleCollision(Manifold m, Body a, Body b) {
     PolygonShape A = a.shape;

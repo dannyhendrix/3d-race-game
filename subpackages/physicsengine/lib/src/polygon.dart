@@ -1,7 +1,11 @@
 part of physicsengine;
 
-class PolygonShape extends Shape {
+class PolygonShape {
   static final int MAX_POLY_VERTEX_COUNT = 4;
+
+  Body body;
+  double radius;
+  Mat2 u = Mat2();
 
   int vertexCount;
   List<Vec2> vertices; // = Vec2.arrayOf(MAX_POLY_VERTEX_COUNT);
@@ -15,12 +19,10 @@ class PolygonShape extends Shape {
     setBox(hw, hh);
   }
 
-  @override
   void initialize() {
     computeMass(1.0);
   }
 
-  @override
   void computeMass(double density) {
     // Calculate centroid and moment of inertia
     Vec2 c = new Vec2(0.0, 0.0); // centroid
@@ -63,14 +65,8 @@ class PolygonShape extends Shape {
     body.invInertia = (body.inertia != 0.0) ? 1.0 / body.inertia : 0.0;
   }
 
-  @override
   void setOrient(double radians) {
     u.changeR(radians);
-  }
-
-  @override
-  Type getType() {
-    return Type.Poly;
   }
 
   void setBox(double hw, double hh) {

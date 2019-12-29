@@ -61,7 +61,7 @@ class ImpulseScene {
     }
   }
 
-  Body add(Shape shape, double x, double y) {
+  Body add(PolygonShape shape, double x, double y) {
     Body b = new Body(shape, x, y);
     bodies.add(b);
     return b;

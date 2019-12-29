@@ -10,6 +10,7 @@ class Manifold {
   double e;
   double df;
   double sf;
+  CollisionHandler _collisionHandler = new CollisionHandler();
 
   Manifold(Body a, Body b) {
     A = a;
@@ -17,10 +18,7 @@ class Manifold {
   }
 
   void solve() {
-    int ia = A.shape.getType().index;
-    int ib = B.shape.getType().index;
-
-    Collisions.dispatch[ia][ib].handleCollision(this, A, B);
+    _collisionHandler.handleCollision(this, A, B);
   }
 
   void initialize() {
