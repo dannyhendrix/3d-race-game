@@ -1,0 +1,20 @@
+name: collisionengine
+version: 0.0.1
+author: Danny Hendrix <DWM.Hendrix@gmail.com>
+description: Game collision engine 2d
+
+environment:
+  sdk: '>=2.1.0 <3.0.0'
+
+dev_dependencies:
+  build_runner: ^1.7.2
+  build_web_compilers: ^2.7.1
+  test: ^1.5.1
+
+dependencies:
+  dashboard:
+    path: ../dashboard
+  gameutils:
+    path: ../gameutils
+  dependencyinjection:
+    path: ../dependencyinjection

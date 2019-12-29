@@ -133,7 +133,7 @@ class Game {
     //for (var o in vehicles) _collisionHandler.update(o);
     for (var o in state.vehicles) _vehicleControl.update(o, state);
     for (var o in state.trailers) _trailerControl.update(o);
-    if (state.playerRanking.last.pathProgress.finished) {
+    if (state.gamelevelType == GameLevelType.Checkpoint && state.playerRanking.last.pathProgress.finished) {
       state.state = GameStatus.Finished;
     }
   }

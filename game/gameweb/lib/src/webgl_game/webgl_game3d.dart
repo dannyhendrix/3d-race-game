@@ -211,16 +211,18 @@ class WebglGame3d extends WebglGame {
         layer.drawModel(mi);
       }
     }
-    int h = 24;
-    int y = 0;
-    int pos = 1;
-    for (Player p in gameState.playerRanking) {
-      playerElements[p].setPosition(pos++);
-      playerElements[p].element.style.top = "${y}px";
-      y += h;
+    if (gameState.gamelevelType == GameLevelType.Checkpoint) {
+      int h = 24;
+      int y = 0;
+      int pos = 1;
+      for (Player p in gameState.playerRanking) {
+        playerElements[p].setPosition(pos++);
+        playerElements[p].element.style.top = "${y}px";
+        y += h;
+      }
+      var progress = gameState.humanPlayer.pathProgress;
+      if (progress is PathProgressCheckpoint) el_rounds.text = "${progress.round}";
     }
-    var progress = gameState.humanPlayer.pathProgress;
-    if (progress is PathProgressCheckpoint) el_rounds.text = "${progress.round}";
   }
 
   List<GlModelInstanceCollection> _createModels() {
@@ -252,6 +254,8 @@ class WebglGame3d extends WebglGame {
     //create all buffer
     for (var o in gameState.trees) modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 0.0, o.position.y, 0.0, -o.r, 0.0, treeModel.getModelInstance(modelCollection)));
     for (var o in gameState.walls) modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 0.0, o.position.y, 0.0, -o.r, 0.0, wallModel.getModelInstance(modelCollection, o.w, 150.0, o.h)));
+    for (var o in gameState.balls) modelInstances.add(new GlModelInstanceFromModel(o, caravanModel.getModelInstance(modelCollection, colorMappingGl[VehicleThemeColor.Yellow], colorMappingGl[VehicleThemeColor.Yellow], colorWindows)));
+
     for (var o in gameState.checkpointPosts) {
       var colorPoles = new GlColor(0.6, 0.6, 0.6);
       modelInstances.add(new GlModelInstanceFromModelStatic(o.position.x, 0.0, o.position.y, 0.0, -o.r, 0.0, wallModel.getModelInstance(modelCollection, 8.0, 150.0, 8.0, colorPoles)));

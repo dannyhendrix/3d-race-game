@@ -52,6 +52,11 @@ class SoccerGameMenu extends GameMenuScreen {
     _vehicleSelection..changeLabel("Vehicle");
     _trailerSelection..changeLabel("Trailer");
 
+    _vehicleSelection.setValue(VehicleType.Car);
+    _trailerSelection.setValue(TrailerType.None);
+    _levelSelection.setOptions(_levelManager.getLevelKeys().toList());
+    _levelSelection.setValue(_levelManager.getLevelKeys().first);
+
     _panelLeft.append(_levelSelection);
 
     _panelLeft.append(_in_scorelimit);
