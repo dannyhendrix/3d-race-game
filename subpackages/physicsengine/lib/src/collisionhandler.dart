@@ -63,10 +63,10 @@ class CollisionHandler {
     Vec2 v2 = RefPoly.vertices[referenceIndex].clone();
 
     // Transform vertices to world space
-    RefPoly.u.mulV(v1);
-    v1.addV(RefPoly.u.position());
-    RefPoly.u.mulV(v2);
-    v2.addV(RefPoly.u.position());
+    RefPoly.body.u.mulV(v1);
+    v1.addV(RefPoly.body.u.position());
+    RefPoly.body.u.mulV(v2);
+    v2.addV(RefPoly.body.u.position());
 
     // Calculate reference face side normal in world space
     Vec2 sidePlaneNormal = v2.clone()..subV(v1);
@@ -123,10 +123,10 @@ class CollisionHandler {
     for (int i = 0; i < A.vertexCount; ++i) {
       // Retrieve a face normal from A
       Vec2 nw = A.normals[i].clone();
-      A.u.mulV(nw);
+      A.body.u.mulV(nw);
 
       // Transform face normal into B's model space
-      Mat2 buT = B.u.clone()..transpose();
+      Mat2 buT = B.body.u.clone()..transpose();
       Vec2 n = nw.clone();
       buT.mulV(n);
 
@@ -136,10 +136,10 @@ class CollisionHandler {
       // Retrieve vertex on face from A, transform into
       // B's model space
       Vec2 v = A.vertices[i].clone();
-      A.u.mulV(v);
+      A.body.u.mulV(v);
       v
-        ..addV(A.u.position())
-        ..subV(B.u.position());
+        ..addV(A.body.u.position())
+        ..subV(B.body.u.position());
       buT.mulV(v);
 
       // Compute penetration distance (in B's model space)
@@ -160,8 +160,8 @@ class CollisionHandler {
     Vec2 referenceNormal = RefPoly.normals[referenceIndex].clone();
 
     // Calculate normal in incident's frame of reference
-    RefPoly.u.mulV(referenceNormal);
-    IncPoly.u.clone()
+    RefPoly.body.u.mulV(referenceNormal);
+    IncPoly.body.u.clone()
       ..transpose()
       ..mulV(referenceNormal);
 
@@ -179,12 +179,12 @@ class CollisionHandler {
 
     // Assign face vertices for incidentFace
     v[0] = IncPoly.vertices[incidentFace].clone();
-    IncPoly.u.mulV(v[0]);
-    v[0].addV(IncPoly.u.position());
+    IncPoly.body.u.mulV(v[0]);
+    v[0].addV(IncPoly.body.u.position());
     incidentFace = incidentFace + 1 >= IncPoly.vertexCount ? 0 : incidentFace + 1;
     v[1] = IncPoly.vertices[incidentFace].clone();
-    IncPoly.u.mulV(v[1]);
-    v[1].addV(IncPoly.u.position());
+    IncPoly.body.u.mulV(v[1]);
+    v[1].addV(IncPoly.body.u.position());
   }
 
   int clip(Vec2 n, double c, List<Vec2> face) {

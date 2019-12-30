@@ -5,7 +5,6 @@ class PolygonShape {
 
   Body body;
   double radius;
-  Mat2 u = Mat2();
 
   int vertexCount;
   List<Vec2> vertices; // = Vec2.arrayOf(MAX_POLY_VERTEX_COUNT);
@@ -63,10 +62,6 @@ class PolygonShape {
     body.invMass = (body.mass != 0.0) ? 1.0 / body.mass : 0.0;
     body.inertia = I * density;
     body.invInertia = (body.inertia != 0.0) ? 1.0 / body.inertia : 0.0;
-  }
-
-  void setOrient(double radians) {
-    u.changeR(radians);
   }
 
   void setBox(double hw, double hh) {

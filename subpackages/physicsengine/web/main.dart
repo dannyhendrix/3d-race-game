@@ -131,8 +131,8 @@ class Example {
       uistate.renderlayer.ctx.beginPath();
       for (int i = 0; i < p.vertexCount; i++) {
         Vec2 v = p.vertices[i].clone();
-        b.shape.u.mulV(v);
-        v.addV(b.shape.u.position());
+        b.u.mulV(v);
+        v.addV(b.u.position());
 
         if (i == 0) {
           uistate.renderlayer.ctx.moveTo(v.x, v.y);

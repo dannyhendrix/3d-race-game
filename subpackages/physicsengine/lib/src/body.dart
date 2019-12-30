@@ -10,11 +10,12 @@ class Body {
   double dynamicFriction;
   double restitution;
   PolygonShape shape;
+  Mat2 u = Mat2();
 
   Body(this.shape, double x, double y) {
     this.shape = shape;
 
-    shape.u.translateThis(x, y);
+    u.translateThis(x, y);
     velocity.change(0, 0);
     angularVelocity = 0;
     torque = 0;
