@@ -83,11 +83,9 @@ class ImpulseScene {
   }
 
   void integrateVelocity(Body b, double dt) {
-    if (b.invMass == 0.0) {
-      return;
-    }
+    if (b.invMass == 0.0) return;
 
-    b.position.addVs(b.velocity, dt);
+    b.shape.u.translate(b.velocity.x * dt, b.velocity.y * dt);
     b.orient += b.angularVelocity * dt;
     b.setOrient(b.orient);
 

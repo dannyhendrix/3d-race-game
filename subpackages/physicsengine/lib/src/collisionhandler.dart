@@ -64,9 +64,9 @@ class CollisionHandler {
 
     // Transform vertices to world space
     RefPoly.u.mulV(v1);
-    v1.addV(RefPoly.body.position);
+    v1.addV(RefPoly.u.position());
     RefPoly.u.mulV(v2);
-    v2.addV(RefPoly.body.position);
+    v2.addV(RefPoly.u.position());
 
     // Calculate reference face side normal in world space
     Vec2 sidePlaneNormal = v2.clone()..subV(v1);
@@ -138,8 +138,8 @@ class CollisionHandler {
       Vec2 v = A.vertices[i].clone();
       A.u.mulV(v);
       v
-        ..addV(A.body.position)
-        ..subV(B.body.position);
+        ..addV(A.u.position())
+        ..subV(B.u.position());
       buT.mulV(v);
 
       // Compute penetration distance (in B's model space)
@@ -180,11 +180,11 @@ class CollisionHandler {
     // Assign face vertices for incidentFace
     v[0] = IncPoly.vertices[incidentFace].clone();
     IncPoly.u.mulV(v[0]);
-    v[0].addV(IncPoly.body.position);
+    v[0].addV(IncPoly.u.position());
     incidentFace = incidentFace + 1 >= IncPoly.vertexCount ? 0 : incidentFace + 1;
     v[1] = IncPoly.vertices[incidentFace].clone();
     IncPoly.u.mulV(v[1]);
-    v[1].addV(IncPoly.body.position);
+    v[1].addV(IncPoly.u.position());
   }
 
   int clip(Vec2 n, double c, List<Vec2> face) {

@@ -1,7 +1,6 @@
 part of physicsengine;
 
 class Body {
-  final Vec2 position = new Vec2(0, 0);
   final Vec2 velocity = new Vec2(0, 0);
   final Vec2 force = new Vec2(0, 0);
   double angularVelocity;
@@ -16,7 +15,7 @@ class Body {
   Body(this.shape, double x, double y) {
     this.shape = shape;
 
-    position.change(x, y);
+    shape.u.translate(x, y);
     velocity.change(0, 0);
     angularVelocity = 0;
     torque = 0;

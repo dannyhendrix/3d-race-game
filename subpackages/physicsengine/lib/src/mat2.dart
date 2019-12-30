@@ -1,37 +1,29 @@
 part of physicsengine;
 
 class Mat2 {
-  double m00, m01;
-  double m10, m11;
+  double m00, m01, m02;
+  double m10, m11, m12;
 
-  Mat2() {}
+  Mat2() {
+    m00 = 0;
+    m01 = 0;
+    m10 = 0;
+    m11 = 0;
+    m02 = 0;
+    m12 = 0;
+  }
 
   Mat2 clone() {
-    return Mat2.fromValues(m00, m01, m10, m11);
+    return Mat2.fromValues(m00, m01, m10, m11, m02, m12);
   }
 
-  Mat2.fromRadius(double radians) {
-    double c = cos(radians);
-    double s = sin(radians);
-
-    m00 = c;
-    m01 = -s;
-    m10 = s;
-    m11 = c;
-  }
-
-  Mat2.fromValues(double a, double b, double c, double d) {
+  Mat2.fromValues(double a, double b, double c, double d, double e, double f) {
     m00 = a;
     m01 = b;
     m10 = c;
     m11 = d;
-  }
-
-  void changeM(Mat2 m) {
-    m00 = m.m00;
-    m01 = m.m01;
-    m10 = m.m10;
-    m11 = m.m11;
+    m02 = e;
+    m12 = f;
   }
 
   void changeR(double radians) {
@@ -49,14 +41,6 @@ class Mat2 {
     m01 = m01.abs();
     m10 = m10.abs();
     m11 = m11.abs();
-  }
-
-  Vec2 getAxisX() {
-    return Vec2(m00, m10);
-  }
-
-  Vec2 getAxisY() {
-    return Vec2(m01, m11);
   }
 
   void transpose() {
@@ -77,5 +61,15 @@ class Mat2 {
     m01 = m00 * x.m01 + m01 * x.m11;
     m10 = m10 * x.m00 + m11 * x.m10;
     m11 = m10 * x.m01 + m11 * x.m11;
+  }
+
+  Vec2 position() => Vec2(m02, m12);
+  void translate(double x, double y) {
+    m02 += x;
+    m12 += y;
+  }
+
+  String toString() {
+    return "$m00 | $m01 | $m02\n$m10 | $m11 | $m12";
   }
 }

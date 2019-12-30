@@ -95,7 +95,7 @@ class Example {
   void start() {
     Body b = null;
 
-    b = impulse.add(new PolygonShape.rectangle(10.0, 50.0), 240, 200);
+    b = impulse.add(new PolygonShape.rectangle(10.0, 50.0), 230, 200);
     b.setOrient(0);
     b = impulse.add(new PolygonShape.rectangle(200.0, 10.0), 240, 100);
     b.setOrient(0);
@@ -119,6 +119,7 @@ class Example {
   void _update(num frame) {
     impulse.step();
     _paint(uistate, gamestate);
+    //_gameloop.stop(gameloopstate);
   }
 
   void _paint(ExampleUiState uistate, ExampleGameState state) {
@@ -127,13 +128,14 @@ class Example {
     uistate.renderlayer.ctx.strokeStyle = "black";
     uistate.renderlayer.ctx.fillStyle = "black";
     for (Body b in impulse.bodies) {
+      //print(b.shape.u);
       PolygonShape p = b.shape;
 
       uistate.renderlayer.ctx.beginPath();
       for (int i = 0; i < p.vertexCount; i++) {
         Vec2 v = p.vertices[i].clone();
         b.shape.u.mulV(v);
-        v.addV(b.position);
+        v.addV(b.shape.u.position());
 
         if (i == 0) {
           uistate.renderlayer.ctx.moveTo(v.x, v.y);

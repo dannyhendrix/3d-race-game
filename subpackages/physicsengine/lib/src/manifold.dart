@@ -31,8 +31,8 @@ class Manifold {
 
     for (int i = 0; i < contactCount; ++i) {
       // Calculate radii from COM to contact
-      Vec2 ra = contacts[i].clone()..subV(A.position);
-      Vec2 rb = contacts[i].clone()..subV(B.position);
+      Vec2 ra = contacts[i].clone()..subV(A.shape.u.position());
+      Vec2 rb = contacts[i].clone()..subV(B.shape.u.position());
 
       Vec2 rv = B.velocity.clone()
         ..addV(rb.clone()..crossAv(B.angularVelocity, rb))
@@ -57,8 +57,8 @@ class Manifold {
 
     for (int i = 0; i < contactCount; ++i) {
       // Calculate radii from COM to contact
-      Vec2 ra = contacts[i].clone()..subV(A.position);
-      Vec2 rb = contacts[i].clone()..subV(B.position);
+      Vec2 ra = contacts[i].clone()..subV(A.shape.u.position());
+      Vec2 rb = contacts[i].clone()..subV(B.shape.u.position());
 
       // Relative velocity
       Vec2 rv = B.velocity.clone()
@@ -125,8 +125,10 @@ class Manifold {
   void positionalCorrection() {
     double correction = max(penetration - ImpulseMath.PENETRATION_ALLOWANCE, 0.0) / (A.invMass + B.invMass) * ImpulseMath.PENETRATION_CORRETION;
 
-    A.position.addVs(normal, -A.invMass * correction);
-    B.position.addVs(normal, B.invMass * correction);
+    var correctionA = -A.invMass * correction;
+    var correctionB = B.invMass * correction;
+    A.shape.u.translate(normal.x * correctionA, normal.y * correctionA);
+    B.shape.u.translate(normal.x * correctionB, normal.y * correctionB);
   }
 
   void infiniteMassCorrection() {
