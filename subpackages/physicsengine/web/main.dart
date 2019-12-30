@@ -129,7 +129,7 @@ class Example {
       PolygonShape p = b.shape;
 
       uistate.renderlayer.ctx.beginPath();
-      for (int i = 0; i < p.vertexCount; i++) {
+      for (int i = 0; i < p.vertices.length; i++) {
         var v = p.vertices[i].clone();
         b.m.mulV(v);
 
@@ -141,19 +141,6 @@ class Example {
       }
       uistate.renderlayer.ctx.closePath();
       uistate.renderlayer.ctx.stroke();
-
-      /*
-      } else if (b.shape is PolygonShape) {
-        PolygonShape polygon = b.shape;
-        var verts = List<Vec2>();
-        for (var v in polygon.vertices) {
-          var v2 = v.clone();
-          b.shape.u.mulV(v2);
-          v2.addV(b.position);
-          verts.add(v2);
-        }
-        _drawPolygon(verts, uistate.renderlayer, "black", 0, 0);
-      }*/
     }
 
     uistate.renderlayer.ctx.strokeStyle = "green";

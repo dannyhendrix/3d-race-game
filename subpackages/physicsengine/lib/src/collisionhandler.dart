@@ -58,7 +58,7 @@ class CollisionHandler {
 
     // Setup reference face vertices
     var v1 = RefPoly.vertices[referenceIndex].clone();
-    referenceIndex = referenceIndex + 1 == RefPoly.vertexCount ? 0 : referenceIndex + 1;
+    referenceIndex = referenceIndex + 1 == RefPoly.vertices.length ? 0 : referenceIndex + 1;
     var v2 = RefPoly.vertices[referenceIndex].clone();
 
     // Transform vertices to world space
@@ -117,7 +117,7 @@ class CollisionHandler {
     double bestDistance = double.negativeInfinity;
     int bestIndex = 0;
 
-    for (int i = 0; i < A.vertexCount; ++i) {
+    for (int i = 0; i < A.vertices.length; ++i) {
       // Retrieve a face normal from A
       var nw = A.normals[i].clone();
       A.body.m.mulVnoMove(nw);
@@ -166,7 +166,7 @@ class CollisionHandler {
     // Find most anti-normal face on incident polygon
     int incidentFace = 0;
     double minDot = double.maxFinite;
-    for (int i = 0; i < IncPoly.vertexCount; ++i) {
+    for (int i = 0; i < IncPoly.vertices.length; ++i) {
       double dot = referenceNormal.dotProductThis(IncPoly.normals[i]);
 
       if (dot < minDot) {
@@ -178,7 +178,7 @@ class CollisionHandler {
     // Assign face vertices for incidentFace
     v[0] = IncPoly.vertices[incidentFace].clone();
     IncPoly.body.m.mulV(v[0]);
-    incidentFace = incidentFace + 1 >= IncPoly.vertexCount ? 0 : incidentFace + 1;
+    incidentFace = incidentFace + 1 >= IncPoly.vertices.length ? 0 : incidentFace + 1;
     v[1] = IncPoly.vertices[incidentFace].clone();
     IncPoly.body.m.mulV(v[1]);
   }
