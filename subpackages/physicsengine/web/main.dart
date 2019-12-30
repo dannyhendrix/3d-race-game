@@ -130,7 +130,7 @@ class Example {
 
       uistate.renderlayer.ctx.beginPath();
       for (int i = 0; i < p.vertexCount; i++) {
-        Vec2 v = p.vertices[i].clone();
+        var v = p.vertices[i].clone();
         b.m.mulV(v);
 
         if (i == 0) {
@@ -170,7 +170,7 @@ class Example {
     }
   }
 
-  void _drawPolygon(List<Vec2> vertices, UiRenderLayer layer, String color, double offsetx, double offsety, [bool stroke = false]) {
+  void _drawPolygon(List<Vector> vertices, UiRenderLayer layer, String color, double offsetx, double offsety, [bool stroke = false]) {
     var scale = 1.0;
     layer.ctx.beginPath();
     layer.ctx.moveTo((vertices.first.x * scale - offsetx), (vertices.first.y * scale - offsety));

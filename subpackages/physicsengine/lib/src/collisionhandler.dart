@@ -39,7 +39,7 @@ class CollisionHandler {
     }
 
     // World space incident face
-    var incidentFace = [Vec2(0, 0), Vec2(0, 0)];
+    var incidentFace = [Vector(0, 0), Vector(0, 0)];
 
     findIncidentFace(incidentFace, RefPoly, IncPoly, referenceIndex);
 
@@ -57,51 +57,51 @@ class CollisionHandler {
     // n : incident normal
 
     // Setup reference face vertices
-    Vec2 v1 = RefPoly.vertices[referenceIndex].clone();
+    var v1 = RefPoly.vertices[referenceIndex].clone();
     referenceIndex = referenceIndex + 1 == RefPoly.vertexCount ? 0 : referenceIndex + 1;
-    Vec2 v2 = RefPoly.vertices[referenceIndex].clone();
+    var v2 = RefPoly.vertices[referenceIndex].clone();
 
     // Transform vertices to world space
     RefPoly.body.m.mulV(v1);
     RefPoly.body.m.mulV(v2);
 
     // Calculate reference face side normal in world space
-    Vec2 sidePlaneNormal = v2.clone()..subV(v1);
-    sidePlaneNormal.normalize();
+    var sidePlaneNormal = v2.clone()..subtractToThis(v1);
+    sidePlaneNormal.normalizeThis();
 
     // Orthogonalize
-    Vec2 refFaceNormal = new Vec2(sidePlaneNormal.y, -sidePlaneNormal.x);
+    var refFaceNormal = new Vector(sidePlaneNormal.y, -sidePlaneNormal.x);
 
-    double refC = refFaceNormal.dot(v1);
-    double negSide = -sidePlaneNormal.dot(v1);
-    double posSide = sidePlaneNormal.dot(v2);
+    double refC = refFaceNormal.dotProductThis(v1);
+    double negSide = -sidePlaneNormal.dotProductThis(v1);
+    double posSide = sidePlaneNormal.dotProductThis(v2);
 
     // Clip incident face to reference face side planes
     // Due to doubleing point error, possible to not have required points
-    if (clip(sidePlaneNormal.clone()..neg(), negSide, incidentFace) < 2) return;
+    if (clip(sidePlaneNormal.clone()..negateThis(), negSide, incidentFace) < 2) return;
 
     // Due to doubleing point error, possible to not have required points
     if (clip(sidePlaneNormal, posSide, incidentFace) < 2) return;
 
     // Flip
-    m.normal.resetToVector(refFaceNormal.toVector());
+    m.normal.resetToVector(refFaceNormal);
     if (flip) m.normal.negateThis();
 
     // Keep points behind reference face
     int cp = 0; // clipped points behind reference face
-    double separation = refFaceNormal.dot(incidentFace[0]) - refC;
+    double separation = refFaceNormal.dotProductThis(incidentFace[0]) - refC;
     if (separation <= 0.0) {
-      m.contacts[cp].resetToVector(incidentFace[0].toVector());
+      m.contacts[cp].resetToVector(incidentFace[0]);
       m.penetration = -separation;
       ++cp;
     } else {
       m.penetration = 0;
     }
 
-    separation = refFaceNormal.dot(incidentFace[1]) - refC;
+    separation = refFaceNormal.dotProductThis(incidentFace[1]) - refC;
 
     if (separation <= 0.0) {
-      m.contacts[cp].resetToVector(incidentFace[1].toVector());
+      m.contacts[cp].resetToVector(incidentFace[1]);
 
       m.penetration += -separation;
       ++cp;
@@ -119,28 +119,28 @@ class CollisionHandler {
 
     for (int i = 0; i < A.vertexCount; ++i) {
       // Retrieve a face normal from A
-      Vec2 nw = A.normals[i].clone();
+      var nw = A.normals[i].clone();
       A.body.m.mulVnoMove(nw);
 
       // Transform face normal into B's model space
       Mat2 buT = B.body.m.clone()..transpose();
-      Vec2 n = nw.clone();
+      var n = nw.clone();
       buT.mulVnoMove(n);
 
       // Retrieve support point from B along -n
-      Vec2 s = B.getSupport(n.clone()..neg());
+      var s = B.getSupport(n.clone()..negateThis());
 
       // Retrieve vertex on face from A, transform into
       // B's model space
-      Vec2 v = A.vertices[i].clone();
+      var v = A.vertices[i].clone();
       A.body.m.mulV(v);
       v
         //..addV(A.body.m.position())
-        ..subV(B.body.m.position());
+        ..subtractToThis(B.body.m.position());
       buT.mulVnoMove(v);
 
       // Compute penetration distance (in B's model space)
-      double d = n.dot(s.clone()..subV(v));
+      double d = n.dotProductThis(s.clone()..subtractToThis(v));
 
       // Store greatest distance
       if (d > bestDistance) {
@@ -153,8 +153,8 @@ class CollisionHandler {
     return bestDistance;
   }
 
-  void findIncidentFace(List<Vec2> v, PolygonShape RefPoly, PolygonShape IncPoly, int referenceIndex) {
-    Vec2 referenceNormal = RefPoly.normals[referenceIndex].clone();
+  void findIncidentFace(List<Vector> v, PolygonShape RefPoly, PolygonShape IncPoly, int referenceIndex) {
+    var referenceNormal = RefPoly.normals[referenceIndex].clone();
 
     // Calculate normal in incident's frame of reference
     RefPoly.body.m.mulVnoMove(referenceNormal);
@@ -167,7 +167,7 @@ class CollisionHandler {
     int incidentFace = 0;
     double minDot = double.maxFinite;
     for (int i = 0; i < IncPoly.vertexCount; ++i) {
-      double dot = referenceNormal.dot(IncPoly.normals[i]);
+      double dot = referenceNormal.dotProductThis(IncPoly.normals[i]);
 
       if (dot < minDot) {
         minDot = dot;
@@ -183,17 +183,17 @@ class CollisionHandler {
     IncPoly.body.m.mulV(v[1]);
   }
 
-  int clip(Vec2 n, double c, List<Vec2> face) {
+  int clip(Vector n, double c, List<Vector> face) {
     int sp = 0;
-    List<Vec2> out = [face[0].clone(), face[1].clone()];
+    List<Vector> out = [face[0].clone(), face[1].clone()];
 
     // Retrieve distances from each endpoint to the line
-    double d1 = n.dot(face[0]) - c;
-    double d2 = n.dot(face[1]) - c;
+    double d1 = n.dotProductThis(face[0]) - c;
+    double d2 = n.dotProductThis(face[1]) - c;
 
     // If negative (behind plane) clip
-    if (d1 <= 0.0) out[sp++].changeV(face[0]);
-    if (d2 <= 0.0) out[sp++].changeV(face[1]);
+    if (d1 <= 0.0) out[sp++].resetToVector(face[0]);
+    if (d2 <= 0.0) out[sp++].resetToVector(face[1]);
 
     // If the points are on different sides of the plane
     if (d1 * d2 < 0.0) // less than to ignore -0.0
@@ -202,10 +202,10 @@ class CollisionHandler {
       double alpha = d1 / (d1 - d2);
 
       out[sp++]
-        ..changeV(face[1])
-        ..subV(face[0])
-        ..mul(alpha)
-        ..addV(face[0]);
+        ..resetToVector(face[1])
+        ..subtractToThis(face[0])
+        ..multiplyToThis(alpha)
+        ..addVectorToThis(face[0]);
     }
 
     // Assign our new converted values

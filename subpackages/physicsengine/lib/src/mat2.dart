@@ -49,14 +49,14 @@ class Mat2 {
     m10 = t;
   }
 
-  void mulV(Vec2 v) {
+  void mulV(Vector v) {
     var x = v.x;
     var y = v.y;
     v.x = m00 * x + m01 * y + m02;
     v.y = m10 * x + m11 * y + m12;
   }
 
-  void mulVnoMove(Vec2 v) {
+  void mulVnoMove(Vector v) {
     var x = v.x;
     var y = v.y;
     v.x = m00 * x + m01 * y;
@@ -70,7 +70,7 @@ class Mat2 {
     m11 = m10 * x.m01 + m11 * x.m11;
   }
 
-  Vec2 position() => Vec2(m02, m12);
+  Vector position() => Vector(m02, m12);
   void translateThis(double x, double y) {
     m02 += x;
     m12 += y;

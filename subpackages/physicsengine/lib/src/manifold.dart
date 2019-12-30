@@ -31,8 +31,8 @@ class Manifold {
 
     for (int i = 0; i < contactCount; ++i) {
       // Calculate radii from COM to contact
-      Vector ra = contacts[i].clone()..subtractToThis(A.m.position().toVector());
-      Vector rb = contacts[i].clone()..subtractToThis(B.m.position().toVector());
+      Vector ra = contacts[i].clone()..subtractToThis(A.m.position());
+      Vector rb = contacts[i].clone()..subtractToThis(B.m.position());
 
       Vector rv = B.velocity.clone()
         ..addVectorToThis(rb.clone()..crossProductToThis(B.angularVelocity))
@@ -57,8 +57,8 @@ class Manifold {
 
     for (int i = 0; i < contactCount; ++i) {
       // Calculate radii from COM to contact
-      Vector ra = contacts[i].clone()..subtractToThis(A.m.position().toVector());
-      Vector rb = contacts[i].clone()..subtractToThis(B.m.position().toVector());
+      Vector ra = contacts[i].clone()..subtractToThis(A.m.position());
+      Vector rb = contacts[i].clone()..subtractToThis(B.m.position());
 
       // Relative velocity
       Vector rv = B.velocity.clone()
