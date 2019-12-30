@@ -159,8 +159,8 @@ class Example {
     uistate.renderlayer.ctx.strokeStyle = "green";
     for (Manifold m in impulse.contacts) {
       for (int i = 0; i < m.contactCount; i++) {
-        Vec2 v = m.contacts[i];
-        Vec2 n = m.normal;
+        var v = m.contacts[i];
+        var n = m.normal;
 
         uistate.renderlayer.ctx.beginPath();
         uistate.renderlayer.ctx.moveTo(v.x, v.y);

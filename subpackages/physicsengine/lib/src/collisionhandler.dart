@@ -84,14 +84,14 @@ class CollisionHandler {
     if (clip(sidePlaneNormal, posSide, incidentFace) < 2) return;
 
     // Flip
-    m.normal.changeV(refFaceNormal);
-    if (flip) m.normal.neg();
+    m.normal.resetToVector(refFaceNormal.toVector());
+    if (flip) m.normal.negateThis();
 
     // Keep points behind reference face
     int cp = 0; // clipped points behind reference face
     double separation = refFaceNormal.dot(incidentFace[0]) - refC;
     if (separation <= 0.0) {
-      m.contacts[cp].changeV(incidentFace[0]);
+      m.contacts[cp].resetToVector(incidentFace[0].toVector());
       m.penetration = -separation;
       ++cp;
     } else {
@@ -101,7 +101,7 @@ class CollisionHandler {
     separation = refFaceNormal.dot(incidentFace[1]) - refC;
 
     if (separation <= 0.0) {
-      m.contacts[cp].changeV(incidentFace[1]);
+      m.contacts[cp].resetToVector(incidentFace[1].toVector());
 
       m.penetration += -separation;
       ++cp;

@@ -7,8 +7,8 @@ class ImpulseMath {
   static final double BIAS_RELATIVE = 0.95;
   static final double BIAS_ABSOLUTE = 0.01;
   static final double DT = 1.0 / 60.0;
-  static final Vec2 GRAVITY = new Vec2(0.0, 50.0);
-  static final double RESTING = (GRAVITY.clone()..mul(DT)).lengthSq() + EPSILON;
+  static final Vector GRAVITY = new Vector(0.0, 50.0);
+  static final double RESTING = (GRAVITY.clone()..multiplyToThis(DT)).magnitudeSquared() + EPSILON;
   static final double PENETRATION_ALLOWANCE = 0.05;
   static final double PENETRATION_CORRETION = 0.4;
 

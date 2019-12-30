@@ -4,8 +4,8 @@ class Manifold {
   Body A;
   Body B;
   double penetration;
-  final Vec2 normal = new Vec2(0, 0);
-  final List<Vec2> contacts = [new Vec2(0, 0), new Vec2(0, 0)];
+  final Vector normal = new Vector(0, 0);
+  final List<Vector> contacts = [new Vector(0, 0), new Vector(0, 0)];
   int contactCount;
   double e;
   double df;
@@ -31,13 +31,13 @@ class Manifold {
 
     for (int i = 0; i < contactCount; ++i) {
       // Calculate radii from COM to contact
-      Vec2 ra = contacts[i].clone()..subV(A.m.position());
-      Vec2 rb = contacts[i].clone()..subV(B.m.position());
+      Vector ra = contacts[i].clone()..subtractToThis(A.m.position().toVector());
+      Vector rb = contacts[i].clone()..subtractToThis(B.m.position().toVector());
 
       Vector rv = B.velocity.clone()
-        ..addVectorToThis(rb.clone().toVector().crossProductToThis(B.angularVelocity))
+        ..addVectorToThis(rb.clone()..crossProductToThis(B.angularVelocity))
         ..subtractToThis(A.velocity)
-        ..subtractToThis(ra.clone().toVector()..crossProductToThis(A.angularVelocity));
+        ..subtractToThis(ra.clone()..crossProductToThis(A.angularVelocity));
 
       // Determine if we should perform a resting collision or not
       // The idea is if the only thing moving this object is gravity,
@@ -57,25 +57,25 @@ class Manifold {
 
     for (int i = 0; i < contactCount; ++i) {
       // Calculate radii from COM to contact
-      Vec2 ra = contacts[i].clone()..subV(A.m.position());
-      Vec2 rb = contacts[i].clone()..subV(B.m.position());
+      Vector ra = contacts[i].clone()..subtractToThis(A.m.position().toVector());
+      Vector rb = contacts[i].clone()..subtractToThis(B.m.position().toVector());
 
       // Relative velocity
       Vector rv = B.velocity.clone()
-        ..addVectorToThis((rb.clone()..crossAv(B.angularVelocity, rb)).toVector())
+        ..addVectorToThis((rb.clone()..crossProductToThis(-B.angularVelocity)))
         ..subtractToThis(A.velocity)
-        ..subtractToThis((ra.clone()..crossAv(A.angularVelocity, ra)).toVector());
+        ..subtractToThis((ra.clone()..crossProductToThis(-A.angularVelocity)));
 
       // Relative velocity along the normal
-      double contactVel = rv.dotProductThis(normal.toVector());
+      double contactVel = rv.dotProductThis(normal);
 
       // Do not resolve if velocities are separating
       if (contactVel > 0) {
         return;
       }
 
-      double raCrossN = ra.crossV(normal);
-      double rbCrossN = rb.crossV(normal);
+      double raCrossN = ra.crossProductThis(normal);
+      double rbCrossN = rb.crossProductThis(normal);
       double invMassSum = A.invMass + B.invMass + (raCrossN * raCrossN) * A.invInertia + (rbCrossN * rbCrossN) * B.invInertia;
 
       // Calculate impulse scalar
@@ -84,18 +84,18 @@ class Manifold {
       j /= contactCount;
 
       // Apply impulse
-      Vec2 impulse = normal.clone()..mul(j);
-      A.applyImpulse(impulse.clone().toVector()..negateThis(), ra.toVector());
-      B.applyImpulse(impulse.toVector(), rb.toVector());
+      var impulse = normal.clone()..multiplyToThis(j);
+      A.applyImpulse(impulse.clone()..negateThis(), ra);
+      B.applyImpulse(impulse, rb);
 
       // Friction impulse
       rv = B.velocity.clone()
-        ..addVectorToThis((rb.clone()..crossAv(B.angularVelocity, rb)).toVector())
+        ..addVectorToThis((rb.clone()..crossProductToThis(-B.angularVelocity)))
         ..subtractToThis(A.velocity)
-        ..subtractToThis((ra.clone()..crossAv(A.angularVelocity, ra)).toVector());
+        ..subtractToThis((ra.clone()..crossProductToThis(-A.angularVelocity)));
 
       Vector t = rv.clone();
-      var s = -rv.dotProductThis(normal.toVector());
+      var s = -rv.dotProductThis(normal);
       t.addToThis(normal.x * s, normal.y * s);
       t.normalizeThis();
 
@@ -118,8 +118,8 @@ class Manifold {
       }
 
       // Apply friction impulse
-      A.applyImpulse(tangentImpulse.clone()..negateThis(), ra.toVector());
-      B.applyImpulse(tangentImpulse, rb.toVector());
+      A.applyImpulse(tangentImpulse.clone()..negateThis(), ra);
+      B.applyImpulse(tangentImpulse, rb);
     }
   }
 
