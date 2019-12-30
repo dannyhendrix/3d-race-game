@@ -31,8 +31,8 @@ class Manifold {
 
     for (int i = 0; i < contactCount; ++i) {
       // Calculate radii from COM to contact
-      Vec2 ra = contacts[i].clone()..subV(A.u.position());
-      Vec2 rb = contacts[i].clone()..subV(B.u.position());
+      Vec2 ra = contacts[i].clone()..subV(A.m.position());
+      Vec2 rb = contacts[i].clone()..subV(B.m.position());
 
       Vec2 rv = B.velocity.clone()
         ..addV(rb.clone()..crossAv(B.angularVelocity, rb))
@@ -57,8 +57,8 @@ class Manifold {
 
     for (int i = 0; i < contactCount; ++i) {
       // Calculate radii from COM to contact
-      Vec2 ra = contacts[i].clone()..subV(A.u.position());
-      Vec2 rb = contacts[i].clone()..subV(B.u.position());
+      Vec2 ra = contacts[i].clone()..subV(A.m.position());
+      Vec2 rb = contacts[i].clone()..subV(B.m.position());
 
       // Relative velocity
       Vec2 rv = B.velocity.clone()
@@ -127,8 +127,8 @@ class Manifold {
 
     var correctionA = -A.invMass * correction;
     var correctionB = B.invMass * correction;
-    A.u.translateThis(normal.x * correctionA, normal.y * correctionA);
-    B.u.translateThis(normal.x * correctionB, normal.y * correctionB);
+    A.m.translateThis(normal.x * correctionA, normal.y * correctionA);
+    B.m.translateThis(normal.x * correctionB, normal.y * correctionB);
   }
 
   void infiniteMassCorrection() {

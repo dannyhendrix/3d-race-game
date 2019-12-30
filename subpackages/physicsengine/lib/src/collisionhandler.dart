@@ -63,10 +63,10 @@ class CollisionHandler {
     Vec2 v2 = RefPoly.vertices[referenceIndex].clone();
 
     // Transform vertices to world space
-    RefPoly.body.u.mulV(v1);
-    v1.addV(RefPoly.body.u.position());
-    RefPoly.body.u.mulV(v2);
-    v2.addV(RefPoly.body.u.position());
+    RefPoly.body.m.mulVnoMove(v1);
+    v1.addV(RefPoly.body.m.position());
+    RefPoly.body.m.mulVnoMove(v2);
+    v2.addV(RefPoly.body.m.position());
 
     // Calculate reference face side normal in world space
     Vec2 sidePlaneNormal = v2.clone()..subV(v1);
@@ -123,12 +123,12 @@ class CollisionHandler {
     for (int i = 0; i < A.vertexCount; ++i) {
       // Retrieve a face normal from A
       Vec2 nw = A.normals[i].clone();
-      A.body.u.mulV(nw);
+      A.body.m.mulVnoMove(nw);
 
       // Transform face normal into B's model space
-      Mat2 buT = B.body.u.clone()..transpose();
+      Mat2 buT = B.body.m.clone()..transpose();
       Vec2 n = nw.clone();
-      buT.mulV(n);
+      buT.mulVnoMove(n);
 
       // Retrieve support point from B along -n
       Vec2 s = B.getSupport(n.clone()..neg());
@@ -136,11 +136,11 @@ class CollisionHandler {
       // Retrieve vertex on face from A, transform into
       // B's model space
       Vec2 v = A.vertices[i].clone();
-      A.body.u.mulV(v);
+      A.body.m.mulVnoMove(v);
       v
-        ..addV(A.body.u.position())
-        ..subV(B.body.u.position());
-      buT.mulV(v);
+        ..addV(A.body.m.position())
+        ..subV(B.body.m.position());
+      buT.mulVnoMove(v);
 
       // Compute penetration distance (in B's model space)
       double d = n.dot(s.clone()..subV(v));
@@ -160,10 +160,11 @@ class CollisionHandler {
     Vec2 referenceNormal = RefPoly.normals[referenceIndex].clone();
 
     // Calculate normal in incident's frame of reference
-    RefPoly.body.u.mulV(referenceNormal);
-    IncPoly.body.u.clone()
+    RefPoly.body.m.mulVnoMove(referenceNormal);
+
+    IncPoly.body.m.clone()
       ..transpose()
-      ..mulV(referenceNormal);
+      ..mulVnoMove(referenceNormal);
 
     // Find most anti-normal face on incident polygon
     int incidentFace = 0;
@@ -179,12 +180,12 @@ class CollisionHandler {
 
     // Assign face vertices for incidentFace
     v[0] = IncPoly.vertices[incidentFace].clone();
-    IncPoly.body.u.mulV(v[0]);
-    v[0].addV(IncPoly.body.u.position());
+    IncPoly.body.m.mulVnoMove(v[0]);
+    v[0].addV(IncPoly.body.m.position());
     incidentFace = incidentFace + 1 >= IncPoly.vertexCount ? 0 : incidentFace + 1;
     v[1] = IncPoly.vertices[incidentFace].clone();
-    IncPoly.body.u.mulV(v[1]);
-    v[1].addV(IncPoly.body.u.position());
+    IncPoly.body.m.mulVnoMove(v[1]);
+    v[1].addV(IncPoly.body.m.position());
   }
 
   int clip(Vec2 n, double c, List<Vec2> face) {
