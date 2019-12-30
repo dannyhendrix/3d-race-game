@@ -5,10 +5,10 @@ class Mat2 {
   double m10, m11, m12;
 
   Mat2() {
-    m00 = 0;
+    m00 = 1;
     m01 = 0;
     m10 = 0;
-    m11 = 0;
+    m11 = 1;
     m02 = 0;
     m12 = 0;
   }
@@ -64,9 +64,15 @@ class Mat2 {
   }
 
   Vec2 position() => Vec2(m02, m12);
-  void translate(double x, double y) {
+  void translateThis(double x, double y) {
     m02 += x;
     m12 += y;
+  }
+
+  void rotateThis(double r) {
+    var m = Mat2();
+    m.changeR(r);
+    mulM(m);
   }
 
   String toString() {

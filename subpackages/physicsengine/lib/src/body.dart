@@ -5,7 +5,6 @@ class Body {
   final Vec2 force = new Vec2(0, 0);
   double angularVelocity;
   double torque;
-  double orient;
   double mass, invMass, inertia, invInertia;
   double staticFriction;
   double dynamicFriction;
@@ -15,11 +14,10 @@ class Body {
   Body(this.shape, double x, double y) {
     this.shape = shape;
 
-    shape.u.translate(x, y);
+    shape.u.translateThis(x, y);
     velocity.change(0, 0);
     angularVelocity = 0;
     torque = 0;
-    orient = ImpulseMath.randomDouble(-ImpulseMath.PI, ImpulseMath.PI);
     force.change(0, 0);
     staticFriction = 0.5;
     dynamicFriction = 0.3;
@@ -43,10 +41,5 @@ class Body {
     invInertia = 0.0;
     mass = 0.0;
     invMass = 0.0;
-  }
-
-  void setOrient(double radians) {
-    orient = radians;
-    shape.setOrient(radians);
   }
 }

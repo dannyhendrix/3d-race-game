@@ -96,12 +96,9 @@ class Example {
     Body b = null;
 
     b = impulse.add(new PolygonShape.rectangle(10.0, 50.0), 230, 200);
-    b.setOrient(0);
     b = impulse.add(new PolygonShape.rectangle(200.0, 10.0), 240, 100);
-    b.setOrient(0);
     b = impulse.add(new PolygonShape.rectangle(200.0, 10.0), 240, 300);
     b.setStatic();
-    b.setOrient(0);
 
     gameloopstate.onUpdate = _update;
     _gameloop.start(gameloopstate);

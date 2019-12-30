@@ -127,8 +127,8 @@ class Manifold {
 
     var correctionA = -A.invMass * correction;
     var correctionB = B.invMass * correction;
-    A.shape.u.translate(normal.x * correctionA, normal.y * correctionA);
-    B.shape.u.translate(normal.x * correctionB, normal.y * correctionB);
+    A.shape.u.translateThis(normal.x * correctionA, normal.y * correctionA);
+    B.shape.u.translateThis(normal.x * correctionB, normal.y * correctionB);
   }
 
   void infiniteMassCorrection() {
