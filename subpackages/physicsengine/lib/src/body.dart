@@ -1,8 +1,8 @@
 part of physicsengine;
 
 class Body {
-  final Vec2 velocity = new Vec2(0, 0);
-  final Vec2 force = new Vec2(0, 0);
+  final Vector velocity = new Vector(0, 0);
+  final Vector force = new Vector(0, 0);
   double angularVelocity;
   double torque;
   double mass, invMass, inertia, invInertia;
@@ -16,10 +16,10 @@ class Body {
     this.shape = shape;
 
     m.translateThis(x, y);
-    velocity.change(0, 0);
+    velocity.reset();
     angularVelocity = 0;
     torque = 0;
-    force.change(0, 0);
+    force.reset();
     staticFriction = 0.5;
     dynamicFriction = 0.3;
     restitution = 0.2;
@@ -28,13 +28,13 @@ class Body {
     shape.initialize();
   }
 
-  void applyForce(Vec2 f) {
-    force.addV(f);
+  void applyForce(Vector f) {
+    force.addVectorToThis(f);
   }
 
-  void applyImpulse(Vec2 impulse, Vec2 contactVector) {
-    velocity.addVs(impulse, invMass);
-    angularVelocity += invInertia * contactVector.crossV(impulse);
+  void applyImpulse(Vector impulse, Vector contactVector) {
+    velocity.addToThis(impulse.x * invMass, impulse.y * invMass);
+    angularVelocity += invInertia * contactVector.crossProductThis(impulse);
   }
 
   void setStatic() {

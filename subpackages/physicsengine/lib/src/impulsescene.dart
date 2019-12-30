@@ -56,7 +56,7 @@ class ImpulseScene {
 
     for (int i = 0; i < bodies.length; ++i) {
       Body b = bodies[i];
-      b.force.change(0, 0);
+      b.force.reset();
       b.torque = 0;
     }
   }
@@ -76,9 +76,9 @@ class ImpulseScene {
     if (b.invMass == 0.0) return;
 
     double dts = dt * 0.5;
-
-    b.velocity.addVs(b.force, b.invMass * dts);
-    b.velocity.addVs(ImpulseMath.GRAVITY, dts);
+    var s = b.invMass * dts;
+    b.velocity.addToThis(b.force.x * s, b.force.y * s);
+    b.velocity.addToThis(ImpulseMath.GRAVITY.x * dts, ImpulseMath.GRAVITY.y * dts);
     b.angularVelocity += b.torque * b.invInertia * dts;
   }
 

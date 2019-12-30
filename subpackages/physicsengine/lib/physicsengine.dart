@@ -1,6 +1,7 @@
 library physicsengine;
 
 import 'dart:math';
+import 'package:gameutils/math.dart';
 
 part 'src/vec2.dart';
 part 'src/mat2.dart';

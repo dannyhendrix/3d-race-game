@@ -1,7 +1,6 @@
 part of physicsengine;
 
 class CollisionHandler {
-  @override
   void handleCollision(Manifold m, Body a, Body b) {
     PolygonShape A = a.shape;
     PolygonShape B = b.shape;
@@ -63,10 +62,8 @@ class CollisionHandler {
     Vec2 v2 = RefPoly.vertices[referenceIndex].clone();
 
     // Transform vertices to world space
-    RefPoly.body.m.mulVnoMove(v1);
-    v1.addV(RefPoly.body.m.position());
-    RefPoly.body.m.mulVnoMove(v2);
-    v2.addV(RefPoly.body.m.position());
+    RefPoly.body.m.mulV(v1);
+    RefPoly.body.m.mulV(v2);
 
     // Calculate reference face side normal in world space
     Vec2 sidePlaneNormal = v2.clone()..subV(v1);
@@ -136,9 +133,9 @@ class CollisionHandler {
       // Retrieve vertex on face from A, transform into
       // B's model space
       Vec2 v = A.vertices[i].clone();
-      A.body.m.mulVnoMove(v);
+      A.body.m.mulV(v);
       v
-        ..addV(A.body.m.position())
+        //..addV(A.body.m.position())
         ..subV(B.body.m.position());
       buT.mulVnoMove(v);
 
@@ -180,12 +177,10 @@ class CollisionHandler {
 
     // Assign face vertices for incidentFace
     v[0] = IncPoly.vertices[incidentFace].clone();
-    IncPoly.body.m.mulVnoMove(v[0]);
-    v[0].addV(IncPoly.body.m.position());
+    IncPoly.body.m.mulV(v[0]);
     incidentFace = incidentFace + 1 >= IncPoly.vertexCount ? 0 : incidentFace + 1;
     v[1] = IncPoly.vertices[incidentFace].clone();
-    IncPoly.body.m.mulVnoMove(v[1]);
-    v[1].addV(IncPoly.body.m.position());
+    IncPoly.body.m.mulV(v[1]);
   }
 
   int clip(Vec2 n, double c, List<Vec2> face) {

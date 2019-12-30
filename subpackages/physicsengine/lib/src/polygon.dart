@@ -4,7 +4,6 @@ class PolygonShape {
   static final int MAX_POLY_VERTEX_COUNT = 4;
 
   Body body;
-  double radius;
 
   int vertexCount;
   List<Vec2> vertices; // = Vec2.arrayOf(MAX_POLY_VERTEX_COUNT);

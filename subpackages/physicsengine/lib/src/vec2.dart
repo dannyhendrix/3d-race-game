@@ -132,4 +132,6 @@ class Vec2 {
   double crossV(Vec2 b) {
     return x * b.y - y * b.x;
   }
+
+  Vector toVector() => Vector(x, y);
 }

@@ -49,7 +49,7 @@ class Mat2 {
     m10 = t;
   }
 
-  void mulV2(Vec2 v) {
+  void mulV(Vec2 v) {
     var x = v.x;
     var y = v.y;
     v.x = m00 * x + m01 * y + m02;

@@ -84,6 +84,7 @@ class Vector {
 
   // normalize
   double magnitude() => sqrt(x * x + y * y);
+  double magnitudeSquared() => x * x + y * y;
   Vector normalized() => clone().normalizeThis();
   Vector normalizeThis() {
     var m = magnitude();

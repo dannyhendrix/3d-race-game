@@ -34,15 +34,15 @@ class Manifold {
       Vec2 ra = contacts[i].clone()..subV(A.m.position());
       Vec2 rb = contacts[i].clone()..subV(B.m.position());
 
-      Vec2 rv = B.velocity.clone()
-        ..addV(rb.clone()..crossAv(B.angularVelocity, rb))
-        ..subV(A.velocity)
-        ..subV(ra.clone()..crossAv(A.angularVelocity, ra));
+      Vector rv = B.velocity.clone()
+        ..addVectorToThis(rb.clone().toVector().crossProductToThis(B.angularVelocity))
+        ..subtractToThis(A.velocity)
+        ..subtractToThis(ra.clone().toVector()..crossProductToThis(A.angularVelocity));
 
       // Determine if we should perform a resting collision or not
       // The idea is if the only thing moving this object is gravity,
       // then the collision should be performed without any restitution
-      if (rv.lengthSq() < ImpulseMath.RESTING) {
+      if (rv.magnitudeSquared() < ImpulseMath.RESTING) {
         e = 0.0;
       }
     }
@@ -61,13 +61,13 @@ class Manifold {
       Vec2 rb = contacts[i].clone()..subV(B.m.position());
 
       // Relative velocity
-      Vec2 rv = B.velocity.clone()
-        ..addV(rb.clone()..crossAv(B.angularVelocity, rb))
-        ..subV(A.velocity)
-        ..subV(ra.clone()..crossAv(A.angularVelocity, ra));
+      Vector rv = B.velocity.clone()
+        ..addVectorToThis((rb.clone()..crossAv(B.angularVelocity, rb)).toVector())
+        ..subtractToThis(A.velocity)
+        ..subtractToThis((ra.clone()..crossAv(A.angularVelocity, ra)).toVector());
 
       // Relative velocity along the normal
-      double contactVel = rv.dot(normal);
+      double contactVel = rv.dotProductThis(normal.toVector());
 
       // Do not resolve if velocities are separating
       if (contactVel > 0) {
@@ -85,21 +85,22 @@ class Manifold {
 
       // Apply impulse
       Vec2 impulse = normal.clone()..mul(j);
-      A.applyImpulse(impulse.clone()..neg(), ra);
-      B.applyImpulse(impulse, rb);
+      A.applyImpulse(impulse.clone().toVector()..negateThis(), ra.toVector());
+      B.applyImpulse(impulse.toVector(), rb.toVector());
 
       // Friction impulse
       rv = B.velocity.clone()
-        ..addV(rb.clone()..crossAv(B.angularVelocity, rb))
-        ..subV(A.velocity)
-        ..subV(ra.clone()..crossAv(A.angularVelocity, ra));
+        ..addVectorToThis((rb.clone()..crossAv(B.angularVelocity, rb)).toVector())
+        ..subtractToThis(A.velocity)
+        ..subtractToThis((ra.clone()..crossAv(A.angularVelocity, ra)).toVector());
 
-      Vec2 t = rv.clone();
-      t.addVs(normal, -rv.dot(normal));
-      t.normalize();
+      Vector t = rv.clone();
+      var s = -rv.dotProductThis(normal.toVector());
+      t.addToThis(normal.x * s, normal.y * s);
+      t.normalizeThis();
 
       // j tangent magnitude
-      double jt = -rv.dot(t);
+      double jt = -rv.dotProductThis(t);
       jt /= invMassSum;
       jt /= contactCount;
 
@@ -109,16 +110,16 @@ class Manifold {
       }
 
       // Coulumb's law
-      Vec2 tangentImpulse;
+      Vector tangentImpulse;
       if (jt.abs() < j * sf) {
-        tangentImpulse = t.clone()..mul(jt);
+        tangentImpulse = t.clone()..multiplyToThis(jt);
       } else {
-        tangentImpulse = t.clone()..mul(j)..mul(-df);
+        tangentImpulse = t.clone()..multiplyToThis(j)..multiplyToThis(-df);
       }
 
       // Apply friction impulse
-      A.applyImpulse(tangentImpulse.clone()..neg(), ra);
-      B.applyImpulse(tangentImpulse, rb);
+      A.applyImpulse(tangentImpulse.clone()..negateThis(), ra.toVector());
+      B.applyImpulse(tangentImpulse, rb.toVector());
     }
   }
 
@@ -132,7 +133,7 @@ class Manifold {
   }
 
   void infiniteMassCorrection() {
-    A.velocity.change(0, 0);
-    B.velocity.change(0, 0);
+    A.velocity.reset();
+    B.velocity.reset();
   }
 }
