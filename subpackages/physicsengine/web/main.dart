@@ -137,11 +137,8 @@ class Example {
       PolygonShape p = b.shape;
 
       uistate.renderlayer.ctx.beginPath();
-      for (int i = 0; i < p.vertices.length; i++) {
-        var v = p.vertices[i].clone();
-        b.m.mulV(v);
-        v.addVectorToThis(b.position);
-
+      for (int i = 0; i < p.verticesMoved.length; i++) {
+        var v = p.verticesMoved[i];
         if (i == 0) {
           uistate.renderlayer.ctx.moveTo(v.x, v.y);
         } else {

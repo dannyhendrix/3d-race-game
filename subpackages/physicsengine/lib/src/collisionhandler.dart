@@ -9,6 +9,7 @@ class CollisionDetection {
     // Check for a separating axis with A's face planes
     List<int> faceA = [0];
     double penetrationA = _findAxisLeastPenetration(faceA, A, B);
+    //print("$penetrationA $penetrationA2");
     if (penetrationA >= 0.0) {
       return;
     }
@@ -124,28 +125,11 @@ class CollisionDetection {
     for (int i = 0; i < A.verticesMoved.length; ++i) {
       // Retrieve a face normal from A
       var nw = A.normalsMoved[i].clone();
-      //A.body.m.mulVnoMove(nw);
+      var s = _getSupport(B, nw.clone()..negateThis()).clone();
 
-      // Transform face normal into B's model space
-      Mat2 buT = B.body.m.clone()..transpose();
-      var n = nw.clone();
-      buT.mulVnoMove(n);
-
-      // Retrieve support point from B along -n
-      var s = B.getSupport(n.clone()..negateThis());
-      //var s = B.getSupport(nw);
-
-      // Retrieve vertex on face from A, transform into
-      // B's model space
-      var v = A.verticesMoved[i].clone();
-      //A.body.m.mulV(v);
-      v
-        //..addVectorToThis(A.body.position)
-        ..subtractToThis(B.body.position);
-      buT.mulVnoMove(v);
-
-      // Compute penetration distance (in B's model space)
-      double d = n.dotProductThis(s.clone()..subtractToThis(v));
+      // Compute penetration distance
+      s.subtractToThis(A.verticesMoved[i]);
+      var d = nw.dotProductThis(s);
 
       // Store greatest distance
       if (d > bestDistance) {
@@ -153,9 +137,24 @@ class CollisionDetection {
         bestIndex = i;
       }
     }
-
     faceIndex[0] = bestIndex;
     return bestDistance;
+  }
+
+  Vector _getSupport(PolygonShape polygon, Vector dir) {
+    double bestProjection = double.negativeInfinity;
+    Vector bestVertex = null;
+
+    for (var v in polygon.verticesMoved) {
+      double projection = v.dotProductThis(dir);
+
+      if (projection > bestProjection) {
+        bestVertex = v;
+        bestProjection = projection;
+      }
+    }
+
+    return bestVertex;
   }
 
   void _findIncidentFace(List<Vector> v, PolygonShape RefPoly, PolygonShape IncPoly, int referenceIndex) {

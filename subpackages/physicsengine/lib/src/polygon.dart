@@ -4,16 +4,14 @@ class PolygonShape {
   Body body;
 
   Vector center = Vector(0, 0);
-  List<Vector> vertices;
-  List<Vector> normals;
   List<Vector> verticesMoved;
+  List<Vector> vertices;
   List<Vector> normalsMoved;
 
   PolygonShape(List<Vector> verts) {
-    vertices = verts;
-    normals = _getNormals(verts);
-    verticesMoved = _copyVectors(vertices);
-    normalsMoved = _copyVectors(normals);
+    normalsMoved = _getNormals(verts);
+    verticesMoved = verts;
+    vertices = _copyVectors(verts);
   }
   void apply(Mat2 m, Vector position) {
     center.addVectorToThis(position);
@@ -29,20 +27,20 @@ class PolygonShape {
   PolygonShape.rectangle(double hw, double hh) : this([Vector(-hw, -hh), Vector(hw, -hh), Vector(hw, hh), Vector(-hw, hh)]);
 
   void initialize() {
-    computeMass(1.0);
+    _computeMass(1.0, vertices);
   }
 
-  void computeMass(double density) {
+  void _computeMass(double density, List<Vector> verts) {
     // Calculate centroid and moment of inertia
-    var c = new Vector(0.0, 0.0); // centroid
+    var center = new Vector(0.0, 0.0); // centroid
     double area = 0.0;
     double I = 0.0;
     final double k_inv3 = 1.0 / 3.0;
 
-    for (int i = 0; i < vertices.length; ++i) {
+    for (int i = 0; i < verts.length; ++i) {
       // Triangle vertices, third vertex implied as (0, 0)
-      var p1 = vertices[i];
-      var p2 = vertices[(i + 1) % vertices.length];
+      var p1 = verts[i];
+      var p2 = verts[(i + 1) % verts.length];
 
       double D = p1.crossProductThis(p2);
       double triangleArea = 0.5 * D;
@@ -51,21 +49,21 @@ class PolygonShape {
 
       // Use area to weight the centroid average, not just vertex position
       double weight = triangleArea * k_inv3;
-      c.addToThis(p1.x * weight, p1.y * weight);
-      c.addToThis(p2.x * weight, p2.y * weight);
+      center.addToThis(p1.x * weight, p1.y * weight);
+      center.addToThis(p2.x * weight, p2.y * weight);
 
       double intx2 = p1.x * p1.x + p2.x * p1.x + p2.x * p2.x;
       double inty2 = p1.y * p1.y + p2.y * p1.y + p2.y * p2.y;
       I += (0.25 * k_inv3 * D) * (intx2 + inty2);
     }
 
-    c.multiplyToThis(1.0 / area);
+    center.multiplyToThis(1.0 / area);
 
     // Translate vertices to centroid (make the centroid (0, 0)
     // for the polygon in model space)
     // Not really necessary, but I like doing this anyway
-    for (var v in vertices) {
-      v.subtractToThis(c);
+    for (var v in verts) {
+      v.subtractToThis(center);
     }
 
     body.mass = density * area;
@@ -94,7 +92,7 @@ class PolygonShape {
     double bestProjection = double.negativeInfinity;
     Vector bestVertex = null;
 
-    for (var v in vertices) {
+    for (var v in verticesMoved) {
       double projection = v.dotProductThis(dir);
 
       if (projection > bestProjection) {
