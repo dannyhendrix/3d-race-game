@@ -34,7 +34,15 @@ void main() {
 
   Example example = lifetime.resolve();
   ExampleUiState uistate = lifetime.resolve();
+  GameLoopState gameloopstate = lifetime.resolve();
+  GameLoopHandler gameloop = lifetime.resolve();
   document.body.append(uistate.renderlayer.canvas);
+  document.body.append((lifetime.resolve<UiButtonText>()
+        ..changeText("pause")
+        ..setOnClick(() {
+          gameloop.stop(gameloopstate);
+        }))
+      .element);
   example.start();
   document.body.onKeyDown.listen(onKeyDown);
   document.body.onKeyUp.listen(onKeyUp);
@@ -132,6 +140,7 @@ class Example {
       for (int i = 0; i < p.vertices.length; i++) {
         var v = p.vertices[i].clone();
         b.m.mulV(v);
+        v.addVectorToThis(b.position);
 
         if (i == 0) {
           uistate.renderlayer.ctx.moveTo(v.x, v.y);

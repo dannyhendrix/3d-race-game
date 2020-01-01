@@ -11,9 +11,11 @@ class Body {
   double restitution;
   PolygonShape shape;
   Mat2 m = Mat2();
+  Vector position;
 
   Body(this.shape, double x, double y) {
-    m.translateThis(x, y);
+    position = Vector(x, y);
+    shape.apply(Mat2(), position);
     velocity.reset();
     angularVelocity = 0;
     torque = 0;

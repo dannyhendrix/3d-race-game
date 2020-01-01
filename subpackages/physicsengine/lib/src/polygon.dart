@@ -3,16 +3,30 @@ part of physicsengine;
 class PolygonShape {
   Body body;
 
+  Vector center = Vector(0, 0);
   List<Vector> vertices;
   List<Vector> normals;
+  List<Vector> verticesMoved;
+  List<Vector> normalsMoved;
 
   PolygonShape(List<Vector> verts) {
-    _setVectors(verts);
+    vertices = verts;
+    normals = _getNormals(verts);
+    verticesMoved = _copyVectors(vertices);
+    normalsMoved = _copyVectors(normals);
+  }
+  void apply(Mat2 m, Vector position) {
+    center.addVectorToThis(position);
+    for (var v in verticesMoved) {
+      v.subtractToThis(center);
+      m.mulV(v);
+      v.addVectorToThis(center);
+      v.addVectorToThis(position);
+    }
+    for (var v in normalsMoved) m.mulVnoMove(v);
   }
 
-  PolygonShape.rectangle(double hw, double hh) {
-    _setVectors([Vector(-hw, -hh), Vector(hw, -hh), Vector(hw, hh), Vector(-hw, hh)]);
-  }
+  PolygonShape.rectangle(double hw, double hh) : this([Vector(-hw, -hh), Vector(hw, -hh), Vector(hw, hh), Vector(-hw, hh)]);
 
   void initialize() {
     computeMass(1.0);
@@ -60,14 +74,20 @@ class PolygonShape {
     body.invInertia = (body.inertia != 0.0) ? 1.0 / body.inertia : 0.0;
   }
 
-  void _setVectors(List<Vector> verts) {
-    vertices = verts;
-    normals = new List<Vector>();
+  List<Vector> _getNormals(List<Vector> verts) {
+    var normals = new List<Vector>();
     // Compute face normals
     for (int i = 0; i < verts.length; ++i) {
       var face = verts[(i + 1) % verts.length].clone()..subtractToThis(verts[i]);
       normals.add(Vector(face.y, -face.x)..normalizeThis());
     }
+    return normals;
+  }
+
+  List<Vector> _copyVectors(List<Vector> verts) {
+    var clone = new List<Vector>();
+    for (var v in verts) clone.add(v.clone());
+    return clone;
   }
 
   Vector getSupport(Vector dir) {

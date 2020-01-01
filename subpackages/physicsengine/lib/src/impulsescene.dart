@@ -83,8 +83,13 @@ class ImpulseScene {
   void integrateVelocity(Body b, double dt) {
     if (b.invMass == 0.0) return;
 
-    b.m.translateThis(b.velocity.x * dt, b.velocity.y * dt);
+    b.position.addToThis(b.velocity.x * dt, b.velocity.y * dt);
     b.m.rotateThis(b.angularVelocity * dt);
+
+    var m2 = new Mat2();
+    m2.rotateThis(b.angularVelocity * dt);
+    //m2.translateThis(b.velocity.x * dt, b.velocity.y * dt);
+    b.shape.apply(m2, new Vector(b.velocity.x * dt, b.velocity.y * dt));
 
     integrateForces(b, dt);
   }

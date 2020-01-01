@@ -57,13 +57,17 @@ class CollisionDetection {
     // n : incident normal
 
     // Setup reference face vertices
-    var v1 = RefPoly.vertices[referenceIndex].clone();
-    referenceIndex = referenceIndex + 1 == RefPoly.vertices.length ? 0 : referenceIndex + 1;
-    var v2 = RefPoly.vertices[referenceIndex].clone();
+    //var v1 = RefPoly.vertices[referenceIndex].clone();
+    var v1 = RefPoly.verticesMoved[referenceIndex].clone();
+    referenceIndex = referenceIndex + 1 == RefPoly.verticesMoved.length ? 0 : referenceIndex + 1;
+    //var v2 = RefPoly.vertices[referenceIndex].clone();
+    var v2 = RefPoly.verticesMoved[referenceIndex].clone();
 
     // Transform vertices to world space
-    RefPoly.body.m.mulV(v1);
-    RefPoly.body.m.mulV(v2);
+    //RefPoly.body.m.mulV(v1);
+    //RefPoly.body.m.mulV(v2);
+    //v1.addVectorToThis(RefPoly.body.position);
+    //v2.addVectorToThis(RefPoly.body.position);
 
     // Calculate reference face side normal in world space
     var sidePlaneNormal = v2.clone()..subtractToThis(v1);
@@ -117,10 +121,10 @@ class CollisionDetection {
     double bestDistance = double.negativeInfinity;
     int bestIndex = 0;
 
-    for (int i = 0; i < A.vertices.length; ++i) {
+    for (int i = 0; i < A.verticesMoved.length; ++i) {
       // Retrieve a face normal from A
-      var nw = A.normals[i].clone();
-      A.body.m.mulVnoMove(nw);
+      var nw = A.normalsMoved[i].clone();
+      //A.body.m.mulVnoMove(nw);
 
       // Transform face normal into B's model space
       Mat2 buT = B.body.m.clone()..transpose();
@@ -129,14 +133,15 @@ class CollisionDetection {
 
       // Retrieve support point from B along -n
       var s = B.getSupport(n.clone()..negateThis());
+      //var s = B.getSupport(nw);
 
       // Retrieve vertex on face from A, transform into
       // B's model space
-      var v = A.vertices[i].clone();
-      A.body.m.mulV(v);
+      var v = A.verticesMoved[i].clone();
+      //A.body.m.mulV(v);
       v
-        //..addV(A.body.m.position())
-        ..subtractToThis(B.body.m.position());
+        //..addVectorToThis(A.body.position)
+        ..subtractToThis(B.body.position);
       buT.mulVnoMove(v);
 
       // Compute penetration distance (in B's model space)
@@ -154,20 +159,20 @@ class CollisionDetection {
   }
 
   void _findIncidentFace(List<Vector> v, PolygonShape RefPoly, PolygonShape IncPoly, int referenceIndex) {
-    var referenceNormal = RefPoly.normals[referenceIndex].clone();
+    var referenceNormal = RefPoly.normalsMoved[referenceIndex].clone();
 
     // Calculate normal in incident's frame of reference
-    RefPoly.body.m.mulVnoMove(referenceNormal);
+    //RefPoly.body.m.mulVnoMove(referenceNormal);
 
-    IncPoly.body.m.clone()
-      ..transpose()
-      ..mulVnoMove(referenceNormal);
+    //IncPoly.body.m.clone()
+    //  ..transpose()
+    //  ..mulVnoMove(referenceNormal);
 
     // Find most anti-normal face on incident polygon
     int incidentFace = 0;
     double minDot = double.maxFinite;
-    for (int i = 0; i < IncPoly.vertices.length; ++i) {
-      double dot = referenceNormal.dotProductThis(IncPoly.normals[i]);
+    for (int i = 0; i < IncPoly.verticesMoved.length; ++i) {
+      double dot = referenceNormal.dotProductThis(IncPoly.normalsMoved[i]);
 
       if (dot < minDot) {
         minDot = dot;
@@ -176,11 +181,13 @@ class CollisionDetection {
     }
 
     // Assign face vertices for incidentFace
-    v[0] = IncPoly.vertices[incidentFace].clone();
-    IncPoly.body.m.mulV(v[0]);
-    incidentFace = incidentFace + 1 >= IncPoly.vertices.length ? 0 : incidentFace + 1;
-    v[1] = IncPoly.vertices[incidentFace].clone();
-    IncPoly.body.m.mulV(v[1]);
+    v[0] = IncPoly.verticesMoved[incidentFace].clone();
+    //IncPoly.body.m.mulV(v[0]);
+    //v[0].addVectorToThis(IncPoly.body.position);
+    incidentFace = incidentFace + 1 >= IncPoly.verticesMoved.length ? 0 : incidentFace + 1;
+    v[1] = IncPoly.verticesMoved[incidentFace].clone();
+    //IncPoly.body.m.mulV(v[1]);
+    //v[1].addVectorToThis(IncPoly.body.position);
   }
 
   int clip(Vector n, double c, List<Vector> face) {
