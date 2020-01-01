@@ -17,7 +17,7 @@ class ImpulseScene {
       for (int j = i + 1; j < bodies.length; ++j) {
         Body B = bodies[j];
 
-        if (A.invMass == 0 && B.invMass == 0) {
+        if (A.shape.invMass == 0 && B.shape.invMass == 0) {
           continue;
         }
 
@@ -71,20 +71,17 @@ class ImpulseScene {
   }
 
   void integrateForces(Body b, double dt) {
-    if (b.invMass == 0.0) return;
+    if (b.shape.invMass == 0.0) return;
 
     double dts = dt * 0.5;
-    var s = b.invMass * dts;
+    var s = b.shape.invMass * dts;
     b.velocity.addToThis(b.force.x * s, b.force.y * s);
     b.velocity.addToThis(ImpulseMath.GRAVITY.x * dts, ImpulseMath.GRAVITY.y * dts);
-    b.angularVelocity += b.torque * b.invInertia * dts;
+    b.angularVelocity += b.torque * b.shape.invInertia * dts;
   }
 
   void integrateVelocity(Body b, double dt) {
-    if (b.invMass == 0.0) return;
-
-    b.position.addToThis(b.velocity.x * dt, b.velocity.y * dt);
-    b.m.rotateThis(b.angularVelocity * dt);
+    if (b.shape.invMass == 0.0) return;
 
     var m2 = new Mat2();
     m2.rotateThis(b.angularVelocity * dt);

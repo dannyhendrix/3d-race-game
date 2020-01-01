@@ -1,17 +1,18 @@
 part of physicsengine;
 
 class PolygonShape {
-  Body body;
+  //Body body;
 
-  Vector center = Vector(0, 0);
+  Vector center;
   List<Vector> verticesMoved;
-  List<Vector> vertices;
   List<Vector> normalsMoved;
+
+  double mass, invMass, inertia, invInertia;
 
   PolygonShape(List<Vector> verts) {
     normalsMoved = _getNormals(verts);
     verticesMoved = verts;
-    vertices = _copyVectors(verts);
+    _computeMass(1.0, verticesMoved);
   }
   void apply(Mat2 m, Vector position) {
     center.addVectorToThis(position);
@@ -26,13 +27,9 @@ class PolygonShape {
 
   PolygonShape.rectangle(double hw, double hh) : this([Vector(-hw, -hh), Vector(hw, -hh), Vector(hw, hh), Vector(-hw, hh)]);
 
-  void initialize() {
-    _computeMass(1.0, vertices);
-  }
-
   void _computeMass(double density, List<Vector> verts) {
     // Calculate centroid and moment of inertia
-    var center = new Vector(0.0, 0.0); // centroid
+    center = new Vector(0.0, 0.0); // centroid
     double area = 0.0;
     double I = 0.0;
     final double k_inv3 = 1.0 / 3.0;
@@ -66,10 +63,10 @@ class PolygonShape {
       v.subtractToThis(center);
     }
 
-    body.mass = density * area;
-    body.invMass = (body.mass != 0.0) ? 1.0 / body.mass : 0.0;
-    body.inertia = I * density;
-    body.invInertia = (body.inertia != 0.0) ? 1.0 / body.inertia : 0.0;
+    mass = density * area;
+    invMass = (mass != 0.0) ? 1.0 / mass : 0.0;
+    inertia = I * density;
+    invInertia = (inertia != 0.0) ? 1.0 / inertia : 0.0;
   }
 
   List<Vector> _getNormals(List<Vector> verts) {
@@ -80,12 +77,6 @@ class PolygonShape {
       normals.add(Vector(face.y, -face.x)..normalizeThis());
     }
     return normals;
-  }
-
-  List<Vector> _copyVectors(List<Vector> verts) {
-    var clone = new List<Vector>();
-    for (var v in verts) clone.add(v.clone());
-    return clone;
   }
 
   Vector getSupport(Vector dir) {
