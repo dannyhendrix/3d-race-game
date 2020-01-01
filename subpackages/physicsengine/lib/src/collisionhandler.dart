@@ -1,20 +1,20 @@
 part of physicsengine;
 
-class CollisionHandler {
-  void handleCollision(Manifold m, Body a, Body b) {
+class CollisionDetection {
+  void detectCollision(Manifold m, Body a, Body b) {
     PolygonShape A = a.shape;
     PolygonShape B = b.shape;
     m.contactCount = 0;
 
     // Check for a separating axis with A's face planes
     List<int> faceA = [0];
-    double penetrationA = findAxisLeastPenetration(faceA, A, B);
+    double penetrationA = _findAxisLeastPenetration(faceA, A, B);
     if (penetrationA >= 0.0) {
       return;
     }
     // Check for a separating axis with B's face planes
     List<int> faceB = [0];
-    double penetrationB = findAxisLeastPenetration(faceB, B, A);
+    double penetrationB = _findAxisLeastPenetration(faceB, B, A);
     if (penetrationB >= 0.0) {
       return;
     }
@@ -41,7 +41,7 @@ class CollisionHandler {
     // World space incident face
     var incidentFace = [Vector(0, 0), Vector(0, 0)];
 
-    findIncidentFace(incidentFace, RefPoly, IncPoly, referenceIndex);
+    _findIncidentFace(incidentFace, RefPoly, IncPoly, referenceIndex);
 
     // y
     // ^ .n ^
@@ -113,7 +113,7 @@ class CollisionHandler {
     m.contactCount = cp;
   }
 
-  double findAxisLeastPenetration(List<int> faceIndex, PolygonShape A, PolygonShape B) {
+  double _findAxisLeastPenetration(List<int> faceIndex, PolygonShape A, PolygonShape B) {
     double bestDistance = double.negativeInfinity;
     int bestIndex = 0;
 
@@ -153,7 +153,7 @@ class CollisionHandler {
     return bestDistance;
   }
 
-  void findIncidentFace(List<Vector> v, PolygonShape RefPoly, PolygonShape IncPoly, int referenceIndex) {
+  void _findIncidentFace(List<Vector> v, PolygonShape RefPoly, PolygonShape IncPoly, int referenceIndex) {
     var referenceNormal = RefPoly.normals[referenceIndex].clone();
 
     // Calculate normal in incident's frame of reference

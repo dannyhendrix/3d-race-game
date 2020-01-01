@@ -5,11 +5,9 @@ class ImpulseScene {
   int iterations;
   List<Body> bodies = new List<Body>();
   List<Manifold> contacts = new List<Manifold>();
+  CollisionDetection _collisionDetection = new CollisionDetection();
 
-  ImpulseScene(double dt, int iterations) {
-    this.dt = dt;
-    this.iterations = iterations;
-  }
+  ImpulseScene(this.dt, this.iterations);
 
   void step() {
     contacts.clear();
@@ -24,7 +22,7 @@ class ImpulseScene {
         }
 
         Manifold m = new Manifold(A, B);
-        m.solve();
+        _collisionDetection.detectCollision(m, A, B);
 
         if (m.contactCount > 0) {
           contacts.add(m);

@@ -61,13 +61,12 @@ class PolygonShape {
   }
 
   void _setVectors(List<Vector> verts) {
+    vertices = verts;
+    normals = new List<Vector>();
     // Compute face normals
-    for (int i = 0; i < vertices.length; ++i) {
-      var face = vertices[(i + 1) % vertices.length].clone()..subtractToThis(vertices[i]);
-
-      // Calculate normal with 2D cross product between vector and scalar
-      normals[i].resetToPosition(face.y, -face.x);
-      normals[i].normalizeThis();
+    for (int i = 0; i < verts.length; ++i) {
+      var face = verts[(i + 1) % verts.length].clone()..subtractToThis(verts[i]);
+      normals.add(Vector(face.y, -face.x)..normalizeThis());
     }
   }
 

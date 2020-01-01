@@ -10,16 +10,8 @@ class Manifold {
   double e;
   double df;
   double sf;
-  CollisionHandler _collisionHandler = new CollisionHandler();
 
-  Manifold(Body a, Body b) {
-    A = a;
-    B = b;
-  }
-
-  void solve() {
-    _collisionHandler.handleCollision(this, A, B);
-  }
+  Manifold(this.A, this.B);
 
   void initialize() {
     // Calculate average restitution
@@ -51,7 +43,7 @@ class Manifold {
   void applyImpulse() {
     // Early out and positional correct if both objects have infinite mass
     if (ImpulseMath.equal(A.invMass + B.invMass, 0)) {
-      infiniteMassCorrection();
+      _infiniteMassCorrection();
       return;
     }
 
@@ -132,7 +124,7 @@ class Manifold {
     B.m.translateThis(normal.x * correctionB, normal.y * correctionB);
   }
 
-  void infiniteMassCorrection() {
+  void _infiniteMassCorrection() {
     A.velocity.reset();
     B.velocity.reset();
   }

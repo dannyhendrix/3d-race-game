@@ -13,8 +13,6 @@ class Body {
   Mat2 m = Mat2();
 
   Body(this.shape, double x, double y) {
-    this.shape = shape;
-
     m.translateThis(x, y);
     velocity.reset();
     angularVelocity = 0;
