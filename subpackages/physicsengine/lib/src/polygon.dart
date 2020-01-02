@@ -1,24 +1,26 @@
 part of physicsengine;
 
 class PolygonShape {
+  // velocity
   Vector velocity = new Vector(0, 0);
-  Vector force = new Vector(0, 0);
   double angularVelocity = 0;
+  //force
+  Vector force = new Vector(0, 0);
   double torque = 0;
+  // friction
   double staticFriction = 0.5;
   double dynamicFriction = 0.3;
   double restitution = 0.2;
 
   Vector center;
-  List<Vector> vertices;
+  final List<Vector> vertices;
   List<Vector> normals;
 
   double mass, invMass, inertia, invInertia;
 
   PolygonShape.rectangle(double hw, double hh) : this([Vector(-hw, -hh), Vector(hw, -hh), Vector(hw, hh), Vector(-hw, hh)]);
-  PolygonShape(List<Vector> verts) {
-    normals = _getNormals(verts);
-    vertices = verts;
+  PolygonShape(this.vertices) {
+    normals = _getNormals(vertices);
     _computeMass(1.0, vertices);
   }
   void move(double x, double y, double radians) {
@@ -29,11 +31,6 @@ class PolygonShape {
     for (var v in vertices) _applyRadiansWithOffset(v, cx, cy, x, y, radians);
 
     for (var v in normals) _applyRadians(v, radians);
-  }
-
-  void applyImpulse(Vector impulse, Vector contactVector) {
-    velocity.addToThis(impulse.x * invMass, impulse.y * invMass);
-    angularVelocity += invInertia * contactVector.crossProductThis(impulse);
   }
 
   void setStatic() {
@@ -94,8 +91,8 @@ class PolygonShape {
     // for the polygon in model space)
     // Not really necessary, but I like doing this anyway
     for (var v in verts) v.subtractToThis(center);
+    center.reset();
 
-    center.subtractToThis(center);
     mass = density * area;
     invMass = (mass != 0.0) ? 1.0 / mass : 0.0;
     inertia = I * density;

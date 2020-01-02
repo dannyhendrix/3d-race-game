@@ -80,6 +80,7 @@ void setControl(int keyCode, bool down) {
 
 class ExampleGameState extends GameLoopState {
   PolygonShape player;
+  List<PolygonShape> bodies = [];
 }
 
 class ExampleUiState {
@@ -92,7 +93,7 @@ class Example {
   GameLoopState gameloopstate;
 
   GameLoopHandler _gameloop;
-  ImpulseScene impulse = new ImpulseScene(1.0 / 60.0, 10);
+  ImpulseScene impulse = new ImpulseScene();
 
   Example(ILifetime lifetime) {
     gameloopstate = lifetime.resolve();
@@ -102,9 +103,9 @@ class Example {
   }
   void start() {
     gamestate.player = new PolygonShape.rectangle(10.0, 50.0)..move(230.0, 200.0, 0.0);
-    impulse.add(gamestate.player);
-    impulse.add(new PolygonShape.rectangle(200.0, 10.0)..move(240, 100, 0));
-    impulse.add(new PolygonShape.rectangle(200.0, 10.0)
+    gamestate.bodies.add(gamestate.player);
+    gamestate.bodies.add(new PolygonShape.rectangle(200.0, 10.0)..move(240, 100, 0));
+    gamestate.bodies.add(new PolygonShape.rectangle(200.0, 10.0)
       ..move(240, 300, 0)
       ..setStatic());
 
@@ -133,7 +134,7 @@ class Example {
 
   void _update(num frame) {
     _applyControl(gamestate);
-    impulse.step();
+    impulse.step(gamestate.bodies);
     _paint(uistate, gamestate);
     //_gameloop.stop(gameloopstate);
   }
@@ -143,7 +144,7 @@ class Example {
 
     uistate.renderlayer.ctx.strokeStyle = "black";
     uistate.renderlayer.ctx.fillStyle = "black";
-    for (PolygonShape p in impulse.bodies) {
+    for (PolygonShape p in gamestate.bodies) {
       uistate.renderlayer.ctx.beginPath();
       uistate.renderlayer.ctx.moveTo(p.center.x - 5, p.center.y);
       uistate.renderlayer.ctx.lineTo(p.center.x + 5, p.center.y);
@@ -166,19 +167,6 @@ class Example {
       }
       uistate.renderlayer.ctx.closePath();
       uistate.renderlayer.ctx.stroke();
-    }
-
-    uistate.renderlayer.ctx.strokeStyle = "green";
-    for (Manifold m in impulse.contacts) {
-      for (int i = 0; i < m.contactCount; i++) {
-        var v = m.contacts[i];
-        var n = m.normal;
-
-        uistate.renderlayer.ctx.beginPath();
-        uistate.renderlayer.ctx.moveTo(v.x, v.y);
-        uistate.renderlayer.ctx.lineTo(v.x + n.x * 8.0, v.y + n.y * 8.0);
-        uistate.renderlayer.ctx.stroke();
-      }
     }
   }
 
