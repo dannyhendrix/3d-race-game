@@ -20,18 +20,6 @@ class ImpulseMath {
     return (a < min ? min : (a > max ? max : a));
   }
 
-  static int round(double a) {
-    return (a + 0.5).toInt();
-  }
-
-  static double randomDouble(double min, double max) {
-    return ((max - min) * Random().nextDouble() + min);
-  }
-
-  static int random(int min, int max) {
-    return ((max - min + 1) * Random().nextDouble() + min).toInt();
-  }
-
   static bool gt(double a, double b) {
     return a >= b * BIAS_RELATIVE + a * BIAS_ABSOLUTE;
   }

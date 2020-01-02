@@ -15,14 +15,19 @@ class PolygonShape {
     _computeMass(1.0, verticesMoved);
   }
   void apply(Mat2 m, Vector position) {
+    var c2 = center.clone();
+    center.subtractToThis(c2);
+    m.mulV(center);
+    center.addVectorToThis(c2);
     center.addVectorToThis(position);
+
     for (var v in verticesMoved) {
-      v.subtractToThis(center);
+      v.subtractToThis(c2);
       m.mulV(v);
-      v.addVectorToThis(center);
+      v.addVectorToThis(c2);
       v.addVectorToThis(position);
     }
-    for (var v in normalsMoved) m.mulVnoMove(v);
+    for (var v in normalsMoved) m.mulV(v);
   }
 
   PolygonShape.rectangle(double hw, double hh) : this([Vector(-hw, -hh), Vector(hw, -hh), Vector(hw, hh), Vector(-hw, hh)]);
@@ -62,7 +67,7 @@ class PolygonShape {
     for (var v in verts) {
       v.subtractToThis(center);
     }
-
+    center.subtractToThis(center);
     mass = density * area;
     invMass = (mass != 0.0) ? 1.0 / mass : 0.0;
     inertia = I * density;

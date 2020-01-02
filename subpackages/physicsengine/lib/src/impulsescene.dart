@@ -76,7 +76,7 @@ class ImpulseScene {
     double dts = dt * 0.5;
     var s = b.shape.invMass * dts;
     b.velocity.addToThis(b.force.x * s, b.force.y * s);
-    b.velocity.addToThis(ImpulseMath.GRAVITY.x * dts, ImpulseMath.GRAVITY.y * dts);
+    //b.velocity.addToThis(ImpulseMath.GRAVITY.x * dts, ImpulseMath.GRAVITY.y * dts);
     b.angularVelocity += b.torque * b.shape.invInertia * dts;
   }
 
@@ -84,7 +84,7 @@ class ImpulseScene {
     if (b.shape.invMass == 0.0) return;
 
     var m2 = new Mat2();
-    m2.rotateThis(b.angularVelocity * dt);
+    m2.changeR(b.angularVelocity * dt);
     //m2.translateThis(b.velocity.x * dt, b.velocity.y * dt);
     b.shape.apply(m2, new Vector(b.velocity.x * dt, b.velocity.y * dt));
 

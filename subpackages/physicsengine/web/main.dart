@@ -79,7 +79,7 @@ void setControl(int keyCode, bool down) {
 }
 
 class ExampleGameState extends GameLoopState {
-  GameLoopState gameloop = GameLoopState();
+  Body player;
 }
 
 class ExampleUiState {
@@ -104,6 +104,7 @@ class Example {
     Body b = null;
 
     b = impulse.add(new PolygonShape.rectangle(10.0, 50.0), 230, 200);
+    gamestate.player = b;
     b = impulse.add(new PolygonShape.rectangle(200.0, 10.0), 240, 100);
     b = impulse.add(new PolygonShape.rectangle(200.0, 10.0), 240, 300);
     b.setStatic();
@@ -115,6 +116,16 @@ class Example {
   void _applyControl(ExampleGameState gamestate) {
     var max = 5.0;
     var acc = 0.2;
+    var f = 300000.0;
+    //print("$keyDown,$keyUp,$keyLeft,$keyRight");
+
+    if (keyDown) gamestate.player.applyForce(Vector(0.0, f));
+    //if (keyDown) gamestate.player.torque = 600000.0;
+    if (keyUp) gamestate.player.applyForce(Vector(0.0, -f));
+    //if (keyUp) gamestate.player.torque = -600000.0;
+
+    if (keyRight) gamestate.player.applyForce(Vector(f, 0.0));
+    if (keyLeft) gamestate.player.applyForce(Vector(-f, 0.0));
     //if (keyDown && gamestate.player.velocity.y < max) gamestate.player.velocity.addToThis(0.0, acc);
     //if (keyUp && gamestate.player.velocity.y > -max) gamestate.player.velocity.addToThis(0.0, -acc);
     //if (keyRight && gamestate.player.velocity.x < max) gamestate.player.velocity.addToThis(acc, 0.0);
@@ -122,6 +133,7 @@ class Example {
   }
 
   void _update(num frame) {
+    _applyControl(gamestate);
     impulse.step();
     _paint(uistate, gamestate);
     //_gameloop.stop(gameloopstate);
@@ -135,6 +147,17 @@ class Example {
     for (Body b in impulse.bodies) {
       //print(b.shape.u);
       PolygonShape p = b.shape;
+
+      uistate.renderlayer.ctx.beginPath();
+      uistate.renderlayer.ctx.moveTo(p.center.x - 5, p.center.y);
+      uistate.renderlayer.ctx.lineTo(p.center.x + 5, p.center.y);
+      uistate.renderlayer.ctx.closePath();
+      uistate.renderlayer.ctx.stroke();
+      uistate.renderlayer.ctx.beginPath();
+      uistate.renderlayer.ctx.moveTo(p.center.x, p.center.y - 5);
+      uistate.renderlayer.ctx.lineTo(p.center.x, p.center.y + 5);
+      uistate.renderlayer.ctx.closePath();
+      uistate.renderlayer.ctx.stroke();
 
       uistate.renderlayer.ctx.beginPath();
       for (int i = 0; i < p.verticesMoved.length; i++) {
