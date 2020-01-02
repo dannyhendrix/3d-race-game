@@ -82,7 +82,7 @@ void setControl(int keyCode, bool down) {
 }
 
 class ExampleGameState extends GameLoopState {
-  PhysicsObject player;
+  Vehicle player;
   List<PhysicsObject> bodies = [];
 }
 
@@ -106,7 +106,7 @@ class Example {
     _collisionController = lifetime.resolve();
   }
   void start() {
-    gamestate.player = new PhysicsObject.rectangle(10.0, 50.0)..move(230.0, 200.0, 0.0);
+    gamestate.player = new Vehicle()..move(230.0, 200.0, 0.0);
     gamestate.bodies.add(gamestate.player);
     gamestate.bodies.add(new PhysicsObject.rectangle(200.0, 10.0)..move(240, 100, 0));
     gamestate.bodies.add(new PhysicsObject.rectangle(200.0, 10.0)
@@ -123,17 +123,17 @@ class Example {
     var f = 300000.0;
     //print("$keyDown,$keyUp,$keyLeft,$keyRight");
 
-    if (keyDown) gamestate.player.force.addToThis(0.0, f);
-    //if (keyDown) gamestate.player.torque = 600000.0;
-    if (keyUp) gamestate.player..force.addToThis(0.0, -f);
-    //if (keyUp) gamestate.player.torque = -600000.0;
+    //if (keyDown) gamestate.player.force.addToThis(0.0, f);
+    //if (keyUp) gamestate.player..force.addToThis(0.0, -f);
 
-    if (keyRight) gamestate.player.force.addToThis(f, 0.0);
-    if (keyLeft) gamestate.player.force.addToThis(-f, 0.0);
-    //if (keyDown && gamestate.player.velocity.y < max) gamestate.player.velocity.addToThis(0.0, acc);
-    //if (keyUp && gamestate.player.velocity.y > -max) gamestate.player.velocity.addToThis(0.0, -acc);
-    //if (keyRight && gamestate.player.velocity.x < max) gamestate.player.velocity.addToThis(acc, 0.0);
-    //if (keyLeft && gamestate.player.velocity.x > -max) gamestate.player.velocity.addToThis(-acc, 0.0);
+    //if (keyRight) gamestate.player.force.addToThis(f, 0.0);
+    //if (keyLeft) gamestate.player.force.addToThis(-f, 0.0);
+
+    if (keyDown) gamestate.player.reverse();
+    if (keyUp) gamestate.player.forward();
+
+    if (keyRight) gamestate.player.steerRight();
+    if (keyLeft) gamestate.player.steerLeft();
   }
 
   void _update(num frame) {
@@ -188,5 +188,31 @@ class Example {
       layer.ctx.fillStyle = color;
       layer.ctx.fill();
     }
+  }
+}
+
+class Vehicle extends PhysicsObject {
+  Vehicle() : super.rectangle(50.0, 30.0);
+  double angle = 0.0;
+  @override
+  void move(double x, double y, double radians) {
+    angle += radians;
+    super.move(x, y, radians);
+  }
+
+  void forward() {
+    force.addVectorToThis(Vector.fromAngleRadians(angle, 800000.0));
+  }
+
+  void reverse() {
+    force.addVectorToThis(Vector.fromAngleRadians(angle, -800000.0));
+  }
+
+  void steerLeft() {
+    torque -= 8000000.0;
+  }
+
+  void steerRight() {
+    torque += 8000000.0;
   }
 }
