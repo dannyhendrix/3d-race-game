@@ -1,6 +1,6 @@
 part of physicsengine;
 
-class PolygonShape {
+class PhysicsObject {
   // velocity
   Vector velocity = new Vector(0, 0);
   double angularVelocity = 0;
@@ -18,8 +18,8 @@ class PolygonShape {
 
   double mass, invMass, inertia, invInertia;
 
-  PolygonShape.rectangle(double hw, double hh) : this([Vector(-hw, -hh), Vector(hw, -hh), Vector(hw, hh), Vector(-hw, hh)]);
-  PolygonShape(this.vertices) {
+  PhysicsObject.rectangle(double hw, double hh) : this([Vector(-hw, -hh), Vector(hw, -hh), Vector(hw, hh), Vector(-hw, hh)]);
+  PhysicsObject(this.vertices) {
     normals = _getNormals(vertices);
     _computeMass(1.0, vertices);
   }

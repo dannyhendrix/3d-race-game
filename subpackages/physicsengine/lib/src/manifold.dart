@@ -1,8 +1,8 @@
 part of physicsengine;
 
 class Manifold {
-  final PolygonShape A;
-  final PolygonShape B;
+  final PhysicsObject A;
+  final PhysicsObject B;
 
   // detection
   double penetration;

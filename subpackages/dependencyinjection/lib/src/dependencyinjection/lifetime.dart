@@ -10,6 +10,7 @@ class DependencyBuilderFactory {
 
 abstract class IDependencyBuilder {
   void registerInstance<T>(T obj, {String name = null, List<Type> additionRegistrations});
+  void registerSingleInstanceType<T>(NewInstance<T> create, {String name = null, List<Type> additionRegistrations});
   void registerType<T>(NewInstance<T> create, {LifeTimeScope lifeTimeScope = LifeTimeScope.PerUser, String name = null, List<Type> additionRegistrations});
   void registerModule(IDependencyModule module);
   ILifetime build();
@@ -64,6 +65,10 @@ class Lifetime implements ILifetime, IDependencyBuilder {
   //builder
   void registerInstance<T>(T obj, {String name = null, List<Type> additionRegistrations}) {
     _addRegistration<T>(additionRegistrations, new Registration(T, (lifetime) => obj, LifeTimeScope.SingleInstance), name);
+  }
+
+  void registerSingleInstanceType<T>(NewInstance<T> create, {String name = null, List<Type> additionRegistrations}) {
+    _addRegistration<T>(additionRegistrations, new Registration(T, create, LifeTimeScope.SingleInstance), name);
   }
 
   void registerType<T>(NewInstance<T> create, {LifeTimeScope lifeTimeScope = LifeTimeScope.PerUser, String name = null, List<Type> additionRegistrations}) {

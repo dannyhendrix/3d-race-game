@@ -1,13 +1,15 @@
 part of physicsengine;
 
-class ImpulseScene {
+class CollisionController {
   static final double dt = 1 / 60.0;
   static final int iterations = 10;
 
-  CollisionDetection _collisionDetection = new CollisionDetection();
-  CollisionHandler _collisionHandler = new CollisionHandler();
+  CollisionDetection _collisionDetection;
+  CollisionHandler _collisionHandler;
 
-  void step(List<PolygonShape> bodies) {
+  CollisionController(this._collisionDetection, this._collisionHandler);
+
+  void step(List<PhysicsObject> bodies) {
     var contacts = new List<Manifold>();
     for (int i = 0; i < bodies.length; ++i) {
       var A = bodies[i];

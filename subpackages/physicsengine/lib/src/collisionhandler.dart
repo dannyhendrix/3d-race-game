@@ -95,7 +95,7 @@ class CollisionHandler {
     manifold.B.move(manifold.normal.x * correctionB, manifold.normal.y * correctionB, 0.0);
   }
 
-  void integrateVelocity(PolygonShape b, double dt) {
+  void integrateVelocity(PhysicsObject b, double dt) {
     if (b.invMass == 0.0) return;
 
     b.move(b.velocity.x * dt, b.velocity.y * dt, b.angularVelocity * dt);
@@ -103,7 +103,7 @@ class CollisionHandler {
     integrateForces(b, dt);
   }
 
-  void integrateForces(PolygonShape b, double dt) {
+  void integrateForces(PhysicsObject b, double dt) {
     if (b.invMass == 0.0) return;
     var friction = 900.0;
     double dts = dt * 0.5;
@@ -115,7 +115,7 @@ class CollisionHandler {
     b.angularVelocity += -b.angularVelocity * b.invInertia * dts * 900000.0;
   }
 
-  void _applyImpulse(PolygonShape polygon, Vector impulse, Vector contactVector) {
+  void _applyImpulse(PhysicsObject polygon, Vector impulse, Vector contactVector) {
     polygon.velocity.addToThis(impulse.x * polygon.invMass, impulse.y * polygon.invMass);
     polygon.angularVelocity += polygon.invInertia * contactVector.crossProductThis(impulse);
   }

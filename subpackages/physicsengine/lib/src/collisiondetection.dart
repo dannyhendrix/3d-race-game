@@ -3,7 +3,7 @@ part of physicsengine;
 class CollisionDetection {
   static final double BIAS_RELATIVE = 0.95;
   static final double BIAS_ABSOLUTE = 0.01;
-  void detectCollision(Manifold manifold, PolygonShape a, PolygonShape b) {
+  void detectCollision(Manifold manifold, PhysicsObject a, PhysicsObject b) {
     manifold.contactCount = 0;
 
     // Check for a separating axis with A's face planes
@@ -23,8 +23,8 @@ class CollisionDetection {
     int referenceIndex;
     bool flip; // Always point from a to b
 
-    PolygonShape RefPoly; // Reference
-    PolygonShape IncPoly; // Incident
+    PhysicsObject RefPoly; // Reference
+    PhysicsObject IncPoly; // Incident
 
     // Determine which shape contains reference face
     if (gt(penetrationA, penetrationB)) {
@@ -110,7 +110,7 @@ class CollisionDetection {
     manifold.contactCount = cp;
   }
 
-  double _findAxisLeastPenetration(List<int> faceIndex, PolygonShape A, PolygonShape B) {
+  double _findAxisLeastPenetration(List<int> faceIndex, PhysicsObject A, PhysicsObject B) {
     double bestDistance = double.negativeInfinity;
     int bestIndex = 0;
 
@@ -133,7 +133,7 @@ class CollisionDetection {
     return bestDistance;
   }
 
-  Vector _getSupport(PolygonShape polygon, Vector dir) {
+  Vector _getSupport(PhysicsObject polygon, Vector dir) {
     double bestProjection = double.negativeInfinity;
     Vector bestVertex = null;
 
@@ -149,7 +149,7 @@ class CollisionDetection {
     return bestVertex;
   }
 
-  void _findIncidentFace(List<Vector> v, PolygonShape RefPoly, PolygonShape IncPoly, int referenceIndex) {
+  void _findIncidentFace(List<Vector> v, PhysicsObject RefPoly, PhysicsObject IncPoly, int referenceIndex) {
     var referenceNormal = RefPoly.normals[referenceIndex].clone();
 
     // Find most anti-normal face on incident polygon

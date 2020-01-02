@@ -23,11 +23,14 @@ ExampleUiState createInitialUiState(ILifetime lifetime) {
 void main() {
   var lifetime = DependencyBuilderFactory().createNew((builder) {
     builder.registerModule(UiComposition());
-    builder.registerType((lifetime) => Example(lifetime), lifeTimeScope: LifeTimeScope.SingleInstance);
-    builder.registerType((lifetime) => createInitialState(lifetime), lifeTimeScope: LifeTimeScope.SingleInstance);
-    builder.registerType((lifetime) => createInitialUiState(lifetime), lifeTimeScope: LifeTimeScope.SingleInstance);
-    builder.registerType((lifetime) => GameLoopHandler(), lifeTimeScope: LifeTimeScope.SingleInstance);
-    builder.registerType((lifetime) => GameLoopState(), lifeTimeScope: LifeTimeScope.SingleInstance);
+    builder.registerSingleInstanceType((lifetime) => Example(lifetime));
+    builder.registerSingleInstanceType((lifetime) => createInitialState(lifetime));
+    builder.registerSingleInstanceType((lifetime) => createInitialUiState(lifetime));
+    builder.registerSingleInstanceType((lifetime) => GameLoopHandler());
+    builder.registerSingleInstanceType((lifetime) => GameLoopState());
+    builder.registerSingleInstanceType((lifetime) => CollisionDetection());
+    builder.registerSingleInstanceType((lifetime) => CollisionHandler());
+    builder.registerSingleInstanceType((lifetime) => CollisionController(lifetime.resolve(), lifetime.resolve()));
   });
 
   document.body.querySelector("#loading").remove();
@@ -79,8 +82,8 @@ void setControl(int keyCode, bool down) {
 }
 
 class ExampleGameState extends GameLoopState {
-  PolygonShape player;
-  List<PolygonShape> bodies = [];
+  PhysicsObject player;
+  List<PhysicsObject> bodies = [];
 }
 
 class ExampleUiState {
@@ -93,19 +96,20 @@ class Example {
   GameLoopState gameloopstate;
 
   GameLoopHandler _gameloop;
-  ImpulseScene impulse = new ImpulseScene();
+  CollisionController _collisionController;
 
   Example(ILifetime lifetime) {
     gameloopstate = lifetime.resolve();
     uistate = lifetime.resolve();
     gamestate = lifetime.resolve();
     _gameloop = lifetime.resolve();
+    _collisionController = lifetime.resolve();
   }
   void start() {
-    gamestate.player = new PolygonShape.rectangle(10.0, 50.0)..move(230.0, 200.0, 0.0);
+    gamestate.player = new PhysicsObject.rectangle(10.0, 50.0)..move(230.0, 200.0, 0.0);
     gamestate.bodies.add(gamestate.player);
-    gamestate.bodies.add(new PolygonShape.rectangle(200.0, 10.0)..move(240, 100, 0));
-    gamestate.bodies.add(new PolygonShape.rectangle(200.0, 10.0)
+    gamestate.bodies.add(new PhysicsObject.rectangle(200.0, 10.0)..move(240, 100, 0));
+    gamestate.bodies.add(new PhysicsObject.rectangle(200.0, 10.0)
       ..move(240, 300, 0)
       ..setStatic());
 
@@ -134,7 +138,7 @@ class Example {
 
   void _update(num frame) {
     _applyControl(gamestate);
-    impulse.step(gamestate.bodies);
+    _collisionController.step(gamestate.bodies);
     _paint(uistate, gamestate);
     //_gameloop.stop(gameloopstate);
   }
@@ -144,7 +148,7 @@ class Example {
 
     uistate.renderlayer.ctx.strokeStyle = "black";
     uistate.renderlayer.ctx.fillStyle = "black";
-    for (PolygonShape p in gamestate.bodies) {
+    for (var p in gamestate.bodies) {
       uistate.renderlayer.ctx.beginPath();
       uistate.renderlayer.ctx.moveTo(p.center.x - 5, p.center.y);
       uistate.renderlayer.ctx.lineTo(p.center.x + 5, p.center.y);
