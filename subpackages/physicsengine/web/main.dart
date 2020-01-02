@@ -79,7 +79,7 @@ void setControl(int keyCode, bool down) {
 }
 
 class ExampleGameState extends GameLoopState {
-  Body player;
+  PolygonShape player;
 }
 
 class ExampleUiState {
@@ -101,13 +101,12 @@ class Example {
     _gameloop = lifetime.resolve();
   }
   void start() {
-    Body b = null;
-
-    b = impulse.add(new PolygonShape.rectangle(10.0, 50.0), 230, 200);
-    gamestate.player = b;
-    b = impulse.add(new PolygonShape.rectangle(200.0, 10.0), 240, 100);
-    b = impulse.add(new PolygonShape.rectangle(200.0, 10.0), 240, 300);
-    b.setStatic();
+    gamestate.player = new PolygonShape.rectangle(10.0, 50.0)..move(230.0, 200.0, 0.0);
+    impulse.add(gamestate.player);
+    impulse.add(new PolygonShape.rectangle(200.0, 10.0)..move(240, 100, 0));
+    impulse.add(new PolygonShape.rectangle(200.0, 10.0)
+      ..move(240, 300, 0)
+      ..setStatic());
 
     gameloopstate.onUpdate = _update;
     _gameloop.start(gameloopstate);
@@ -119,13 +118,13 @@ class Example {
     var f = 300000.0;
     //print("$keyDown,$keyUp,$keyLeft,$keyRight");
 
-    if (keyDown) gamestate.player.applyForce(Vector(0.0, f));
+    if (keyDown) gamestate.player.force.addToThis(0.0, f);
     //if (keyDown) gamestate.player.torque = 600000.0;
-    if (keyUp) gamestate.player.applyForce(Vector(0.0, -f));
+    if (keyUp) gamestate.player..force.addToThis(0.0, -f);
     //if (keyUp) gamestate.player.torque = -600000.0;
 
-    if (keyRight) gamestate.player.applyForce(Vector(f, 0.0));
-    if (keyLeft) gamestate.player.applyForce(Vector(-f, 0.0));
+    if (keyRight) gamestate.player.force.addToThis(f, 0.0);
+    if (keyLeft) gamestate.player.force.addToThis(-f, 0.0);
     //if (keyDown && gamestate.player.velocity.y < max) gamestate.player.velocity.addToThis(0.0, acc);
     //if (keyUp && gamestate.player.velocity.y > -max) gamestate.player.velocity.addToThis(0.0, -acc);
     //if (keyRight && gamestate.player.velocity.x < max) gamestate.player.velocity.addToThis(acc, 0.0);
@@ -144,10 +143,7 @@ class Example {
 
     uistate.renderlayer.ctx.strokeStyle = "black";
     uistate.renderlayer.ctx.fillStyle = "black";
-    for (Body b in impulse.bodies) {
-      //print(b.shape.u);
-      PolygonShape p = b.shape;
-
+    for (PolygonShape p in impulse.bodies) {
       uistate.renderlayer.ctx.beginPath();
       uistate.renderlayer.ctx.moveTo(p.center.x - 5, p.center.y);
       uistate.renderlayer.ctx.lineTo(p.center.x + 5, p.center.y);

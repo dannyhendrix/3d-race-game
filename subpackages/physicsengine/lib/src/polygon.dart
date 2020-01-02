@@ -1,7 +1,13 @@
 part of physicsengine;
 
 class PolygonShape {
-  //Body body;
+  Vector velocity = new Vector(0, 0);
+  Vector force = new Vector(0, 0);
+  double angularVelocity = 0;
+  double torque = 0;
+  double staticFriction = 0.5;
+  double dynamicFriction = 0.3;
+  double restitution = 0.2;
 
   Vector center;
   List<Vector> vertices;
@@ -23,6 +29,18 @@ class PolygonShape {
     for (var v in vertices) _applyRadiansWithOffset(v, cx, cy, x, y, radians);
 
     for (var v in normals) _applyRadians(v, radians);
+  }
+
+  void applyImpulse(Vector impulse, Vector contactVector) {
+    velocity.addToThis(impulse.x * invMass, impulse.y * invMass);
+    angularVelocity += invInertia * contactVector.crossProductThis(impulse);
+  }
+
+  void setStatic() {
+    inertia = 0.0;
+    invInertia = 0.0;
+    mass = 0.0;
+    invMass = 0.0;
   }
 
   void _applyRadiansWithOffset(Vector v, double cx, double cy, double x, double y, double radians) {

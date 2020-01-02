@@ -3,7 +3,7 @@ part of physicsengine;
 class ImpulseScene {
   double dt;
   int iterations;
-  List<Body> bodies = new List<Body>();
+  List<PolygonShape> bodies = new List<PolygonShape>();
   List<Manifold> contacts = new List<Manifold>();
   CollisionDetection _collisionDetection = new CollisionDetection();
 
@@ -12,12 +12,12 @@ class ImpulseScene {
   void step() {
     contacts.clear();
     for (int i = 0; i < bodies.length; ++i) {
-      Body A = bodies[i];
+      var A = bodies[i];
 
       for (int j = i + 1; j < bodies.length; ++j) {
-        Body B = bodies[j];
+        var B = bodies[j];
 
-        if (A.shape.invMass == 0 && B.shape.invMass == 0) {
+        if (A.invMass == 0 && B.invMass == 0) {
           continue;
         }
 
@@ -53,16 +53,14 @@ class ImpulseScene {
     }
 
     for (int i = 0; i < bodies.length; ++i) {
-      Body b = bodies[i];
+      var b = bodies[i];
       b.force.reset();
       b.torque = 0;
     }
   }
 
-  Body add(PolygonShape shape, double x, double y) {
-    Body b = new Body(shape, x, y);
-    bodies.add(b);
-    return b;
+  void add(PolygonShape shape) {
+    bodies.add(shape);
   }
 
   void clear() {
@@ -70,22 +68,22 @@ class ImpulseScene {
     bodies.clear();
   }
 
-  void integrateForces(Body b, double dt) {
-    if (b.shape.invMass == 0.0) return;
+  void integrateForces(PolygonShape b, double dt) {
+    if (b.invMass == 0.0) return;
     var friction = 900.0;
     double dts = dt * 0.5;
-    var s = b.shape.invMass * dts;
+    var s = b.invMass * dts;
     b.velocity.addToThis(b.force.x * s, b.force.y * s);
     b.velocity.addToThis(-b.velocity.x * s * friction, -b.velocity.y * s * friction);
     //b.velocity.addToThis(ImpulseMath.GRAVITY.x * dts, ImpulseMath.GRAVITY.y * dts);
-    b.angularVelocity += b.torque * b.shape.invInertia * dts;
-    b.angularVelocity += -b.angularVelocity * b.shape.invInertia * dts * 900000.0;
+    b.angularVelocity += b.torque * b.invInertia * dts;
+    b.angularVelocity += -b.angularVelocity * b.invInertia * dts * 900000.0;
   }
 
-  void integrateVelocity(Body b, double dt) {
-    if (b.shape.invMass == 0.0) return;
+  void integrateVelocity(PolygonShape b, double dt) {
+    if (b.invMass == 0.0) return;
 
-    b.shape.move(b.velocity.x * dt, b.velocity.y * dt, b.angularVelocity * dt);
+    b.move(b.velocity.x * dt, b.velocity.y * dt, b.angularVelocity * dt);
 
     integrateForces(b, dt);
   }

@@ -1,21 +1,19 @@
 part of physicsengine;
 
 class CollisionDetection {
-  void detectCollision(Manifold m, Body a, Body b) {
-    PolygonShape A = a.shape;
-    PolygonShape B = b.shape;
+  void detectCollision(Manifold m, PolygonShape a, PolygonShape b) {
     m.contactCount = 0;
 
     // Check for a separating axis with A's face planes
     List<int> faceA = [0];
-    double penetrationA = _findAxisLeastPenetration(faceA, A, B);
+    double penetrationA = _findAxisLeastPenetration(faceA, a, b);
     //print("$penetrationA $penetrationA2");
     if (penetrationA >= 0.0) {
       return;
     }
     // Check for a separating axis with B's face planes
     List<int> faceB = [0];
-    double penetrationB = _findAxisLeastPenetration(faceB, B, A);
+    double penetrationB = _findAxisLeastPenetration(faceB, b, a);
     if (penetrationB >= 0.0) {
       return;
     }
@@ -28,13 +26,13 @@ class CollisionDetection {
 
     // Determine which shape contains reference face
     if (ImpulseMath.gt(penetrationA, penetrationB)) {
-      RefPoly = A;
-      IncPoly = B;
+      RefPoly = a;
+      IncPoly = b;
       referenceIndex = faceA[0];
       flip = false;
     } else {
-      RefPoly = B;
-      IncPoly = A;
+      RefPoly = b;
+      IncPoly = a;
       referenceIndex = faceB[0];
       flip = true;
     }

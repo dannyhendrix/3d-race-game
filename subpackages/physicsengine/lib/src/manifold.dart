@@ -1,8 +1,8 @@
 part of physicsengine;
 
 class Manifold {
-  Body A;
-  Body B;
+  PolygonShape A;
+  PolygonShape B;
   double penetration;
   final Vector normal = new Vector(0, 0);
   final List<Vector> contacts = [new Vector(0, 0), new Vector(0, 0)];
@@ -23,8 +23,8 @@ class Manifold {
 
     for (int i = 0; i < contactCount; ++i) {
       // Calculate radii from COM to contact
-      Vector ra = contacts[i].clone()..subtractToThis(A.shape.center);
-      Vector rb = contacts[i].clone()..subtractToThis(B.shape.center);
+      Vector ra = contacts[i].clone()..subtractToThis(A.center);
+      Vector rb = contacts[i].clone()..subtractToThis(B.center);
 
       Vector rv = B.velocity.clone()
         ..addVectorToThis(rb.clone()..crossProductToThis(B.angularVelocity))
@@ -42,15 +42,15 @@ class Manifold {
 
   void applyImpulse() {
     // Early out and positional correct if both objects have infinite mass
-    if (ImpulseMath.equal(A.shape.invMass + B.shape.invMass, 0)) {
+    if (ImpulseMath.equal(A.invMass + B.invMass, 0)) {
       _infiniteMassCorrection();
       return;
     }
 
     for (int i = 0; i < contactCount; ++i) {
       // Calculate radii from COM to contact
-      Vector ra = contacts[i].clone()..subtractToThis(A.shape.center);
-      Vector rb = contacts[i].clone()..subtractToThis(B.shape.center);
+      Vector ra = contacts[i].clone()..subtractToThis(A.center);
+      Vector rb = contacts[i].clone()..subtractToThis(B.center);
 
       // Relative velocity
       Vector rv = B.velocity.clone()
@@ -68,7 +68,7 @@ class Manifold {
 
       double raCrossN = ra.crossProductThis(normal);
       double rbCrossN = rb.crossProductThis(normal);
-      double invMassSum = A.shape.invMass + B.shape.invMass + (raCrossN * raCrossN) * A.shape.invInertia + (rbCrossN * rbCrossN) * B.shape.invInertia;
+      double invMassSum = A.invMass + B.invMass + (raCrossN * raCrossN) * A.invInertia + (rbCrossN * rbCrossN) * B.invInertia;
 
       // Calculate impulse scalar
       double j = -(1.0 + e) * contactVel;
@@ -116,13 +116,13 @@ class Manifold {
   }
 
   void positionalCorrection() {
-    double correction = max(penetration - ImpulseMath.PENETRATION_ALLOWANCE, 0.0) / (A.shape.invMass + B.shape.invMass) * ImpulseMath.PENETRATION_CORRETION;
+    double correction = max(penetration - ImpulseMath.PENETRATION_ALLOWANCE, 0.0) / (A.invMass + B.invMass) * ImpulseMath.PENETRATION_CORRETION;
 
-    var correctionA = -A.shape.invMass * correction;
-    var correctionB = B.shape.invMass * correction;
+    var correctionA = -A.invMass * correction;
+    var correctionB = B.invMass * correction;
 
-    A.shape.move(normal.x * correctionA, normal.y * correctionA, 0.0);
-    B.shape.move(normal.x * correctionB, normal.y * correctionB, 0.0);
+    A.move(normal.x * correctionA, normal.y * correctionA, 0.0);
+    B.move(normal.x * correctionB, normal.y * correctionB, 0.0);
   }
 
   void _infiniteMassCorrection() {
