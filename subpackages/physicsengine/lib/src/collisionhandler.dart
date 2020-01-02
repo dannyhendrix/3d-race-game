@@ -1,6 +1,8 @@
 part of physicsengine;
 
 class CollisionDetection {
+  static final double BIAS_RELATIVE = 0.95;
+  static final double BIAS_ABSOLUTE = 0.01;
   void detectCollision(Manifold m, PolygonShape a, PolygonShape b) {
     m.contactCount = 0;
 
@@ -25,7 +27,7 @@ class CollisionDetection {
     PolygonShape IncPoly; // Incident
 
     // Determine which shape contains reference face
-    if (ImpulseMath.gt(penetrationA, penetrationB)) {
+    if (gt(penetrationA, penetrationB)) {
       RefPoly = a;
       IncPoly = b;
       referenceIndex = faceA[0];
@@ -217,5 +219,9 @@ class CollisionDetection {
     face[1] = out[1];
 
     return sp;
+  }
+
+  bool gt(double a, double b) {
+    return a >= b * BIAS_RELATIVE + a * BIAS_ABSOLUTE;
   }
 }

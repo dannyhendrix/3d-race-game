@@ -92,7 +92,7 @@ class Example {
   GameLoopState gameloopstate;
 
   GameLoopHandler _gameloop;
-  ImpulseScene impulse = new ImpulseScene(ImpulseMath.DT, 10);
+  ImpulseScene impulse = new ImpulseScene(1.0 / 60.0, 10);
 
   Example(ILifetime lifetime) {
     gameloopstate = lifetime.resolve();

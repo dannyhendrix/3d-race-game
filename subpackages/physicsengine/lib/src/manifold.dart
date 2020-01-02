@@ -1,6 +1,9 @@
 part of physicsengine;
 
 class Manifold {
+  static final double EPSILON = 0.0001;
+  static final double PENETRATION_ALLOWANCE = 0.05;
+  static final double PENETRATION_CORRETION = 0.4;
   PolygonShape A;
   PolygonShape B;
   double penetration;
@@ -20,29 +23,11 @@ class Manifold {
     // Calculate static and dynamic friction
     sf = sqrt(A.staticFriction * A.staticFriction + B.staticFriction * B.staticFriction);
     df = sqrt(A.dynamicFriction * A.dynamicFriction + B.dynamicFriction * B.dynamicFriction);
-
-    for (int i = 0; i < contactCount; ++i) {
-      // Calculate radii from COM to contact
-      Vector ra = contacts[i].clone()..subtractToThis(A.center);
-      Vector rb = contacts[i].clone()..subtractToThis(B.center);
-
-      Vector rv = B.velocity.clone()
-        ..addVectorToThis(rb.clone()..crossProductToThis(B.angularVelocity))
-        ..subtractToThis(A.velocity)
-        ..subtractToThis(ra.clone()..crossProductToThis(A.angularVelocity));
-
-      // Determine if we should perform a resting collision or not
-      // The idea is if the only thing moving this object is gravity,
-      // then the collision should be performed without any restitution
-      if (rv.magnitudeSquared() < ImpulseMath.RESTING) {
-        e = 0.0;
-      }
-    }
   }
 
   void applyImpulse() {
     // Early out and positional correct if both objects have infinite mass
-    if (ImpulseMath.equal(A.invMass + B.invMass, 0)) {
+    if (_equal(A.invMass + B.invMass, 0)) {
       _infiniteMassCorrection();
       return;
     }
@@ -97,7 +82,7 @@ class Manifold {
       jt /= contactCount;
 
       // Don't apply tiny friction impulses
-      if (ImpulseMath.equal(jt, 0.0)) {
+      if (_equal(jt, 0.0)) {
         return;
       }
 
@@ -116,7 +101,7 @@ class Manifold {
   }
 
   void positionalCorrection() {
-    double correction = max(penetration - ImpulseMath.PENETRATION_ALLOWANCE, 0.0) / (A.invMass + B.invMass) * ImpulseMath.PENETRATION_CORRETION;
+    double correction = max(penetration - PENETRATION_ALLOWANCE, 0.0) / (A.invMass + B.invMass) * PENETRATION_CORRETION;
 
     var correctionA = -A.invMass * correction;
     var correctionB = B.invMass * correction;
@@ -128,5 +113,9 @@ class Manifold {
   void _infiniteMassCorrection() {
     A.velocity.reset();
     B.velocity.reset();
+  }
+
+  bool _equal(double a, double b) {
+    return (a - b).abs() <= EPSILON;
   }
 }
