@@ -4,33 +4,44 @@ class PolygonShape {
   //Body body;
 
   Vector center;
-  List<Vector> verticesMoved;
-  List<Vector> normalsMoved;
+  List<Vector> vertices;
+  List<Vector> normals;
 
   double mass, invMass, inertia, invInertia;
 
-  PolygonShape(List<Vector> verts) {
-    normalsMoved = _getNormals(verts);
-    verticesMoved = verts;
-    _computeMass(1.0, verticesMoved);
-  }
-  void apply(Mat2 m, Vector position) {
-    var c2 = center.clone();
-    center.subtractToThis(c2);
-    m.mulV(center);
-    center.addVectorToThis(c2);
-    center.addVectorToThis(position);
-
-    for (var v in verticesMoved) {
-      v.subtractToThis(c2);
-      m.mulV(v);
-      v.addVectorToThis(c2);
-      v.addVectorToThis(position);
-    }
-    for (var v in normalsMoved) m.mulV(v);
-  }
-
   PolygonShape.rectangle(double hw, double hh) : this([Vector(-hw, -hh), Vector(hw, -hh), Vector(hw, hh), Vector(-hw, hh)]);
+  PolygonShape(List<Vector> verts) {
+    normals = _getNormals(verts);
+    vertices = verts;
+    _computeMass(1.0, vertices);
+  }
+  void move(double x, double y, double radians) {
+    var cx = center.x;
+    var cy = center.y;
+    _applyRadiansWithOffset(center, cx, cy, x, y, radians);
+
+    for (var v in vertices) _applyRadiansWithOffset(v, cx, cy, x, y, radians);
+
+    for (var v in normals) _applyRadians(v, radians);
+  }
+
+  void _applyRadiansWithOffset(Vector v, double cx, double cy, double x, double y, double radians) {
+    v.addToThis(-cx, -cy);
+    _applyRadians(v, radians);
+    v.addToThis(cx, cy);
+    v.addToThis(x, y);
+  }
+
+  void _applyRadians(Vector v, double radians) {
+    var c = cos(radians);
+    var s = sin(radians);
+
+    var x = v.x;
+    var y = v.y;
+
+    v.x = c * x + -s * y;
+    v.y = s * x + c * y;
+  }
 
   void _computeMass(double density, List<Vector> verts) {
     // Calculate centroid and moment of inertia
@@ -64,9 +75,8 @@ class PolygonShape {
     // Translate vertices to centroid (make the centroid (0, 0)
     // for the polygon in model space)
     // Not really necessary, but I like doing this anyway
-    for (var v in verts) {
-      v.subtractToThis(center);
-    }
+    for (var v in verts) v.subtractToThis(center);
+
     center.subtractToThis(center);
     mass = density * area;
     invMass = (mass != 0.0) ? 1.0 / mass : 0.0;
@@ -82,21 +92,5 @@ class PolygonShape {
       normals.add(Vector(face.y, -face.x)..normalizeThis());
     }
     return normals;
-  }
-
-  Vector getSupport(Vector dir) {
-    double bestProjection = double.negativeInfinity;
-    Vector bestVertex = null;
-
-    for (var v in verticesMoved) {
-      double projection = v.dotProductThis(dir);
-
-      if (projection > bestProjection) {
-        bestVertex = v;
-        bestProjection = projection;
-      }
-    }
-
-    return bestVertex;
   }
 }

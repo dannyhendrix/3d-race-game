@@ -121,8 +121,8 @@ class Manifold {
     var correctionA = -A.shape.invMass * correction;
     var correctionB = B.shape.invMass * correction;
 
-    A.shape.apply(Mat2(), Vector(normal.x * correctionA, normal.y * correctionA));
-    B.shape.apply(Mat2(), Vector(normal.x * correctionB, normal.y * correctionB));
+    A.shape.move(normal.x * correctionA, normal.y * correctionA, 0.0);
+    B.shape.move(normal.x * correctionB, normal.y * correctionB, 0.0);
   }
 
   void _infiniteMassCorrection() {

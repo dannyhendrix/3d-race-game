@@ -19,7 +19,7 @@ class Body {
     dynamicFriction = 0.3;
     restitution = 0.2;
 
-    shape.apply(Mat2(), Vector(x, y));
+    shape.move(x, y, 0.0);
   }
 
   void applyForce(Vector f) {

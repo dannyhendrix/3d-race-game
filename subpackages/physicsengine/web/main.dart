@@ -160,8 +160,8 @@ class Example {
       uistate.renderlayer.ctx.stroke();
 
       uistate.renderlayer.ctx.beginPath();
-      for (int i = 0; i < p.verticesMoved.length; i++) {
-        var v = p.verticesMoved[i];
+      for (int i = 0; i < p.vertices.length; i++) {
+        var v = p.vertices[i];
         if (i == 0) {
           uistate.renderlayer.ctx.moveTo(v.x, v.y);
         } else {

@@ -59,10 +59,10 @@ class CollisionDetection {
 
     // Setup reference face vertices
     //var v1 = RefPoly.vertices[referenceIndex].clone();
-    var v1 = RefPoly.verticesMoved[referenceIndex].clone();
-    referenceIndex = referenceIndex + 1 == RefPoly.verticesMoved.length ? 0 : referenceIndex + 1;
+    var v1 = RefPoly.vertices[referenceIndex].clone();
+    referenceIndex = referenceIndex + 1 == RefPoly.vertices.length ? 0 : referenceIndex + 1;
     //var v2 = RefPoly.vertices[referenceIndex].clone();
-    var v2 = RefPoly.verticesMoved[referenceIndex].clone();
+    var v2 = RefPoly.vertices[referenceIndex].clone();
 
     // Transform vertices to world space
     //RefPoly.body.m.mulV(v1);
@@ -122,13 +122,13 @@ class CollisionDetection {
     double bestDistance = double.negativeInfinity;
     int bestIndex = 0;
 
-    for (int i = 0; i < A.verticesMoved.length; ++i) {
+    for (int i = 0; i < A.vertices.length; ++i) {
       // Retrieve a face normal from A
-      var nw = A.normalsMoved[i].clone();
+      var nw = A.normals[i].clone();
       var s = _getSupport(B, nw.clone()..negateThis()).clone();
 
       // Compute penetration distance
-      s.subtractToThis(A.verticesMoved[i]);
+      s.subtractToThis(A.vertices[i]);
       var d = nw.dotProductThis(s);
 
       // Store greatest distance
@@ -145,7 +145,7 @@ class CollisionDetection {
     double bestProjection = double.negativeInfinity;
     Vector bestVertex = null;
 
-    for (var v in polygon.verticesMoved) {
+    for (var v in polygon.vertices) {
       double projection = v.dotProductThis(dir);
 
       if (projection > bestProjection) {
@@ -158,7 +158,7 @@ class CollisionDetection {
   }
 
   void _findIncidentFace(List<Vector> v, PolygonShape RefPoly, PolygonShape IncPoly, int referenceIndex) {
-    var referenceNormal = RefPoly.normalsMoved[referenceIndex].clone();
+    var referenceNormal = RefPoly.normals[referenceIndex].clone();
 
     // Calculate normal in incident's frame of reference
     //RefPoly.body.m.mulVnoMove(referenceNormal);
@@ -170,8 +170,8 @@ class CollisionDetection {
     // Find most anti-normal face on incident polygon
     int incidentFace = 0;
     double minDot = double.maxFinite;
-    for (int i = 0; i < IncPoly.verticesMoved.length; ++i) {
-      double dot = referenceNormal.dotProductThis(IncPoly.normalsMoved[i]);
+    for (int i = 0; i < IncPoly.vertices.length; ++i) {
+      double dot = referenceNormal.dotProductThis(IncPoly.normals[i]);
 
       if (dot < minDot) {
         minDot = dot;
@@ -180,11 +180,11 @@ class CollisionDetection {
     }
 
     // Assign face vertices for incidentFace
-    v[0] = IncPoly.verticesMoved[incidentFace].clone();
+    v[0] = IncPoly.vertices[incidentFace].clone();
     //IncPoly.body.m.mulV(v[0]);
     //v[0].addVectorToThis(IncPoly.body.position);
-    incidentFace = incidentFace + 1 >= IncPoly.verticesMoved.length ? 0 : incidentFace + 1;
-    v[1] = IncPoly.verticesMoved[incidentFace].clone();
+    incidentFace = incidentFace + 1 >= IncPoly.vertices.length ? 0 : incidentFace + 1;
+    v[1] = IncPoly.vertices[incidentFace].clone();
     //IncPoly.body.m.mulV(v[1]);
     //v[1].addVectorToThis(IncPoly.body.position);
   }
