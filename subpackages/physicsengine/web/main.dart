@@ -9,6 +9,7 @@ import 'package:gameutils/math.dart';
 
 ExampleGameState createInitialState(ILifetime lifetime) {
   var state = ExampleGameState();
+  state.player = new Vehicle();
   return state;
 }
 
@@ -16,7 +17,7 @@ ExampleUiState createInitialUiState(ILifetime lifetime) {
   var state = ExampleUiState();
   state.renderlayer = lifetime.resolve()
     ..build()
-    ..setSize(500, 500);
+    ..setSize(600, 600);
   return state;
 }
 
@@ -36,6 +37,7 @@ void main() {
   document.body.querySelector("#loading").remove();
 
   Example example = lifetime.resolve();
+  ExampleGameState state = lifetime.resolve();
   ExampleUiState uistate = lifetime.resolve();
   GameLoopState gameloopstate = lifetime.resolve();
   GameLoopHandler gameloop = lifetime.resolve();
@@ -44,6 +46,27 @@ void main() {
         ..changeText("pause")
         ..setOnClick(() {
           gameloop.stop(gameloopstate);
+        }))
+      .element);
+  document.body.append((lifetime.resolve<UiInputDouble>()
+        ..changeLabel("forwardSpeed")
+        ..setValue(state.player.forwardSpeed)
+        ..setOnValueChange((double v) {
+          state.player.forwardSpeed = v;
+        }))
+      .element);
+  document.body.append((lifetime.resolve<UiInputDouble>()
+        ..changeLabel("reverseSpeed")
+        ..setValue(state.player.reverseSpeed)
+        ..setOnValueChange((double v) {
+          state.player.reverseSpeed = v;
+        }))
+      .element);
+  document.body.append((lifetime.resolve<UiInputDouble>()
+        ..changeLabel("steerspeed")
+        ..setValue(state.player.steerSpeed)
+        ..setOnValueChange((double v) {
+          state.player.steerSpeed = v;
         }))
       .element);
   example.start();
@@ -106,29 +129,31 @@ class Example {
     _collisionController = lifetime.resolve();
   }
   void start() {
-    gamestate.player = new Vehicle()..move(230.0, 200.0, 0.0);
+    var border = 20.0;
+    gamestate.player.move(230.0, 200.0, 0.0);
     gamestate.bodies.add(gamestate.player);
-    gamestate.bodies.add(new PhysicsObject.rectangle(200.0, 10.0)..move(240, 100, 0));
-    gamestate.bodies.add(new PhysicsObject.rectangle(200.0, 10.0)
-      ..move(240, 300, 0)
+    gamestate.bodies.add(new Ball()..move(240, 100, 0));
+    //walls
+    gamestate.bodies.add(new PhysicsObject.rectangle(1200.0, border)
+      ..move(600, border / 2, 0)
       ..setStatic());
+    gamestate.bodies.add(new PhysicsObject.rectangle(1200.0, border)
+      ..move(600, 1200 - border / 2, 0)
+      ..setStatic());
+    gamestate.bodies.add(new PhysicsObject.rectangle(border, 1200.0)
+      ..move(border / 2, 600, 0)
+      ..setStatic());
+    gamestate.bodies.add(new PhysicsObject.rectangle(border, 1200.0)
+      ..move(1200 - border / 2, 600, 0)
+      ..setStatic());
+    print(gamestate.player.mass);
+    print(gamestate.player.invMass);
 
     gameloopstate.onUpdate = _update;
     _gameloop.start(gameloopstate);
   }
 
   void _applyControl(ExampleGameState gamestate) {
-    var max = 5.0;
-    var acc = 0.2;
-    var f = 300000.0;
-    //print("$keyDown,$keyUp,$keyLeft,$keyRight");
-
-    //if (keyDown) gamestate.player.force.addToThis(0.0, f);
-    //if (keyUp) gamestate.player..force.addToThis(0.0, -f);
-
-    //if (keyRight) gamestate.player.force.addToThis(f, 0.0);
-    //if (keyLeft) gamestate.player.force.addToThis(-f, 0.0);
-
     if (keyDown) gamestate.player.reverse();
     if (keyUp) gamestate.player.forward();
 
@@ -148,52 +173,56 @@ class Example {
 
     uistate.renderlayer.ctx.strokeStyle = "black";
     uistate.renderlayer.ctx.fillStyle = "black";
+    var scale = 0.5;
     for (var p in gamestate.bodies) {
-      uistate.renderlayer.ctx.beginPath();
-      uistate.renderlayer.ctx.moveTo(p.center.x - 5, p.center.y);
-      uistate.renderlayer.ctx.lineTo(p.center.x + 5, p.center.y);
-      uistate.renderlayer.ctx.closePath();
-      uistate.renderlayer.ctx.stroke();
-      uistate.renderlayer.ctx.beginPath();
-      uistate.renderlayer.ctx.moveTo(p.center.x, p.center.y - 5);
-      uistate.renderlayer.ctx.lineTo(p.center.x, p.center.y + 5);
-      uistate.renderlayer.ctx.closePath();
-      uistate.renderlayer.ctx.stroke();
-
-      uistate.renderlayer.ctx.beginPath();
-      for (int i = 0; i < p.vertices.length; i++) {
-        var v = p.vertices[i];
-        if (i == 0) {
-          uistate.renderlayer.ctx.moveTo(v.x, v.y);
-        } else {
-          uistate.renderlayer.ctx.lineTo(v.x, v.y);
-        }
-      }
-      uistate.renderlayer.ctx.closePath();
-      uistate.renderlayer.ctx.stroke();
+      drawCross(uistate.renderlayer, p.center.x, p.center.y, 5, scale);
+      _drawPolygon(uistate.renderlayer, p.vertices, scale);
     }
   }
 
-  void _drawPolygon(List<Vector> vertices, UiRenderLayer layer, String color, double offsetx, double offsety, [bool stroke = false]) {
-    var scale = 1.0;
+  void drawCross(UiRenderLayer layer, double x, double y, double size, double scale) {
+    x *= scale;
+    y *= scale;
+    size *= scale;
+    uistate.renderlayer.ctx.beginPath();
+    uistate.renderlayer.ctx.moveTo(x - size, y);
+    uistate.renderlayer.ctx.lineTo(x + size, y);
+    uistate.renderlayer.ctx.closePath();
+    uistate.renderlayer.ctx.stroke();
+    uistate.renderlayer.ctx.beginPath();
+    uistate.renderlayer.ctx.moveTo(x, y - size);
+    uistate.renderlayer.ctx.lineTo(x, y + size);
+    uistate.renderlayer.ctx.closePath();
+    uistate.renderlayer.ctx.stroke();
+  }
+
+  void _drawPolygon(UiRenderLayer layer, List<Vector> vertices, double scale) {
     layer.ctx.beginPath();
-    layer.ctx.moveTo((vertices.first.x * scale - offsetx), (vertices.first.y * scale - offsety));
-    for (var p in vertices) {
-      layer.ctx.lineTo((p.x * scale - offsetx), (p.y * scale - offsety));
+    for (int i = 0; i < vertices.length; i++) {
+      var v = vertices[i];
+      if (i == 0) {
+        layer.ctx.moveTo(v.x * scale, v.y * scale);
+      } else {
+        layer.ctx.lineTo(v.x * scale, v.y * scale);
+      }
     }
-    if (stroke) {
-      layer.ctx.strokeStyle = color;
-      layer.ctx.stroke();
-    } else {
-      layer.ctx.fillStyle = color;
-      layer.ctx.fill();
-    }
+    layer.ctx.closePath();
+    layer.ctx.stroke();
+  }
+}
+
+class Ball extends PhysicsObject {
+  Ball() : super.rectangle(30.0, 30.0) {
+    impulseImpact = 3.5;
   }
 }
 
 class Vehicle extends PhysicsObject {
   Vehicle() : super.rectangle(50.0, 30.0);
   double angle = 0.0;
+  double forwardSpeed = 7000.0;
+  double reverseSpeed = 2000.0;
+  double steerSpeed = 40000.0;
   @override
   void move(double x, double y, double radians) {
     angle += radians;
@@ -201,18 +230,18 @@ class Vehicle extends PhysicsObject {
   }
 
   void forward() {
-    force.addVectorToThis(Vector.fromAngleRadians(angle, 800000.0));
+    force.addVectorToThis(Vector.fromAngleRadians(angle, forwardSpeed));
   }
 
   void reverse() {
-    force.addVectorToThis(Vector.fromAngleRadians(angle, -800000.0));
+    force.addVectorToThis(Vector.fromAngleRadians(angle, -reverseSpeed));
   }
 
   void steerLeft() {
-    torque -= 8000000.0;
+    torque -= steerSpeed;
   }
 
   void steerRight() {
-    torque += 8000000.0;
+    torque += steerSpeed;
   }
 }

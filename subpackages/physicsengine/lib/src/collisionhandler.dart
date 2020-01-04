@@ -105,18 +105,14 @@ class CollisionHandler {
 
   void integrateForces(PhysicsObject b, double dt) {
     if (b.invMass == 0.0) return;
-    var friction = 5000.0;
-    double dts = dt * 0.5;
-    var s = b.invMass * dts;
-    b.velocity.addToThis(b.force.x * s, b.force.y * s);
-    b.velocity.addToThis(-b.velocity.x * s * friction, -b.velocity.y * s * friction);
-    //b.velocity.addToThis(ImpulseMath.GRAVITY.x * dts, ImpulseMath.GRAVITY.y * dts);
-    b.angularVelocity += b.torque * b.invInertia * dts;
-    b.angularVelocity += -b.angularVelocity * b.invInertia * dts * 1000000.0;
+    b.velocity.addToThis(b.force.x * b.invMass, b.force.y * b.invMass);
+    b.velocity.multiplyToThis(b.friction);
+    b.angularVelocity += b.torque * b.invInertia;
+    b.angularVelocity *= b.frictionR;
   }
 
   void _applyImpulse(PhysicsObject polygon, Vector impulse, Vector contactVector) {
-    polygon.velocity.addToThis(impulse.x * polygon.invMass, impulse.y * polygon.invMass);
+    polygon.velocity.addToThis(impulse.x * polygon.impulseImpact * polygon.invMass, impulse.y * polygon.impulseImpact * polygon.invMass);
     polygon.angularVelocity += polygon.invInertia * contactVector.crossProductThis(impulse);
   }
 

@@ -17,11 +17,13 @@ class PhysicsObject {
   List<Vector> normals;
 
   double mass, invMass, inertia, invInertia;
+  double friction = 0.99, frictionR = 0.99;
+  double impulseImpact = 1.0;
 
-  PhysicsObject.rectangle(double hw, double hh) : this([Vector(-hw, -hh), Vector(hw, -hh), Vector(hw, hh), Vector(-hw, hh)]);
-  PhysicsObject(this.vertices) {
+  PhysicsObject.rectangle(double w, double h, [double density = 1.0]) : this([Vector(-w / 2, -h / 2), Vector(w / 2, -h / 2), Vector(w / 2, h / 2), Vector(-w / 2, h / 2)], density);
+  PhysicsObject(this.vertices, [double density = 1.0]) {
     normals = _getNormals(vertices);
-    _computeMass(1.0, vertices);
+    _computeMass(density, vertices);
   }
   void move(double x, double y, double radians) {
     var cx = center.x;
