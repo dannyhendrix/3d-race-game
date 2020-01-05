@@ -106,6 +106,7 @@ void setControl(int keyCode, bool down) {
 
 class ExampleGameState extends GameLoopState {
   Vehicle player;
+  Chain chain;
   List<PhysicsObject> bodies = [];
 }
 
@@ -132,8 +133,12 @@ class Example {
     var border = 20.0;
     gamestate.player.move(230.0, 200.0, 0.0);
     gamestate.bodies.add(gamestate.player);
+    gamestate.bodies.add(new Trailer()..move(140.0, 200.0, 0.0));
+    gamestate.chain = new Chain(gamestate.bodies[0], gamestate.bodies[1]);
+
     gamestate.bodies.add(new Ball()..move(240, 100, 0));
     //walls
+
     gamestate.bodies.add(new PhysicsObject.rectangle(1200.0, border)
       ..move(600, border / 2, 0)
       ..setStatic());
@@ -146,6 +151,7 @@ class Example {
     gamestate.bodies.add(new PhysicsObject.rectangle(border, 1200.0)
       ..move(1200 - border / 2, 600, 0)
       ..setStatic());
+
     print(gamestate.player.mass);
     print(gamestate.player.invMass);
 
@@ -163,20 +169,32 @@ class Example {
 
   void _update(num frame) {
     _applyControl(gamestate);
-    _collisionController.step(gamestate.bodies);
-    _paint(uistate, gamestate);
+    var contacts = _collisionController.step(gamestate.bodies, gamestate.chain);
+    _paint(uistate, gamestate, contacts);
     //_gameloop.stop(gameloopstate);
   }
 
-  void _paint(ExampleUiState uistate, ExampleGameState state) {
+  void _paint(ExampleUiState uistate, ExampleGameState state, List<Manifold> contacts) {
     uistate.renderlayer.clear();
 
-    uistate.renderlayer.ctx.strokeStyle = "black";
-    uistate.renderlayer.ctx.fillStyle = "black";
     var scale = 0.5;
     for (var p in gamestate.bodies) {
+      uistate.renderlayer.ctx.strokeStyle = "blue";
       drawCross(uistate.renderlayer, p.center.x, p.center.y, 5, scale);
+      uistate.renderlayer.ctx.strokeStyle = "red";
+      drawCross(uistate.renderlayer, p.chainLocation.x, p.chainLocation.y, 5, scale);
+      uistate.renderlayer.ctx.strokeStyle = "black";
       _drawPolygon(uistate.renderlayer, p.vertices, scale);
+    }
+    for (var c in contacts) {
+      //drawCross(uistate.renderlayer, c.A.center.x + c.normal.x, c.A.center.y + c.normal.y, 5, scale);
+      for (var i = 0; i < c.contactCount; i++) {
+        var cc = c.contacts[i];
+        uistate.renderlayer.ctx.strokeStyle = "green";
+        drawCross(uistate.renderlayer, cc.x + c.normal.x * 20, cc.y + c.normal.y * 20, 5, scale);
+        uistate.renderlayer.ctx.strokeStyle = "darkgreen";
+        drawCross(uistate.renderlayer, cc.x, cc.y, 5, scale);
+      }
     }
   }
 
@@ -217,8 +235,16 @@ class Ball extends PhysicsObject {
   }
 }
 
+class Trailer extends PhysicsObject {
+  Trailer() : super.rectangle(50.0, 30.0) {
+    chainLocation.resetToPosition(65, 0);
+  }
+}
+
 class Vehicle extends PhysicsObject {
-  Vehicle() : super.rectangle(50.0, 30.0);
+  Vehicle() : super.rectangle(50.0, 30.0) {
+    chainLocation.resetToPosition(-25, 0);
+  }
   double angle = 0.0;
   double forwardSpeed = 7000.0;
   double reverseSpeed = 2000.0;

@@ -1,5 +1,11 @@
 part of physicsengine;
 
+class Chain {
+  PhysicsObject a, b;
+  Vector contactFromA = Vector(0, 0);
+  Chain(this.a, this.b);
+}
+
 class PhysicsObject {
   // velocity
   Vector velocity = new Vector(0, 0);
@@ -13,6 +19,7 @@ class PhysicsObject {
   double restitution = 0.2;
 
   Vector center;
+  Vector chainLocation = Vector(0, 0);
   final List<Vector> vertices;
   List<Vector> normals;
 
@@ -29,6 +36,7 @@ class PhysicsObject {
     var cx = center.x;
     var cy = center.y;
     _applyRadiansWithOffset(center, cx, cy, x, y, radians);
+    _applyRadiansWithOffset(chainLocation, cx, cy, x, y, radians);
 
     for (var v in vertices) _applyRadiansWithOffset(v, cx, cy, x, y, radians);
 
