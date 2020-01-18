@@ -2,8 +2,9 @@ part of physicsengine;
 
 class Chain {
   PhysicsObject a, b;
+  int chainLocationIndexA, chainLocationIndexB;
   Vector contactFromA = Vector(0, 0);
-  Chain(this.a, this.b);
+  Chain(this.a, this.b, this.chainLocationIndexA, this.chainLocationIndexB);
 }
 
 class PhysicsObject {
@@ -19,7 +20,7 @@ class PhysicsObject {
   double restitution = 0.2;
 
   Vector center;
-  Vector chainLocation = Vector(0, 0);
+  List<Vector> chainLocation = [];
   final List<Vector> vertices;
   List<Vector> normals;
 
@@ -36,11 +37,11 @@ class PhysicsObject {
     var cx = center.x;
     var cy = center.y;
     _applyRadiansWithOffset(center, cx, cy, x, y, radians);
-    _applyRadiansWithOffset(chainLocation, cx, cy, x, y, radians);
 
     for (var v in vertices) _applyRadiansWithOffset(v, cx, cy, x, y, radians);
 
     for (var v in normals) _applyRadians(v, radians);
+    for (var v in chainLocation) _applyRadiansWithOffset(v, cx, cy, x, y, radians);
   }
 
   void setStatic() {

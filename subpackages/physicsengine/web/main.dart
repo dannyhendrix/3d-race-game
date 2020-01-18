@@ -106,8 +106,8 @@ void setControl(int keyCode, bool down) {
 
 class ExampleGameState extends GameLoopState {
   Vehicle player;
-  Chain chain;
   List<PhysicsObject> bodies = [];
+  List<Chain> chains = [];
 }
 
 class ExampleUiState {
@@ -134,7 +134,9 @@ class Example {
     gamestate.player.move(230.0, 200.0, 0.0);
     gamestate.bodies.add(gamestate.player);
     gamestate.bodies.add(new Trailer()..move(140.0, 200.0, 0.0));
-    gamestate.chain = new Chain(gamestate.bodies[0], gamestate.bodies[1]);
+    //gamestate.bodies.add(new Trailer()..move(70.0, 200.0, 0.0));
+    gamestate.chains.add(new Chain(gamestate.bodies[0], gamestate.bodies[1], 0, 0));
+    //gamestate.chains.add(new Chain(gamestate.bodies[1], gamestate.bodies[2], 1, 0));
 
     gamestate.bodies.add(new Ball()..move(240, 100, 0));
     //walls
@@ -152,9 +154,6 @@ class Example {
       ..move(1200 - border / 2, 600, 0)
       ..setStatic());
 
-    print(gamestate.player.mass);
-    print(gamestate.player.invMass);
-
     gameloopstate.onUpdate = _update;
     _gameloop.start(gameloopstate);
   }
@@ -169,7 +168,7 @@ class Example {
 
   void _update(num frame) {
     _applyControl(gamestate);
-    var contacts = _collisionController.step(gamestate.bodies, gamestate.chain);
+    var contacts = _collisionController.step(gamestate.bodies, gamestate.chains);
     _paint(uistate, gamestate, contacts);
     //_gameloop.stop(gameloopstate);
   }
@@ -182,7 +181,7 @@ class Example {
       uistate.renderlayer.ctx.strokeStyle = "blue";
       drawCross(uistate.renderlayer, p.center.x, p.center.y, 5, scale);
       uistate.renderlayer.ctx.strokeStyle = "red";
-      drawCross(uistate.renderlayer, p.chainLocation.x, p.chainLocation.y, 5, scale);
+      for (var p in p.chainLocation) drawCross(uistate.renderlayer, p.x, p.y, 5, scale);
       uistate.renderlayer.ctx.strokeStyle = "black";
       _drawPolygon(uistate.renderlayer, p.vertices, scale);
     }
@@ -237,13 +236,14 @@ class Ball extends PhysicsObject {
 
 class Trailer extends PhysicsObject {
   Trailer() : super.rectangle(50.0, 30.0) {
-    chainLocation.resetToPosition(65, 0);
+    chainLocation.add(Vector(65, 0));
+    chainLocation.add(Vector(-25, 0));
   }
 }
 
 class Vehicle extends PhysicsObject {
   Vehicle() : super.rectangle(50.0, 30.0) {
-    chainLocation.resetToPosition(-25, 0);
+    chainLocation.add(Vector(-25, 0));
   }
   double angle = 0.0;
   double forwardSpeed = 7000.0;

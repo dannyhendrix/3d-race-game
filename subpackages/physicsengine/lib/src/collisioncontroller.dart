@@ -9,7 +9,7 @@ class CollisionController {
 
   CollisionController(this._collisionDetection, this._collisionHandler);
 
-  List<Manifold> step(List<PhysicsObject> bodies, Chain chain) {
+  List<Manifold> step(List<PhysicsObject> bodies, List<Chain> chains) {
     var contacts = new List<Manifold>();
     for (int i = 0; i < bodies.length; ++i) {
       var A = bodies[i];
@@ -30,7 +30,6 @@ class CollisionController {
         }
       }
     }
-    _collisionHandler.applyImpulseChain(chain);
 
     for (int i = 0; i < bodies.length; ++i) {
       _collisionHandler.integrateForces(bodies[i], dt);
@@ -39,6 +38,7 @@ class CollisionController {
     for (int i = 0; i < contacts.length; ++i) {
       _collisionHandler.initialize(contacts[i]);
     }
+    for (var chain in chains) _collisionHandler.applyImpulseChain(chain);
 
     for (int j = 0; j < iterations; ++j) {
       for (int i = 0; i < contacts.length; ++i) {

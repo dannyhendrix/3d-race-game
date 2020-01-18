@@ -88,11 +88,11 @@ class CollisionHandler {
 
   void applyImpulseChain(Chain c) {
     //_moveGivenPosition(manifold.B, manifold.B.chainLocation, manifold.A.chainLocation);
-    var midx = c.a.chainLocation.x + (c.b.chainLocation.x - c.a.chainLocation.x) / 2;
-    var midy = c.a.chainLocation.y + (c.b.chainLocation.y - c.a.chainLocation.y) / 2;
+    var midx = c.a.chainLocation[c.chainLocationIndexA].x + (c.b.chainLocation[c.chainLocationIndexB].x - c.a.chainLocation[c.chainLocationIndexA].x) / 2;
+    var midy = c.a.chainLocation[c.chainLocationIndexA].y + (c.b.chainLocation[c.chainLocationIndexB].y - c.a.chainLocation[c.chainLocationIndexA].y) / 2;
     var newPos = Vector(midx, midy);
-    _moveGivenPosition(c.b, c.b.chainLocation, newPos);
-    _moveGivenPosition(c.a, c.a.chainLocation, newPos);
+    _moveGivenPosition(c.b, c.b.chainLocation[c.chainLocationIndexB], newPos);
+    _moveGivenPosition(c.a, c.a.chainLocation[c.chainLocationIndexA], newPos);
   }
 
   void positionalCorrection(Manifold manifold) {
@@ -139,6 +139,15 @@ class CollisionHandler {
     var offset = newLocation.clone()..subtractToThis(oldLocation);
     var oldAngle = oldLocation.angleWithThis(obj.center);
     var newAngle = newLocation.angleWithThis(obj.center);
+    obj.move(offset.x, offset.y, newAngle - oldAngle);
+    return;
+
+    obj.velocity.addToThis(offset.x * 20, offset.y * 20);
+    var d = newLocation.crossProductThis(obj.center);
+
+    //print(obj.invInertia);
+    obj.angularVelocity += obj.invInertia * 20 * d;
+    return;
     /*var a = oldLocation.distanceToThis(obj.center);
     var b = newLocation.distanceToThis(obj.center);
     var c = oldLocation.distanceToThis(newLocation);
@@ -146,19 +155,9 @@ class CollisionHandler {
 
     var angle = c == 0 ? 0 : acos((a * a + b * b - c * c) / (2.0 * a * b));
     if (angle.isNaN) print("angle nan $a $b $c ${(a * a + b * b - c * c) / (2 * a * b)}");
-    //var a = 0.0;
+    //
     //oldLocation.angleWithThis(newLocation);
     if (offset.x.isNaN) print("nan move3");
-    obj.velocity.addToThis(offset.x * 20, offset.y * 20);
-    if (oldAngle > 0 && newAngle > 0) a = oldAngle - newAngle;
-    if (oldAngle < 0 && newAngle < 0) a = oldAngle - newAngle;
-    if (oldAngle > 0 && newAngle < 0) a = oldAngle + newAngle;
-    if (oldAngle < 0 && newAngle > 0) a = oldAngle + newAngle;
-    obj.angularVelocity += a;
     */
-    //print(a);
-    //print("$newAngle $oldAngle $angle");
-    obj.move(offset.x, offset.y, newAngle - oldAngle);
-    //obj.move(0, 0, newAngle - oldAngle);
   }
 }
