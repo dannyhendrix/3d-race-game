@@ -6,6 +6,7 @@ class CollisionHandler {
   static final double PENETRATION_CORRETION = 0.4;
 
   void initialize(Manifold manifold) {
+    if (manifold.areConnected) return;
     // Calculate average restitution
     manifold.e = min(manifold.A.restitution, manifold.B.restitution);
 
@@ -15,6 +16,7 @@ class CollisionHandler {
   }
 
   void applyImpulse(Manifold manifold) {
+    if (!manifold.collided || manifold.areConnected) return;
     // Early out and positional correct if both objects have infinite mass
     if (_equal(manifold.A.invMass + manifold.B.invMass, 0)) {
       _infiniteMassCorrection(manifold);
@@ -86,16 +88,20 @@ class CollisionHandler {
     }
   }
 
-  void applyImpulseChain(Chain c) {
+  void applyImpulseChain(Manifold c) {
+    if (!c.areConnected) return;
     //_moveGivenPosition(manifold.B, manifold.B.chainLocation, manifold.A.chainLocation);
-    var midx = c.a.chainLocation[c.chainLocationIndexA].x + (c.b.chainLocation[c.chainLocationIndexB].x - c.a.chainLocation[c.chainLocationIndexA].x) / 2;
-    var midy = c.a.chainLocation[c.chainLocationIndexA].y + (c.b.chainLocation[c.chainLocationIndexB].y - c.a.chainLocation[c.chainLocationIndexA].y) / 2;
+    var midx = c.chainFromA.chainLocation.x + (c.chainFromB.chainLocation.x - c.chainFromA.chainLocation.x) / 2;
+    var midy = c.chainFromA.chainLocation.y + (c.chainFromB.chainLocation.y - c.chainFromA.chainLocation.y) / 2;
+    //var midx = c.A.chainLocation[c.chainIndexA].x + (c.B.chainLocation[c.chainIndexB].x - c.A.chainLocation[c.chainIndexA].x) / 2;
+    //var midy = c.A.chainLocation[c.chainIndexA].y + (c.B.chainLocation[c.chainIndexB].y - c.A.chainLocation[c.chainIndexA].y) / 2;
     var newPos = Vector(midx, midy);
-    _moveGivenPosition(c.b, c.b.chainLocation[c.chainLocationIndexB], newPos);
-    _moveGivenPosition(c.a, c.a.chainLocation[c.chainLocationIndexA], newPos);
+    _moveGivenPosition(c.B, c.chainFromB.chainLocation, newPos);
+    _moveGivenPosition(c.A, c.chainFromA.chainLocation, newPos);
   }
 
   void positionalCorrection(Manifold manifold) {
+    if (!manifold.collided || manifold.areConnected) return;
     var correction = max(manifold.penetration - PENETRATION_ALLOWANCE, 0.0) / (manifold.A.invMass + manifold.B.invMass) * PENETRATION_CORRETION;
 
     var correctionA = -manifold.A.invMass * correction;

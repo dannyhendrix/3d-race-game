@@ -1,10 +1,9 @@
 part of physicsengine;
 
-class Chain {
-  PhysicsObject a, b;
-  int chainLocationIndexA, chainLocationIndexB;
-  Vector contactFromA = Vector(0, 0);
-  Chain(this.a, this.b, this.chainLocationIndexA, this.chainLocationIndexB);
+class PhysicsObjectChain {
+  Vector chainLocation;
+  PhysicsObject other;
+  PhysicsObjectChain(this.other, this.chainLocation);
 }
 
 class PhysicsObject {
@@ -19,8 +18,10 @@ class PhysicsObject {
   double dynamicFriction = 0.3;
   double restitution = 0.2;
 
+  // chain
+  List<PhysicsObjectChain> chains = [];
+
   Vector center;
-  List<Vector> chainLocation = [];
   final List<Vector> vertices;
   List<Vector> normals;
 
@@ -41,7 +42,7 @@ class PhysicsObject {
     for (var v in vertices) _applyRadiansWithOffset(v, cx, cy, x, y, radians);
 
     for (var v in normals) _applyRadians(v, radians);
-    for (var v in chainLocation) _applyRadiansWithOffset(v, cx, cy, x, y, radians);
+    for (var v in chains) _applyRadiansWithOffset(v.chainLocation, cx, cy, x, y, radians);
   }
 
   void setStatic() {

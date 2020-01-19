@@ -8,9 +8,34 @@ import 'package:gameutils/gameloop.dart';
 import 'package:gameutils/math.dart';
 
 ExampleGameState createInitialState(ILifetime lifetime) {
-  var state = ExampleGameState();
-  state.player = new Vehicle();
-  return state;
+  var gamestate = ExampleGameState();
+
+  var border = 20.0;
+  gamestate.player = new Vehicle();
+  var trailer = new Trailer();
+  gamestate.player.connectTrailer(trailer);
+  trailer.connectVehicle(gamestate.player);
+  gamestate.player.move(230.0, 200.0, 0.0);
+  trailer.move(140.0, 200.0, 0.0);
+  gamestate.bodies.add(gamestate.player);
+  gamestate.bodies.add(trailer);
+
+  gamestate.bodies.add(new Ball()..move(240, 100, 0));
+  //walls
+
+  gamestate.bodies.add(new PhysicsObject.rectangle(1200.0, border)
+    ..move(600, border / 2, 0)
+    ..setStatic());
+  gamestate.bodies.add(new PhysicsObject.rectangle(1200.0, border)
+    ..move(600, 1200 - border / 2, 0)
+    ..setStatic());
+  gamestate.bodies.add(new PhysicsObject.rectangle(border, 1200.0)
+    ..move(border / 2, 600, 0)
+    ..setStatic());
+  gamestate.bodies.add(new PhysicsObject.rectangle(border, 1200.0)
+    ..move(1200 - border / 2, 600, 0)
+    ..setStatic());
+  return gamestate;
 }
 
 ExampleUiState createInitialUiState(ILifetime lifetime) {
@@ -130,30 +155,6 @@ class Example {
     _collisionController = lifetime.resolve();
   }
   void start() {
-    var border = 20.0;
-    gamestate.player.move(230.0, 200.0, 0.0);
-    gamestate.bodies.add(gamestate.player);
-    gamestate.bodies.add(new Trailer()..move(140.0, 200.0, 0.0));
-    //gamestate.bodies.add(new Trailer()..move(70.0, 200.0, 0.0));
-    gamestate.chains.add(new Chain(gamestate.bodies[0], gamestate.bodies[1], 0, 0));
-    //gamestate.chains.add(new Chain(gamestate.bodies[1], gamestate.bodies[2], 1, 0));
-
-    gamestate.bodies.add(new Ball()..move(240, 100, 0));
-    //walls
-
-    gamestate.bodies.add(new PhysicsObject.rectangle(1200.0, border)
-      ..move(600, border / 2, 0)
-      ..setStatic());
-    gamestate.bodies.add(new PhysicsObject.rectangle(1200.0, border)
-      ..move(600, 1200 - border / 2, 0)
-      ..setStatic());
-    gamestate.bodies.add(new PhysicsObject.rectangle(border, 1200.0)
-      ..move(border / 2, 600, 0)
-      ..setStatic());
-    gamestate.bodies.add(new PhysicsObject.rectangle(border, 1200.0)
-      ..move(1200 - border / 2, 600, 0)
-      ..setStatic());
-
     gameloopstate.onUpdate = _update;
     _gameloop.start(gameloopstate);
   }
@@ -168,7 +169,8 @@ class Example {
 
   void _update(num frame) {
     _applyControl(gamestate);
-    var contacts = _collisionController.step(gamestate.bodies, gamestate.chains);
+    var contacts = _collisionController.createManifolds(gamestate.bodies);
+    _collisionController.step(gamestate.bodies, contacts);
     _paint(uistate, gamestate, contacts);
     //_gameloop.stop(gameloopstate);
   }
@@ -181,7 +183,7 @@ class Example {
       uistate.renderlayer.ctx.strokeStyle = "blue";
       drawCross(uistate.renderlayer, p.center.x, p.center.y, 5, scale);
       uistate.renderlayer.ctx.strokeStyle = "red";
-      for (var p in p.chainLocation) drawCross(uistate.renderlayer, p.x, p.y, 5, scale);
+      for (var p in p.chains) drawCross(uistate.renderlayer, p.chainLocation.x, p.chainLocation.y, 5, scale);
       uistate.renderlayer.ctx.strokeStyle = "black";
       _drawPolygon(uistate.renderlayer, p.vertices, scale);
     }
@@ -235,16 +237,15 @@ class Ball extends PhysicsObject {
 }
 
 class Trailer extends PhysicsObject {
-  Trailer() : super.rectangle(50.0, 30.0) {
-    chainLocation.add(Vector(65, 0));
-    chainLocation.add(Vector(-25, 0));
+  List<Vector> chainLocation = [];
+  Trailer() : super.rectangle(50.0, 30.0) {}
+  void connectVehicle(Vehicle vehicle) {
+    chains.add(new PhysicsObjectChain(vehicle, Vector(65, 0)));
   }
 }
 
 class Vehicle extends PhysicsObject {
-  Vehicle() : super.rectangle(50.0, 30.0) {
-    chainLocation.add(Vector(-25, 0));
-  }
+  Vehicle() : super.rectangle(50.0, 30.0) {}
   double angle = 0.0;
   double forwardSpeed = 7000.0;
   double reverseSpeed = 2000.0;
@@ -253,6 +254,10 @@ class Vehicle extends PhysicsObject {
   void move(double x, double y, double radians) {
     angle += radians;
     super.move(x, y, radians);
+  }
+
+  void connectTrailer(Trailer trailer) {
+    chains.add(new PhysicsObjectChain(trailer, Vector(-25, 0)));
   }
 
   void forward() {

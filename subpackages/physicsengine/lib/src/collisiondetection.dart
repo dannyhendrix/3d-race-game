@@ -3,19 +3,20 @@ part of physicsengine;
 class CollisionDetection {
   static final double BIAS_RELATIVE = 0.95;
   static final double BIAS_ABSOLUTE = 0.01;
-  void detectCollision(Manifold manifold, PhysicsObject a, PhysicsObject b) {
+  void detectCollision(Manifold manifold) {
+    if (manifold.areConnected) return;
     manifold.contactCount = 0;
 
     // Check for a separating axis with A's face planes
     List<int> faceA = [0];
-    double penetrationA = _findAxisLeastPenetration(faceA, a, b);
+    double penetrationA = _findAxisLeastPenetration(faceA, manifold.A, manifold.B);
     //print("$penetrationA $penetrationA2");
     if (penetrationA >= 0.0) {
       return;
     }
     // Check for a separating axis with B's face planes
     List<int> faceB = [0];
-    double penetrationB = _findAxisLeastPenetration(faceB, b, a);
+    double penetrationB = _findAxisLeastPenetration(faceB, manifold.B, manifold.A);
     if (penetrationB >= 0.0) {
       return;
     }
@@ -28,13 +29,13 @@ class CollisionDetection {
 
     // Determine which shape contains reference face
     if (gt(penetrationA, penetrationB)) {
-      RefPoly = a;
-      IncPoly = b;
+      RefPoly = manifold.A;
+      IncPoly = manifold.B;
       referenceIndex = faceA[0];
       flip = false;
     } else {
-      RefPoly = b;
-      IncPoly = a;
+      RefPoly = manifold.B;
+      IncPoly = manifold.A;
       referenceIndex = faceB[0];
       flip = true;
     }
@@ -108,6 +109,7 @@ class CollisionDetection {
     }
 
     manifold.contactCount = cp;
+    manifold.collided = cp > 0;
   }
 
   double _findAxisLeastPenetration(List<int> faceIndex, PhysicsObject A, PhysicsObject B) {
