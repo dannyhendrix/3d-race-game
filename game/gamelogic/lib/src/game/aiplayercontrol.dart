@@ -5,7 +5,7 @@ class AiPlayerControl {
   void update(GameState game, Vehicle vehicle, AiPlayer player) {
     if (player.pathProgress.finished) {
       vehicle.setSteer(Steer.Left);
-      vehicle.setAccelarate(false);
+      vehicle.setAccelarate(false, 1.0);
       return;
     }
     if (game.state != GameStatus.Racing) return;

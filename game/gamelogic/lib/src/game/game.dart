@@ -128,6 +128,8 @@ class Game {
     _collisionController.handleCollisions3(state.balls, state.vehicles);
     _collisionController.handleCollisions3(state.trailers, state.vehicles);
 
+    _vehicleControl.setControl(state.humanPlayer.controlState, state.humanPlayer.vehicle);
+
     for (AiPlayer p in state.playersCpu) _aiPlayerControl.update(state, p.vehicle, p);
     for (var o in state.balls) _collisionHandler.update(o);
     //for (var o in vehicles) _collisionHandler.update(o);
@@ -191,8 +193,6 @@ class Game {
     }
     return startRanking;
   }
-
-  void onControl(HumanPlayer player, Control control, bool active) => _vehicleControl.onControl(control, active, player, player.vehicle);
 
   void collectCheckPoint(Vehicle vehicle, CheckpointGameItem checkpoint) {
     if (vehicle.player.pathProgress.collect(checkpoint)) _gameStandings.collect(vehicle.player, state.playerRanking);

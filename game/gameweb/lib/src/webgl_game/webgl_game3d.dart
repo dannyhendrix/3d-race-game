@@ -35,6 +35,7 @@ class WebglGame3d extends WebglGame {
   List<GlModelInstanceCollection> modelInstances = [];
   GlCameraFollowTarget camera;
   Map<Player, PlayerStats> playerElements;
+  InputControllerGamepad _gamepadInput;
 
   Element el_Fps;
   Element el_rounds;
@@ -151,13 +152,16 @@ class WebglGame3d extends WebglGame {
     InputController inputController = new InputController(settings);
     _registerControls(inputController);
     //if(settings.client_showUIControls.v) element.append(createControls());
+
+    _gamepadInput = new InputControllerGamepad();
     return element;
   }
 
   @override
   bool onControl(Control control, bool active) {
     if (!_gameloop.playing || _gameloop.stopping) return false;
-    game.onControl(gameState.humanPlayer, control, active);
+    gameState.humanPlayer.controlState.buttonStates[control].pressed = active;
+    gameState.humanPlayer.controlState.buttonStates[control].value = active ? 1 : 0;
     return true;
   }
 
@@ -178,6 +182,7 @@ class WebglGame3d extends WebglGame {
   }
 
   void _loop(int now) {
+    _gamepadInput.update(gameState.humanPlayer.controlState);
     game.step();
     if (gameState.countdown.complete) {
       if (el_countdown != null) {

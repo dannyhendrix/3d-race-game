@@ -1,5 +1,4 @@
 import "dart:html";
-import 'dart:math';
 
 import "package:dependencyinjection/dependencyinjection.dart";
 import "package:physicsengine/physicsengine.dart";
@@ -186,6 +185,10 @@ class Example {
       for (var p in p.chains) drawCross(uistate.renderlayer, p.chainLocation.x, p.chainLocation.y, 5, scale);
       uistate.renderlayer.ctx.strokeStyle = "black";
       _drawPolygon(uistate.renderlayer, p.vertices, scale);
+      for (var s in p.sensors) {
+        uistate.renderlayer.ctx.strokeStyle = s.collided ? "red" : "blue";
+        _drawLine(uistate.renderlayer, s.start, s.end, scale);
+      }
     }
     for (var c in contacts) {
       //drawCross(uistate.renderlayer, c.A.center.x + c.normal.x, c.A.center.y + c.normal.y, 5, scale);
@@ -228,6 +231,14 @@ class Example {
     layer.ctx.closePath();
     layer.ctx.stroke();
   }
+
+  void _drawLine(UiRenderLayer layer, Vector start, Vector end, double scale) {
+    layer.ctx.beginPath();
+    layer.ctx.moveTo(start.x * scale, start.y * scale);
+    layer.ctx.lineTo(end.x * scale, end.y * scale);
+    layer.ctx.closePath();
+    layer.ctx.stroke();
+  }
 }
 
 class Ball extends PhysicsObject {
@@ -245,7 +256,7 @@ class Trailer extends PhysicsObject {
 }
 
 class Vehicle extends PhysicsObject {
-  Vehicle() : super.rectangle(50.0, 30.0) {}
+  Vehicle() : super.rectangle(50.0, 30.0, [CollisionSensor(Vector(0, 0), Vector(100, 0))]) {}
   double angle = 0.0;
   double forwardSpeed = 7000.0;
   double reverseSpeed = 2000.0;

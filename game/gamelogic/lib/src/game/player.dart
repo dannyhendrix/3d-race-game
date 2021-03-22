@@ -15,12 +15,21 @@ abstract class Player {
   PathProgress pathProgress;
   GameSettingsPlayer player;
   VehicleTheme theme;
-
-  bool _isSteeringLeft = false;
-  bool _isSteeringRight = false;
-  bool _isAccelarating = false;
-  bool _isBreaking = false;
-  VehicleControl _vehicleControl = new VehicleControl();
+  PlayerControlState controlState = PlayerControlState();
 
   Player(this.player, this.theme, this.pathProgress);
+}
+
+class PlayerControlButtonState {
+  bool pressed = false;
+  double value = 0;
+}
+
+class PlayerControlState {
+  Map<Control, PlayerControlButtonState> buttonStates = {
+    Control.Accelerate: PlayerControlButtonState(),
+    Control.Brake: PlayerControlButtonState(),
+    Control.SteerLeft: PlayerControlButtonState(),
+    Control.SteerRight: PlayerControlButtonState(),
+  };
 }

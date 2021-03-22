@@ -6,6 +6,12 @@ class PhysicsObjectChain {
   PhysicsObjectChain(this.other, this.chainLocation);
 }
 
+class CollisionSensor {
+  Vector start, end, normal;
+  bool collided = false;
+  CollisionSensor(this.start, this.end);
+}
+
 class PhysicsObject {
   // velocity
   Vector velocity = new Vector(0, 0);
@@ -21,6 +27,9 @@ class PhysicsObject {
   // chain
   List<PhysicsObjectChain> chains = [];
 
+  // sensors
+  List<CollisionSensor> sensors = [];
+
   Vector center;
   final List<Vector> vertices;
   List<Vector> normals;
@@ -29,11 +38,16 @@ class PhysicsObject {
   double friction = 0.99, frictionR = 0.99;
   double impulseImpact = 1.0;
 
-  PhysicsObject.rectangle(double w, double h, [double density = 1.0]) : this([Vector(-w / 2, -h / 2), Vector(w / 2, -h / 2), Vector(w / 2, h / 2), Vector(-w / 2, h / 2)], density);
-  PhysicsObject(this.vertices, [double density = 1.0]) {
+  PhysicsObject.rectangle(double w, double h, [List<CollisionSensor> sensors = null, double density = 1.0]) : this([Vector(-w / 2, -h / 2), Vector(w / 2, -h / 2), Vector(w / 2, h / 2), Vector(-w / 2, h / 2)], sensors, density);
+  PhysicsObject(this.vertices, [this.sensors = null, double density = 1.0]) {
+    if (sensors == null) sensors = [];
+    for (var s in sensors) {
+      s.normal = _getNormal(s.start, s.end);
+    }
     normals = _getNormals(vertices);
     _computeMass(density, vertices);
   }
+
   void move(double x, double y, double radians) {
     var cx = center.x;
     var cy = center.y;
@@ -43,6 +57,11 @@ class PhysicsObject {
 
     for (var v in normals) _applyRadians(v, radians);
     for (var v in chains) _applyRadiansWithOffset(v.chainLocation, cx, cy, x, y, radians);
+    for (var v in sensors) {
+      _applyRadiansWithOffset(v.start, cx, cy, x, y, radians);
+      _applyRadiansWithOffset(v.end, cx, cy, x, y, radians);
+      _applyRadiansWithOffset(v.normal, cx, cy, x, y, radians);
+    }
   }
 
   void setStatic() {
@@ -113,11 +132,12 @@ class PhysicsObject {
 
   List<Vector> _getNormals(List<Vector> verts) {
     var normals = new List<Vector>();
-    // Compute face normals
-    for (int i = 0; i < verts.length; ++i) {
-      var face = verts[(i + 1) % verts.length].clone()..subtractToThis(verts[i]);
-      normals.add(Vector(face.y, -face.x)..normalizeThis());
-    }
+    for (int i = 0; i < verts.length; i++) normals.add(_getNormal(verts[i], verts[(i + 1) % verts.length]));
     return normals;
+  }
+
+  Vector _getNormal(Vector a, Vector b) {
+    var face = b.clone()..subtractToThis(a);
+    return Vector(face.y, -face.x)..normalizeThis();
   }
 }

@@ -3,6 +3,7 @@ part of physicsengine;
 class CollisionDetection {
   static final double BIAS_RELATIVE = 0.95;
   static final double BIAS_ABSOLUTE = 0.01;
+
   void detectCollision(Manifold manifold) {
     if (manifold.areConnected) return;
     manifold.contactCount = 0;

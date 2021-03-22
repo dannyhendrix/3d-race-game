@@ -49,8 +49,8 @@ class WebglGame2d extends WebglGame {
 
   bool onControl(Control control, bool active) {
     if (!_gameloop.playing || _gameloop.stopping) return false;
-    game.onControl(game.state.humanPlayer, control, active);
-
+    gameState.humanPlayer.controlState.buttonStates[control].pressed = active;
+    gameState.humanPlayer.controlState.buttonStates[control].value = active ? 1 : 0;
     return true;
   }
 

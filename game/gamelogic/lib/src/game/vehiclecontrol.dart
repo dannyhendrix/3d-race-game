@@ -4,32 +4,17 @@ class VehicleControl {
   GameLevelController _levelController = new GameLevelController();
   void controlToTarget(Vehicle vehicle, Vector target) {
     vehicle.setSteer(steerToPoint(vehicle.position, vehicle.r, target));
-    vehicle.setAccelarate(true);
+    vehicle.setAccelarate(true, 1.0);
   }
 
-  void onControl(Control control, bool active, Player player, Vehicle vehicle) {
-    switch (control) {
-      case Control.Accelerate:
-        player._isAccelarating = active;
-        break;
-      case Control.Brake:
-        player._isBreaking = active;
-        break;
-      case Control.SteerLeft:
-        player._isSteeringLeft = active;
-        break;
-      case Control.SteerRight:
-        player._isSteeringRight = active;
-        break;
-      default:
-        break;
-    }
-
-    vehicle.setAccelarate(player._isAccelarating);
-    vehicle.setBrake(player._isBreaking);
-    if (player._isSteeringRight && !player._isSteeringLeft)
+  void setControl(PlayerControlState controlState, Vehicle vehicle) {
+    vehicle.setAccelarate(controlState.buttonStates[Control.Accelerate].pressed, controlState.buttonStates[Control.Accelerate].value);
+    vehicle.setBrake(controlState.buttonStates[Control.Brake].pressed, controlState.buttonStates[Control.Brake].value);
+    var steeringLeft = controlState.buttonStates[Control.SteerLeft].pressed;
+    var steeringRight = controlState.buttonStates[Control.SteerRight].pressed;
+    if (steeringRight && !steeringLeft)
       vehicle.setSteer(Steer.Right);
-    else if (!player._isSteeringRight && player._isSteeringLeft)
+    else if (!steeringRight && steeringLeft)
       vehicle.setSteer(Steer.Left);
     else
       vehicle.setSteer(Steer.None);
@@ -55,7 +40,7 @@ class VehicleControl {
     else if (vehicle.sensorFront.collides) steer = Steer.Right;
 
     vehicle.setSteer(steer);
-    vehicle.setAccelarate(accelerate);
+    vehicle.setAccelarate(accelerate, 1.0);
     /*
     bool leftCollision = vehicle.sensorLeft.collides || vehicle.sensorLeftFront.collides || vehicle.sensorLeftFrontAngle.collides;
     bool rightCollision = vehicle.sensorRight.collides || vehicle.sensorRightFront.collides || vehicle.sensorRightFrontAngle.collides;
@@ -109,7 +94,7 @@ class VehicleControl {
 
     //Apply Forces
     bool wasStandingStill = vehicle._speed == 0;
-    vehicle._speed = _applyAccelerationAndBrake(vehicle._speed, vehicle.vehicleSettings.getValue(VehicleSettingKeys.acceleration), vehicle.vehicleSettings.getValue(VehicleSettingKeys.reverse_acceleration), vehicle.vehicleSettings.getValue(VehicleSettingKeys.brake_speed), vehicle.vehicleSettings.getValue(VehicleSettingKeys.acceleration_max), vehicle.vehicleSettings.getValue(VehicleSettingKeys.reverse_acceleration_max), vehicle._currentStandStillDelay == 0, vehicle._isAccelerating && gameStateRacing, vehicle._isBraking && gameStateRacing);
+    vehicle._speed = _applyAccelerationAndBrake(vehicle._speed, vehicle.vehicleSettings.getValue(VehicleSettingKeys.acceleration) * vehicle._accSpeed, vehicle.vehicleSettings.getValue(VehicleSettingKeys.reverse_acceleration), vehicle.vehicleSettings.getValue(VehicleSettingKeys.brake_speed) * vehicle._brakeSpeed, vehicle.vehicleSettings.getValue(VehicleSettingKeys.acceleration_max), vehicle.vehicleSettings.getValue(VehicleSettingKeys.reverse_acceleration_max), vehicle._currentStandStillDelay == 0, vehicle._isAccelerating && gameStateRacing, vehicle._isBraking && gameStateRacing);
     vehicle._speed = _applyFriction(vehicle._speed, vehicle.vehicleSettings.getValue(VehicleSettingKeys.friction));
 
     // slower off road

@@ -10,6 +10,10 @@ class CollisionController {
   CollisionController(this._collisionDetection, this._collisionHandler);
 
   void step(List<PhysicsObject> bodies, List<Manifold> contacts) {
+    for (var b in bodies) {
+      for (var s in b.sensors) s.collided = false;
+    }
+
     for (int i = 0; i < contacts.length; ++i) {
       _collisionDetection.detectCollision(contacts[i]);
     }

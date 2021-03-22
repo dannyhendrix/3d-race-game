@@ -89,6 +89,8 @@ abstract class Vehicle extends GameItemMovable {
   Game game;
   Player player;
   bool _isBraking = false;
+  double _brakeSpeed = 0.0;
+  double _accSpeed = 0.0;
   bool _isAccelerating = false;
   Steer _isSteering = Steer.None;
   double _speed = 0.0;
@@ -153,12 +155,14 @@ abstract class Vehicle extends GameItemMovable {
     sensorRight = new VehicleSensor.fromVector(new Vector(0.0, hh), new Vector(0.0, sensorLengthSide));
     sensors = [sensorLeftFrontAngle, sensorLeftFront, sensorFront, sensorRightFront, sensorRightFrontAngle, sensorLeft, sensorRight];
   }
-  void setAccelarate(bool a) {
+  void setAccelarate(bool a, double speed) {
     _isAccelerating = a;
+    _accSpeed = speed;
   }
 
-  void setBrake(bool a) {
+  void setBrake(bool a, double speed) {
     _isBraking = a;
+    _brakeSpeed = speed;
   }
 
   void setSteer(Steer a) {
