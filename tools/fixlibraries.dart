@@ -35,6 +35,7 @@ Map<String, Package> getPackages(String dir, PackageLoader packageLoader) {
     path = "${path}/lib/";
     if (!new Directory(path).existsSync()) continue;
     var name = p.path.replaceAll(dir, "");
+    print("Fix $name");
     packages[name] = packageLoader.load(name, path);
   }
   return packages;
