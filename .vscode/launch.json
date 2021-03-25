@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "gameweb",
-            "cwd": "game\\gameweb",
+            "cwd": "game/gameweb",
             "request": "launch",
             "type": "node-terminal",
             "command": "webdev serve --hostname 0.0.0.0"
