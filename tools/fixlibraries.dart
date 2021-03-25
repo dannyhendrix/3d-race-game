@@ -8,8 +8,8 @@ import 'dart:io';
 import "contentfiles/library.dart";
 import "contentfiles/package.dart";
 
-const String path_library = "../game/";
-const String path_subpackages = "../subpackages/";
+const String path_library = "game/";
+const String path_subpackages = "subpackages/";
 
 void main() {
   var libraryLoader = new LibraryLoader();

@@ -20,7 +20,7 @@ class PackageLoader {
       var path = p.path;
       if (FileSystemEntity.isDirectorySync(path)) continue;
       if (!path.endsWith(".dart")) continue;
-      libraries[path.replaceAll(dir, "")] = _libraryLoader.load(p);
+      libraries[path.replaceAll(dir, "")] = _libraryLoader.load(p as File);
     }
     return libraries;
   }

@@ -3,8 +3,8 @@ library physicsengine;
 import 'dart:math';
 import 'package:gameutils/math.dart';
 
-part 'src/collisiondetection.dart';
-part 'src/collisionhandler.dart';
-part 'src/collisioncontroller.dart';
-part 'src/manifold.dart';
-part 'src/physicsobject.dart';
+part 'src/physicsengine/collisiondetection.dart';
+part 'src/physicsengine/collisionhandler.dart';
+part 'src/physicsengine/collisioncontroller.dart';
+part 'src/physicsengine/manifold.dart';
+part 'src/physicsengine/physicsobject.dart';

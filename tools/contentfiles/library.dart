@@ -1,7 +1,7 @@
 import 'dart:io';
 
 class Library {
-  String name;
+  String name = "";
   File filePath;
   List<String> internalRef = [];
   List<String> externalRef = [];
@@ -63,8 +63,8 @@ class LibaryFix {
     library.filePath.writeAsStringSync(str.toString());
   }
 
-  List<File> _getSourceFiles(String dir) {
-    var files = new List<File>();
+  List<FileSystemEntity> _getSourceFiles(String dir) {
+    List<FileSystemEntity> files = [];
     for (var p in new Directory(dir).listSync(recursive: true, followLinks: false)) {
       var path = p.path;
       if (FileSystemEntity.isDirectorySync(path)) continue;
